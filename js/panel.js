@@ -1,7 +1,7 @@
 const app = {
   data() {
     return{
-      ventana:'departamentos',
+      ventana:'usuarios',
       accion:'insertar',
       titulo_formulario_usuarios:'ALTA USUARIOS',
       texto_btn_submit:"Aceptar",
@@ -26,7 +26,9 @@ const app = {
       myModal:'',
       id_actualizar:0,
       departamento:'',
-      nuevo_departamento:''
+      nuevo_departamento:'',
+      nuevo_tipo_usuario:''
+
     }
   },
   mounted(){
@@ -140,8 +142,30 @@ const app = {
                     alert("Axios error :-("+error)
                   })
               }
-            },
-            datosModal(departamento,accion,id,nombre){
+        },
+          datosModalTipoUsuario(){
+              this.myModal = new bootstrap.Modal(document.getElementById("modalUsuarios"))
+              this.myModal.show()
+        },
+        tipoUsuariosCRUD(accion,usuario){
+          if(accion=="eliminar"){
+              if(!confirm("¿Esta seguro que desea eliminar este tipo de usuario?")) return
+          }
+          axios.post("crud_tipo_usuarios.php",{
+            accion:accion,
+            nuevo_tipo:this.nuevo_tipo_usuario,
+            usuario:usuario
+          }).then(response =>{
+            console.log(response.data)
+            if(response.data==true){
+              this.nuevo_tipo_usuario = ''
+              this.consultarUsuarios()
+            }else{
+              console.log("no se guardo correctamente")
+            }
+          })
+        },
+        datosModal(departamento,accion,id,nombre){
                     this.departamento = departamento
                     this.accion = accion
                     this.id = id
@@ -187,7 +211,7 @@ const app = {
                 })
           },
           eliminarDepartamento(departamento,id){
-           if(!confirm("¿Esta seguro/a que desea Eliminar la planta ?")) return
+           if(!confirm("¿Esta seguro/a que desea Eliminar la "+departamento+"?")) return
             axios.post("eliminar_departamento.php",{
                  departamento:departamento,
                  id:id

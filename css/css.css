@@ -56,7 +56,7 @@ button[type]:focus,
    
 }
 
-table,.btn-actualizar,.btn-eliminar{
+table,.btn-actualizar,.btn-eliminar, .btn-guardar{
     font-size: 0.7em;
 }
 
@@ -152,7 +152,7 @@ thead{
 @media (min-width: 576px) {
     .cabecera{ background: linear-gradient(140deg, rgba(255,255,255,1) 24%, rgb(184, 14, 14) 24%, rgb(184, 14, 14) 76%, rgba(255,255,255,1) 76%);}
     .form-login{color:black; }
-    table,.btn-actualizar,.btn-eliminar{font-size: 0.7em;}
+    table,.btn-actualizar,.btn-eliminar, .btn-guardar{font-size: 0.7em;}
     .formulario{ width: 80%;}
  }
 
@@ -165,7 +165,7 @@ thead{
 /* Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) { 
     .formulario{ width: 100%;}
-    table,.btn-actualizar,.btn-eliminar {font-size: 0.9em;}
+    table,.btn-actualizar,.btn-eliminar, .btn-guardar {font-size: 0.9em;}
 }
 
 /* X-Large devices (large desktops, 1200px and up)*/

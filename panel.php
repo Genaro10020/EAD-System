@@ -17,7 +17,7 @@ if(isset($_SESSION['nombre'])){
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                 <div class="col-12 col-sm-4  col-lg-3 col-xl-3 col-xxl-2 ">
-                                    <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
+                                    <button class="btn_menu" @click="ventanas('usuarios'), accion='insertar'"><b>USUARIOS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-4   col-lg-4  col-xl-3 col-xxl-3">
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
@@ -51,8 +51,6 @@ if(isset($_SESSION['nombre'])){
                                                                                                     <select v-model="selector_planta" class="form-control select">
                                                                                                         <option disabled default selected value="">Seleccione Planta..</option>
                                                                                                         <option v-for = "planta in plantas" :value="planta.nombre" >{{planta.nombre}}</option>
-                                                                                                        <option class="text-danger">Eliminar planta -</option>
-                                                                                                        <option class="text-success">Nueva planta +</option>
                                                                                                     </select>
                                                                                                 </div>
                                                                                                 <div class="mb-1">
@@ -60,8 +58,6 @@ if(isset($_SESSION['nombre'])){
                                                                                                     <select v-model="selector_area" class="form-control select">
                                                                                                         <option disabled default selected value="">Seleccione Área..</option>
                                                                                                         <option v-for = "area in areas" :value="area.nombre" >{{area.nombre}}</option>
-                                                                                                        <option class="text-danger">Eliminar área -</option>
-                                                                                                        <option class="text-success">Nueva área +</option>
                                                                                                     </select>
                                                                                                 </div>
                                                                                                 <div class="mb-1">
@@ -69,8 +65,6 @@ if(isset($_SESSION['nombre'])){
                                                                                                     <select v-model="selector_subarea" class="form-control select">
                                                                                                         <option disabled default selected value="">Seleccione SubÁrea..</option>
                                                                                                         <option v-for = "subarea in subareas" :value="subarea.nombre" >{{subarea.nombre}}</option>
-                                                                                                        <option class="text-danger">Eliminar subárea -</option>
-                                                                                                        <option class="text-success">Nueva subárea +</option>
                                                                                                     </select>
                                                                                                 </div>
                                                                                                 <div class="mb-1">
@@ -78,8 +72,7 @@ if(isset($_SESSION['nombre'])){
                                                                                                     <select v-model="selector_tipo_usuario" class="form-control select">
                                                                                                         <option disabled default selected value="">Seleccione Tipo..</option>
                                                                                                         <option v-for = "tipo in tipos" :value="tipo" >{{tipo}}</option>
-                                                                                                        <option class="text-danger">Eliminar subárea -</option>
-                                                                                                        <option class="text-success">Nueva subárea +</option>
+                                                                                                        <option class="text-success" @click="datosModalTipoUsuario()">Nuevo / Eliminar</option>
                                                                                                     </select>
                                                                                                 </div>
                                                                                                 <div class="mb-1">
@@ -87,8 +80,6 @@ if(isset($_SESSION['nombre'])){
                                                                                                     <select v-model="selector_tipo_acceso" class="form-control select">
                                                                                                         <option disabled default selected value="">Seleccione Acceso..</option>
                                                                                                         <option v-for = "acceso in tipo_accesos" :value="acceso" >{{acceso}}</option>
-                                                                                                        <option class="text-danger">Eliminar subárea -</option>
-                                                                                                        <option class="text-success">Nueva subárea +</option>
                                                                                                     </select>
                                                                                                 </div>
 
@@ -130,12 +121,51 @@ if(isset($_SESSION['nombre'])){
                                                                                                             <td class="text-center">{{usuario.tipo_usuario}}</td>
                                                                                                             <td class="text-center">{{usuario.tipo_acceso}}</td>
                                                                                                             <td class="text-center"><button v-if="bandera_alta_o_actualizar == 1" class="btn btn-warning btn-actualizar px-2 py-0" @click ="actualizarUsuario('actualizar',usuario.id)">Actualizar</button></td>
-                                                                                                            <td class="text-center"><button v-if="usuario.tipo_acceso=='Usuario'"  class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarUsuario(usuario.id)">Eliminar</button></td>
+                                                                                                            <td class="text-center"><button v-if="usuario.tipo_acceso=='Usuario' && bandera_alta_o_actualizar == 1"  class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarUsuario(usuario.id)">Eliminar</button></td>
                                                                                                         </tr>
                                                                                                     </tbody>
                                                                                                 </table>
                                                                                     </div> 
                                                                                 </div> 
+
+                                                             <!--ModalUsuarios-->
+                                                            <div id="modalUsuarios" class="modal" tabindex="-1" role="dialog">
+                                                                    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                                                        <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Tipo de Usuario</h5>
+                                                                            <button type="button" class="btn-close" @click="cerrarModal()" aria-label="Close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body text-center d-flex justify-content-center">
+                                                                            <label class="me-1 my-auto">Nuevo: </label><input class="form-control w-50" type="text" v-model="nuevo_tipo_usuario"></input>
+                                                                            <button class="btn btn-success btn-guardar ms-3 px-2 py-0 my-1" @click="tipoUsuariosCRUD('insertar')">Agregar</button>
+                                                                              
+                                                                        </div>
+                                                                        <div class="p-2" >
+                                                                                    <table class="table">
+                                                                                        <thead>
+                                                                                            <tr>
+                                                                                            <th scope="col">Tipo Usuarios</th>
+                                                                                            <!--<th scope="col">Actualizar</th>-->
+                                                                                            <th scope="col">Eliminar</th>
+                                                                                            </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            <tr v-for = "(tipo, index) in tipos" :key="index">
+                                                                                                <td>{{tipo}}</td>
+                                                                                                <!--<td><button class="btn btn-warning btn-actualizar px-2 py-0">Actualizar</button></td>-->
+                                                                                                <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="tipoUsuariosCRUD('eliminar',tipo)">Eliminar</button></td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                                                                        </div>
+                                                                        </div>
+                                                                    </div>
+                                                            </div>
+                                                            <!--FinModalDeDepartamento-->
                             </div><!--FIN BLOQUE USUARIOS--> 
                             <div v-if="ventana=='departamentos'" class="row"> <!--bloque USUARIO--> 
                                    
