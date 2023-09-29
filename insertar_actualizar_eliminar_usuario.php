@@ -17,7 +17,7 @@ $accion=$arreglo['accion'];
 
 
                 //Verificar SI existe usuario
-            $insertar = "INSERT INTO usuarios_ead  (id,nombre,nomina,contrasena,planta,area,subarea,tipo_usuario,tipo_acceso) VALUES ('','$nombre','$nomina','$contrasena','$planta','$area','$subarea','$usuario','$acceso')";
+            $insertar = "INSERT INTO usuarios  (id,nombre,nomina,contrasena,planta,area,subarea,tipo_usuario,tipo_acceso) VALUES ('','$nombre','$nomina','$contrasena','$planta','$area','$subarea','$usuario','$acceso')";
             $query = $conexion->query($insertar);
             if ($query) {
                 $resultado = $query;
@@ -35,7 +35,7 @@ $accion=$arreglo['accion'];
         $usuario=$arreglo['usuario'];
         $acceso=$arreglo['acceso'];
 
-        $update = "UPDATE usuarios_ead SET nombre='$nombre',nomina='$nomina',contrasena='$contrasena',planta='$planta',area='$area',subarea='$subarea',tipo_usuario='$usuario',tipo_acceso='$acceso' WHERE id='$id'";
+        $update = "UPDATE usuarios SET nombre='$nombre',nomina='$nomina',contrasena='$contrasena',planta='$planta',area='$area',subarea='$subarea',tipo_usuario='$usuario',tipo_acceso='$acceso' WHERE id='$id'";
         $query = $conexion->query($update);
         if($query){
             $resultado=$query;
@@ -46,7 +46,7 @@ $accion=$arreglo['accion'];
         $conexion->close();
     }else if($accion=="eliminar"){
         $id = $arreglo['id'];
-        $eliminar = "DELETE FROM usuarios_ead WHERE id='$id'";
+        $eliminar = "DELETE FROM usuarios WHERE id='$id'";
         $query = $conexion->query($eliminar);
         if($query){
             $resultado =$query;
@@ -54,6 +54,8 @@ $accion=$arreglo['accion'];
             $resultado = "Error en php query eliminar ". mysqli_error($conexion);
         }
 
+    }else{
+        $resultado = "No se encontro esa accion";
     }
 
 

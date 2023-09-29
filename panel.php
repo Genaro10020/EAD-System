@@ -17,7 +17,7 @@ if(isset($_SESSION['nombre'])){
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                 <div class="col-12 col-sm-4  col-lg-3 col-xl-3 col-xxl-2 ">
-                                    <button class="btn_menu" @click="ventanas('usuarios'), accion='insertar'"><b>USUARIOS</b></button>
+                                    <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-4   col-lg-4  col-xl-3 col-xxl-3">
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
@@ -249,7 +249,7 @@ if(isset($_SESSION['nombre'])){
                                                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                                                         <div class="modal-content">
                                                                         <div class="modal-header">
-                                                                            <h5 class="modal-title">{{accion}} {{departamento}}</h5>
+                                                                            <h5 class="modal-title">{{accion_departamento}} {{departamento}}</h5>
                                                                             <button type="button" class="btn-close" @click="cerrarModal()" aria-label="Close"></button>
                                                                         </div>
                                                                         <div class="modal-body text-center d-flex justify-content-center">
@@ -257,7 +257,7 @@ if(isset($_SESSION['nombre'])){
                                                                         </div>
                                                                         <div class="modal-footer">
                                                                             <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
-                                                                            <button v-if="accion=='Actualizar'" type="button" class="btn btn-warning py-1" @click="actualizarDepartamento()">Actualizar</button>
+                                                                            <button v-if="accion_departamento=='Actualizar'" type="button" class="btn btn-warning py-1" @click="actualizarDepartamento()">Actualizar</button>
                                                                             <button v-else type="button" class="btn btn-primary py-1" @click="nuevoDepartamento()">Guardar</button>
                                                                         </div>
                                                                         </div>

@@ -1,6 +1,6 @@
 <?php
 $hostname = 'localhost';
-$database = 'vvnorthc_ghoner5s';
+$database = 'ead';
 $username = 'root';
 $password = '';
 

@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 $id=$arreglo['id'];
 $resultado = [];
   
-$consulta = "SELECT * FROM usuarios_ead WHERE id='$id'";
+$consulta = "SELECT * FROM usuarios WHERE id='$id'";
 $query = $conexion ->query($consulta);
 
    if($fila = mysqli_fetch_assoc($query)){

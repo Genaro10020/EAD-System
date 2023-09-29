@@ -13,7 +13,7 @@ $id = $arreglo['id'];
 
 if($departamento=="Planta"){
             //Verificar SI existe usuario
-            $actualizar = "UPDATE plantas_ead SET  nombre='$nombre' WHERE id='$id'";
+            $actualizar = "UPDATE plantas SET  nombre='$nombre' WHERE id='$id'";
             $query = $conexion->query($actualizar);
             if ($query) {
                 $resultado = $query;
@@ -23,7 +23,7 @@ if($departamento=="Planta"){
             
 }else if($departamento=="Área"){
             //Verificar SI existe usuario
-            $actualizar = "UPDATE areas_ead SET nombre='$nombre' WHERE id='$id'";
+            $actualizar = "UPDATE areas SET nombre='$nombre' WHERE id='$id'";
             $query = $conexion->query($actualizar);
             if ($query) {
                 $resultado = $query;
@@ -33,7 +33,7 @@ if($departamento=="Planta"){
 
 }else if($departamento=="Subárea"){
             //Verificar SI existe usuario
-            $actualizar = "UPDATE subareas_ead SET nombre='$nombre' WHERE id='$id'";
+            $actualizar = "UPDATE subareas SET nombre='$nombre' WHERE id='$id'";
             $query = $conexion->query($actualizar);
             if ($query) {
                 $resultado = $query;

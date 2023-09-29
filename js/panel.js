@@ -3,6 +3,7 @@ const app = {
     return{
       ventana:'usuarios',
       accion:'insertar',
+      accion_departamento:'',
       titulo_formulario_usuarios:'ALTA USUARIOS',
       texto_btn_submit:"Aceptar",
       bandera_alta_o_actualizar:1,
@@ -67,8 +68,10 @@ const app = {
               }).then(response=>{
                 console.log(response.data)
                 if(response.data==true){
-                    this.bandera_alta_o_actualizar=1,
-                    this.accion='insertar',
+                    this.bandera_alta_o_actualizar=1
+                    this.accion='insertar'
+                    this.texto_btn_submit='Aceptar'
+                    this.titulo_formulario_usuarios='ALTA USUARIO'
                     this.consultarUsuarios();
                     this.nombre=''
                     this.nomina=''
@@ -167,7 +170,7 @@ const app = {
         },
         datosModal(departamento,accion,id,nombre){
                     this.departamento = departamento
-                    this.accion = accion
+                    this.accion_departamento = accion
                     this.id = id
                     this.nuevo_departamento = nombre
                     this.myModal = new bootstrap.Modal(document.getElementById("modal"))

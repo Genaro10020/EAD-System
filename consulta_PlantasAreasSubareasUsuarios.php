@@ -9,7 +9,7 @@ $resultado = [];
   
     //Verificar SI existe usuario
    
-$consulta = "SELECT * FROM plantas_ead";
+$consulta = "SELECT * FROM plantas";
 $query = $conexion->query($consulta);
 if (mysqli_num_rows($query) > 0) {
     $resultado['Plantas'] = array();
@@ -18,7 +18,7 @@ if (mysqli_num_rows($query) > 0) {
     }
 }
 
-$consulta = "SELECT * FROM areas_ead";
+$consulta = "SELECT * FROM areas";
 $query = $conexion->query($consulta);
 if (mysqli_num_rows($query) > 0) {
     $resultado['Areas'] = array();
@@ -27,7 +27,7 @@ if (mysqli_num_rows($query) > 0) {
     }
 }
 
-$consulta = "SELECT * FROM subareas_ead";
+$consulta = "SELECT * FROM subareas";
 $query = $conexion->query($consulta);
 if (mysqli_num_rows($query) > 0) {
     $resultado['Subareas'] = array();
@@ -36,7 +36,7 @@ if (mysqli_num_rows($query) > 0) {
     }
 }
 
-$consulta = "SELECT * FROM tipo_usuario_ead";
+$consulta = "SELECT * FROM tipo_usuario";
 $query = $conexion->query($consulta);
 if (mysqli_num_rows($query) > 0) {
     $resultado['TiposUsuario'] = array();
@@ -46,7 +46,7 @@ if (mysqli_num_rows($query) > 0) {
 }
 
 
-$consulta = "SELECT * FROM usuarios_ead ORDER BY id DESC ";
+$consulta = "SELECT * FROM usuarios ORDER BY id DESC ";
 $query = $conexion ->query($consulta);
 if(mysqli_num_rows($query) > 0){
     $resultado['Usuarios'] = array();

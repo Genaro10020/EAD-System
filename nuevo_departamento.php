@@ -11,7 +11,7 @@ $nuevo_departamento = $arreglo['nuevo_departamento'];
 
 if($departamento=="Planta"){
             //Verificar SI existe usuario
-            $insertar = "INSERT INTO plantas_ead  (id,nombre) VALUES ('','$nuevo_departamento')";
+            $insertar = "INSERT INTO plantas  (id,nombre) VALUES ('','$nuevo_departamento')";
             $query = $conexion->query($insertar);
             if ($query) {
                 $resultado = $query;
@@ -21,7 +21,7 @@ if($departamento=="Planta"){
             
 }else if($departamento=="Área"){
             //Verificar SI existe usuario
-            $insertar = "INSERT INTO areas_ead  (id,nombre) VALUES ('','$nuevo_departamento')";
+            $insertar = "INSERT INTO areas  (id,nombre) VALUES ('','$nuevo_departamento')";
             $query = $conexion->query($insertar);
             if ($query) {
                 $resultado = $query;
@@ -31,7 +31,7 @@ if($departamento=="Planta"){
 
 }else if($departamento=="Subárea"){
             //Verificar SI existe usuario
-            $insertar = "INSERT INTO subareas_ead  (id,nombre) VALUES ('','$nuevo_departamento')";
+            $insertar = "INSERT INTO subareas  (id,nombre) VALUES ('','$nuevo_departamento')";
             $query = $conexion->query($insertar);
             if ($query) {
                 $resultado = $query;

@@ -12,7 +12,7 @@ $id = $arreglo['id'];
 
 if($departamento=="Planta"){
             //Verificar SI existe usuario
-            $delete = "DELETE FROM plantas_ead WHERE id='$id'";
+            $delete = "DELETE FROM plantas WHERE id='$id'";
             $query = $conexion->query($delete);
             if ($query) {
                 $resultado = $query;
@@ -22,7 +22,7 @@ if($departamento=="Planta"){
             
 }else if($departamento=="Área"){
             //Verificar SI existe usuario
-            $delete = "DELETE FROM areas_ead WHERE id='$id'";
+            $delete = "DELETE FROM areas WHERE id='$id'";
             $query = $conexion->query($delete);
             if ($query) {
                 $resultado = $query;
@@ -32,7 +32,7 @@ if($departamento=="Planta"){
 
 }else if($departamento=="Subárea"){
             //Verificar SI existe usuario
-            $delete = "DELETE FROM subareas_ead WHERE id='$id'";
+            $delete = "DELETE FROM subareas WHERE id='$id'";
             $query = $conexion->query($delete);
             if ($query) {
                 $resultado = $query;
