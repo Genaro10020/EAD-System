@@ -127,6 +127,11 @@ thead{
     font-weight: normal;
 }
 
+.encabezado-tabla-scorecard{
+    background: #a3dce0;
+    color: #000;
+}
+
 .botones-crear {
     width: 130px;
     background-color: #4c895b;
@@ -143,7 +148,6 @@ thead{
     box-shadow: 1px 1px 2px #151515;
     border: none;
 }
-
 
 
 

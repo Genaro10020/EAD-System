@@ -1,6 +1,7 @@
 const app = {
   data() {
     return{
+       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
       ventana:'usuarios',
       accion:'insertar',
       accion_departamento:'',
@@ -28,7 +29,9 @@ const app = {
       id_actualizar:0,
       departamento:'',
       nuevo_departamento:'',
-      nuevo_tipo_usuario:''
+      nuevo_tipo_usuario:'',
+       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORE INICIO*/
+      h:'hola'
 
     }
   },
@@ -36,6 +39,7 @@ const app = {
     this.consultarUsuarios()
   },
   methods: {
+     /*/////////////////////////////////////////////////////////////////////////////////USUARIOS*/
     consultarUsuarios(){
       axios.post('consulta_PlantasAreasSubareasUsuarios.php',{
       }).then(response =>{
@@ -168,6 +172,7 @@ const app = {
             }
           })
         },
+        /*/////////////////////////////////////////////////////////////////////////////////DEPARTAMENTOS*/
         datosModal(departamento,accion,id,nombre){
                     this.departamento = departamento
                     this.accion_departamento = accion
@@ -228,7 +233,8 @@ const app = {
                }).catch(error=>{
                  alert("Axios error :-("+error)
                })
-         }
+         },
+          /*/////////////////////////////////////////////////////////////////////////////////SCORECARD*/
   }
 };
 

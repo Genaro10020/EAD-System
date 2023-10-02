@@ -23,7 +23,7 @@ if(isset($_SESSION['nombre'])){
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-4 col-lg-3  col-xl-3 col-xxl-2">
-                                    <button class="btn_menu"><b>OTROS</b></button>
+                                    <button class="btn_menu"  @click="ventanas('score')" ><b>SCORECARD</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -264,7 +264,41 @@ if(isset($_SESSION['nombre'])){
                                                                     </div>
                                                             </div>
                                                             <!--FinModalDeDepartamento-->
-                            </div><!--FIN BLOQUE USUARIOS-->        
+                            </div><!--FIN BLOQUE USUARIOS-->    
+                            <div v-if="ventana=='score'" class="row"> <!--bloque USUARIO--> 
+                                    <div class="col-12 text-center text-dark fw-bold  ">SCORECARD PLACAS</div>
+                                        <div class="scroll w-100 ">
+                                            <table class="table">
+                                                        <thead class="encabezado-tabla-scorecard">
+                                                            <tr>
+                                                                <th scope="col" class="inclinado">1.- Reclamos internos y externos.</th>
+                                                                <th scope="col" class="inclinado">2.-Reducir de merma y desperdicio.</th>
+                                                                <th scope="col" class="inclinado">3.- Incrementar el cumplimiento del programa de producción al 100 %.</th>
+                                                                <th scope="col" class="inclinado">4.- Mantener 0 accidentes leves e incapacitantes.</th>
+                                                                <th scope="col" class="inclinado">5.- Mantener 0  Actos Inseguros </th>
+                                                                <th scope="col" class="inclinado">6.- No. De colaboradores con plomo mayor a 30 ppm.</th>
+                                                                <th scope="col" class="inclinado">7.- Reducir el ausentismo a cero faltas.</th>
+                                                                <th scope="col" class="inclinado">8.- Lograr una calificacion >= a  92.50 % minimo en la evaluacion de 5'S.</th>
+                                                                <th scope="col" class="inclinado">10.- Cumplimiento de proyecto </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                            <th scope="row">1</th>.
+
+                                                            <td>Mark</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            <td>Mark</td>
+                                                            <td>Otto</td>
+                                                            <td>@mdo</td>
+                                                            <td>Mark</td>
+                                                            <td>Otto</td>
+                                                            </tr>
+                                                        </tbody>
+                                                </table>
+                                        </div>
+                            </div> <!--FIN SCORE-->
          </div>           
         <script src="js/header.js"></script>
         <script src="js/panel.js"></script>
