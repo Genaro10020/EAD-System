@@ -23,7 +23,7 @@ if(isset($_SESSION['nombre'])){
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-4 col-lg-3  col-xl-3 col-xxl-2">
-                                    <button class="btn_menu"  @click="ventanas('score')" ><b>SCORECARD</b></button>
+                                    <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>SCORECARD</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -196,7 +196,7 @@ if(isset($_SESSION['nombre'])){
                                             </div>
                                             <div class="col-12 col-lg-4 flex-colum  align-items-center text-center">
                                                         <div class="cinta-tablas  px-2 rounded-top">
-                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Área','Nueva')">Área</button>
+                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Área','Nueva')">Crear Área</button>
                                                         </div> 
                                                         <div class="scroll w-100">
                                                                              <table class="table table-bordered border-dark  ">
@@ -221,7 +221,7 @@ if(isset($_SESSION['nombre'])){
                                             </div>
                                             <div class="col-12 col-lg-4 flex-colum  align-items-center text-center">
                                                         <div class="cinta-tablas  px-2 rounded-top">
-                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Subárea','Nueva')">Subárea</button>
+                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Subárea','Nueva')">Crear Subárea</button>
                                                         </div> 
                                                         <div class="scroll w-100">
                                                                         <table class=" table table-bordered border-dark  ">
@@ -265,40 +265,84 @@ if(isset($_SESSION['nombre'])){
                                                             </div>
                                                             <!--FinModalDeDepartamento-->
                             </div><!--FIN BLOQUE USUARIOS-->    
-                            <div v-if="ventana=='score'" class="row"> <!--bloque USUARIO--> 
-                                    <div class="col-12 text-center text-dark fw-bold  ">SCORECARD PLACAS</div>
-                                        <div class="scroll w-100 ">
-                                            <table class="table">
-                                                        <thead class="encabezado-tabla-scorecard">
-                                                            <tr>
-                                                                <th scope="col" class="inclinado">1.- Reclamos internos y externos.</th>
-                                                                <th scope="col" class="inclinado">2.-Reducir de merma y desperdicio.</th>
-                                                                <th scope="col" class="inclinado">3.- Incrementar el cumplimiento del programa de producción al 100 %.</th>
-                                                                <th scope="col" class="inclinado">4.- Mantener 0 accidentes leves e incapacitantes.</th>
-                                                                <th scope="col" class="inclinado">5.- Mantener 0  Actos Inseguros </th>
-                                                                <th scope="col" class="inclinado">6.- No. De colaboradores con plomo mayor a 30 ppm.</th>
-                                                                <th scope="col" class="inclinado">7.- Reducir el ausentismo a cero faltas.</th>
-                                                                <th scope="col" class="inclinado">8.- Lograr una calificacion >= a  92.50 % minimo en la evaluacion de 5'S.</th>
-                                                                <th scope="col" class="inclinado">10.- Cumplimiento de proyecto </th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                            <th scope="row">1</th>.
+                            <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD--> 
+                                                <div class="col-12 text-center text-dark fw-bold  "></div>
+                                                <div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard(),cicloAnios()">Crear Score</button></div>
+                                                <div class="scroll w-100">
+                                                    <div class="mb-5" v-for="(scoreArray, fechaArreglo) in scorecard" :key="fechaArreglo">
 
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            <td>@mdo</td>
-                                                            <td>Mark</td>
-                                                            <td>Otto</td>
-                                                            </tr>
-                                                        </tbody>
-                                                </table>
-                                        </div>
-                            </div> <!--FIN SCORE-->
+                                                            <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
+                                                            <table class="mx-2 mb-5 table table-hover table-bordered border-dark text-center">
+                                                                <thead class="encabezado-tabla-scorecard">
+                                                                <tr>
+                                                                    <th>V. Real</th>
+                                                                    <th v-for="(objetivo,index) in objetivos" :key="index"> 
+                                                                        <span v-for="(score, inde) in [scoreArray[scoreArray.length-scoreArray.length]]" key:="inde">
+                                                                            <label v-if="score['objetivo' + (index + 1)]==objetivo.id">{{objetivo.objetivo}}</label>
+                                                                        </span>
+                                                                    </th>
+                                                                </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                        <tr v-for="(score, index) in scoreArray" :class="{'verde': index >= 1 && index <= 3, 'amarillo':index >= 4 && index <=7,'rojo': index >=9 && index <=11 }">
+                                                                            <td v-if="index>=1" >{{score.valor_real}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo1}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo2}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo3}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo4}}</td>
+                                                                            <td v-if="index>=1">{{score.objetivo5}}</td>
+                                                                            <td v-if="index>=1">{{score.objetivo6}}</td>
+                                                                            <td v-if="index>=1">{{score.objetivo7}}</td>
+                                                                            <td v-if="index>=1">{{score.objetivo8}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo9}}</td>
+                                                                            <td v-if="index>=1" >{{score.objetivo10}}</td>
+                                                                        </tr>
+                                                                </tbody>
+                                                            </table>
+                                                    </div>
+                                                </div>
+                                                  <!--ModalScorecard-->
+                                                  <div id="modal" class="modal" tabindex="-1" role="dialog">
+                                                                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                                                        <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="mx-auto">Nuevo ScoreCard</h5>
+                                                                            <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()" >X</button>
+                                                                        </div>
+                                                                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
+                                                                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
+                                                                                    <label class="mx-2 my-auto">UGB: </label>
+                                                                                    <input  type="text" v-model="ugb"></input>
+                                                                                </div>
+                                                                                <div class=" mb-5 mb-sm-0  col-12 col-sm-2">
+                                                                                    <label class="mx-2 my-auto">Mes:</label>
+                                                                                    <select v-model="mes_seleccionado">
+                                                                                            <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                                                                                    </select> 
+                                                                                </div>
+                                                                                <div class=" mb-5 mb-sm-0  col-12 col-sm-2">
+                                                                                    <label class="mx-2 my-auto">Año:</label>
+                                                                                    <select v-model="anio_seleccionado">
+                                                                                            <option v-for="anio in anios" :value="anio" >{{anio}}</option>
+                                                                                    </select> 
+                                                                                </div>
+                                                                                <div class=" mb-5 mb-sm-0  col-12 col-sm-3">
+                                                                                    <label class="mx-2 my-auto">Plantilla:</label>
+                                                                                    <select v-model="select_plantillas">
+                                                                                            <option v-for="plantilla in plantillas" :value="plantilla" >{{plantilla}}</option>
+                                                                                    </select> 
+                                                                                </div>
+                                                                            </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                                                                            <!--<button v-if="accion_departamento=='Actualizar'" type="button" class="btn btn-warning py-1" @click="actualizarDepartamento()">Actualizar</button>-->
+                                                                            <button  type="button" class="btn btn-primary py-1" @click="crearScoreCard()">Guardar</button>
+                                                                        </div>
+                                                                        </div>
+                                                                    </div>
+                                                </div>
+                                                <!--FinModalDeDepartamento-->
+                            </div> <!--FIN SCORECARD-->
          </div>           
         <script src="js/header.js"></script>
         <script src="js/panel.js"></script>

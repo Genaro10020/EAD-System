@@ -16,6 +16,6 @@
 <!--TITULO SISTEMA-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap&family=Archivo+Black&family=Signika+Negative&display=swap&family=Rajdhani:wght@500&display=swap&family=Roboto:wght@400&display=swap" rel="stylesheet" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap&family=Archivo+Black&family=Signika+Negative&display=swap&family=Rajdhani:wght@500&display=swap&family=Roboto:wght@400&display=swap&family=Onest:wght@300&display=swap" rel="stylesheet" rel="stylesheet"> 
 <!--VUEJS-->
 

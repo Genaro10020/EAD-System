@@ -1,6 +1,8 @@
 
 <?php
 session_start();
+if(isset($_SESSION['nombre'])){
+
 $arreglo = json_decode(file_get_contents('php://input'), true);
 include("conexionGhoner.php");
 header('Content-Type: application/json');
@@ -47,4 +49,8 @@ if($departamento=="Planta"){
              
 
 echo json_encode($resultado);
+
+}else{
+    header("Location:index.php");
+}
 ?>

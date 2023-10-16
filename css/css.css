@@ -7,7 +7,7 @@
 }
 
 .titulo{
-    font-family: 'Archivo Black', sans-serif;
+    font-family: 'Onest', sans-serif;
     color: white; 
 }
 
@@ -128,8 +128,8 @@ thead{
 }
 
 .encabezado-tabla-scorecard{
-    background: #a3dce0;
-    color: #000;
+    background: #373939;
+    color: #cbc8c8;
 }
 
 .botones-crear {
@@ -147,6 +147,16 @@ thead{
     font-size: 0.9em;
     box-shadow: 1px 1px 2px #151515;
     border: none;
+}
+
+.verde{
+    background-color: #3bb46e
+}
+.amarillo{
+    background-color: #f6f683
+}
+.rojo{
+    background-color: #f68383
 }
 
 
@@ -181,3 +191,4 @@ thead{
 /* XX-Large devices (larger desktops, 1400px and up)*/
 @media (min-width: 1400px) {  .formulario{ width: 70%;} 
 }
+

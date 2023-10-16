@@ -1,5 +1,6 @@
 <?php
 session_start();
+if(isset($_SESSION['nombre'])){
 $arreglo = json_decode(file_get_contents('php://input'), true);
 include("conexionGhoner.php");
 header('Content-Type: application/json');
@@ -58,6 +59,9 @@ $accion=$arreglo['accion'];
         $resultado = "No se encontro esa accion";
     }
 
+    echo json_encode($resultado);
 
-echo json_encode($resultado);
+}else{
+    header("Location:index.php");
+}
 ?>

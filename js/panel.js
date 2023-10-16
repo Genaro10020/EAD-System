@@ -30,9 +30,17 @@ const app = {
       departamento:'',
       nuevo_departamento:'',
       nuevo_tipo_usuario:'',
-       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORE INICIO*/
-      h:'hola'
-
+       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
+       objetivos:[],
+       scorecard:[],
+       plantilla:'',
+       ugb:'',
+       meses:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+       mes_seleccionado:'Enero',
+       anios:[],
+       anio_seleccionado:2023,
+       select_plantillas:'Placas',
+       plantillas:['Placas','Formación','Etiquetado','Ensamble']
     }
   },
   mounted(){
@@ -235,6 +243,60 @@ const app = {
                })
          },
           /*/////////////////////////////////////////////////////////////////////////////////SCORECARD*/
+          consultarObjetivos(){
+            axios.post("objetivos.php",{
+              accion:'Consultar'
+            }).then(response =>{
+              console.log(response.data)
+              this.objetivos = response.data
+            }).catch(error=>{
+              alert("Axios error :-("+error)
+            })
+         },
+         consultarScoreCard(){
+            axios.post("scorecard.php",{
+              accion:'Consultar'
+            }).then(response =>{
+              console.log(response.data)
+              this.scorecard = response.data
+            }).catch(error=>{
+              alert("Axios error :-("+error)
+            })
+         },
+         crearScoreCard(){
+          //if(!confirm("¿Desea crear un nuevo ScoreCard?")) return
+          if(this.ugb != "" || this.mes_seleccionado!='0'){
+            axios.post("scorecard.php",{
+              accion:'Insertar',
+              ugb:this.ugb,
+              mes:this.mes_seleccionado,
+              anio:this.anio_seleccionado,
+              plantilla:this.select_plantillas
+          }).then(response =>{
+            console.log(response.data)
+               if(response.data.bien==true){
+                   this.consultarScoreCard()
+                   this.myModal.hide()
+                   this.ugb=""
+                }else{
+                    alert("No se creo correctamente el ScoreCard")
+                }
+          }).catch(error=>{
+             alert("Axios error :-("+error)
+          })
+        }else{
+          alert("Todos los campos son requeridos.")
+        }
+         },
+         modalScorecard(){
+            this.myModal = new bootstrap.Modal(document.getElementById("modal"))
+            this.myModal.show()
+        },
+        cicloAnios(){
+          for (let i = 2023; i < 2100; i++) {
+            this.anios.push(i)
+          }
+        }
   }
 };
 
