@@ -7,9 +7,15 @@ if(isset($_SESSION['nombre'])){
         
         $resultado = array();
         $accion = $arreglo['accion'];
+
+        if(isset($arreglo['plantilla'])){
+            $plantilla=$arreglo['plantilla'];
+        }else{
+            $plantilla="";
+        }
        
         if($accion == "Consultar"){
-                $consulta = "SELECT * FROM scorecard";//NO CAMBIAR ORDEN SI NO LOS TITULOS ENCABEZADOS NO SALDRAN
+                $consulta = "SELECT * FROM scorecard WHERE tipo LIKE '%$plantilla%'";//NO CAMBIAR ORDEN SI NO LOS TITULOS ENCABEZADOS NO SALDRAN
                 $query = $conexion->query($consulta);
                     while ($datos = mysqli_fetch_array($query))
                     {       
@@ -25,7 +31,7 @@ if(isset($_SESSION['nombre'])){
                             }
                     }
         }else if($accion=="Insertar"){
-                    $plantilla = $arreglo['plantilla'];
+                  
                     switch ($plantilla) {
                         case 'Placas':
                                 $table = "scorecard_placas";
@@ -86,8 +92,8 @@ if(isset($_SESSION['nombre'])){
                                     $objetivo10 = $dato['objetivo10'];
                             
                                     $insertar = "INSERT INTO scorecard 
-                                        (codigo, valor_real, titulo, pregunta, objetivo1, objetivo2, objetivo3, objetivo4, objetivo5, objetivo6, objetivo7, objetivo8, objetivo9, objetivo10, mes_anio, fecha_creacion, orden) 
-                                        VALUES ('$codigo', '$valor_real', '$titulo', '$pregunta', '$objetivo1', '$objetivo2', '$objetivo3', '$objetivo4', '$objetivo5', '$objetivo6', '$objetivo7', '$objetivo8', '$objetivo9', '$objetivo10', '$mes_anio', '$fecha_actual', '$ordenar')";
+                                        (codigo, valor_real, titulo, pregunta, objetivo1, objetivo2, objetivo3, objetivo4, objetivo5, objetivo6, objetivo7, objetivo8, objetivo9, objetivo10, mes_anio, fecha_creacion, orden,tipo) 
+                                        VALUES ('$codigo', '$valor_real', '$titulo', '$pregunta', '$objetivo1', '$objetivo2', '$objetivo3', '$objetivo4', '$objetivo5', '$objetivo6', '$objetivo7', '$objetivo8', '$objetivo9', '$objetivo10', '$mes_anio', '$fecha_actual', '$ordenar','$plantilla')";
                                         
                                         $conexion->query($insertar);
                                 }
@@ -104,57 +110,6 @@ if(isset($_SESSION['nombre'])){
                         $resultado = ["bien" => false, "error" => $conexion->error];
                     }
 
-           
-
-            
-            /*  $titulo = $arreglo['ugb'];
-            $mes = $arreglo['mes'];
-            $anio = $arreglo['anio'];
-            //$plantilla = $arreglo['plantilla'];
-            $codigo = random_int(10000000, 99999999); // Genera un número aleatorio de 8 digitos
-            $valorReal = [];
-            $valorReal = ['Objetivos','10','9','8','7','6','5','4','3','2','1','0','CAL.','POND.','EVAL.','VALOR'];   
-            $cantidad = 0;
-            $cantidad =count($valorReal);
-            $mes_anio =$mes." ".$anio; 
-            $fecha_actual=date("Y-m-d H:i:s");
-            
-            $ordenar = 5000000000;
-            $consulta = "SELECT * FROM scorecard ORDER BY orden ASC LIMIT 1";//NO CAMBIAR ORDEN SI NO LOS TITULOS ENCABEZADOS NO SALDRAN
-            $query = $conexion->query($consulta);
-            if($query->num_rows>0){
-                $fila=mysqli_fetch_assoc($query);
-                $ordenar= $fila['orden']-1;
-            }else{
-                $ordenar =5000000000;
-            }
-
-
-             $conexion->begin_transaction();
-             $exito = true; // Variable para rastrear el éxito de las inserciones
-                    for ($i=0; $i < $cantidad; $i++) { 
-                        //Verificar SI existe usuario
-                            $concepto=$valorReal[$i];
-                            if($i==0){//insertando ids de tabla objetivos
-                                $insertar = "INSERT INTO scorecard  (id,codigo,valor_real,titulo,objetivo1,objetivo2,objetivo3,objetivo4,objetivo5,objetivo6,objetivo7,objetivo8,objetivo9,objetivo10,mes_anio,fecha_creacion,orden) VALUES ('','$codigo','Objetivos','$titulo',1,2,3,4,5,6,7,8,9,10,'$mes_anio','$fecha_actual','$ordenar')";
-                                $query = $conexion->query($insertar);
-                            }else{
-                                $insertar = "INSERT INTO scorecard  (id,codigo,valor_real,titulo,mes_anio,fecha_creacion,orden) VALUES ('','$codigo','$concepto','$titulo','$mes_anio','$fecha_actual','$ordenar')";
-                                $query = $conexion->query($insertar);
-                            }
-                            // Verificar si la inserción fue exitosa
-                            if (!$query) {
-                                $exito = false;
-                                break; // Salir del bucle si hay un error en la inserción
-                            }
-                    }
-            if ($exito && $conexion->commit()) {
-                $resultado[] = true;
-            } else {
-                $conexion->rollback(); // Revertir la transacción en caso de error
-                $resultado[] = false;
-            }*/
-            
         }else{
              $resultado[] = false;
         }

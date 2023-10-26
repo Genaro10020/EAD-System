@@ -16,10 +16,7 @@ const app = {
       selector_subarea:'',
       selector_tipo_usuario:'',
       selector_tipo_acceso:'',
-      tipo_accesos:[
-        'Admin',
-        'Usuario'
-      ],
+      tipo_accesos:['Admin','Usuario'],
       plantas:[],
       areas:[],
       subareas:[],
@@ -31,6 +28,8 @@ const app = {
       nuevo_departamento:'',
       nuevo_tipo_usuario:'',
        /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
+       tipoPlantillas:['Placas','Formacion','Etiquetado','Ensamble'],
+       ver_plantillas:'',
        objetivos:[],
        scorecard:[],
        plantilla:'',
@@ -255,7 +254,8 @@ const app = {
          },
          consultarScoreCard(){
             axios.post("scorecard.php",{
-              accion:'Consultar'
+              accion:'Consultar',
+              plantilla:this.ver_plantillas
             }).then(response =>{
               console.log(response.data)
               this.scorecard = response.data

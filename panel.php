@@ -221,7 +221,7 @@ if(isset($_SESSION['nombre'])){
                                             </div>
                                             <div class="col-12 col-lg-4 flex-colum  align-items-center text-center">
                                                         <div class="cinta-tablas  px-2 rounded-top">
-                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Subárea','Nueva')">Crear Subárea</button>
+                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="datosModal('Subárea','Nueva')">Crear Proceso</button>
                                                         </div> 
                                                         <div class="scroll w-100">
                                                                         <table class=" table table-bordered border-dark  ">
@@ -266,8 +266,18 @@ if(isset($_SESSION['nombre'])){
                                                             <!--FinModalDeDepartamento-->
                             </div><!--FIN BLOQUE USUARIOS-->    
                             <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD--> 
-                                                <div class="col-12 text-center text-dark fw-bold  "></div>
+                                                <!--Selector de tipo de plantilla para visualizar-->
+                                                
                                                 <div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard(),cicloAnios()">Crear Score</button></div>
+                                                <div class="col-12 text-dark fw-bold"> 
+                                                    <div class="col-4 ms-2">
+                                                        <select v-model="ver_plantillas" @change="consultarScoreCard()">
+                                                            <option value="">Todos los ScoreCard</option>
+                                                            <option v-for="plantilla in tipoPlantillas" :value="plantilla">{{plantilla}}</option>
+                                                        </select>
+
+                                                    </div>
+                                                </div>
                                                 <div class="scroll w-100">
                                                     <div class="mb-5" v-for="(scoreArray, fechaArreglo) in scorecard" :key="fechaArreglo">
 

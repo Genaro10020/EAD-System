@@ -164,7 +164,7 @@ thead{
 
 /* Small devices (landscape phones, 576px and up)*/
 @media (min-width: 576px) {
-    .cabecera{ background: linear-gradient(140deg, rgba(255,255,255,1) 24%, rgb(184, 14, 14) 24%, rgb(184, 14, 14) 76%, rgba(255,255,255,1) 76%);}
+    .cabecera{ background: linear-gradient(140deg, rgba(255,255,255,1) 26%, rgb(251, 208, 208,0)27%,  rgb(184, 14, 14) 28%, rgb(184, 14, 14) 71%, rgb(236, 194, 194,0) 72%, rgba(255,255,255,1) 73%);}
     .form-login{color:black; }
     table,.btn-actualizar,.btn-eliminar, .btn-guardar{font-size: 0.7em;}
     .formulario{ width: 80%;}
