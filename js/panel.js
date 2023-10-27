@@ -39,7 +39,9 @@ const app = {
        anios:[],
        anio_seleccionado:2023,
        select_plantillas:'Placas',
-       plantillas:['Placas','Formación','Etiquetado','Ensamble']
+       plantillas:['Placas','Formación','Etiquetado','Ensamble'],
+       /*COLABORADORES */
+       colaboradores:[]
     }
   },
   mounted(){
@@ -64,6 +66,20 @@ const app = {
       this.ventana = ventana
       this.consultarUsuarios()
     },
+       /*/////////////////////////////////////////////////////////////////////////////////CONSULTA COLABORADORS*/
+       consultarColaboradores(){
+        axios.post('consulta_colaboradores.php',{
+        }).then(response =>{
+          console.log(response.data)
+          this.colaboradores = response.data.Colaboradores
+        }).catch(error =>{
+          console.log('Erro :-('+error)
+        })
+      },
+      ventanas(ventana){
+        this.ventana = ventana
+        this.consultarUsuarios()
+      },
         nuevoActualizarUsuario(){
                 axios.post('insertar_actualizar_eliminar_usuario.php',{
                   accion: this.accion,
@@ -296,7 +312,28 @@ const app = {
           for (let i = 2023; i < 2100; i++) {
             this.anios.push(i)
           }
-        }
+        },
+        /*/////////////////////////////////////////////////////////////////////////////////CREACIÓN DE EQUIPOS DE ALTO DESEMPEÑO */
+        /*Aqui tu metodo o filtro Rubén */
+        filtraLiderEquipo(){
+             return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Lider de Equipo');
+        },
+        filtraCordinador(){
+             return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Coordinador');
+        },
+        filtraJefeArea(){
+          return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Jefe de Área');
+        },
+        filtraIngenieroProceso(){
+          return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Ingeniero de Proceso');
+        },
+        filtraIngenieroCalidad(){
+          return this.usuarios.filter(usuario => usuario.tipo_usuario ==='Ingeniero de Calidad');
+        },
+        filtraSupervisor(){
+          return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Supervisor')
+        },
+        
   }
 };
 

@@ -16,14 +16,17 @@ if(isset($_SESSION['nombre'])){
                 
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
-                                <div class="col-12 col-sm-4  col-lg-3 col-xl-3 col-xxl-2 ">
+                                <div class="col-12 col-sm-3  col-lg-3 col-xl-3 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
                                 </div>
-                                <div class="col-12 col-sm-4   col-lg-4  col-xl-3 col-xxl-3">
+                                <div class="col-12 col-sm-3   col-lg-4  col-xl-3 col-xxl-3">
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
                                 </div>
-                                <div class="col-12 col-sm-4 col-lg-3  col-xl-3 col-xxl-2">
+                                <div class="col-12 col-sm-3 col-lg-3  col-xl-3 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>SCORECARD</b></button>
+                                </div>
+                                <div class="col-12 col-sm-3 col-lg-3  col-xl-3 col-xxl-2">
+                                    <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>CREAR EAD</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -61,9 +64,9 @@ if(isset($_SESSION['nombre'])){
                                                                                                     </select>
                                                                                                 </div>
                                                                                                 <div class="mb-1">
-                                                                                                    <label  class=" label-session ">Subárea</label>
+                                                                                                    <label  class=" label-session ">Procesos</label>
                                                                                                     <select v-model="selector_subarea" class="form-control select">
-                                                                                                        <option disabled default selected value="">Seleccione SubÁrea..</option>
+                                                                                                        <option disabled default selected value="">Seleccione Proceso.</option>
                                                                                                         <option v-for = "subarea in subareas" :value="subarea.nombre" >{{subarea.nombre}}</option>
                                                                                                     </select>
                                                                                                 </div>
@@ -102,7 +105,7 @@ if(isset($_SESSION['nombre'])){
                                                                                                         <th scope="col">Contraseña</th>
                                                                                                         <th scope="col">Planta</th>
                                                                                                         <th scope="col">Área</th>
-                                                                                                        <th scope="col">Subárea</th>
+                                                                                                        <th scope="col">Proceso</th>
                                                                                                         <th scope="col">Tipo</th>
                                                                                                         <th scope="col">Accesos</th>
                                                                                                         <th scope="col">Actualizar</th>
@@ -167,7 +170,7 @@ if(isset($_SESSION['nombre'])){
                                                             </div>
                                                             <!--FinModalDeDepartamento-->
                             </div><!--FIN BLOQUE USUARIOS--> 
-                            <div v-if="ventana=='departamentos'" class="row"> <!--bloque USUARIO--> 
+                            <div v-if="ventana=='departamentos'" class="row"> <!--bloque DEPARTAMENTO--> 
                                    
                                             <div class="col-12 col-lg-4 flex-colum  align-items-center text-center">
                                                         <div class="cinta-tablas px-2 rounded-top ">
@@ -353,6 +356,87 @@ if(isset($_SESSION['nombre'])){
                                                 </div>
                                                 <!--FinModalDeDepartamento-->
                             </div> <!--FIN SCORECARD-->
+                            <div v-if="ventana=='crearEAD'" class="row" > <!--bloque CREAR EAD--> 
+                                    <div class="col-12 col-lg-6 contenido d-flex justify-content-center align-items-center" >
+                                            <div class="row mx-lg-5 border border-5 shadow-lg text-center">
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Líder del Equipo.</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                                <option v-for="usuario in filtraLiderEquipo()">
+                                                                    {{usuario.nombre}}
+                                                                </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Coordinador</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                            <option v-for="usuario in filtraCordinador()">
+                                                                    {{usuario.nombre}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Jefe de Área</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                            <option v-for="usuario in filtraJefeArea()">
+                                                                    {{usuario.nombre}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Ingeniero de Proceso</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                            <option v-for="usuario in filtraIngenieroProceso()">
+                                                                    {{usuario.nombre}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.8em;">Ingeniero de Cálidad</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                            <option v-for="usuario in filtraIngenieroCalidad()">
+                                                                    {{usuario.nombre}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="input-group mt-5">
+                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Supervisor</span>
+                                                        <select class="form-control select" aria-label="With textarea">
+                                                            <option v-for="usuario in filtraSupervisor()">
+                                                                    {{usuario.nombre}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 text-center mt-4 mb-2">
+                                                    <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2">Crear EAD</button>
+                                                </div>
+
+
+                                            </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6"><!--Colaboradores-->
+                                            <div class="scroll w-100">
+                                                <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
+                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                                    <label class="form-check-label" for="flexCheckDefault">
+                                                        {{colaborador.colaborador}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                    </div>
+                            </div>
          </div>           
         <script src="js/header.js"></script>
         <script src="js/panel.js"></script>

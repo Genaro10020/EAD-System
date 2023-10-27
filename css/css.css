@@ -47,6 +47,7 @@ textarea[type],input[type],.select{
 textarea[type]:focus,
 input[type]:focus,
 button[type]:focus,
+select[type]:focus,
 .select:focus{
     border: 1px solid;    
     border-color: rgba(115, 14, 14, 0.579);
@@ -69,6 +70,9 @@ table,.btn-actualizar,.btn-eliminar, .btn-guardar{
    border: 2px solid  rgb(137, 0, 0);
 }
 
+.contenido{
+    background: #f1f1f1;
+}
 
 .cuerpo-index{
     background-image: url('../img/fondo.jpg'); 
