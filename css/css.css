@@ -164,6 +164,16 @@ thead{
 }
 
 
+.text-ezquierdo-form{
+ width: 123px;
+ font-size: 0.8em;
+} 
+
+.input-nombreEAD{
+    border-radius: 15px;
+    border: 1px solid #c4c4c4;
+    padding: 5px;
+}
 
 
 /* Small devices (landscape phones, 576px and up)*/
@@ -172,27 +182,31 @@ thead{
     .form-login{color:black; }
     table,.btn-actualizar,.btn-eliminar, .btn-guardar{font-size: 0.7em;}
     .formulario{ width: 80%;}
+    .contenido-form{margin-left: 100px;margin-right: 100px;}
  }
 
 /* Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) { 
     .formulario{ width: 70%;}
     .btn_menu {min-width:200px;padding:6px 24px;}
+    .contenido-form{margin-left: 30px;margin-right: 30px;}
  }
 
 /* Large devices (desktops, 992px and up)*/
 @media (min-width: 992px) { 
     .formulario{ width: 100%;}
     table,.btn-actualizar,.btn-eliminar, .btn-guardar {font-size: 0.9em;}
+   
 }
 
 /* X-Large devices (large desktops, 1200px and up)*/
 @media (min-width: 1200px) { 
     .formulario{ width: 70%;}
-  
 }
 
 /* XX-Large devices (larger desktops, 1400px and up)*/
 @media (min-width: 1400px) {  .formulario{ width: 70%;} 
+.text-ezquierdo-form{ font-size: 0.9em;}
+
 }
 

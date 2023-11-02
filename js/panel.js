@@ -40,8 +40,18 @@ const app = {
        anio_seleccionado:2023,
        select_plantillas:'Placas',
        plantillas:['Placas','Formación','Etiquetado','Ensamble'],
-       /*COLABORADORES */
-       colaboradores:[]
+       ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
+       colaboradores:[],
+       select_nombre:'',
+       select_planta:'',
+       select_area:'',
+       select_proceso:'',
+       select_lider_equipo:'',
+       select_coordinador:'',
+       select_jefe_area:'',
+       select_ing_proceso:'',
+       select_ing_calidad:'',
+       select_supervisor:''
     }
   },
   mounted(){
@@ -333,6 +343,24 @@ const app = {
         filtraSupervisor(){
           return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Supervisor')
         },
+        crearEAD(){
+          axios.post("ead.php",{
+              nombre:this.select_nombre,
+              planta:this.select_planta,
+              area:this.select_area,
+              proceso:this.select_proceso,
+              lider:this.select_lider_equipo,
+              coordinador:this.select_coordinador,
+              jefe_area:this.select_jefe_area,
+              ing_proceso:this.select_ing_proceso,
+              ing_calidad:this.select_ing_calidad,
+              supervisor:this.select_supervisor
+          }).then(response=>{
+            console.log(response.data)
+          }).catch(error=>{
+            alert("Axios CrearEAD :-("+error)
+          })
+        }
         
   }
 };

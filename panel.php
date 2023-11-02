@@ -16,17 +16,20 @@ if(isset($_SESSION['nombre'])){
                 
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
-                                <div class="col-12 col-sm-3  col-lg-3 col-xl-3 col-xxl-2 ">
+                                <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
                                 </div>
-                                <div class="col-12 col-sm-3   col-lg-4  col-xl-3 col-xxl-3">
+                                <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-3">
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
                                 </div>
-                                <div class="col-12 col-sm-3 col-lg-3  col-xl-3 col-xxl-2">
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>SCORECARD</b></button>
                                 </div>
-                                <div class="col-12 col-sm-3 col-lg-3  col-xl-3 col-xxl-2">
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>CREAR EAD</b></button>
+                                </div>
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                    <button class="btn_menu"  @click="ventanas('equiposEAD')" ><b>EQUIPOS EAD</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -357,76 +360,126 @@ if(isset($_SESSION['nombre'])){
                                                 <!--FinModalDeDepartamento-->
                             </div> <!--FIN SCORECARD-->
                             <div v-if="ventana=='crearEAD'" class="row" > <!--bloque CREAR EAD--> 
-                                    <div class="col-12 col-lg-6 contenido d-flex justify-content-center align-items-center" >
-                                            <div class="row mx-lg-5 border border-5 shadow-lg text-center">
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Líder del Equipo.</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                                <option v-for="usuario in filtraLiderEquipo()">
-                                                                    {{usuario.nombre}}
+                                    <div class="col-12 col-lg-6  col-xl-5 contenido d-flex justify-content-center align-items-center" >
+                                            <div class="row contenido-form  border border-5 shadow-lg text-center">
+                                                <div><!--agrupando todos los campos-->
+                                                    <div class="col-12 mt-3"> <!--nombre del equipo-->
+                                                        <div>
+                                                            <span>Nombre del equipo</span>
+                                                        </div>
+                                                        <div>
+                                                          <input v-model="select_nombre" type="text" class="input-nombreEAD w-75"></input>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12"><!--Planta-->
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text ">Planta</span>
+                                                            <select v-model="select_planta" class="form-control select" aria-label="With textarea">
+                                                                    <option disabled default selected value="">Seleccione...</option>
+                                                                    <option v-for="planta in plantas">
+                                                                        {{planta.nombre}}
+                                                                    </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12"><!--Area-->
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Area</span>
+                                                            <select v-model="select_area"  class="form-control select" aria-label="With textarea">
+                                                                    <option disabled default selected value="">Seleccione...</option>
+                                                                    <option v-for="area in areas">
+                                                                        {{area.nombre}}
+                                                                    </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12"><!--Proceso-->
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Proceso</span>
+                                                            <select v-model="select_proceso" class="form-control select" aria-label="With textarea">
+                                                                    <option disabled default selected value="">Seleccione...</option>
+                                                                    <option v-for="subarea in subareas">
+                                                                        {{subarea.nombre}}
+                                                                    </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12"><!--Lider del Equipo-->
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Líder del Equipo</span>
+                                                            <select v-model="select_lider_equipo" class="form-control select" aria-label="With textarea">
+                                                                    <option disabled default selected value="">Seleccione...</option>
+                                                                    <option v-for="usuario in filtraLiderEquipo()">
+                                                                        {{usuario.nombre}}
+                                                                    </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12"><!---->
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Coordinador</span>
+                                                            <select v-model="select_coordinador" class="form-control select" aria-label="With textarea">
+                                                                <option disabled default selected value="">Seleccione...</option>
+                                                                <option v-for="usuario in filtraCordinador()">
+                                                                        {{usuario.nombre}}
                                                                 </option>
-                                                        </select>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Coordinador</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                            <option v-for="usuario in filtraCordinador()">
-                                                                    {{usuario.nombre}}
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-12">
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Jefe de Área</span>
+                                                            <select v-model="select_jefe_area" class="form-control select" aria-label="With textarea">
+                                                                <option disabled default selected value="">Seleccione...</option>
+                                                                <option v-for="usuario in filtraJefeArea()">
+                                                                        {{usuario.nombre}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Jefe de Área</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                            <option v-for="usuario in filtraJefeArea()">
-                                                                    {{usuario.nombre}}
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-12">
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Ing. de Proceso</span>
+                                                            <select v-model="select_ing_proceso" class="form-control select" aria-label="With textarea">
+                                                                <option disabled default selected value="">Seleccione...</option>
+                                                                <option v-for="usuario in filtraIngenieroProceso()">
+                                                                        {{usuario.nombre}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Ingeniero de Proceso</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                            <option v-for="usuario in filtraIngenieroProceso()">
-                                                                    {{usuario.nombre}}
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-12">
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Ing. de Cálidad</span>
+                                                            <select v-model="select_ing_calidad" class="form-control select" aria-label="With textarea">
+                                                                <option disabled default selected value="">Seleccione...</option>
+                                                                <option v-for="usuario in filtraIngenieroCalidad()">
+                                                                        {{usuario.nombre}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.8em;">Ingeniero de Cálidad</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                            <option v-for="usuario in filtraIngenieroCalidad()">
-                                                                    {{usuario.nombre}}
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-12">
+                                                        <div class="input-group mt-3">
+                                                            <span class="text-ezquierdo-form input-group-text">Supervisor</span>
+                                                            <select v-model="select_supervisor" class="form-control select" aria-label="With textarea">
+                                                                <option disabled default selected value="">Seleccione...</option>
+                                                                <option v-for="usuario in filtraSupervisor()">
+                                                                        {{usuario.nombre}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="input-group mt-5">
-                                                        <span class="input-group-text w-25" style="font-size:0.7em;" >Supervisor</span>
-                                                        <select class="form-control select" aria-label="With textarea">
-                                                            <option v-for="usuario in filtraSupervisor()">
-                                                                    {{usuario.nombre}}
-                                                            </option>
-                                                        </select>
+                                                    <div class="col-12 text-center mt-4 mb-2">
+                                                        <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD()">Crear EAD</button>
                                                     </div>
-                                                </div>
-                                                <div class="col-12 text-center mt-4 mb-2">
-                                                    <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2">Crear EAD</button>
                                                 </div>
 
 
                                             </div>
                                     </div>
-                                    <div class="col-12 col-lg-6"><!--Colaboradores-->
+                                    <div class="col-12 col-lg-6 col-xl-7"><!--Colaboradores-->
+                                    <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
                                             <div class="scroll w-100">
                                                 <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
                                                     <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
@@ -436,6 +489,45 @@ if(isset($_SESSION['nombre'])){
                                                 </div>
                                             </div>
                                     </div>
+                            </div>
+                            <div v-if="ventana=='equiposEAD'" class="row" > <!--bloque CREAR EAD--> 
+                             <!--///////////////////////////////////////--> 
+                             <table  class="mx-2 mb-5 table table-hover border-dark text-center">
+                                    <thead>
+                                        <tr>
+                                        <th>Nombre del equipo</th>
+                                        <th>Planta</th>
+                                        <th>Area</th>
+                                        <th>Proceso</th>
+                                        <th>Lider del equipo</th>
+                                        <th>Cordinador</th>
+                                        <th>Jefe de area</th>
+                                        <th>Ing. Procesos</th>
+                                        <th>Ing. Calidad</th>
+                                        <th>Supervisor</th>
+                                        <th>Integrantes del equipo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="text-align: center">
+                                        <tr style="vertical-align: middle">
+                                        <td>Nombre del equipo</td>
+                                        <td>Planta</td>
+                                        <td>Area</td>
+                                        <td>Proceso</td>
+                                        <td>Lider del equipo</td>
+                                        <td>Cordinador</td>
+                                        <td>Jefe de area</td>
+                                        <td>Ing. Procesos</td>
+                                        <td>Ing. Calidad</td>
+                                        <td>Supervisor</td>
+                                        <td>Integrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br></td>
+                                        </tr>
+                                        
+                                       
+                                    </tbody>
+                            </table>
+
+                             <!--///////////////////////////////////////--> 
                             </div>
          </div>           
         <script src="js/header.js"></script>
