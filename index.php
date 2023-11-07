@@ -18,7 +18,7 @@ session_destroy();
                                             <!-- Centra vertical y horizontalmente el contenido -->
                                             <div  class="form-login col-8 col-md-5 col-lg-4 col-xl-3 p-4 pb-2 pb-lg-4  rounded shadow-sm">
                                                 <!-- Agrega la clase "rounded" para bordes redondeados y "shadow-lg" para sombra -->
-                                                <h6 class="text-center label-session "><b>Iniciar Sesión</b></h6>
+                                                <h6 class="text-center label-session "><b>Ruben Placencia</b></h6>
                                                 <form @submit.prevent="submitForm" action="procesar_login.php" method="POST">
                                                     <div class="mb-3">
                                                         <label  class="form-label label-session">Usuario:</label>
