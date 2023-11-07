@@ -14,7 +14,7 @@ session_destroy();
                 <div  id="app" class="container-fluid">
                    
                                     <div  class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
-                                   siudhfisudhfaosiudhf
+
                                             <!-- Centra vertical y horizontalmente el contenido -->
                                             <div  class="form-login col-8 col-md-5 col-lg-4 col-xl-3 p-4 pb-2 pb-lg-4  rounded shadow-sm">
                                                 <!-- Agrega la clase "rounded" para bordes redondeados y "shadow-lg" para sombra -->
