@@ -520,7 +520,7 @@ if(isset($_SESSION['nombre'])){
                                         <td>Ing. Procesos</td>
                                         <td>Ing. Calidad</td>
                                         <td>Supervisor</td>
-                                        <td>Integrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br>ntegrantes del equipo<br></td>
+                                        <td>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br></td>
                                         </tr>
                                         
                                        
