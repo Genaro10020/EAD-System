@@ -19,7 +19,7 @@ if(isset($_SESSION['nombre'])){
                                 <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
                                 </div>
-                                <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-3">
+                                <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
@@ -30,6 +30,9 @@ if(isset($_SESSION['nombre'])){
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('equiposEAD')" ><b>EQUIPOS EAD</b></button>
+                                </div>
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                    <button class="btn_menu"  @click="ventanas('Graficas')" ><b>GRAFICAS</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -526,6 +529,330 @@ if(isset($_SESSION['nombre'])){
                                        
                                     </tbody>
                             </table>
+
+                             <!--///////////////////////////////////////--> 
+                            </div>
+                            <div v-if="ventana=='Graficas'" class="row" > <!--bloque CREAR EAD--> 
+                             <!--///////////////////////////////////////--> 
+                                <div class="w-25">
+                                 <button type="button" class="btn btn-light">Reclamos +</button>
+                                </div>
+                                <div class="w-25">
+                                 <button type="button" class="btn btn-light">Merma +</button>
+                                </div>
+                                <div class="w-25">
+                                 <button type="button" class="btn btn-light">Accidentes -</button>
+                                </div>
+                                <div class="w-25"   >
+                                 <button type="button" class="btn btn-light">Actos inseguros +</button>
+                                </div>
+                                <div>
+                                    <div class="d-flex justify-content-center">
+                                        <h1>Accidentes</h1>
+                                    </div>
+                                <table class="table table-bordered">
+                                    <thead>
+                                       
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                        <th scope="row">15</th>
+                                        <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        
+                                        </tr>
+                                        <tr>
+                                        <th scope="row">14</th>
+                                        <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        
+                                        </tr>
+                                        <tr>
+                                        <th scope="row">13</th>
+                                        <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                       
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">12</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">11</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">10</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">9</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">8</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">7</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </<tr>
+                                        <tr class="table-primary">
+                                            <th scope="row">DIA</th>
+                                            <td >1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                            <td>4</td>
+                                            <td>5</td>
+                                            <td>6</td>
+                                            <td>7</td>
+                                            <td>8</td>
+                                            <td>9</td>
+                                            <td>10</td>
+                                            <td>11</td>
+                                            <td>12</td>
+                                            <td>13</td>
+                                            <td>14</td>
+                                            <td>15</td>
+                                        </<tr>
+
+                                    </tbody>
+                                    </table>
+                                </div>
+
+
+                             
 
                              <!--///////////////////////////////////////--> 
                             </div>
