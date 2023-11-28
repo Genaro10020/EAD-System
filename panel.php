@@ -495,6 +495,7 @@ if(isset($_SESSION['nombre'])){
                             </div>
                             <div v-if="ventana=='equiposEAD'" class="row" > <!--bloque CREAR EAD--> 
                              <!--///////////////////////////////////////--> 
+                             
                              <table  class="mx-2 mb-5 table table-hover border-dark text-center">
                                     <thead>
                                         <tr>
@@ -546,314 +547,39 @@ if(isset($_SESSION['nombre'])){
                                 <div class="w-25"   >
                                  <button type="button" class="btn btn-light">Actos inseguros +</button>
                                 </div>
-                                <div>
-                                    <div class="d-flex justify-content-center">
-                                        <h1>Accidentes</h1>
+                                <div class="text-center">
+                                    <div class=" align-items-start col-12">
+                                        <div class="border border-secundary col bg-warning col-2">
+                                        Accidentes
+                                        </div>
+                                        <div class="col-2">
+                                        Unidad profuctiva
+                                        </div>
+                                        <div class="d-flex col-2">
+                                        Mes:  
+                                        <div> ocubre  </div>
+                                        </div>
                                     </div>
-                                <table class="table table-bordered">
-                                    <thead>
+                                    </div>
+                                <div>
+                                    <!-- <div class="textVertical"> RECHAZO ACUMULADO (PIEZAS) </div>  -->
+                                    <table class="table table-bordered ">
+                                        <thead>
                                        
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                        <th scope="row">15</th>
-                                        <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">14</th>
-                                        <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        
-                                        </tr>
-                                        <tr>
-                                        <th scope="row">13</th>
-                                        <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                       
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">12</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">11</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">10</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">9</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">8</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">7</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">6</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">3</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">2</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr>
-                                            <th scope="row">1</th>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </<tr>
-                                        <tr class="table-primary">
-                                            <th scope="row">DIA</th>
-                                            <td >1</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                            <td>4</td>
-                                            <td>5</td>
-                                            <td>6</td>
-                                            <td>7</td>
-                                            <td>8</td>
-                                            <td>9</td>
-                                            <td>10</td>
-                                            <td>11</td>
-                                            <td>12</td>
-                                            <td>13</td>
-                                            <td>14</td>
-                                            <td>15</td>
-                                        </<tr>
-
-                                    </tbody>
-                                    </table>
-                                </div>
-
-
-                             
-
+                                        </thead>
+                                        <tbody>
+                                            <tr style="text-align: center, " v-for="numero1 in numerosTablas">
+                                                <th scope="row" style="max-width:15px">{{numero1}}</th>
+                                                <td style="max-width:15px" v-for="numero2 in 31"><label v-if="numero1 == 'DIA'">{{numero2}}</label>
+                                                <input style="max-width:40px" v-else-if="numero1 == '.'"></input>
+                                                </td>
+                                            </tr>
+                                                    
+                                           
+                                            
+                                        </tbody>
+                                        </table>
+                                    </div>
                              <!--///////////////////////////////////////--> 
                             </div>
          </div>           

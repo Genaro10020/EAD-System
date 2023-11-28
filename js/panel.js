@@ -51,7 +51,8 @@ const app = {
        select_jefe_area:'',
        select_ing_proceso:'',
        select_ing_calidad:'',
-       select_supervisor:''
+       select_supervisor:'',
+       numerosTablas: [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,'DIA','.']
     }
   },
   mounted(){
