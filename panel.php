@@ -548,36 +548,135 @@ if(isset($_SESSION['nombre'])){
                                  <button type="button" class="btn btn-light">Actos inseguros +</button>
                                 </div>
                                 <div class="text-center">
-                                    <div class=" align-items-start col-12">
-                                        <div class="border border-secundary col bg-warning col-2">
-                                        Accidentes
-                                        </div>
-                                        <div class="col-2">
-                                        Unidad profuctiva
-                                        </div>
-                                        <div class="d-flex col-2">
-                                        Mes:  
-                                        <div> ocubre  </div>
+                                    <div class="col-12">
+                                        <div class="col-4 mx-auto p-1">
+                                            <div class="d-flex col-12">
+                                                <div class=" bg-warning col-6 border border-warning">
+                                                Accidentes 
+                                                </div>
+                                                <div class="col-6 bg-secondary border border-warning text-white">
+                                                UGB
+                                                </div>
+                                            </div>
+                                            <div class="d-flex col-12">
+                                                <div class="col-6 border border-warning">
+                                                Unidad productiva:
+                                                <div class="col-12 border border-warning">
+                                                Mes:
+                                                <input class="col-6"></input>
+                                                </div>
+                                                </div>
+                                                <div class="col-6 py-3  bg-secondary text-white border border-warning">
+                                                    LOS MKTS
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    </div>
-                                <div>
-                                    <!-- <div class="textVertical"> RECHAZO ACUMULADO (PIEZAS) </div>  -->
-                                    <table class="table table-bordered ">
+                                </div>
+                                <div class="col-12 d-flex   ">
+                                    <table class="col-10 table table-bordered ">
                                         <thead>
                                        
                                         </thead>
                                         <tbody>
-                                            <tr style="text-align: center, " v-for="numero1 in numerosTablas">
-                                                <th scope="row" style="max-width:15px">{{numero1}}</th>
+                                            <tr>
+                                            <th colspan="32" class="table-secondary text-center">ACCIDENTES (#)</th>
+                                            </tr>
+                                            <tr style="text-align: center " v-for="numero1 in numerosTablas">
+                                                <th scope="row" style="max-width:15px " class="bg-secondary text-white">{{numero1}}</th>
                                                 <td style="max-width:15px" v-for="numero2 in 31"><label v-if="numero1 == 'DIA'">{{numero2}}</label>
                                                 <input style="max-width:40px" v-else-if="numero1 == '.'"></input>
                                                 </td>
                                             </tr>
-                                                    
-                                           
-                                            
                                         </tbody>
+                                        </table>
+                                    </div>
+                                    <div col="row">
+                                        <div class="col-12 bg-secondary text-white d-flex justify-content-center">PARETO DE ACCIDENTES SEMANAL ( CLASIFICACION DE ACCIDENTES )</div>
+                                    </div>
+                                    <div class="d-flex col-12" >
+                                        <table class=" text-center table table-bordered " v-for="n in numerosTablas2">
+                                            <thead>
+                                                
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th>ITEM</th>
+                                                    <th>CAUSA</th>
+                                                    <th>CANT</th>
+                                                </tr>
+                                                <tr>
+                                                    <td>1</td>
+                                                    <td><input></input></td>
+                                                    <td><input style="max-width:40px"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>2</td>
+                                                    <td><input></input></td>
+                                                    <td><input style="max-width:40px"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>3</td>
+                                                    <td><input></input></td>
+                                                    <td><input style="max-width:40px"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>4</td>
+                                                    <td><input></input></td>
+                                                    <td><input style="max-width:40px"></input></td>
+                                                </tr>
+                                                <!-- <tr>
+                                                    <th v-for="index in 15" key="index">{{clasificaciones[(index-1) % clasificaciones.length]}}<th>
+                                                </tr>
+                                                <tr v-for="n in numerosTablas2">
+                                                    <td>
+                                                        {{n}}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        {{n}}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        {{n}}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        {{n}}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        {{n}}
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                    </td> -->
+                                                    <!-- <td v-for="(clasificacion, index) in clasificaciones    " v-if="clasificacion === 0">{{numero3}}</td> -->
+                                                </tr>
+                                            </tbody>
                                         </table>
                                     </div>
                              <!--///////////////////////////////////////--> 
