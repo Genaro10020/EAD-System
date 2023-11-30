@@ -40,6 +40,8 @@ const app = {
        anio_seleccionado:2023,
        select_plantillas:'Placas',
        plantillas:['Placas','Formación','Etiquetado','Ensamble'],
+       filasSC: ['Reclamos','Merma y desperdicio','Eficiencia','Accidentes','Actos inseguros','PB de sangre','Ausentismo','5´s','Sugerencias de mejora','Cumplimiento de proyecto'],
+       columnasSC: ['Valor actual','Puntos obtenidos','Ponderacion','Puntos evaluados'],
        ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
        colaboradores:[],
        select_nombre:'',
@@ -54,7 +56,9 @@ const app = {
        select_supervisor:'',
        numerosTablas: [15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,'DIA','.'],
        numerosTablas2: [1,2,3,4,5],
-       clasificaciones: ['ITEM','CAUSA','CANTIDAD']
+       clasificaciones: ['ITEM','CAUSA','CANTIDAD'],
+       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
+       grafica: 'Actos inseguros'
     }
   },
   mounted(){
@@ -79,6 +83,7 @@ const app = {
       this.ventana = ventana
       this.consultarUsuarios()
     },
+
        /*/////////////////////////////////////////////////////////////////////////////////CONSULTA COLABORADORS*/
        consultarColaboradores(){
         axios.post('consulta_colaboradores.php',{
@@ -89,9 +94,8 @@ const app = {
           console.log('Erro :-('+error)
         })
       },
-      ventanas(ventana){
-        this.ventana = ventana
-        this.consultarUsuarios()
+      graficas(grafica){
+        this.grafica = grafica
       },
         nuevoActualizarUsuario(){
                 axios.post('insertar_actualizar_eliminar_usuario.php',{

@@ -34,6 +34,9 @@ if(isset($_SESSION['nombre'])){
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('Graficas')" ><b>GRAFICAS</b></button>
                                 </div>
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
+                                    <button class="btn_menu"  @click="ventanas('Competencia')" ><b>Competencia de area</b></button>
+                                </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
                                        
@@ -273,8 +276,8 @@ if(isset($_SESSION['nombre'])){
                                                                     </div>
                                                             </div>
                                                             <!--FinModalDeDepartamento-->
-                            </div><!--FIN BLOQUE USUARIOS-->    
-                            <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD--> 
+                                                </div><!--FIN BLOQUE USUARIOS-->    
+                                                <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD--> 
                                                 <!--Selector de tipo de plantilla para visualizar-->
                                                 
                                                 <div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard(),cicloAnios()">Crear Score</button></div>
@@ -288,9 +291,9 @@ if(isset($_SESSION['nombre'])){
                                                     </div>
                                                 </div>
                                                 <div class="scroll w-100">
-                                                    <div class="mb-5" v-for="(scoreArray, fechaArreglo) in scorecard" :key="fechaArreglo">
+                                                    <div class="mb-5">
 
-                                                            <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
+                                                            <!-- <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
                                                             <table class="mx-2 mb-5 table table-hover table-bordered border-dark text-center">
                                                                 <thead class="encabezado-tabla-scorecard">
                                                                 <tr>
@@ -317,7 +320,37 @@ if(isset($_SESSION['nombre'])){
                                                                             <td v-if="index>=1" >{{score.objetivo10}}</td>
                                                                         </tr>
                                                                 </tbody>
+                                                            </table> -->
+                                                            <div class=" col-12 row d-flex justify-content-center">
+                                                                <div class=" row col-12 text-center d-flex justify-content-center ">
+                                                                    <label class="col-3">Supervisor</label>
+                                                                    <select class="col-3">
+                                                                        <option disabled default selected value="">Seleccione...</option>
+                                                                    </select>
+                                                                </div>
+                                                            <table style="max-width:800px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th> </th>
+                                                                        <th  scope="row" v-for="columnas in columnasSC">{{columnas}}</th>
+                                                                    </tr>
+                                                                <tbody>
+                                                                    <tr v-for="filas in filasSC">
+                                                                        <th scope="col">{{filas}}</th>
+                                                                        <td  v-for="columnas in columnasSC"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
+
+                                                                        <td  class="border border-1 border-dark border-start-1">
+                                                                            TOTAL
+                                                                        </td>
+                                                                    </tr>
+                                                                 
+
+                                                                </tbody>
                                                             </table>
+                                                            </div>
                                                     </div>
                                                 </div>
                                                   <!--ModalScorecard-->
@@ -533,20 +566,23 @@ if(isset($_SESSION['nombre'])){
 
                              <!--///////////////////////////////////////--> 
                             </div>
-                            <div v-if="ventana=='Graficas'" class="row" > <!--bloque CREAR EAD--> 
-                             <!--///////////////////////////////////////--> 
+                             <!--///////////////////////////////////////-->
+                        <div v-if="ventana == 'Graficas'">
+                             <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                 <div class="w-25">
-                                 <button type="button" class="btn btn-light">Reclamos +</button>
+                                 <button @click="graficas('Reclamos')" class="btn btn-light">Reclamos +</button>
                                 </div>
                                 <div class="w-25">
-                                 <button type="button" class="btn btn-light">Merma +</button>
+                                 <button @click="graficas('Merma')" type="button" class="btn btn-light">Merma +</button>
                                 </div>
                                 <div class="w-25">
-                                 <button type="button" class="btn btn-light">Accidentes -</button>
+                                 <button @click="graficas('Accidentes')" type="button" class="btn btn-light">Accidentes -</button>
                                 </div>
                                 <div class="w-25"   >
-                                 <button type="button" class="btn btn-light">Actos inseguros +</button>
+                                 <button @click="graficas('Actos inseguros')" type="button" class="btn btn-light">Actos inseguros +</button>
                                 </div>
+                            </div>
+                            <div v-if="grafica == 'Actos inseguros'">
                                 <div class="text-center">
                                     <div class="col-12">
                                         <div class="col-4 mx-auto p-1">
@@ -624,63 +660,90 @@ if(isset($_SESSION['nombre'])){
                                                     <td>4</td>
                                                     <td><input></input></td>
                                                     <td><input style="max-width:40px"></input></td>
-                                                </tr>
-                                                <!-- <tr>
-                                                    <th v-for="index in 15" key="index">{{clasificaciones[(index-1) % clasificaciones.length]}}<th>
-                                                </tr>
-                                                <tr v-for="n in numerosTablas2">
-                                                    <td>
-                                                        {{n}}
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        {{n}}
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        {{n}}
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        {{n}}
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        {{n}}
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                    </td> -->
-                                                    <!-- <td v-for="(clasificacion, index) in clasificaciones    " v-if="clasificacion === 0">{{numero3}}</td> -->
-                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                             <!--///////////////////////////////////////--> 
+                                </div>
+                            <!--/////////////////////////////////////////////////VENTANA DE RECLAMOS////////////////////////////////////////////////////////////////////-->
+                            <div v-if="grafica == 'Reclamos'" class="row">
+                                <h1>Reclamos</h1>
                             </div>
+                            <!--/////////////////////////////////////////////////VENTANA DE MERMAS////////////////////////////////////////////////////////////////////-->
+                            <div v-if="grafica == 'Merma'">
+                                <h1>MERMAS</h1>
+                            </div>
+                            <!--/////////////////////////////////////////////////VENTANA DE Accidentes ////////////////////////////////////////////////////////////////////-->
+                            <div v-if="grafica == 'Accidentes'">
+                                <h1>Accidentes</h1>
+                            </div>
+                        </div>
+                         <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
+                         <div v-if="ventana=='Competencia'">
+                    <div class="container mt-5">
+                        <table class="table table-bordered table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th>EADs</th>
+                                    <th>Área</th>
+                                    <th>Planta</th>
+                                    <th>Nombre EAD</th>
+                                    <th>Proyecto</th>
+                                    <th>Evaluador 1</th>
+                                    <th>Evaluador 2</th>
+                                    <th>Evaluador 3</th>
+                                    <th>Evaluador 4</th>
+                                    <th>Calificacion Final</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th><b>1</b></th>
+                                    <td><b>EAD 1</b></td>
+                                    <td>Formación</td>
+                                    <td>Enerya</td>
+                                    <td>Los Rinos</td>
+                                    <td>Proyecto A</td>
+                                    <td><b>Evaluador A</b></td>
+                                    <td><b>Evaluador B</b></td>
+                                    <td><b>Evaluador C</b></td>
+                                    <td><b>Evaluador D</b></td>
+                                    <td>Pendiente</td>
+                                </tr>
+                                <tr>
+                                    <th><b>2</b></th>
+                                    <td><b>EAD 2</b></td>
+                                    <td>Etiquetado</td>
+                                    <td>Riasa</td>
+                                    <td>Las Maquinas</td>
+                                    <td>Proyecto A</td>
+                                    <td><b>Evaluador A</b></td>
+                                    <td><b>Evaluador B</b></td>
+                                    <td><b>Evaluador C</b></td>
+                                    <td><b>Evaluador D</b></td>
+                                    <td>Pendiente</td>
+                                </tr>
+                                <tr>
+                                    <th><b>3</b></th>
+                                    <td><b>EAD 3</b></td>
+                                    <td>Riasa - Enerya</td>
+                                    <td>Planta A</td>
+                                    <td>Los Pajaros Azules</td>
+                                    <td>Proyecto A</td>
+                                    <td><b>Evaluador A</b></td>
+                                    <td><b>Evaluador B</b></td>
+                                    <td><b>Evaluador C</b></td>
+                                    <td><b>Evaluador D</b></td>
+                                    <td>Pendiente</td>
+                                </tr>
+                                 <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                </div>
+                <!-- FIN DE COMPETENCIA -->
          </div>           
         <script src="js/header.js"></script>
         <script src="js/panel.js"></script>
