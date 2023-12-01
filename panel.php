@@ -17,13 +17,13 @@ if(isset($_SESSION['nombre'])){
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                 <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
-                                    <button class="btn_menu" @click="ventanas('usuarios')"><b>USUARIOS</b></button>
+                                    <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu" @click="ventanas('departamentos')"><b>DEPARTAMENTOS</b></button>
+                                    <button class="btn_menu" @click="ventanas('departamentos')"><b>departamentos</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>SCORECARD</b></button>
+                                    <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>Scorecard</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>CREAR EAD</b></button>
@@ -35,7 +35,10 @@ if(isset($_SESSION['nombre'])){
                                     <button class="btn_menu"  @click="ventanas('Graficas')" ><b>GRAFICAS</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
-                                    <button class="btn_menu"  @click="ventanas('Competencia')" ><b>Competencia de area</b></button>
+                                    <button class="btn_menu"  @click="ventanas('CompetenciaArea')" ><b>Competencia de area</b></button>
+                                </div>
+                                <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
+                                    <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de Planta</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -322,22 +325,24 @@ if(isset($_SESSION['nombre'])){
                                                                 </tbody>
                                                             </table> -->
                                                             <div class=" col-12 row d-flex justify-content-center">
-                                                                <div class=" row col-12 text-center d-flex justify-content-center ">
-                                                                    <label class="col-3">Supervisor</label>
-                                                                    <select class="col-3">
-                                                                        <option disabled default selected value="">Seleccione...</option>
-                                                                    </select>
-                                                                </div>
+                                                                    <div class=" row col-12 text-center d-flex justify-content-center ">
+                                                                        <div class="col-4">
+                                                                        <span class="mx-2">Supervisor:</span>
+                                                                        <select>
+                                                                            <option disabled default selected value="">Seleccione...</option>
+                                                                        </select>
+                                                                    </div>
+                                                            </div>
                                                             <table style="max-width:800px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th> </th>
-                                                                        <th  scope="row" v-for="columnas in columnasSC">{{columnas}}</th>
+                                                                        <th class="bg-dark"> </th>
+                                                                        <th  scope="row" class="bg-dark" v-for="columnas in columnasSC">{{columnas}}</th>
                                                                     </tr>
                                                                 <tbody>
                                                                     <tr v-for="filas in filasSC">
                                                                         <th scope="col">{{filas}}</th>
-                                                                        <td  v-for="columnas in columnasSC"></td>
+                                                                        <td v-for="columnas in columnasSC"></td>
                                                                     </tr>
                                                                     <tr>
                                                                         <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
@@ -678,7 +683,7 @@ if(isset($_SESSION['nombre'])){
                             </div>
                         </div>
                          <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
-                         <div v-if="ventana=='Competencia'">
+                         <div v-if="ventana=='CompetenciaArea'">
                     <div class="container mt-5">
                         <table class="table table-bordered table-striped">
                             <thead class="thead-dark">
@@ -743,7 +748,22 @@ if(isset($_SESSION['nombre'])){
 
 
                 </div>
-                <!-- FIN DE COMPETENCIA -->
+                   <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
+                <div v-if="ventana == 'CompetenciaPlanta'">
+                    <table class="text-center table table.bordered border-dark">
+                        <thead>
+                            <tr>
+                                <th  v-for="filas in filasCP">
+                                    {{filas}}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <!-- FIN DE COMPETENCIA PLANTA -->
          </div>           
         <script src="js/header.js"></script>
         <script src="js/panel.js"></script>

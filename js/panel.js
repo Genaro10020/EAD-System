@@ -58,7 +58,10 @@ const app = {
        numerosTablas2: [1,2,3,4,5],
        clasificaciones: ['ITEM','CAUSA','CANTIDAD'],
        ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
-       grafica: 'Actos inseguros'
+       grafica: 'Actos inseguros',
+      ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
+      filasCP: ['UP','Planta','Posicion','EADs','Proyecto','Evaluador','Calificacion final','Posicion final']
+
     }
   },
   mounted(){
