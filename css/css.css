@@ -35,6 +35,11 @@ a:hover{
  
 }
 
+.encabezadoGraficas{
+    height: 20px;
+    font-size: 18px;
+}
+
 
 .formulario{
     width: 70%;
@@ -106,6 +111,19 @@ table,.btn-actualizar,.btn-eliminar, .btn-guardar{
 .btn_menu:active {
 	position:relative;
 	top:1px;
+}
+
+.btn_menu2 {
+	background-color:#f3ecea;
+	border-radius:3px;
+	border:1px solid #0f0e0e;
+	display:inline-block;
+	cursor:pointer;
+	color:#0a0909;
+	font-family:Arial;
+	font-size:13px;
+	padding:6px 14px;
+    width:220px;
 }
 
 .scroll{
@@ -189,6 +207,7 @@ thead{
 @media (min-width: 768px) { 
     .formulario{ width: 70%;}
     .btn_menu {min-width:200px;padding:6px 24px;}
+    .btn_menu2 {min-width:200px;padding:6px 24px;}
     .contenido-form{margin-left: 30px;margin-right: 30px;}
  }
 

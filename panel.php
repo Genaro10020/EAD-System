@@ -573,113 +573,784 @@ if(isset($_SESSION['nombre'])){
                             </div>
                              <!--///////////////////////////////////////-->
                         <div v-if="ventana == 'Graficas'">
-                             <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
-                                <div class="w-25">
-                                 <button @click="graficas('Reclamos')" class="btn btn-light">Reclamos +</button>
-                                </div>
-                                <div class="w-25">
-                                 <button @click="graficas('Merma')" type="button" class="btn btn-light">Merma +</button>
-                                </div>
-                                <div class="w-25">
-                                 <button @click="graficas('Accidentes')" type="button" class="btn btn-light">Accidentes -</button>
-                                </div>
-                                <div class="w-25"   >
-                                 <button @click="graficas('Actos inseguros')" type="button" class="btn btn-light">Actos inseguros +</button>
-                                </div>
+                            <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
+                                    <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
+                                        <button class="btn_menu2" @click="graficas('Rechazos')"><b>Rechazos</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2" @click="graficas('Merma')"><b>Merma</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2"  @click="graficas('Eficiencia')" ><b>Eficiencia</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2"  @click="graficas('Accidentes')" ><b>Accidentes</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2"  @click="graficas('Actos inseguros')" ><b>Actos inseguros</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2"  @click="graficas('Ausentismo')" ><b>Ausentismo</b></button>
+                                    </div>
+                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
+                                        <button class="btn_menu2"  @click="graficas('Cumplimiento del proyecto')" ><b>Cumplimiento del proyecto</b></button>
+                                    </div>
                             </div>
-                            <div v-if="grafica == 'Actos inseguros'">
-                                <div class="text-center">
-                                    <div class="col-12">
-                                        <div class="col-4 mx-auto p-1">
-                                            <div class="d-flex col-12">
-                                                <div class=" bg-warning col-6 border border-warning">
-                                                Accidentes 
-                                                </div>
-                                                <div class="col-6 bg-secondary border border-warning text-white">
-                                                UGB
-                                                </div>
-                                            </div>
-                                            <div class="d-flex col-12">
-                                                <div class="col-6 border border-warning">
-                                                Unidad productiva:
-                                                <div class="col-12 border border-warning">
-                                                Mes:
-                                                <input class="col-6"></input>
-                                                </div>
-                                                </div>
-                                                <div class="col-6 py-3  bg-secondary text-white border border-warning">
-                                                    LOS MKTS
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+
+                            <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
+                            <div v-if="grafica == 'Rechazos'">
+                               
+                                <!--/////////////////////////////////////////////////////////////// INICIO TABLA PARA INGRESAR DATOS  -->
                                 <div class="col-12 d-flex   ">
-                                    <table class="col-10 table table-bordered ">
-                                        <thead>
-                                       
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                            <th colspan="32" class="table-secondary text-center">ACCIDENTES (#)</th>
-                                            </tr>
-                                            <tr style="text-align: center " v-for="numero1 in numerosTablas">
-                                                <th scope="row" style="max-width:15px " class="bg-secondary text-white">{{numero1}}</th>
-                                                <td style="max-width:15px" v-for="numero2 in 31"><label v-if="numero1 == 'DIA'">{{numero2}}</label>
-                                                <input style="max-width:40px" v-else-if="numero1 == '.'"></input>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                        </table>
-                                    </div>
-                                    <div col="row">
-                                        <div class="col-12 bg-secondary text-white d-flex justify-content-center">PARETO DE ACCIDENTES SEMANAL ( CLASIFICACION DE ACCIDENTES )</div>
-                                    </div>
-                                    <div class="d-flex col-12" >
-                                        <table class=" text-center table table-bordered " v-for="n in numerosTablas2">
-                                            <thead>
-                                                
+                                <div class="scroll" style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Rechazos
+                                                    </th>
+                                                </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <th>ITEM</th>
-                                                    <th>CAUSA</th>
-                                                    <th>CANT</th>
+                                                <tr  v-for="i in 31">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
                                                 </tr>
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td><input></input></td>
-                                                    <td><input style="max-width:40px"></input></td>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
                                                 </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td><input></input></td>
-                                                    <td><input style="max-width:40px"></input></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td><input></input></td>
-                                                    <td><input style="max-width:40px"></input></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td><input></input></td>
-                                                    <td><input style="max-width:40px"></input></td>
                                             </tbody>
                                         </table>
                                     </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de rechazos</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # de rechazos en el mes</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numerosTablas">
+                                                    <th class="border border-dark" style=" width: 55px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31"  style=" width: 40px;">
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12 mt-2" >
+                                        <div class="col-2 offset-2 text-center border " style="background-color: #002060; color: white; width: 1007px; font-size: 18px;">
+                                            rechazos
+                                        </div>
+                                        <div class="d-flex ">
+                                            <div class="col-2 offset-2 d-flex border"style="background-color: #002060; color: white; width: 503px; font-size: 18px;">
+                                                <a>Mes:</a>
+                                                <select>
+                                                    <option v-for="mes in meses">
+                                                        {{mes}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="border" style="background-color: #002060; color: white; width: 504px; font-size: 18px;">
+                                                Responsable:
+                                            </div>
+                                        </div>
+                                        <div class="col-2 offset-2 d-flex">
+                                            <table class=" text-center table table-bordered " v-for="n in numerosTablas2">
+                                                <thead>
+                                                    
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th style="background-color: #002060; color: white;">Rechazo</th>
+                                                        <th style="background-color: #002060; color: white;">Fecha</th>
+                                                        <th style="background-color: #002060; color: white;">Operador</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                        <td><input type="date"></input></td>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                        <td><input type="date"></input></td>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                        <td><input type="date"></input></td>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                        <td><input type="date"></input></td>
+                                                        <td><input style="max-width:200px"></input></td>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
-                            <!--/////////////////////////////////////////////////VENTANA DE RECLAMOS////////////////////////////////////////////////////////////////////-->
-                            <div v-if="grafica == 'Reclamos'" class="row">
-                                <h1>Reclamos</h1>
+                            <!--/////////////////////////////////////////////////VENTANA DE MERMA////////////////////////////////////////////////////////////////////-->
+                            <div v-if="grafica == 'Merma'" class="row">
+                            <div class="col-12 d-flex">
+                            <div class="scroll" style=" max-height: 500px;">
+                            <table class="  text-center ms-3 me-5">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <th class="border border-dark" style="font-size: 13px;">
+                                                    Dia
+                                                </th>
+                                                <th class="border border-dark" style="font-size: 13spx;">
+                                                    Merma
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr  v-for="i in 31">
+                                                <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                    <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                    
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    SUMA
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                    <table>
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de merma</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: #kg promedio diario</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numerosTablas3">
+                                                    <th class="border border-dark" style="width: 60px; ">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark" style="width: 40px; " v-for="numero2 in 31">
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="d-flex col-4 offset-4 mt-2" >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>CAUSAS</th>
+                                                    <th>FECHA</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
                             </div>
-                            <!--/////////////////////////////////////////////////VENTANA DE MERMAS////////////////////////////////////////////////////////////////////-->
-                            <div v-if="grafica == 'Merma'">
-                                <h1>MERMAS</h1>
+                            </div>
+                            
+                            <!--/////////////////////////////////////////////////VENTANA DE EFICIENCIA////////////////////////////////////////////////////////////////////-->
+                            <div v-if="grafica == 'Eficiencia'">
+                            <div class="col-12 d-flex   ">
+                                <div class="scroll" style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Eficiencia
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  v-for="i in 31">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de eficiencia</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: #% promedio de eficiencia</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in nuneroTablasEficiencia">
+                                                    <th class="border border-dark" style=" width: 55px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31"  style=" width: 40px;">
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12" >
+                                        <div class="d-flex col-4 offset-4 mt-2 " >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>CAUSAS</th>
+                                                    <th>FECHA</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
                             </div>
                             <!--/////////////////////////////////////////////////VENTANA DE Accidentes ////////////////////////////////////////////////////////////////////-->
                             <div v-if="grafica == 'Accidentes'">
-                                <h1>Accidentes</h1>
+                            <div class="col-12 d-flex   ">
+                                <div class="scroll" style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Accidentes
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  v-for="i in 31">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de accidentess</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # accidentes en el mes</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numeroTablasAccidentes">
+                                                    <th class="border border-dark" style=" width: 60px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31" style=" width: 60px;" >
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12" >
+                                        <div class="d-flex col-4 offset-4 mt-2 " >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"  style="width: 300px;"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>Accidente</th>
+                                                    <th>Nombre</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                            </div>
+                             <!--/////////////////////////////////////////////////VENTANA DE ACTOS INSEGUROS ////////////////////////////////////////////////////////////////////-->
+                             <div v-if="grafica == 'Actos inseguros'">
+                             <div class="col-12 d-flex   ">
+                                <div class="scroll" style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Accidentes
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  v-for="i in 31">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de actos inseguros</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # actos inseguros en el mes</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numeroTablasActosInseguros">
+                                                    <th class="border border-dark" style=" width: 60px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31" style=" width: 60px;" >
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12" >
+                                        <div class="d-flex col-4 offset-4 mt-2 " >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"  style="width: 300px;"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>Acto inseguro</th>
+                                                    <th>Nombre</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                            </div>
+                             <!--/////////////////////////////////////////////////VENTANA DE AUSENTISMO ////////////////////////////////////////////////////////////////////-->
+                             <div v-if="grafica == 'Ausentismo'">
+                             <div class="col-12 d-flex   ">
+                                <div class="scroll" style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Ausentismo
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  v-for="i in 31">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de ausentismos</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # ausentismos en el mes</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numeroTablasActosInseguros">
+                                                    <th class="border border-dark" style=" width: 60px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31" style=" width: 60px;" >
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12" >
+                                        <div class="d-flex col-4 offset-4 mt-2 " >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"  style="width: 300px;"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>Nombre</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 250px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
+                            </div>
+                             <!--/////////////////////////////////////////////////VENTANA DE CUMPLIMIENTO DE PROYECTO ////////////////////////////////////////////////////////////////////-->
+                             <div v-if="grafica == 'Cumplimiento del proyecto'">
+                             <div class="col-12 d-flex   ">
+                                <div  style=" max-height: 500px;">
+                                        <table class="  text-center ms-3 me-5">
+                                            <thead >
+                                                <tr>
+                                                    <th class="border border-dark" style="font-size: 13px;">
+                                                        Dia
+                                                    </th>
+                                                    <th class="border border-dark" style="font-size: 13spx;">
+                                                        Faltas
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  v-for="i in 4">
+                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                        
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        SUMA
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
+                                    <table >
+                                        <thead>
+                                       
+                                        </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de cumplimiento de proyectos</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # fallas a las reuniones EAD's</th>
+                                                </tr>
+                                                <tr>
+                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
+                                                </tr>
+                                                <tr class="text-center" v-for="numero1 in numeroTablasProyectos">
+                                                    <th class="border border-dark" style=" width: 40px;">
+                                                        {{ numero1 }}
+                                                    </th>
+                                                    <td class="border border-dark"  v-for="numero2 in 31" style=" width: 40px;" >
+                                                        <span v-if="numero1 === 'DIA'">
+                                                            {{ numero2 }}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class=" col-12" >
+                                        <div class="d-flex col-4 offset-4 mt-2 " >
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"  style="width: 300px;"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>Nombre</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 250px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                            </tbody>
+                                        </table>
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                          <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
