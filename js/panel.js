@@ -61,6 +61,8 @@ const app = {
        numeroTablasAccidentes: [5,4,3,2,1,'DIA'],
        numeroTablasActosInseguros: [10,9,8,7,6,5,4,3,2,1,'DIA'],
        numeroTablasProyectos: [100,90,80,70,60,50,40,30,20,10,0,'DIA'],
+       tipoTabla: ['Rechazos','Merma','Eficiencia','Accidentes','Actos inseguros','Ausentismo','Cumplimiento del proyecto'],
+       tipoTablas: '',
        clasificaciones: ['ITEM','CAUSA','CANTIDAD'],
        ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
        grafica: 'Rechazos',

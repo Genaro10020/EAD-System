@@ -573,7 +573,7 @@ if(isset($_SESSION['nombre'])){
                             </div>
                              <!--///////////////////////////////////////-->
                         <div v-if="ventana == 'Graficas'">
-                            <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
+                            <!-- <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                     <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                         <button class="btn_menu2" @click="graficas('Rechazos')"><b>Rechazos</b></button>
                                     </div>
@@ -595,10 +595,17 @@ if(isset($_SESSION['nombre'])){
                                     <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                         <button class="btn_menu2"  @click="graficas('Cumplimiento del proyecto')" ><b>Cumplimiento del proyecto</b></button>
                                     </div>
+                            </div> -->
+                            <div class="input-group my-3">
+                            <span class="input-group-text">Seleccione tabla</span>
+                            <select v-model="tipoTablas">
+                                <option value="">Seleccione...</option>
+                                <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
+                            </select>
                             </div>
 
                             <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
-                            <div v-if="grafica == 'Rechazos'">
+                            <div v-if="tipoTablas == 'Rechazos'">
                                
                                 <!--/////////////////////////////////////////////////////////////// INICIO TABLA PARA INGRESAR DATOS  -->
                                 <div class="col-12 d-flex   ">
@@ -663,59 +670,54 @@ if(isset($_SESSION['nombre'])){
                                         </table>
                                     </div>
                                     <div class=" col-12 mt-2" >
-                                        <div class="col-2 offset-2 text-center border " style="background-color: #002060; color: white; width: 1007px; font-size: 18px;">
-                                            rechazos
-                                        </div>
-                                        <div class="d-flex ">
-                                            <div class="col-2 offset-2 d-flex border"style="background-color: #002060; color: white; width: 503px; font-size: 18px;">
-                                                <a>Mes:</a>
-                                                <select>
-                                                    <option v-for="mes in meses">
-                                                        {{mes}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="border" style="background-color: #002060; color: white; width: 504px; font-size: 18px;">
-                                                Responsable:
-                                            </div>
-                                        </div>
-                                        <div class="col-2 offset-2 d-flex">
-                                            <table class=" text-center table table-bordered " v-for="n in numerosTablas2">
-                                                <thead>
-                                                    
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th style="background-color: #002060; color: white;">Rechazo</th>
-                                                        <th style="background-color: #002060; color: white;">Fecha</th>
-                                                        <th style="background-color: #002060; color: white;">Operador</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                        <td><input type="date"></input></td>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                        <td><input type="date"></input></td>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                        <td><input type="date"></input></td>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                        <td><input type="date"></input></td>
-                                                        <td><input style="max-width:200px"></input></td>
-                                                </tbody>
-                                            </table>
+                                        <div class="col-2 offset-3 d-flex">
+                                        <table class=" text-center table table-bordered ">
+                                            <thead>
+
+                                            </thead>
+                                            <tbody>
+                                                 <tr>
+                                                    <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                        <input class="input-container ms-2" type="text"></input>
+                                                    </th>
+                                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                        <select class="ms-2">
+                                                            <option v-for="mes in meses">
+                                                                {{mes}}
+                                                            </option>
+                                                        </select></th>
+                                                </tr>
+                                                <tr style="background-color: #002060; color: white;">
+                                                    <th>Rechazo</th>
+                                                    <th>FECHA</th>
+                                                    <th>Operador</th>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                    <td><input type="date"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
+                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                            </tbody>
+                                        </table>
                                         </div>
                                     </div>
                                 </div>
                             <!--/////////////////////////////////////////////////VENTANA DE MERMA////////////////////////////////////////////////////////////////////-->
-                            <div v-if="grafica == 'Merma'" class="row">
+                            <div v-if="tipoTablas == 'Merma'" class="row">
                             <div class="col-12 d-flex">
                             <div class="scroll" style=" max-height: 500px;">
                             <table class="  text-center ms-3 me-5">
@@ -818,7 +820,7 @@ if(isset($_SESSION['nombre'])){
                             </div>
                             
                             <!--/////////////////////////////////////////////////VENTANA DE EFICIENCIA////////////////////////////////////////////////////////////////////-->
-                            <div v-if="grafica == 'Eficiencia'">
+                            <div v-if="tipoTablas == 'Eficiencia'">
                             <div class="col-12 d-flex   ">
                                 <div class="scroll" style=" max-height: 500px;">
                                         <table class="  text-center ms-3 me-5">
@@ -923,7 +925,7 @@ if(isset($_SESSION['nombre'])){
                                     </div>
                             </div>
                             <!--/////////////////////////////////////////////////VENTANA DE Accidentes ////////////////////////////////////////////////////////////////////-->
-                            <div v-if="grafica == 'Accidentes'">
+                            <div v-if="tipoTablas == 'Accidentes'">
                             <div class="col-12 d-flex   ">
                                 <div class="scroll" style=" max-height: 500px;">
                                         <table class="  text-center ms-3 me-5">
@@ -1033,7 +1035,7 @@ if(isset($_SESSION['nombre'])){
                                     </div>
                             </div>
                              <!--/////////////////////////////////////////////////VENTANA DE ACTOS INSEGUROS ////////////////////////////////////////////////////////////////////-->
-                             <div v-if="grafica == 'Actos inseguros'">
+                             <div v-if="tipoTablas == 'Actos inseguros'">
                              <div class="col-12 d-flex   ">
                                 <div class="scroll" style=" max-height: 500px;">
                                         <table class="  text-center ms-3 me-5">
@@ -1143,7 +1145,7 @@ if(isset($_SESSION['nombre'])){
                                     </div>
                             </div>
                              <!--/////////////////////////////////////////////////VENTANA DE AUSENTISMO ////////////////////////////////////////////////////////////////////-->
-                             <div v-if="grafica == 'Ausentismo'">
+                             <div v-if="tipoTablas == 'Ausentismo'">
                              <div class="col-12 d-flex   ">
                                 <div class="scroll" style=" max-height: 500px;">
                                         <table class="  text-center ms-3 me-5">
@@ -1248,7 +1250,7 @@ if(isset($_SESSION['nombre'])){
                                     </div>
                             </div>
                              <!--/////////////////////////////////////////////////VENTANA DE CUMPLIMIENTO DE PROYECTO ////////////////////////////////////////////////////////////////////-->
-                             <div v-if="grafica == 'Cumplimiento del proyecto'">
+                             <div v-if="tipoTablas == 'Cumplimiento del proyecto'">
                              <div class="col-12 d-flex   ">
                                 <div  style=" max-height: 500px;">
                                         <table class="  text-center ms-3 me-5">
