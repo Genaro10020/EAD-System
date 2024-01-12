@@ -7,9 +7,8 @@ if(isset($_SESSION['nombre'])){
 <head>
     <?php include('head.php'); ?> 
 </head>
-<body class="container-fluid">
-               
-             
+<body class="container-fluid">   
+
                 <header>
                        <div id="header-app"></div>
                 </header>
@@ -20,25 +19,25 @@ if(isset($_SESSION['nombre'])){
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu" @click="ventanas('departamentos')"><b>departamentos</b></button>
+                                    <button class="btn_menu" @click="ventanas('departamentos')"><b>Departamentos</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>Scorecard</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>CREAR EAD</b></button>
+                                    <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>Crear EAD</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu"  @click="ventanas('equiposEAD')" ><b>EQUIPOS EAD</b></button>
+                                    <button class="btn_menu"  @click="ventanas('equiposEAD')" ><b>Equipos EAD</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu"  @click="ventanas('Graficas')" ><b>GRAFICAS</b></button>
+                                    <button class="btn_menu"  @click="ventanas('Graficas')" ><b>Graficas</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
                                     <button class="btn_menu"  @click="ventanas('CompetenciaArea')" ><b>Competencia de area</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
-                                    <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de Planta</b></button>
+                                    <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button>
                                 </div>
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
@@ -573,6 +572,7 @@ if(isset($_SESSION['nombre'])){
                             </div>
                              <!--///////////////////////////////////////-->
                         <div v-if="ventana == 'Graficas'">
+                        
                             <!-- <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                     <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                         <button class="btn_menu2" @click="graficas('Rechazos')"><b>Rechazos</b></button>
@@ -598,7 +598,7 @@ if(isset($_SESSION['nombre'])){
                             </div> -->
                             <div class="input-group my-3">
                             <span class="input-group-text">Seleccione tabla</span>
-                            <select v-model="tipoTablas">
+                            <select v-model="tipoTablas" @change="graficasEAD()">
                                 <option value="">Seleccione...</option>
                                 <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
                             </select>
@@ -606,78 +606,51 @@ if(isset($_SESSION['nombre'])){
 
                             <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
                             <div v-if="tipoTablas == 'Rechazos'">
-                               
-                                <!--/////////////////////////////////////////////////////////////// INICIO TABLA PARA INGRESAR DATOS  -->
-                                <div class="col-12 d-flex   ">
-                                <div class="scroll" style=" max-height: 500px;">
-                                        <table class="  text-center ms-3 me-5">
-                                            <thead class="sticky-top">
-                                                <tr>
-                                                    <th class="border border-dark" style="font-size: 13px;">
-                                                        Dia
-                                                    </th>
-                                                    <th class="border border-dark" style="font-size: 13spx;">
-                                                        Rechazos
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr  v-for="i in 31">
-                                                    <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                                        {{i}}
-                                                    </td>
-                                                    <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
-                                                        <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-                                                        
-                                                    </td>
-                                                    <td class="border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                        SUMA
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                                    <table >
-                                        <thead>
-                                       
+                            <div class="d-flex">    
+                            <div class="scroll" style=" max-height: 500px;">
+                            <table class="  text-center ms-3 me-5">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <th class="border border-dark" style="font-size: 13px;">
+                                                    Dia
+                                                </th>
+                                                <th class="border border-dark" style="font-size: 13spx;">
+                                                    Merma
+                                                </th>
+                                            </tr>
                                         </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white;">Grafica de rechazos</th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8;">Meta: # de rechazos en el mes</th>
-                                                </tr>
-                                                <tr>
-                                                    <th colspan="32" class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4;">NOMBRE DE EQUIPO EAD</th>
-                                                </tr>
-                                                <tr class="text-center" v-for="numero1 in numerosTablas">
-                                                    <th class="border border-dark" style=" width: 55px;">
-                                                        {{ numero1 }}
-                                                    </th>
-                                                    <td class="border border-dark"  v-for="numero2 in 31"  style=" width: 40px;">
-                                                        <span v-if="numero1 === 'DIA'">
-                                                            {{ numero2 }}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <tbody>
+                                            <tr  v-for="(i,index) in 31">
+                                                <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
+                                                    <input :id="'graficaRechazo'+index"  value="datosGraficaRechazo" @blur="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
+                                                    
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                     </div>
-                                    <div class=" col-12 mt-2" >
-                                        <div class="col-2 offset-3 d-flex">
+                                    <div id="divCanvas" style="height: 500px; width: 800px; ">
+                                        <canvas id="myChart"></canvas>
+                                    </div>
+                                    </div>
+                                    <div class="d-flex col-4 offset-4 mt-2" >
                                         <table class=" text-center table table-bordered ">
                                             <thead>
 
                                             </thead>
                                             <tbody>
                                                  <tr>
-                                                    <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
                                                         <input class="input-container ms-2" type="text"></input>
                                                     </th>
                                                     <th style="background-color: #002060; color: white;"><label>Mes:</label>
@@ -688,34 +661,28 @@ if(isset($_SESSION['nombre'])){
                                                         </select></th>
                                                 </tr>
                                                 <tr style="background-color: #002060; color: white;">
-                                                    <th>Rechazo</th>
+                                                    <th>CAUSAS</th>
                                                     <th>FECHA</th>
-                                                    <th>Operador</th>
                                                 </tr>
                                                 <tr>
                                                     <td><input type="text" style="width: 350px;"></input></td>
                                                     <td><input type="date"></input></td>
-                                                    <td><input type="text" style="width: 350px;"></input></td>
-                                                </tr>
-                                                <tr>
-                                                    <td><input type="text" style="width: 350px;"></td>
-                                                    <td><input type="date"></input></td>
-                                                    <td><input type="text" style="width: 350px;"></input></td>
                                                 </tr>
                                                 <tr>
                                                     <td><input type="text" style="width: 350px;"></td>
                                                     <td><input type="date"></input></td>
-                                                    <td><input type="text" style="width: 350px;"></input></td>
                                                 </tr>
                                                 <tr>
                                                     <td><input type="text" style="width: 350px;"></td>
                                                     <td><input type="date"></input></td>
-                                                    <td><input type="text" style="width: 350px;"></input></td>
+                                                </tr>
+                                                <tr>
+                                                    <td><input type="text" style="width: 350px;"></td>
+                                                    <td><input type="date"></input></td>
                                             </tbody>
                                         </table>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            </div>
                             <!--/////////////////////////////////////////////////VENTANA DE MERMA////////////////////////////////////////////////////////////////////-->
                             <div v-if="tipoTablas == 'Merma'" class="row">
                             <div class="col-12 d-flex">

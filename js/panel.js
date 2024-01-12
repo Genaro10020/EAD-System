@@ -1,3 +1,4 @@
+var arreglo = [];
 const app = {
   data() {
     return{
@@ -27,6 +28,7 @@ const app = {
       departamento:'',
       nuevo_departamento:'',
       nuevo_tipo_usuario:'',
+      arreglo:[100],
        /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
        tipoPlantillas:['Placas','Formacion','Etiquetado','Ensamble'],
        ver_plantillas:'',
@@ -64,10 +66,13 @@ const app = {
        tipoTabla: ['Rechazos','Merma','Eficiencia','Accidentes','Actos inseguros','Ausentismo','Cumplimiento del proyecto'],
        tipoTablas: '',
        clasificaciones: ['ITEM','CAUSA','CANTIDAD'],
+       datosDiasMerma:["20",2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+       sumaTabla: 0,
+       datosGraficaRechazo: [],
        ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
        grafica: 'Rechazos',
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
-      filasCP: ['UP','Planta','Posicion','EADs','Proyecto','Evaluador','Calificacion final','Posicion final']
+      filasCP: ['UP','Planta','Posicion','EADs','Proyecto','Evaluador','Calificacion final','Posicion final'],
 
     }
   },
@@ -377,11 +382,87 @@ const app = {
           }).catch(error=>{
             alert("Axios CrearEAD :-("+error)
           })
-        }
+        },
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////INICIO DE LAS FUNCIONES/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        tablaGraficas(index,valor){ 
+
+          this.arreglo[index] = valor
+          console.log('tablaGraficas');
+          
+          const ctx = document.getElementById('myChart');
         
+          if (!ctx) {
+            console.error("No se pudo obtener la referencia al elemento canvas.");
+            return;
+          }
+        
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+              datasets: [{
+                label: 'Rechazos',
+                data: this.arreglo,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+
+          },
+          graficasEAD(){
+            if(this.tipoTabla == 'Rechazos'){
+              this.insertandoValores(0)
+            }
+
+
+          },
+          
+          insertandoValores(index){
+            console.log(index)
+            var valor = parseFloat(document.getElementById('graficaRechazo' + index).value) || 0;
+            console.log("index:"+index)
+            console.log("valor:"+valor)
+            console.log(arreglo)
+            this.datosGraficaRechazo[index] = valor;
+            this.sumarDatosGraficas()
+            
+
+            document.getElementById('myChart').remove();
+          // Crea un nuevo elemento canvas
+          var newCanvas = document.createElement('canvas');
+          newCanvas.id = 'myChart';
+            // Agrega el nuevo elemento al DOM (por ejemplo, como un hijo de algún contenedor)
+            var container = document.getElementById('divCanvas'); // Reemplaza 'container' con el ID de tu contenedor
+            container.appendChild(newCanvas);
+            
+            this.tablaGraficas(index,valor)
+          },
+          
+          sumarDatosGraficas(){
+            this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) => total + valor, 0);
+            console.log('estoy sumando')
+          }
+
   }
 };
+
 
 const App = Vue.createApp(app);
 
 App.mount("#app");
+
+
+////////////////////////////////////////////// chartjs para crear graficas
