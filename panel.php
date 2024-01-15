@@ -14,8 +14,30 @@ if(isset($_SESSION['nombre'])){
                 </header>
                 
                 <div id="app"  class="col-12" style="min-height: 80vh;">
-                        <div class="cintilla row d-flex justify-content-center align-items-center p-1 text-center my-2">
-                                <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
+                        <div class="  d-flex text-center">
+                            <div class="col-2 dropdown">
+                                <button class="dropbtn">
+                                    <i class="bi bi-list">Menu</i>
+                                </button>
+                                <div class="dropdown-content">
+                                    <a><i class="bi bi-gear-fill">Configuracion</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('departamentos')"><b>Departamentos</b></button></a>
+                                    <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
+                                    <a> <button class="btn_menu"  @click="ventanas('crearEAD'), consultarColaboradores()" ><b>Crear EAD</b></button></a>
+                                    <a><button class="btn_menu"  @click="ventanas('equiposEAD')" ><b>Equipos EAD</b></button></a>
+                                    <a><i class="bi bi-trophy-fill">    Competencias</i></a>
+                                    <a><button class="btn_menu"  @click="ventanas('CompetenciaArea')" ><b>Competencia de area</b></button></a>
+                                    <a><button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button></a>
+                                    <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
+                                    <a><button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu"  @click="ventanas('Graficas')" ><b>Graficas</b></button></a>
+                                </div>
+                            </div>
+                            <div cass="col-10 degrada2">
+                                
+                            </div>
+                                <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
@@ -38,7 +60,7 @@ if(isset($_SESSION['nombre'])){
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
                                     <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button>
-                                </div>
+                                </div> -->
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
                                        
@@ -602,6 +624,7 @@ if(isset($_SESSION['nombre'])){
                                 <option value="">Seleccione...</option>
                                 <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
                             </select>
+                            
                             </div>
 
                             <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
@@ -625,7 +648,7 @@ if(isset($_SESSION['nombre'])){
                                                     {{i}}
                                                 </td>
                                                 <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; " >
-                                                    <input :id="'graficaRechazo'+index"  value="datosGraficaRechazo" @blur="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaRechazo'+index"  value="datosGraficaRechazo" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
                                                 </td>
                                             </tr>
                                             <tr>

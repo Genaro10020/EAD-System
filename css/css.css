@@ -192,6 +192,57 @@ thead{
     border: 1px solid #c4c4c4;
     padding: 5px;
 }
+/*////////////////////// MENU PRINCIPAL */
+.dropbtn {
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    margin: 10px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.degrada2{
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            /* Puedes ajustar los colores y la dirección del degradado según tus preferencias */
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+}
+
+  /*////////////////////// FINALIZA MENU PRINCIPAL */
 
 
 /* Small devices (landscape phones, 576px and up)*/
@@ -228,3 +279,4 @@ thead{
 .text-ezquierdo-form{ font-size: 0.9em;}
 
 }
+
