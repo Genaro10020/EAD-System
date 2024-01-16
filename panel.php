@@ -15,8 +15,8 @@ if(isset($_SESSION['nombre'])){
                 
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="  d-flex text-center">
-                            <div class="col-1 dropdown">
-                                <p class="dropbtn">
+                            <div class="col-1 dropdown" style="width:150px;  ">
+                                <p class="dropbtn text-white" style="max-height:10px;">
                                     <i class="bi bi-list">Menu</i>
                                 </p>
                                 <div class="dropdown-content">
@@ -34,7 +34,7 @@ if(isset($_SESSION['nombre'])){
                                     <a><button class="btn_menu"  @click="ventanas('Graficas')" ><b>Graficas</b></button></a>
                                 </div>
                             </div>
-                            <div class="col-11 divLineaMenu">
+                            <div class="col-12 divLineaMenu">
                                 
                             </div>
                                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">

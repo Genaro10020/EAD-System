@@ -201,12 +201,14 @@ thead{
   }
 
   .divLineaMenu{
-    background: linear-gradient(to top, rgb(247, 6, 6), rgb(248, 248, 248));
+    background: rgb(227,42,42);
+    background: linear-gradient(0deg, rgba(227,42,42,1) 0%, rgba(121,9,9,1) 35%, rgba(255,255,255,1) 39%); 
     text-align: center;
   }
 
   .dropdown {
-    background: linear-gradient(to top right, rgba(255, 0, 0, 1), rgba(255, 251, 251, 0)); /* Degradado de izquierda a derecha */
+    /*background: rgb(227,42,42)*/
+    background: linear-gradient(41deg, rgba(121,9,9,1) 10%, rgb(182, 33, 33) 68%,rgba(121,9,9,1) 80%, rgba(255,255,255,1) 81%); /* Degradado de izquierda a derecha */
     position: relative;
     display: inline-block;
 

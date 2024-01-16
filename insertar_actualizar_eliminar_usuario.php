@@ -16,7 +16,6 @@ $accion=$arreglo['accion'];
             $usuario=$arreglo['usuario'];
             $acceso=$arreglo['acceso'];
 
-
                 //Verificar SI existe usuario
             $insertar = "INSERT INTO usuarios  (id,nombre,nomina,contrasena,planta,area,subarea,tipo_usuario,tipo_acceso) VALUES ('','$nombre','$nomina','$contrasena','$planta','$area','$subarea','$usuario','$acceso')";
             $query = $conexion->query($insertar);
