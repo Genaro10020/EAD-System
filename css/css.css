@@ -194,22 +194,22 @@ thead{
 }
 /*////////////////////// MENU PRINCIPAL */
 .dropbtn {
-    background: linear-gradient(to right, #3498db, #2c3e50); /* Degradado de izquierda a derecha */
-            color: #fff;
+            color: #000000;
             padding: 20px;
             text-align: center;
-            margin-top: 20px;
+            width: auto;
   }
 
   .divLineaMenu{
-    border-bottom: 1px solid #070707;
-    padding: 20px;
+    background: linear-gradient(to top, rgb(247, 6, 6), rgb(248, 248, 248));
     text-align: center;
   }
 
   .dropdown {
+    background: linear-gradient(to top right, rgba(255, 0, 0, 1), rgba(255, 251, 251, 0)); /* Degradado de izquierda a derecha */
     position: relative;
     display: inline-block;
+
 }
 
 .dropdown-content {
@@ -219,7 +219,6 @@ thead{
     min-width: 160px;
     box-shadow: 0 8px 16px rgba(0,0,0,0.2);
     z-index: 1;
-    margin: 10px;
 }
 
 .dropdown-content a {

@@ -16,9 +16,9 @@ if(isset($_SESSION['nombre'])){
                 <div id="app"  class="col-12" style="min-height: 80vh;">
                         <div class="  d-flex text-center">
                             <div class="col-1 dropdown">
-                                <button class="dropbtn">
+                                <p class="dropbtn">
                                     <i class="bi bi-list">Menu</i>
-                                </button>
+                                </p>
                                 <div class="dropdown-content">
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button></a>
@@ -64,7 +64,7 @@ if(isset($_SESSION['nombre'])){
                         </div>     
                                 <div  v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->  
                                        
-                                                                                <div class="seccion1 col-12  col-lg-4">    
+                                                                                <div class="seccion1 col-12  col-lg-4 mt-2">    
                                                                                     
                                                                                     <div  class="formulario col-12 mx-auto col-sm-112 col-lg-10  col-xl-8 col-xxl-6  pt-4 ps-2 pe-2 ps-lg-3  pe-lg-3  rounded shadow-sm">
                                                                                             <h6 class="text-center label-session "><b>{{titulo_formulario_usuarios}}</b></h6>
@@ -127,7 +127,7 @@ if(isset($_SESSION['nombre'])){
                                                                                             </form>
                                                                                     </div>
                                                                                 </div>
-                                                                                <div class="seccion2 col-12   col-lg-8 ">    
+                                                                                <div class="seccion2 col-12   col-lg-8 mt-2">    
                                                                                     <div class="scroll col-12">
                                                                                             <table class="table table-striped table-bordered border-dark ">
                                                                                                 <thead class=" border-dark">
