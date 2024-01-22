@@ -28,6 +28,7 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('crearEAD'), consultarColaboradores()"><b>Crear EAD</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a>
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
+                        <a><button class="btn_menu" @click="ventanas('ComptenciaConfiguracion')"><b>Configuracion de competencia </b></button></a>
                         <a><button class="btn_menu" @click="ventanas('CompetenciaArea')"><b>Competencia de area</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>
                         <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
@@ -632,7 +633,7 @@ if (isset($_SESSION['nombre'])) {
                 <div v-if="tipoTablas == 'Rechazos'">
                     <div class="d-flex">
                         <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
+                            <table class="text-center ms-3 me-5">
                                 <thead class="sticky-top">
                                     <tr>
                                         <th class="border border-dark" style="font-size: 13px;">
@@ -1435,6 +1436,61 @@ if (isset($_SESSION['nombre'])) {
                 </table>
             </div>
             <!-- FIN DE COMPETENCIA PLANTA -->
+
+
+             <!--/////////////////////////////////CONFIGURACION DE COMPETENCIA ////////////////////////////////////////////////////////////////////////////////////////-->
+            <div v-if="ventana == 'ComptenciaConfiguracion'">
+                <div class="col-12">
+                    <div class="col-4 offset-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
+                        <div class="pt-3 d-flex">
+                            <a>Nombre del foro: </a><input type="text"></input>
+                            <a>Fecha: </a><input type="date"></input>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="col-4 offset-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
+                        <div class="input-group" style="padding-top: 12px;">
+                            <span class="input-group-text">Area: </span>
+                            <select class="form-control select">
+                                <option v-for="i in 3">{{i}}<option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4 offset-4 text-center mt-3 ">
+                    <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
+                            Equipos EAD 
+                        </div>
+                        <div class="scroll2">
+                        <div class="input-group mb-1" v-for="i in 10">
+                            <div class="input-group-text" style="border-radius: 0px;">
+                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                            </div>
+                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
+                        </div>
+                        </div>
+                        <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
+                            Evaluadores
+                        </div>
+                        <div class="scroll3">
+                        <div class="input-group mb-1" v-for="i in 10">
+                            <div class="input-group-text" style="border-radius: 0px;">
+                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                            </div>
+                                <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="btn-nuevo mt-2">Crear foro</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
         </div>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="js/panel.js?<? echo time(); ?>"></script>
