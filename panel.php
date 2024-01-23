@@ -350,7 +350,7 @@ if (isset($_SESSION['nombre'])) {
                         <div class=" col-12 row d-flex justify-content-center">
                             <div class=" row col-12 text-center d-flex justify-content-center ">
                                 <div class="col-4">
-                                    <span class="mx-2">Supervisor:</span>
+                                    <span class="mx-2">Equipos EAD: </span>
                                     <select>
                                         <option disabled default selected value="">Seleccione...</option>
                                     </select>
@@ -1449,7 +1449,7 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="col-4 offset-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
+                    <div class="col-4 offset-4  text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
                         <div class="input-group" style="padding-top: 12px;">
                             <span class="input-group-text">Area: </span>
                             <select class="form-control select">
@@ -1458,6 +1458,8 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                     </div>
                     <div class="col-4 offset-4 text-center mt-3 ">
+                        <div class="d-flex">
+                    <div class="col-6">    
                     <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
                             Equipos EAD 
                         </div>
@@ -1469,6 +1471,8 @@ if (isset($_SESSION['nombre'])) {
                             <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
                         </div>
                         </div>
+                    </div>
+                    <div class="col-6 ms-2">
                         <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
                             Evaluadores
                         </div>
@@ -1480,15 +1484,51 @@ if (isset($_SESSION['nombre'])) {
                                 <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
                             </div>
                         </div>
+                        </div>
+                        </div>
                         <div>
-                            <button class="btn-nuevo mt-2">Crear foro</button>
+                            <button class="botones-crear rounded-pill mt-2">Crear foro</button>
                         </div>
                     </div>
                 </div>
+                <div class="col-4 offset-4">
+                    <div class="bg-danger text-center " style="border-radius: 10px; margin-top: 20px; color: white;">
+                            Foros creados
+                    </div>
+                        <table class="table table-bordered text-center  mt-3">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Nombre de equipo 
+                                    </th>
+                                    <th>
+                                        Actualizar
+                                    </th>
+                                    <th>
+                                        Eliminar
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        nombre1
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning btn-actualizar">
+                                            actualizar
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-eliminar">
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
             </div>
-
-
-
 
 
         </div>
