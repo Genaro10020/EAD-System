@@ -1456,103 +1456,103 @@ if (isset($_SESSION['nombre'])) {
 
              <!--/////////////////////////////////CONFIGURACION DE COMPETENCIA ////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'ComptenciaConfiguracion'">
-                <div class="col-12">
-                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
-                        <div class=" d-flex" style="height: 50px; padding-top: 12px;">
-                        <span class="input-group-text" style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Nombre del foro: </span>
-                        <input class="form-control select" style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
-                            </input>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
-                        <div class="input-group" style="padding-top: 12px;">
-                            <span class="input-group-text " style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Area: </span>
-                            <select class="form-control select"  style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
-                                <option v-for="i in 3">{{i}}<option>
-                            </select>  
-                            <span class="input-group-text" style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Fecha: </span>
-                            <input type="date" class="form-control select" style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
-                            </input>
-                        </div>
-                    </div>
-                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 text-center mt-3 ">
-                        <div class="d-flex">
-                    <div class="col-6">    
-                    <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
-                            Equipos EAD 
-                        </div>
-                        <div class="scroll2">
-                        <div class="input-group mb-1" v-for="i in 10">
-                            <div class="input-group-text" style="border-radius: 0px;">
-                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                            </div>
-                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="col-6 ms-2">
-                        <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
-                            Evaluadores
-                        </div>
-                        <div class="scroll3">
-                        <div class="input-group mb-1" v-for="i in 10">
-                            <div class="input-group-text" style="border-radius: 0px;">
-                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                            </div>
-                                <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">equipo nombre</label>
+                <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 px-4 shadow-lg mt-5 border border-white rounded-3">
+                        <div class="col-12">
+                            <div class=" text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                                <div class=" d-flex" style="padding:2px 2px;">
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e;">Nombre del foro: </span>
+                                <input class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
+                                    </input>
+                                </div>
                             </div>
                         </div>
+                        <div class="col-12">
+                            <div class="  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                                <div class="input-group" style="padding:2px 2px;">
+                                    <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Area: </span>
+                                    <select class="form-control select"  style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                        <option v-for="i in 3">Área {{i}}<option>
+                                    </select>  
+                                    <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
+                                    <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                    </input>
+                                </div>
+                            </div>
+                            <div class=" text-center mt-3 ">
+                                <div class="d-flex">
+                            <div class="col-6">    
+                            <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
+                                    Equipos EAD 
+                                </div>
+                                <div class="scroll2">
+                                <div class="input-group mb-1" v-for="i in 10">
+                                    <div class="input-group-text" style="border-radius: 0px;">
+                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                    </div>
+                                    <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Equipo nombre</label>
+                                </div>
+                                </div>
+                            </div>
+                            <div class="col-6 ms-2">
+                                <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
+                                    Evaluadores
+                                </div>
+                                <div class="scroll3">
+                                <div class="input-group mb-1" v-for="i in 10">
+                                    <div class="input-group-text" style="border-radius: 0px;">
+                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                    </div>
+                                        <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Evaluador</label>
+                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                                <div>
+                                    <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
+                                </div>
+                            </div>
                         </div>
-                        </div>
-                        <div>
-                            <button class="botones-crear rounded-pill mt-2">Crear foro</button>
-                        </div>
+                        <div class="">
+                            <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
+                                    Foros creados
+                            </div>
+                                <div class="scroll4">
+                                    <table class=" table table-bordered text-center  mt-3">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                <th>
+                                                    Nombre de equipo 
+                                                </th>
+                                                <th>
+                                                    Actualizar
+                                                </th>
+                                                <th>
+                                                    Eliminar
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="i in 10">
+                                                <td>
+                                                    nombre1
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-warning btn-actualizar">
+                                                        actualizar
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-danger btn-eliminar">
+                                                        Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                     </div>
-                </div>
-                <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4">
-                    <div class="bg-danger text-center " style="border-radius: 10px; margin-top: 20px; color: white;">
-                            Foros creados
-                    </div>
-                        <div class="scroll4">
-                            <table class=" table table-bordered text-center  mt-3">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th>
-                                            Nombre de equipo 
-                                        </th>
-                                        <th>
-                                            Actualizar
-                                        </th>
-                                        <th>
-                                            Eliminar
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 10">
-                                        <td>
-                                            nombre1
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-warning btn-actualizar">
-                                                actualizar
-                                            </button>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-danger btn-eliminar">
-                                                Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-            </div>
-
-
+            </div> 
         </div>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="js/panel.js?<? echo time(); ?>"></script>
