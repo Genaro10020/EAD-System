@@ -542,7 +542,7 @@ if (isset($_SESSION['nombre'])) {
 
                     </div>
                 </div>
-                <div class="col-12 col-lg-6 col-xl-7"><!--Colaboradores-->
+                <div class="col-12 col-lg-3 col-xl-2"><!--Colaboradores-->
                     <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
@@ -553,6 +553,22 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                     </div>
                 </div>
+                <div class="bg-primary col-xl-5 scroll5">
+                        <div class="d-flex my-2" v-for="i in 10">
+                            <div class="card col-6">
+                                    <div class="container">
+                                        <h4><b>John Doe</b></h4> 
+                                        <p>Architect & Engineer</p> 
+                                    </div>
+                                </div>
+                                <div class="card col-6">
+                                    <div class="container">
+                                        <h4><b>John Doe</b></h4> 
+                                        <p>Architect & Engineer</p> 
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
             </div>
             <div v-if="ventana=='equiposEAD'" class="row"> <!--bloque CREAR EAD-->
                 <!--///////////////////////////////////////-->
@@ -1441,23 +1457,27 @@ if (isset($_SESSION['nombre'])) {
              <!--/////////////////////////////////CONFIGURACION DE COMPETENCIA ////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'ComptenciaConfiguracion'">
                 <div class="col-12">
-                    <div class="col-4 offset-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
-                        <div class="pt-3 d-flex">
-                            <a>Nombre del foro: </a><input type="text"></input>
-                            <a>Fecha: </a><input type="date"></input>
+                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
+                        <div class=" d-flex" style="height: 50px; padding-top: 12px;">
+                        <span class="input-group-text" style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Nombre del foro: </span>
+                        <input class="form-control select" style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
+                            </input>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
-                    <div class="col-4 offset-4  text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
+                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 50px;">
                         <div class="input-group" style="padding-top: 12px;">
-                            <span class="input-group-text">Area: </span>
-                            <select class="form-control select">
+                            <span class="input-group-text " style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Area: </span>
+                            <select class="form-control select"  style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
                                 <option v-for="i in 3">{{i}}<option>
-                            </select>
+                            </select>  
+                            <span class="input-group-text" style="border-radius: 10px 0px 0px 0px; border-color: rgb(184, 14, 14);">Fecha: </span>
+                            <input type="date" class="form-control select" style="border-radius: 0px 10px 0px 0px; border-color: rgb(184, 14, 14);">
+                            </input>
                         </div>
                     </div>
-                    <div class="col-4 offset-4 text-center mt-3 ">
+                    <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 text-center mt-3 ">
                         <div class="d-flex">
                     <div class="col-6">    
                     <div class=" bg-danger text-center" style="border-radius: 10px; color: white;">
@@ -1491,42 +1511,44 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                     </div>
                 </div>
-                <div class="col-4 offset-4">
+                <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4">
                     <div class="bg-danger text-center " style="border-radius: 10px; margin-top: 20px; color: white;">
                             Foros creados
                     </div>
-                        <table class="table table-bordered text-center  mt-3">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Nombre de equipo 
-                                    </th>
-                                    <th>
-                                        Actualizar
-                                    </th>
-                                    <th>
-                                        Eliminar
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        nombre1
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-warning btn-actualizar">
-                                            actualizar
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-danger btn-eliminar">
+                        <div class="scroll4">
+                            <table class=" table table-bordered text-center  mt-3">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>
+                                            Nombre de equipo 
+                                        </th>
+                                        <th>
+                                            Actualizar
+                                        </th>
+                                        <th>
                                             Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="i in 10">
+                                        <td>
+                                            nombre1
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-actualizar">
+                                                actualizar
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-eliminar">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
             </div>
 
