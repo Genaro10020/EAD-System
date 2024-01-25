@@ -431,6 +431,8 @@ const app = {
     graficasEAD() {
       if (this.tipoTabla == 'Rechazos') {
         this.insertandoValores(0)
+      } else if(this.tipoTabla == 'Merma'){
+        this.insertandoValores(0)
       }
 
 
@@ -459,7 +461,6 @@ const app = {
 
     sumarDatosGraficas() {
       this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) => total + valor, 0);
-      console.log('estoy sumando')
     }
 
   }
