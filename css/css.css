@@ -245,6 +245,7 @@ thead{
     background: rgb(227,42,42);
     background: linear-gradient(0deg, rgba(227,42,42,1) 0%, rgba(121,9,9,1) 35%, rgba(255,255,255,1) 39%); 
     text-align: center;
+
   }
 
   .dropdown {
@@ -288,6 +289,13 @@ thead{
             display: flex;
             justify-content: center;
             align-items: center;
+}
+
+.imagenEngrane{
+    background-image: url(../img/engrane.jpg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    height: 50px;
 }
 
   /*////////////////////// FINALIZA MENU PRINCIPAL */

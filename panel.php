@@ -38,7 +38,7 @@ if (isset($_SESSION['nombre'])) {
                         <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
                     </div>
                 </div>
-                <div class="col-12 divLineaMenu">
+                <div class="row  divLineaMenu w-100">
 
                 </div>
                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
@@ -1388,69 +1388,36 @@ if (isset($_SESSION['nombre'])) {
             </div>
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana=='CompetenciaArea'">
-                <div class="container mt-5">
-                    <table class="table table-bordered table-striped">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th>#</th>
-                                <th>EADs</th>
-                                <th>Área</th>
-                                <th>Planta</th>
-                                <th>Nombre EAD</th>
-                                <th>Proyecto</th>
-                                <th>Evaluador 1</th>
-                                <th>Evaluador 2</th>
-                                <th>Evaluador 3</th>
-                                <th>Evaluador 4</th>
-                                <th>Calificacion Final</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th><b>1</b></th>
-                                <td><b>EAD 1</b></td>
-                                <td>Formación</td>
-                                <td>Enerya</td>
-                                <td>Los Rinos</td>
-                                <td>Proyecto A</td>
-                                <td><b>Evaluador A</b></td>
-                                <td><b>Evaluador B</b></td>
-                                <td><b>Evaluador C</b></td>
-                                <td><b>Evaluador D</b></td>
-                                <td>Pendiente</td>
-                            </tr>
-                            <tr>
-                                <th><b>2</b></th>
-                                <td><b>EAD 2</b></td>
-                                <td>Etiquetado</td>
-                                <td>Riasa</td>
-                                <td>Las Maquinas</td>
-                                <td>Proyecto A</td>
-                                <td><b>Evaluador A</b></td>
-                                <td><b>Evaluador B</b></td>
-                                <td><b>Evaluador C</b></td>
-                                <td><b>Evaluador D</b></td>
-                                <td>Pendiente</td>
-                            </tr>
-                            <tr>
-                                <th><b>3</b></th>
-                                <td><b>EAD 3</b></td>
-                                <td>Riasa - Enerya</td>
-                                <td>Planta A</td>
-                                <td>Los Pajaros Azules</td>
-                                <td>Proyecto A</td>
-                                <td><b>Evaluador A</b></td>
-                                <td><b>Evaluador B</b></td>
-                                <td><b>Evaluador C</b></td>
-                                <td><b>Evaluador D</b></td>
-                                <td>Pendiente</td>
-                            </tr>
-                            <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                        </tbody>
-                    </table>
+                <div class="col-12 mt-3">
+                        <div class="col-4 offset-4">
+                            <div class="imagenEngrane"></div>
+                            <div class="border text-center">Nombre del equipo: </div>
+                            <div class="border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                        </div>
                 </div>
-
-
+                <div class="col-12 mt-3">
+                        <div class="d-flex offset-3">
+                            <div class="col-4 me-3">
+                                <div class="imagenEngrane"></div>
+                                <div class="border  text-center">Nombre del equipo: </div>
+                                <div class=" border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                            </div>
+                            <div class="col-4">
+                                <div class="imagenEngrane"></div>
+                                <div class="border text-center">Nombre del equipo: </div>
+                                <div class="border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                            </div>
+                        </div>
+                </div>
+                <div class="col-12 mt-3">
+                        <div class="d-flex ">
+                            <div v-for="i in 11" class="col-1 me-2">
+                                <div class="imagenEngrane"></div>
+                                <div class="border  text-center">Nombre del equipo: </div>
+                                <div class=" border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                            </div>
+                        </div>
+                </div>
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'CompetenciaPlanta'">
