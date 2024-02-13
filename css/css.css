@@ -70,10 +70,24 @@ table,.btn-actualizar,.btn-eliminar, .btn-guardar{
     color: #585656;
 }
 
+
+
 .boton{
    border-radius: 5px;
    border: 2px solid  rgb(137, 0, 0);
 }
+
+
+.rotando {
+    transform: rotate(-90deg);
+    /* para compatibilidad con navegadores */
+    -webkit-transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    -o-transform: rotate(-90deg);
+    margin-left:-80px ;
+}
+
 
 .contenido{
     background: #f1f1f1;

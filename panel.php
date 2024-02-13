@@ -320,7 +320,6 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class="scroll w-100">
                     <div class="mb-5">
-
                         <!-- <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
                                                             <table class="mx-2 mb-5 table table-hover table-bordered border-dark text-center">
                                                                 <thead class="encabezado-tabla-scorecard">
@@ -358,19 +357,34 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                             </div>
-                            <table style="max-width:800px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                            <table style="max-width:1200px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                                 <thead>
                                     <tr>
-                                        <th class="bg-dark"> </th>
-                                        <th scope="row" class="bg-dark" v-for="columnas in columnasSC">{{columnas}}</th>
+                                    <th class="bg-dark"></th>
+                                        <th class="bg-dark"></th>
+                                        <th scope="row" class="bg-dark text-light" v-for="columnas in columnasSC">{{columnas}}</th>
                                     </tr>
                                 <tbody>
-                                    <tr v-for="filas in filasSC">
-                                        <th scope="col">{{filas}}</th>
-                                        <td v-for="columnas in columnasSC"></td>
+                                    <tr v-for="(filas,index1) in filasSC">
+                                        <td v-show="index1===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
+                                        <td v-show="index1==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
+                                        <td v-show="index1==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
+                                        <th scope="col" class="text-start">{{filas}}</th>
+                                        <td v-for="(columnas, index2) in columnasSC">
+                                            <label v-show="index1==0 && index2==0">#</label>
+                                            <label v-show="index1==1 && index2==0">Kg.</label>
+                                            <label v-show="index1==2 && index2==0">%</label>
+                                            <label v-show="index1==3 && index2==0">#</label>
+                                            <label v-show="index1==4 && index2==0">#</label>
+                                            <label v-show="index1==5 && index2==0">#</label>
+                                            <label v-show="index1==6 && index2==0">#</label>
+                                            <label v-show="index1==7 && index2==0">%</label>
+                                            <label v-show="index1==8 && index2==0">#</label>
+                                            <label v-show="index1==9 && index2==0">%</label>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
+                                        <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
 
                                         <td class="border border-1 border-dark border-start-1">
                                             TOTAL
@@ -568,7 +582,7 @@ if (isset($_SESSION['nombre'])) {
                                             
                                         <ul>
                                             <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                                Ruben Antonio Placencia Rivera
+                                               Integrante {{i}}
                                             </li>
                                         </ul>
                                     </div>
@@ -583,7 +597,7 @@ if (isset($_SESSION['nombre'])) {
                                             <b class="letrasCard"> Area:  </b> <t> Placas</t>
                                         <ul>
                                             <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                            Ruben Antonio Placencia Rivera
+                                                Integrante {{i}}
                                             </li>
                                         </ul>
                                     </div>
@@ -669,7 +683,7 @@ if (isset($_SESSION['nombre'])) {
                 <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
                 <div v-if="tipoTablas == 'Rechazos'">
                     <div class="d-flex">
-                        <div class="scroll" style=" max-height: 500px;">
+                        <div class="scroll" style=" max-height: 400px;">
                             <table class="text-center ms-3 me-5">
                                 <thead class="sticky-top">
                                     <tr>
@@ -716,7 +730,7 @@ if (isset($_SESSION['nombre'])) {
                                     <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
                                     <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style=" min-width: 80vw; ">
+                                    <div class="d-flex justify-content-center" id="divCanvas" style="width: 80vw; max-height:40vh;">
                                         <canvas id="myChart"></canvas>
                                     </div>
                                     </td>
@@ -1392,7 +1406,7 @@ if (isset($_SESSION['nombre'])) {
                         <div class="col-4 offset-4">
                             <div class="imagenEngrane"></div>
                             <div class="border text-center">Nombre del equipo: </div>
-                            <div class="border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                            <div class="border border-top-0 text-center">Nombre del Equipo</div>
                         </div>
                 </div>
                 <div class="col-12 mt-3">
@@ -1400,12 +1414,12 @@ if (isset($_SESSION['nombre'])) {
                             <div class="col-4 me-3">
                                 <div class="imagenEngrane"></div>
                                 <div class="border  text-center">Nombre del equipo: </div>
-                                <div class=" border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                                <div class=" border border-top-0 text-center">Nombre del Equipo</div>
                             </div>
                             <div class="col-4">
                                 <div class="imagenEngrane"></div>
                                 <div class="border text-center">Nombre del equipo: </div>
-                                <div class="border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                                <div class="border border-top-0 text-center">Nombre del Equipo</div>
                             </div>
                         </div>
                 </div>
@@ -1414,7 +1428,7 @@ if (isset($_SESSION['nombre'])) {
                             <div v-for="i in 11" class="col-1 me-2">
                                 <div class="imagenEngrane"></div>
                                 <div class="border  text-center">Nombre del equipo: </div>
-                                <div class=" border border-top-0 text-center">Equipo alfa buena maravilla onda dinamita escuadrón lobo</div>
+                                <div class=" border border-top-0 text-center">Nombre del Equipo</div>
                             </div>
                         </div>
                 </div>

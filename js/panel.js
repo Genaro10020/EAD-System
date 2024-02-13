@@ -42,8 +42,8 @@ const app = {
       anio_seleccionado: 2023,
       select_plantillas: 'Placas',
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
-      filasSC: ['Reclamos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
-      columnasSC: ['Valor actual', 'Puntos obtenidos', 'Ponderacion', 'Puntos evaluados'],
+      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
+      columnasSC: ['Unidades','Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
       colaboradores: [],
       select_nombre: '',
