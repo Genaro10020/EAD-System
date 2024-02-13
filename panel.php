@@ -28,10 +28,10 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('crearEAD'), consultarColaboradores()"><b>Crear EAD</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a>
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('CrearCompetenciaArea')"><b>Crear comp. área </b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('CompetenciaArea')"><b>Competencia de area</b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('CrearCompetenciaArea')"><b>Crear Competencia</b></button></a>
+                        <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
+                        <a><button class="btn_menu" @click="ventanas('CompetenciaArea')"><b>Competencia</b></button></a>
+                        <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Evaluar</b></button></a>
                         <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                         <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
@@ -685,7 +685,7 @@ if (isset($_SESSION['nombre'])) {
                     <div class="d-flex">
                         <div class="scroll" style=" max-height: 400px;">
                             <table class="text-center ms-3 me-5">
-                                <thead class="sticky-top">
+                                <thead>
                                     <tr>
                                         <th class="border border-dark" style="font-size: 13px;">
                                             Dia
@@ -1402,6 +1402,17 @@ if (isset($_SESSION['nombre'])) {
             </div>
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana=='CompetenciaArea'">
+                            <div class=" row col-12 text-center d-flex justify-content-center mt-2 ">
+                                <div class="col-4">
+                                    <span class="mx-2">Seleccione Foro: </span>
+                                    <select>
+                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option >Foro1</option>
+                                        <option >Foro2</option>
+                                        <option >Foro3</option>
+                                    </select>
+                                </div>
+                            </div>
                 <div class="col-12 mt-3">
                     <div class="col-4 offset-4">
                         <div class="imagenEngrane"></div>
@@ -1435,18 +1446,67 @@ if (isset($_SESSION['nombre'])) {
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'CompetenciaPlanta'">
-                <table class="text-center table table.bordered border-dark">
-                    <thead>
-                        <tr>
-                            <th v-for="filas in filasCP">
-                                {{filas}}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
+                <div class="col-12 d-flex justify-content-center">
+                        <table class="table table-bordered table-striped mt-5">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>EADs</th>
+                                                        <th>Área</th>
+                                                        <th>Planta</th>
+                                                        <th>Nombre EAD</th>
+                                                        <th>Proyecto</th>
+                                                        <th>Evaluador 1</th>
+                                                        <th>Evaluador 2</th>
+                                                        <th>Evaluador 3</th>
+                                                        <th>Evaluador 4</th>
+                                                        <th>Calificacion Final</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th><b>1</b></th>
+                                                        <td><b>EAD 1</b></td>
+                                                        <td>Formación</td>
+                                                        <td>Enerya</td>
+                                                        <td>Los Rinos</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><b>2</b></th>
+                                                        <td><b>EAD 2</b></td>
+                                                        <td>Etiquetado</td>
+                                                        <td>Riasa</td>
+                                                        <td>Las Maquinas</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><b>3</b></th>
+                                                        <td><b>EAD 3</b></td>
+                                                        <td>Riasa - Enerya</td>
+                                                        <td>Planta A</td>
+                                                        <td>Los Pajaros Azules</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                                                </tbody>
+                                            </table>        
+                    </div>       
             </div>
             <!-- FIN DE COMPETENCIA PLANTA -->
 
