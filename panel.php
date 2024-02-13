@@ -360,7 +360,7 @@ if (isset($_SESSION['nombre'])) {
                             <table style="max-width:1200px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                                 <thead>
                                     <tr>
-                                    <th class="bg-dark"></th>
+                                        <th class="bg-dark"></th>
                                         <th class="bg-dark"></th>
                                         <th scope="row" class="bg-dark text-light" v-for="columnas in columnasSC">{{columnas}}</th>
                                     </tr>
@@ -570,40 +570,40 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class=" col-xl-5 scroll5">
-                        <div class="d-flex my-2" v-for="i in 10">
-                            <div class="card col-6 me-2" style="background-color: #cfcfcf;">
-                                    <div class="container">
-                                            <b class="letrasCard">
-                                                 Nombre del equipo
-                                            </b>
-                                            <br>
-                                            <b class="letrasCard">Planta:  </b> <t>Enerya</t>
-                                            <b class="letrasCard"> Area:  </b> <t> Placas</t>
-                                            
-                                        <ul>
-                                            <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                               Integrante {{i}}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="card col-6 me-2 " style="background-color: #cfcfcf;">
-                                    <div class="container">
-                                    <b class="letrasCard">
-                                                 Nombre del equipo
-                                            </b>
-                                            <br>
-                                            <b class="letrasCard">Planta:  </b> <t>Enerya</t>
-                                            <b class="letrasCard"> Area:  </b> <t> Placas</t>
-                                        <ul>
-                                            <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                                Integrante {{i}}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
+                    <div class="d-flex my-2" v-for="i in 10">
+                        <div class="card col-6 me-2" style="background-color: #cfcfcf;">
+                            <div class="container">
+                                <b class="letrasCard">
+                                    Nombre del equipo
+                                </b>
+                                <br>
+                                <b class="letrasCard">Planta: </b>Enerya
+                                <b class="letrasCard"> Area: </b> Placas
+
+                                <ul>
+                                    <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
+                                        Integrante {{i}}
+                                    </li>
+                                </ul>
                             </div>
+                        </div>
+                        <div class="card col-6 me-2 " style="background-color: #cfcfcf;">
+                            <div class="container">
+                                <b class="letrasCard">
+                                    Nombre del equipo
+                                </b>
+                                <br>
+                                <b class="letrasCard">Planta: </b>Enerya
+                                <b class="letrasCard"> Area: </b> Placas
+                                <ul>
+                                    <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
+                                        Integrante {{i}}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
+                </div>
             </div>
             <div v-if="ventana=='equiposEAD'" class="row"> <!--bloque CREAR EAD-->
                 <!--///////////////////////////////////////-->
@@ -724,16 +724,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
-                                    <div class="d-flex justify-content-center" id="divCanvas" style="width: 80vw; max-height:40vh;">
+                                <td class="border border-dark">
+                                    <div class="d-flex justify-content-center" id="divCanvas" style="min-width: 80vw; max-height:40vh;">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -823,16 +823,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de merma</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -924,16 +924,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1026,16 +1026,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1133,16 +1133,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1240,16 +1240,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1342,16 +1342,16 @@ if (isset($_SESSION['nombre'])) {
                                     <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
                                 </tr>
                                 <tr>
-                                    <th  class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
                                 </tr>
-                                    <td class="border border-dark" style="width: 40px; ">
+                                <td class="border border-dark" style="width: 40px; ">
                                     <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
                                         <canvas id="myChart"></canvas>
                                     </div>
-                                    </td>
+                                </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1403,34 +1403,34 @@ if (isset($_SESSION['nombre'])) {
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana=='CompetenciaArea'">
                 <div class="col-12 mt-3">
-                        <div class="col-4 offset-4">
+                    <div class="col-4 offset-4">
+                        <div class="imagenEngrane"></div>
+                        <div class="border text-center">Ganador: </div>
+                        <div class="border border-top-0 text-center">The Winner</div>
+                    </div>
+                </div>
+                <div class="col-12 mt-3">
+                    <div class="d-flex offset-3">
+                        <div class="col-4 me-3">
                             <div class="imagenEngrane"></div>
-                            <div class="border text-center">Nombre del equipo: </div>
+                            <div class="border  text-center">Equipo 1 </div>
+                            <div class=" border border-top-0 text-center">Nombre del Equipo</div>
+                        </div>
+                        <div class="col-4">
+                            <div class="imagenEngrane"></div>
+                            <div class="border text-center">Equipo 2 </div>
                             <div class="border border-top-0 text-center">Nombre del Equipo</div>
                         </div>
+                    </div>
                 </div>
                 <div class="col-12 mt-3">
-                        <div class="d-flex offset-3">
-                            <div class="col-4 me-3">
-                                <div class="imagenEngrane"></div>
-                                <div class="border  text-center">Nombre del equipo: </div>
-                                <div class=" border border-top-0 text-center">Nombre del Equipo</div>
-                            </div>
-                            <div class="col-4">
-                                <div class="imagenEngrane"></div>
-                                <div class="border text-center">Nombre del equipo: </div>
-                                <div class="border border-top-0 text-center">Nombre del Equipo</div>
-                            </div>
+                    <div class="d-flex ">
+                        <div v-for="i in 11" class="col-1 me-2">
+                            <div class="imagenEngrane"></div>
+                            <div class="border  text-center">Equipo</div>
+                            <div class=" border border-top-0 text-center">Nombre {{i}}</div>
                         </div>
-                </div>
-                <div class="col-12 mt-3">
-                        <div class="d-flex ">
-                            <div v-for="i in 11" class="col-1 me-2">
-                                <div class="imagenEngrane"></div>
-                                <div class="border  text-center">Nombre del equipo: </div>
-                                <div class=" border border-top-0 text-center">Nombre del Equipo</div>
-                            </div>
-                        </div>
+                    </div>
                 </div>
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
@@ -1451,370 +1451,372 @@ if (isset($_SESSION['nombre'])) {
             <!-- FIN DE COMPETENCIA PLANTA -->
 
 
-             <!--/////////////////////////////////CONFIGURACION DE COMPETENCIA AREA ////////////////////////////////////////////////////////////////////////////////////////-->
+            <!--/////////////////////////////////CONFIGURACION DE COMPETENCIA AREA ////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'CrearCompetenciaArea'">
                 <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 px-4 shadow-lg mt-3 border border-white rounded-3">
-                        <div class="col-12">
-                            <div class=" text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                                <div class=" d-flex" style="padding:2px 2px;">
+                    <div class="col-12">
+                        <div class=" text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                            <div class=" d-flex" style="padding:2px 2px;">
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e;">Nombre del foro: </span>
                                 <input class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
-                                    </input>
-                                </div>
+                                </input>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                                <div class="input-group" style="padding:2px 2px;">
-                                    <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Area: </span>
-                                    <select class="form-control select"  style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                        <option v-for="i in 3">Área {{i}}<option>
-                                    </select>  
-                                    <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
-                                    <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                    </input>
-                                </div>
-                            </div>
-                            <div class=" text-center mt-3 ">
-                                <div class="d-flex">
-                            <div class="col-6">    
-                            <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
-                                    Equipos EAD 
-                                </div>
-                                <div class="scroll2">
-                                <div class="input-group mb-1" v-for="i in 10">
-                                    <div class="input-group-text" style="border-radius: 0px;">
-                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                                    </div>
-                                    <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Equipo nombre</label>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-6 ms-2">
-                                <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
-                                    Evaluadores
-                                </div>
-                                <div class="scroll3">
-                                <div class="input-group mb-1" v-for="i in 10">
-                                    <div class="input-group-text" style="border-radius: 0px;">
-                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                                    </div>
-                                        <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Evaluador</label>
-                                    </div>
-                                </div>
-                                </div>
-                                </div>
-                                <div>
-                                    <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
-                                </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                            <div class="input-group" style="padding:2px 2px;">
+                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Area: </span>
+                                <select class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                    <option v-for="i in 3">Área {{i}}
+                                    <option>
+                                </select>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
+                                <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                </input>
                             </div>
                         </div>
-                        <div class="">
-                            <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
-                                    Foros creados
-                            </div>
-                                <div class="scroll4">
-                                <table class=" table table-bordered text-center  mt-3">
-                                        <thead class="sticky-top">
-                                            <tr>
-                                                <th>
-                                                    Nombre de equipo 
-                                                </th>
-                                                <th>
-                                                    Visualizar
-                                                </th>
-                                                <th>
-                                                    Actualizar
-                                                </th>
-                                                <th>
-                                                    Eliminar
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="i in 10">
-                                                <td>
-                                                    nombre1
-                                                </td>
-                                                <td>
-                                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-warning btn-actualizar">
-                                                        Actualizar
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-eliminar">
-                                                        Eliminar
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
-                                    <div class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table class="table table-bordered table-striped">
-                                                        <thead class="thead-dark">
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>EADs</th>
-                                                                <th>Área</th>
-                                                                <th>Planta</th>
-                                                                <th>Nombre EAD</th>
-                                                                <th>Proyecto</th>
-                                                                <th>Evaluador 1</th>
-                                                                <th>Evaluador 2</th>
-                                                                <th>Evaluador 3</th>
-                                                                <th>Evaluador 4</th>
-                                                                <th>Calificacion Final</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th><b>1</b></th>
-                                                                <td><b>EAD 1</b></td>
-                                                                <td>Formación</td>
-                                                                <td>Enerya</td>
-                                                                <td>Los Rinos</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th><b>2</b></th>
-                                                                <td><b>EAD 2</b></td>
-                                                                <td>Etiquetado</td>
-                                                                <td>Riasa</td>
-                                                                <td>Las Maquinas</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th><b>3</b></th>
-                                                                <td><b>EAD 3</b></td>
-                                                                <td>Riasa - Enerya</td>
-                                                                <td>Planta A</td>
-                                                                <td>Los Pajaros Azules</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                </div>
+                        <div class=" text-center mt-3 ">
+                            <div class="d-flex">
+                                <div class="col-6">
+                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
+                                        Equipos EAD
+                                    </div>
+                                    <div class="scroll2">
+                                        <div class="input-group mb-1" v-for="i in 10">
+                                            <div class="input-group-text" style="border-radius: 0px;">
+                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
                                             </div>
+                                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Equipo nombre</label>
                                         </div>
                                     </div>
-
+                                </div>
+                                <div class="col-6 ms-2">
+                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
+                                        Evaluadores
+                                    </div>
+                                    <div class="scroll3">
+                                        <div class="input-group mb-1" v-for="i in 10">
+                                            <div class="input-group-text" style="border-radius: 0px;">
+                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                            </div>
+                                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Evaluador</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <div>
+                                <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
+                            </div>
+                        </div>
                     </div>
-            </div> 
+                    <div class="">
+                        <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
+                            Foros creados
+                        </div>
+                        <div class="scroll4">
+                            <table class=" table table-bordered text-center  mt-3">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>
+                                            Nombre de equipo
+                                        </th>
+                                        <th>
+                                            Visualizar
+                                        </th>
+                                        <th>
+                                            Actualizar
+                                        </th>
+                                        <th>
+                                            Eliminar
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="i in 10">
+                                        <td>
+                                            nombre1
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-actualizar">
+                                                Actualizar
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-eliminar">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
+                            <div class="modal modal-xl" id="exampleModal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <table class="table table-bordered table-striped">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>EADs</th>
+                                                        <th>Área</th>
+                                                        <th>Planta</th>
+                                                        <th>Nombre EAD</th>
+                                                        <th>Proyecto</th>
+                                                        <th>Evaluador 1</th>
+                                                        <th>Evaluador 2</th>
+                                                        <th>Evaluador 3</th>
+                                                        <th>Evaluador 4</th>
+                                                        <th>Calificacion Final</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th><b>1</b></th>
+                                                        <td><b>EAD 1</b></td>
+                                                        <td>Formación</td>
+                                                        <td>Enerya</td>
+                                                        <td>Los Rinos</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><b>2</b></th>
+                                                        <td><b>EAD 2</b></td>
+                                                        <td>Etiquetado</td>
+                                                        <td>Riasa</td>
+                                                        <td>Las Maquinas</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><b>3</b></th>
+                                                        <td><b>EAD 3</b></td>
+                                                        <td>Riasa - Enerya</td>
+                                                        <td>Planta A</td>
+                                                        <td>Los Pajaros Azules</td>
+                                                        <td>Proyecto A</td>
+                                                        <td><b>Evaluador A</b></td>
+                                                        <td><b>Evaluador B</b></td>
+                                                        <td><b>Evaluador C</b></td>
+                                                        <td><b>Evaluador D</b></td>
+                                                        <td>Pendiente</td>
+                                                    </tr>
+                                                    <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- ////////////////////////////////////////////////////////////////CREAR COMPETENCIA DE PLANTA ///////////////////////////////////////////// -->
             <div v-if="ventana == 'CrearCompetenciaPlanta'">
                 <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 px-4 shadow-lg mt-3 border border-white rounded-3">
-                        <div class="col-12">
-                            <div class=" text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                                <div class=" d-flex" style="padding:2px 2px;">
+                    <div class="col-12">
+                        <div class=" text-center" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                            <div class=" d-flex" style="padding:2px 2px;">
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e;">Nombre del foro: </span>
                                 <input class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
-                                    </input>
-                                </div>
+                                </input>
                             </div>
                         </div>
-                        <div class="col-12">
-                            <div class="  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                                <div class="input-group" style="padding:2px 2px;">
-                                    <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Planta: </span>
-                                    <select class="form-control select"  style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                        <option v-for="i in 3">Planta {{i}}<option>
-                                    </select>  
-                                    <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
-                                    <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                    </input>
-                                </div>
-                            </div>
-                            <div class=" text-center mt-3 ">
-                                <div class="d-flex">
-                            <div class="col-6">    
-                            <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
-                                    Equipos EAD 
-                                </div>
-                                <div class="scroll2">
-                                <div class="input-group mb-1" v-for="i in 10">
-                                    <div class="input-group-text" style="border-radius: 0px;">
-                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                                    </div>
-                                    <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Equipo nombre</label>
-                                </div>
-                                </div>
-                            </div>
-                            <div class="col-6 ms-2">
-                                <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
-                                    Evaluadores
-                                </div>
-                                <div class="scroll3">
-                                <div class="input-group mb-1" v-for="i in 10">
-                                    <div class="input-group-text" style="border-radius: 0px;">
-                                        <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
-                                    </div>
-                                        <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Evaluador</label>
-                                    </div>
-                                </div>
-                                </div>
-                                </div>
-                                <div>
-                                    <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
-                                </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="  text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                            <div class="input-group" style="padding:2px 2px;">
+                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Planta: </span>
+                                <select class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                    <option v-for="i in 3">Planta {{i}}
+                                    <option>
+                                </select>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
+                                <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                </input>
                             </div>
                         </div>
-                        <div class="">
-                            <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
-                                    Foros creados
-                            </div>
-                                <div class="scroll4">
-                                    <table class=" table table-bordered text-center  mt-3">
-                                        <thead class="sticky-top">
-                                            <tr>
-                                                <th>
-                                                    Nombre de equipo 
-                                                </th>
-                                                <th>
-                                                    Visualizar
-                                                </th>
-                                                <th>
-                                                    Actualizar
-                                                </th>
-                                                <th>
-                                                    Eliminar
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr v-for="i in 10">
-                                                <td>
-                                                    nombre1
-                                                </td>
-                                                <td>
-                                                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                    <i class="bi bi-eye"></i>
-                                                </button>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-warning btn-actualizar">
-                                                        Actualizar
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-danger btn-eliminar">
-                                                        Eliminar
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                 <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
-                                 <div class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                        <div class="modal-dialog modal-dialog-centered">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <table class="table table-bordered table-striped">
-                                                        <thead class="thead-dark">
-                                                            <tr>
-                                                                <th>#</th>
-                                                                <th>EADs</th>
-                                                                <th>Área</th>
-                                                                <th>Planta</th>
-                                                                <th>Nombre EAD</th>
-                                                                <th>Proyecto</th>
-                                                                <th>Evaluador 1</th>
-                                                                <th>Evaluador 2</th>
-                                                                <th>Evaluador 3</th>
-                                                                <th>Evaluador 4</th>
-                                                                <th>Calificacion Final</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th><b>1</b></th>
-                                                                <td><b>EAD 1</b></td>
-                                                                <td>Formación</td>
-                                                                <td>Enerya</td>
-                                                                <td>Los Rinos</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th><b>2</b></th>
-                                                                <td><b>EAD 2</b></td>
-                                                                <td>Etiquetado</td>
-                                                                <td>Riasa</td>
-                                                                <td>Las Maquinas</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th><b>3</b></th>
-                                                                <td><b>EAD 3</b></td>
-                                                                <td>Riasa - Enerya</td>
-                                                                <td>Planta A</td>
-                                                                <td>Los Pajaros Azules</td>
-                                                                <td>Proyecto A</td>
-                                                                <td><b>Evaluador A</b></td>
-                                                                <td><b>Evaluador B</b></td>
-                                                                <td><b>Evaluador C</b></td>
-                                                                <td><b>Evaluador D</b></td>
-                                                                <td>Pendiente</td>
-                                                            </tr>
-                                                            <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                </div>
+                        <div class=" text-center mt-3 ">
+                            <div class="d-flex">
+                                <div class="col-6">
+                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
+                                        Equipos EAD
+                                    </div>
+                                    <div class="scroll2">
+                                        <div class="input-group mb-1" v-for="i in 10">
+                                            <div class="input-group-text" style="border-radius: 0px;">
+                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
                                             </div>
+                                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Equipo nombre</label>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="col-6 ms-2">
+                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
+                                        Evaluadores
+                                    </div>
+                                    <div class="scroll3">
+                                        <div class="input-group mb-1" v-for="i in 10">
+                                            <div class="input-group-text" style="border-radius: 0px;">
+                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                            </div>
+                                            <label class="form-control" aria-label="Text input with checkbox" style="border-radius: 0px;">Evaluador</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            <div>
+                                <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
+                            </div>
+                        </div>
                     </div>
+                    <div class="">
+                        <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
+                            Foros creados
+                        </div>
+                        <div class="scroll4">
+                            <table class=" table table-bordered text-center  mt-3">
+                                <thead class="sticky-top">
+                                    <tr>
+                                        <th>
+                                            Nombre de equipo
+                                        </th>
+                                        <th>
+                                            Visualizar
+                                        </th>
+                                        <th>
+                                            Actualizar
+                                        </th>
+                                        <th>
+                                            Eliminar
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="i in 10">
+                                        <td>
+                                            nombre1
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-actualizar">
+                                                Actualizar
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-eliminar">
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
+                        <div class="modal modal-xl" id="exampleModal" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table class="table table-bordered table-striped">
+                                            <thead class="thead-dark">
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>EADs</th>
+                                                    <th>Área</th>
+                                                    <th>Planta</th>
+                                                    <th>Nombre EAD</th>
+                                                    <th>Proyecto</th>
+                                                    <th>Evaluador 1</th>
+                                                    <th>Evaluador 2</th>
+                                                    <th>Evaluador 3</th>
+                                                    <th>Evaluador 4</th>
+                                                    <th>Calificacion Final</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th><b>1</b></th>
+                                                    <td><b>EAD 1</b></td>
+                                                    <td>Formación</td>
+                                                    <td>Enerya</td>
+                                                    <td>Los Rinos</td>
+                                                    <td>Proyecto A</td>
+                                                    <td><b>Evaluador A</b></td>
+                                                    <td><b>Evaluador B</b></td>
+                                                    <td><b>Evaluador C</b></td>
+                                                    <td><b>Evaluador D</b></td>
+                                                    <td>Pendiente</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><b>2</b></th>
+                                                    <td><b>EAD 2</b></td>
+                                                    <td>Etiquetado</td>
+                                                    <td>Riasa</td>
+                                                    <td>Las Maquinas</td>
+                                                    <td>Proyecto A</td>
+                                                    <td><b>Evaluador A</b></td>
+                                                    <td><b>Evaluador B</b></td>
+                                                    <td><b>Evaluador C</b></td>
+                                                    <td><b>Evaluador D</b></td>
+                                                    <td>Pendiente</td>
+                                                </tr>
+                                                <tr>
+                                                    <th><b>3</b></th>
+                                                    <td><b>EAD 3</b></td>
+                                                    <td>Riasa - Enerya</td>
+                                                    <td>Planta A</td>
+                                                    <td>Los Pajaros Azules</td>
+                                                    <td>Proyecto A</td>
+                                                    <td><b>Evaluador A</b></td>
+                                                    <td><b>Evaluador B</b></td>
+                                                    <td><b>Evaluador C</b></td>
+                                                    <td><b>Evaluador D</b></td>
+                                                    <td>Pendiente</td>
+                                                </tr>
+                                                <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script src="js/header.js?<? echo time(); ?>"></script>

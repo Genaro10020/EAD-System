@@ -43,7 +43,7 @@ const app = {
       select_plantillas: 'Placas',
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
       filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
-      columnasSC: ['Unidades','Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
+      columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
       colaboradores: [],
       select_nombre: '',
@@ -431,7 +431,7 @@ const app = {
     graficasEAD() {
       if (this.tipoTabla == 'Rechazos') {
         this.insertandoValores(0)
-      } else if(this.tipoTabla == 'Merma'){
+      } else if (this.tipoTabla == 'Merma') {
         this.insertandoValores(0)
       }
 
