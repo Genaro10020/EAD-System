@@ -3,7 +3,7 @@ const app = {
   data() {
     return {
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
-      ventana: 'usuarios',
+      ventana: 'Usuarios',
       accion: 'insertar',
       accion_departamento: '',
       titulo_formulario_usuarios: 'ALTA USUARIOS',
@@ -46,7 +46,7 @@ const app = {
       columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
       colaboradores: [],
-      select_nombre: '',
+      nombre_ead: '',
       select_planta: '',
       select_area: '',
       select_proceso: '',
@@ -85,14 +85,14 @@ const app = {
     consultarUsuarios() {
       axios.post('consulta_PlantasAreasSubareasUsuarios.php', {
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         this.plantas = response.data.Plantas
         this.areas = response.data.Areas
         this.subareas = response.data.Subareas
         this.tipos = response.data.TiposUsuario
         this.usuarios = response.data.Usuarios
       }).catch(error => {
-        console.log('Erro :-(' + error)
+        //console.log('Erro :-(' + error)
       })
     },
     ventanas(ventana) {
@@ -104,10 +104,10 @@ const app = {
     consultarColaboradores() {
       axios.post('consulta_colaboradores.php', {
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         this.colaboradores = response.data.Colaboradores
       }).catch(error => {
-        console.log('Erro :-(' + error)
+        //console.log('Erro :-(' + error)
       })
     },
     graficas(grafica) {
@@ -126,7 +126,7 @@ const app = {
         acceso: this.selector_tipo_acceso,
         id: this.id_actualizar
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.bandera_alta_o_actualizar = 1
           this.accion = 'insertar'
@@ -145,7 +145,7 @@ const app = {
           alert("Algo salio mal al insertar :-(")
         }
       }).catch(error => {
-        console.log('Axios Erro :-(' + error)
+        //console.log('Axios Erro :-(' + error)
       })
     },
     eliminarUsuario(id) {
@@ -155,7 +155,7 @@ const app = {
         accion: 'eliminar',
         id: id
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.consultarUsuarios();
         } else {
@@ -188,7 +188,7 @@ const app = {
         axios.post("consultar_datos_usuario.php", {
           id: id
         }).then(response => {
-          console.log(response.data)
+          //console.log(response.data)
           if (Object.keys(response.data).length > 0) {
             this.nombre = response.data.nombre
             this.nomina = response.data.nomina
@@ -199,7 +199,7 @@ const app = {
             this.selector_tipo_usuario = response.data.tipo_usuario
             this.selector_tipo_acceso = response.data.tipo_acceso
           } else {
-            console.log("El objeto está vacío.");
+            //console.log("El objeto está vacío.");
           }
         }).catch(error => {
           alert("Axios error :-(" + error)
@@ -219,12 +219,12 @@ const app = {
         nuevo_tipo: this.nuevo_tipo_usuario,
         usuario: usuario
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.nuevo_tipo_usuario = ''
           this.consultarUsuarios()
         } else {
-          console.log("no se guardo correctamente")
+          //console.log("no se guardo correctamente")
         }
       })
     },
@@ -245,7 +245,7 @@ const app = {
         departamento: this.departamento,
         nuevo_departamento: this.nuevo_departamento
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.nuevo_departamento = ""
           this.myModal.hide()
@@ -263,7 +263,7 @@ const app = {
         id: this.id, //bien al cliquear modal.
         nombre: this.nuevo_departamento
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.myModal.hide()
           this.consultarUsuarios();
@@ -280,7 +280,7 @@ const app = {
         departamento: departamento,
         id: id
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           this.consultarUsuarios();
         } else {
@@ -295,7 +295,7 @@ const app = {
       axios.post("objetivos.php", {
         accion: 'Consultar'
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         this.objetivos = response.data
       }).catch(error => {
         alert("Axios error :-(" + error)
@@ -306,7 +306,7 @@ const app = {
         accion: 'Consultar',
         plantilla: this.ver_plantillas
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         this.scorecard = response.data
       }).catch(error => {
         alert("Axios error :-(" + error)
@@ -322,7 +322,7 @@ const app = {
           anio: this.anio_seleccionado,
           plantilla: this.select_plantillas
         }).then(response => {
-          console.log(response.data)
+          //console.log(response.data)
           if (response.data.bien == true) {
             this.consultarScoreCard()
             this.myModal.hide()
@@ -367,9 +367,32 @@ const app = {
       return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Supervisor')
     },
     crearEAD() {
+      
+      if(!this.nombre_ead){ return alert("Favor de agregar Nombre de EAD")}
+      if(!this.select_planta){ return alert("Seleccione Planta")}
+      if(!this.select_area){ return alert("Seleccione Área")}
+      if(!this.select_proceso){ return alert("Seleccione Proceso")}
+      if(!this.select_lider_equipo){ return alert("Seleccione Líder de Equipo")}
+      if(!this.select_coordinador){ return alert("Seleccione Coordinador")}
+      if(!this.select_jefe_area){ return alert("Seleccione Jefe de Área")}
+      if(!this.select_ing_proceso){ return alert("Seleccione Ing. de Proceso")}
+      if(!this.select_ing_calidad){ return alert("Seleccione Ing. de Cálidad")}
+      if(!this.select_superviso){ return alert("Seleccione Supervisor")}
+      if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integranes")}
+
+/*
+select_planta
+select_area
+select_proceso
+select_lider_equipo
+select_coordinador
+select_jefe_area
+select_ing_proceso
+select_ing_calidad
+select_supervisor*/
       axios.post("crud_ead.php", {
         accion: 'insertar',
-        nombre: this.select_nombre,
+        nombre: this.nombre_ead,
         planta: this.select_planta,
         area: this.select_area,
         proceso: this.select_proceso,
@@ -380,7 +403,7 @@ const app = {
         ing_calidad: this.select_ing_calidad,
         supervisor: this.select_supervisor
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data == true) {
           alert("Equipo EAD, creado con éxito")
         } else {
@@ -389,6 +412,7 @@ const app = {
       }).catch(error => {
         alert("Axios CrearEAD :-(" + error)
       })
+
     },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -400,7 +424,7 @@ const app = {
     tablaGraficas(index, valor) {
 
       this.arreglo[index] = valor
-      console.log('tablaGraficas');
+      //console.log('tablaGraficas');
 
       const ctx = document.getElementById('myChart');
 
@@ -440,11 +464,11 @@ const app = {
     },
 
     insertandoValores(index) {
-      console.log(index)
+      //console.log(index)
       var valor = parseFloat(document.getElementById('graficaRechazo' + index).value) || 0;
-      console.log("index:" + index)
-      console.log("valor:" + valor)
-      console.log(arreglo)
+      //console.log("index:" + index)
+      //console.log("valor:" + valor)
+      //console.log(arreglo)
       this.datosGraficaRechazo[index] = valor;
       this.sumarDatosGraficas()
 

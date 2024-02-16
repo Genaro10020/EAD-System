@@ -22,10 +22,10 @@ if (isset($_SESSION['nombre'])) {
                     </p>
                     <div class="dropdown-content">
                         <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                        <a><button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('departamentos')"><b>Departamentos</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                         <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                        <a> <button class="btn_menu" @click="ventanas('crearEAD'), consultarColaboradores()"><b>Crear EAD</b></button></a>
+                        <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores()"><b>Crear EAD</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a>
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
                         <a><button class="btn_menu" @click="ventanas('CrearCompetenciaArea')"><b>Crear Competencia</b></button></a>
@@ -38,14 +38,14 @@ if (isset($_SESSION['nombre'])) {
                         <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
                     </div>
                 </div>
-                <div class="row  divLineaMenu w-100">
-                       
+                <div class="row  divLineaMenu w-100 d-flex text-center align-items-end text-light" style="font-size:14px">
+                       <label class="text-center"> {{ventana}}</label>
                 </div>
                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
-                                    <button class="btn_menu" @click="ventanas('departamentos')"><b>Departamentos</b></button>
+                                    <button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
                                     <button class="btn_menu"  @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()" ><b>Scorecard</b></button>
@@ -66,7 +66,7 @@ if (isset($_SESSION['nombre'])) {
                                     <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button>
                                 </div> -->
             </div>
-            <div v-if="ventana=='usuarios'" class="row"> <!--bloque USUARIO-->
+            <div v-if="ventana=='Usuarios'" class="row"> <!--bloque USUARIO-->
 
                 <div class="seccion1 col-12  col-lg-4 mt-2">
 
@@ -132,7 +132,7 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class="seccion2 col-12   col-lg-8 mt-2">
-                    <div class="scroll col-12">
+                    <div class="scroll">
                         <table class="table table-striped table-bordered border-dark ">
                             <thead class=" border-dark">
                                 <tr class="text-center ">
@@ -207,7 +207,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--FinModalDeDepartamento-->
             </div><!--FIN BLOQUE USUARIOS-->
-            <div v-if="ventana=='departamentos'" class="row"> <!--bloque DEPARTAMENTO-->
+            <div v-if="ventana=='Departamentos'" class="row"> <!--bloque DEPARTAMENTO-->
 
                 <div class="col-12 col-lg-4 flex-colum  align-items-center text-center">
                     <div class="cinta-tablas px-2 rounded-top ">
@@ -439,16 +439,16 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--FinModalDeDepartamento-->
             </div> <!--FIN SCORECARD-->
-            <div v-if="ventana=='crearEAD'" class="row"> <!--bloque CREAR EAD-->
+            <div v-if="ventana=='Crear EAD'" class="row"> <!--bloque CREAR EAD-->
                 <div class="col-12 col-lg-6  col-xl-5 contenido d-flex justify-content-center align-items-center">
                     <div class="row contenido-form  border border-5 shadow-lg text-center">
                         <div><!--agrupando todos los campos-->
                             <div class="col-12 mt-3"> <!--nombre del equipo-->
                                 <div>
-                                    <span>Nombre del equipo{{checkIntegrantes}}</span>
+                                    <span>Nombre del equipo</span>
                                 </div>
                                 <div>
-                                    <input v-model="select_nombre" type="text" class="input-nombreEAD w-75 text-center"></input>
+                                    <input v-model="nombre_ead" type="text" class="input-nombreEAD w-75 text-center"></input>
                                 </div>
                             </div>
                             <div class="col-12"><!--Planta-->
@@ -562,7 +562,7 @@ if (isset($_SESSION['nombre'])) {
                     <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
-                            <input class="form-check-input" type="checkbox" :value="colaborador.colaborador"  v-model="checkIntegrantes" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" :value="colaborador.id"  v-model="checkIntegrantes" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 {{colaborador.colaborador}}
                             </label>
@@ -574,7 +574,7 @@ if (isset($_SESSION['nombre'])) {
                         <div class="card col-6 me-2" style="background-color: #cfcfcf;">
                             <div class="container">
                                 <b class="letrasCard">
-                                    Nombre del equipo
+                                    Equipo
                                 </b>
                                 <br>
                                 <b class="letrasCard">Planta: </b>Enerya
@@ -590,7 +590,7 @@ if (isset($_SESSION['nombre'])) {
                         <div class="card col-6 me-2 " style="background-color: #cfcfcf;">
                             <div class="container">
                                 <b class="letrasCard">
-                                    Nombre del equipo
+                                    Equipo
                                 </b>
                                 <br>
                                 <b class="letrasCard">Planta: </b>Enerya
@@ -1879,8 +1879,9 @@ if (isset($_SESSION['nombre'])) {
                 </div>
             </div>
         </div>
-        <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="js/panel.js?<? echo time(); ?>"></script>
+        <script src="js/header.js?<? echo time(); ?>"></script>
+        
 
     </body>
 
