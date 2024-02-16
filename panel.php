@@ -39,7 +39,7 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class="row  divLineaMenu w-100">
-
+                       
                 </div>
                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
@@ -445,10 +445,10 @@ if (isset($_SESSION['nombre'])) {
                         <div><!--agrupando todos los campos-->
                             <div class="col-12 mt-3"> <!--nombre del equipo-->
                                 <div>
-                                    <span>Nombre del equipo</span>
+                                    <span>Nombre del equipo{{checkIntegrantes}}</span>
                                 </div>
                                 <div>
-                                    <input v-model="select_nombre" type="text" class="input-nombreEAD w-75"></input>
+                                    <input v-model="select_nombre" type="text" class="input-nombreEAD w-75 text-center"></input>
                                 </div>
                             </div>
                             <div class="col-12"><!--Planta-->
@@ -562,7 +562,7 @@ if (isset($_SESSION['nombre'])) {
                     <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" :value="colaborador.colaborador"  v-model="checkIntegrantes" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 {{colaborador.colaborador}}
                             </label>

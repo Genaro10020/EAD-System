@@ -56,6 +56,7 @@ const app = {
       select_ing_proceso: '',
       select_ing_calidad: '',
       select_supervisor: '',
+      checkIntegrantes: [],
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
       numerosTablas2: [1, 2],
       numerosTablas3: [150, 145, 140, 135, 130, 125, 120, 115, 110, 105, 100, 95, 90, 85, 80, 'DIA'],
