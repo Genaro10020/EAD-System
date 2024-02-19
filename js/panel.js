@@ -57,6 +57,11 @@ const app = {
       select_ing_calidad: '',
       select_supervisor: '',
       checkIntegrantes: [],
+      nombresIntegrantes:[],
+      idsIntegrantes:[],
+      consultaEAD:[],
+      ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
+      grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
       numerosTablas2: [1, 2],
       numerosTablas3: [150, 145, 140, 135, 130, 125, 120, 115, 110, 105, 100, 95, 90, 85, 80, 'DIA'],
@@ -70,8 +75,6 @@ const app = {
       datosDiasMerma: ["20", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       sumaTabla: 0,
       datosGraficaRechazo: [],
-      ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
-      grafica: 'Rechazos',
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
 
@@ -347,7 +350,21 @@ const app = {
       }
     },
     /*/////////////////////////////////////////////////////////////////////////////////CREACIÓN DE EQUIPOS DE ALTO DESEMPEÑO */
-    /*Aqui tu metodo o filtro Rubén */
+    consultarEAD(){
+      axios.post("crud_ead.php",{
+        accion:'consultar'
+      }).then(response => {
+        console.log("Consulta EAD",response.data)
+        if(response.data[0]==true){
+            this.consultaEAD= response.data[1];
+            console.log('TAMANIO',this.consultaEAD.length)
+        }
+      }).catch(error => {
+        console.log("Error en la consulta :-( "+ error)
+      }).finally(() => {
+
+      })
+    },
     filtraLiderEquipo() {
       return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Lider de Equipo');
     },
@@ -366,8 +383,26 @@ const app = {
     filtraSupervisor() {
       return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Supervisor')
     },
+    seleccionadosIntegrantes(){
+      this.idsIntegrantes =[]
+      this.nombresIntegrantes =[]
+      var nombres = [];
+      var ids = [];
+      if(this.checkIntegrantes!== null &&this.checkIntegrantes.length>0){
+        for(var i=0;i<this.checkIntegrantes.length;i++){
+          var nombre = this.checkIntegrantes[i].split('<->')[1];
+          var id = this.checkIntegrantes[i].split('<->')[0];
+
+          nombres.push(nombre)
+          ids.push(id)
+        }
+      }
+      this.nombresIntegrantes = nombres;
+      this.ids = ids;
+
+    },
     crearEAD() {
-      
+
       if(!this.nombre_ead){ return alert("Favor de agregar Nombre de EAD")}
       if(!this.select_planta){ return alert("Seleccione Planta")}
       if(!this.select_area){ return alert("Seleccione Área")}
@@ -377,19 +412,9 @@ const app = {
       if(!this.select_jefe_area){ return alert("Seleccione Jefe de Área")}
       if(!this.select_ing_proceso){ return alert("Seleccione Ing. de Proceso")}
       if(!this.select_ing_calidad){ return alert("Seleccione Ing. de Cálidad")}
-      if(!this.select_superviso){ return alert("Seleccione Supervisor")}
+      if(!this.select_supervisor){ return alert("Seleccione Supervisor")}
       if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integranes")}
 
-/*
-select_planta
-select_area
-select_proceso
-select_lider_equipo
-select_coordinador
-select_jefe_area
-select_ing_proceso
-select_ing_calidad
-select_supervisor*/
       axios.post("crud_ead.php", {
         accion: 'insertar',
         nombre: this.nombre_ead,
@@ -401,10 +426,11 @@ select_supervisor*/
         jefe_area: this.select_jefe_area,
         ing_proceso: this.select_ing_proceso,
         ing_calidad: this.select_ing_calidad,
-        supervisor: this.select_supervisor
+        supervisor: this.select_supervisor,
+        ids_integrantes:this.ids
       }).then(response => {
-        //console.log(response.data)
-        if (response.data == true) {
+        console.log(response.data)
+        if (response.data[0] == true) {
           alert("Equipo EAD, creado con éxito")
         } else {
           alert("No se guardo.")
@@ -412,7 +438,6 @@ select_supervisor*/
       }).catch(error => {
         alert("Axios CrearEAD :-(" + error)
       })
-
     },
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

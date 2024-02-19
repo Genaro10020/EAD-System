@@ -18,14 +18,14 @@ if (isset($_SESSION['nombre'])) {
             <div class="  d-flex text-center">
                 <div class="col-1 dropdown" style="width:150px;  ">
                     <p class="dropbtn text-white" style="max-height:10px;">
-                        <i class="bi bi-list">Menu</i>
+                        <i class="bi bi-list">Menú</i>
                     </p>
                     <div class="dropdown-content">
                         <a><i class="bi bi-gear-fill">Configuracion</i></a>
                         <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                         <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                        <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores()"><b>Crear EAD</b></button></a>
+                        <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a>
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
                         <a><button class="btn_menu" @click="ventanas('CrearCompetenciaArea')"><b>Crear Competencia</b></button></a>
@@ -550,8 +550,14 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-12 text-start" style="font-size:10px">
+                                    <ul  class="mt-2">
+                                        <li v-for="(nombre,index) in nombresIntegrantes">{{index+1}}.- {{nombre}}</li>
+                                    </ul>
+                            </div>
                             <div class="col-12 text-center mt-4 mb-2">
                                 <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD()">Crear EAD</button>
+                                {{consultaEAD}}
                             </div>
                         </div>
 
@@ -562,19 +568,19 @@ if (isset($_SESSION['nombre'])) {
                     <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
-                            <input class="form-check-input" type="checkbox" :value="colaborador.id"  v-model="checkIntegrantes" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" :value="colaborador.id+'<->'+colaborador.colaborador"  v-model="checkIntegrantes" @change="seleccionadosIntegrantes()" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
-                                {{colaborador.colaborador}}
+                                {{colaborador.colaborador}} ({{colaborador.numero_nomina}})
                             </label>
                         </div>
                     </div>
                 </div>
                 <div class=" col-xl-5 scroll5">
-                    <div class="d-flex my-2" v-for="i in 10">
+                    <div class="d-flex my-2" v-for="i in consultaEAD.length">
                         <div class="card col-6 me-2" style="background-color: #cfcfcf;">
                             <div class="container">
                                 <b class="letrasCard">
-                                    Equipo
+                                {{consultaEAD.nombre_ead }}
                                 </b>
                                 <br>
                                 <b class="letrasCard">Planta: </b>Enerya

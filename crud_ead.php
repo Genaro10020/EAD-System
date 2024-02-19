@@ -5,8 +5,22 @@ if (isset($_SESSION['nombre'])) {
     include("conexionGhoner.php");
     header('Content-Type: application/json');
     $accion = $arreglo['accion'];
-    $resultado = "";
+    $resultado = [];
     switch ($accion) {
+        case 'consultar':
+           $consulta = "SELECT * FROM equipos_ead";
+           $result = $conexion->query($consulta);
+           if ($result) {
+            $resultado[0] = true;
+                while ($fila = $result->fetch_array()) {
+                   
+                   
+                    $resultado[] = $fila;
+                }
+           }else{
+            $resultado[0] = false;
+           }
+            break;
         case 'insertar':
             $nombre = $arreglo['nombre'];
             $planta = $arreglo['planta'];
@@ -18,33 +32,37 @@ if (isset($_SESSION['nombre'])) {
             $ing_proceso = $arreglo['ing_proceso'];
             $ing_calidad = $arreglo['ing_calidad'];
             $supervisor = $arreglo['supervisor'];
-            /*$insertar = "INSERT INTO tipo_usuario (tipo_usuario) VALUES ('$nuevo')";
-            $query = $conexion->query($insertar);
-            if ($query) {
-                $resultado = $query;
-            }*/
-            $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor)
-                                                  VALUES (?,?,?,?,?,?,?,?,?,?)";
+            $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
+            $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor,integrantes) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexion->prepare($insertar);
             if ($stmt === false) {
-                $resultado = "Error en Bind" . $conexion->error;
+                $resultado[0] = "Error en Bind" . $conexion->error;
             } else {
-                $stmt->bind_param("ssssssssss", $nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor);
+                $stmt->bind_param("sssssssssss", $nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes);
                 if ($stmt->execute()) {
-                    $resultado = true;
+                    $resultado[0] = true;
+                    $id_integrante=json_decode($ids_integrantes,true);
+                    include("conexionBDSugerencias.php");
+                    foreach($id_integrante as $elemento ){
+                        $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=?";
+                        $stmt=$conexion->prepare($update);
+                        if($stmt!==false){
+                            $resultado[1] =true;
+                            $stmt->bind_param("si",$nombre,$elemento);
+                            $stmt->execute();
+                            $stmt->close();
+                        }else{
+                            $resultado[1] ="Error al actualizar: ".$conexion->error;
+                        }
+                    }
+
                 } else {
-                    $resultado = "Error en Bind" . $stmt->error;
+                    $resultado[0] = "Error en Bind" . $stmt->error;
                 }
-                $stmt->close();
             }
             break;
         case 'eliminar':
-            $usuario = $arreglo['usuario'];
-            $delete = "DELETE FROM tipo_usuario WHERE tipo_usuario='$usuario'";
-            $query = $conexion->query($delete);
-            if ($query) {
-                $resultado = $query;
-            }
+          
             break;
 
         default:
