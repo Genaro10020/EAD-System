@@ -5,22 +5,44 @@ if (isset($_SESSION['nombre'])) {
     include("conexionGhoner.php");
     header('Content-Type: application/json');
     $accion = $arreglo['accion'];
-    $resultado = [];
+    $validaciones = [];
+    $equipos = array();
+    $integrantesIDs = array(); 
+    $integrantes= array(); 
     switch ($accion) {
         case 'consultar':
-           $consulta = "SELECT * FROM equipos_ead";
-           $result = $conexion->query($consulta);
-           if ($result) {
-            $resultado[0] = true;
-                while ($fila = $result->fetch_array()) {
-                   
-                   
-                    $resultado[] = $fila;
+            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+    $result = $conexion->query($consulta);
+    
+    if ($result) {
+        $validaciones[0] = true;
+        include("conexionBDSugerencias.php");
+        while ($fila = $result->fetch_array()) {
+            $equipos[] = $fila;
+            $idEAD = $fila['id'];
+            $integrantesIDs = json_decode($fila['integrantes'], true);
+            foreach ($integrantesIDs as $idIntegrante) {
+                if (!isset($integrantes[$idEAD])) {
+                    $integrantes[$idEAD] = []; // Inicializar el array si aún no existe
                 }
-           }else{
-            $resultado[0] = false;
-           }
-            break;
+                $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
+                $resultIntegrantes = $conexion->query($consultaIntegrantes);
+                if($resultIntegrantes){
+                    $validaciones[1] = true;
+                    if ($resultIntegrantes->num_rows > 0) {
+                        while ($datos = $resultIntegrantes->fetch_assoc()) {
+                            $integrantes[$idEAD][] = $datos; // Agregar datos al array usando $idEAD como clave
+                        }
+                    }
+                }else{
+                    $validaciones[1] = false;
+                }
+            }
+        }
+    } else {
+        $validaciones[0] = false;
+    }
+    break;
         case 'insertar':
             $nombre = $arreglo['nombre'];
             $planta = $arreglo['planta'];
@@ -35,29 +57,32 @@ if (isset($_SESSION['nombre'])) {
             $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
             $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor,integrantes) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexion->prepare($insertar);
+           
             if ($stmt === false) {
-                $resultado[0] = "Error en Bind" . $conexion->error;
+                $validaciones[0] = "Error en Bind" . $conexion->error;
             } else {
                 $stmt->bind_param("sssssssssss", $nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes);
                 if ($stmt->execute()) {
-                    $resultado[0] = true;
+                    $validaciones[0] = true;
                     $id_integrante=json_decode($ids_integrantes,true);
+                    $ultimo_id_insertado = $conexion->insert_id; // Obteniendo el último ID insertado
+                    
                     include("conexionBDSugerencias.php");
                     foreach($id_integrante as $elemento ){
                         $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=?";
                         $stmt=$conexion->prepare($update);
                         if($stmt!==false){
-                            $resultado[1] =true;
-                            $stmt->bind_param("si",$nombre,$elemento);
+                            $validaciones[1] =true;
+                            $stmt->bind_param("si",$ultimo_id_insertado,$elemento);
                             $stmt->execute();
                             $stmt->close();
                         }else{
-                            $resultado[1] ="Error al actualizar: ".$conexion->error;
+                            $validaciones[1] ="Error al actualizar: ".$conexion->error;
                         }
                     }
 
                 } else {
-                    $resultado[0] = "Error en Bind" . $stmt->error;
+                    $validaciones[0] = "Error en Bind" . $stmt->error;
                 }
             }
             break;
@@ -69,7 +94,7 @@ if (isset($_SESSION['nombre'])) {
             # code...
             break;
     }
-    echo json_encode($resultado);
+    echo json_encode([$validaciones,$equipos,$integrantesIDs,$integrantes]);
 } else {
     header("Location:index.php");
 }

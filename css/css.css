@@ -111,10 +111,72 @@ table,
     background-position: center bottom 10%;
 }
 
-.letrasCard {
-    font-size: 14px;
+.tarjeta {
+    font-size: 13px;
+    width: 350px;
+    height: auto; /* Altura automática según el contenido */
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
+    background-color: #f7d5d5; /* Color de fondo */
+    padding: 20px; /* Espaciado interno */
+    color: #666666; 
 }
 
+.tarjeta .container {
+    padding: 5px,10px,10px,10px;
+}
+
+.letrasCard {
+    font-weight: bold;
+    font-size: 12px;
+    color: #333333; /* Color del texto */
+}
+
+ul {
+    margin-top: 10px; /* Espaciado superior de la lista */
+    padding-left: 20px; /* Sangría izquierda de la lista */
+}
+
+.tarjeta .container ul li {
+    list-style-type: none; /* Quita viñetas de la lista */
+    font-size: 12px;
+    /* Color del texto de la lista */
+}
+
+
+.update-btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .update-btn { transition: transform 2s linear; }
+  
+  .bi-pencil-fill {
+    font-size: 1.2em;
+    margin-right: 5px;
+  }
+
+  .update-btn:hover { transform: rotate(360deg); }
+  
+  
+  @keyframes miAnimacion {
+    0% {
+      transform: rotate(0);
+    }
+    100% {
+      transform: rotate(360);
+    }
+  }
+  
+ 
 
 .btn_menu {
     box-shadow: inset 0px 1px 0px 0px #cf866c;

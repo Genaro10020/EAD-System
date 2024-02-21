@@ -550,14 +550,14 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-12 text-start" style="font-size:10px">
-                                    <ul  class="mt-2">
+                            <div :show="nombresIntegrantes.lenght>0" class="col-12 text-center " style="font-size:10px">
+                           <label class="mt-2"> Integrantes:</label>
+                                    <ul class="text-start">
                                         <li v-for="(nombre,index) in nombresIntegrantes">{{index+1}}.- {{nombre}}</li>
                                     </ul>
                             </div>
                             <div class="col-12 text-center mt-4 mb-2">
                                 <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD()">Crear EAD</button>
-                                {{consultaEAD}}
                             </div>
                         </div>
 
@@ -576,39 +576,29 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class=" col-xl-5 scroll5">
-                    <div class="d-flex my-2" v-for="i in consultaEAD.length">
-                        <div class="card col-6 me-2" style="background-color: #cfcfcf;">
-                            <div class="container">
-                                <b class="letrasCard">
-                                {{consultaEAD.nombre_ead }}
-                                </b>
-                                <br>
-                                <b class="letrasCard">Planta: </b>Enerya
-                                <b class="letrasCard"> Area: </b> Placas
+                        <div class="row">
+                            <div class=" col-6 d-flex justify-content-center" v-for="(cantidad, index) in consultaEAD.length" :key="index" >
+                                <div class="tarjeta my-2">
+                                    <div class="container text-center">
+                                        <label class="letrasCard text-center mb-2"> 
+                                            {{ consultaEAD[index].nombre_ead}}
+                                            <button class="update-btn"> <i class="bi bi-pencil"></i>Actualizar</button>
+                                        </label>
+                                        <br>
+                                        <b class="letrasCard">Planta: </b>  {{consultaEAD[index].planta}}
+                                        <b class="letrasCard">Area: </b> {{consultaEAD[index].area}}<br>
+                                        {{}}
 
-                                <ul>
-                                    <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                        Integrante {{i}}
-                                    </li>
-                                </ul>
+                                        <ul class="text-start">
+                                            <li v-for="(integrantes,posicion) in integrantesEAD[consultaEAD[index].id]" style="margin-bottom: 2px; font-size: 12px;">
+                                              {{posicion+1}}.- {{ integrantes.colaborador }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="card col-6 me-2 " style="background-color: #cfcfcf;">
-                            <div class="container">
-                                <b class="letrasCard">
-                                    Equipo
-                                </b>
-                                <br>
-                                <b class="letrasCard">Planta: </b>Enerya
-                                <b class="letrasCard"> Area: </b> Placas
-                                <ul>
-                                    <li v-for="i in 10" style="margin-bottom: 2px; font-size: 12px;">
-                                        Integrante {{i}}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
             <div v-if="ventana=='equiposEAD'" class="row"> <!--bloque CREAR EAD-->

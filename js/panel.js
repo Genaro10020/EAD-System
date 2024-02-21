@@ -60,6 +60,7 @@ const app = {
       nombresIntegrantes:[],
       idsIntegrantes:[],
       consultaEAD:[],
+      integrantesEAD:[],
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -355,9 +356,14 @@ const app = {
         accion:'consultar'
       }).then(response => {
         console.log("Consulta EAD",response.data)
-        if(response.data[0]==true){
+        if(response.data[0][0]==true){
             this.consultaEAD= response.data[1];
-            console.log('TAMANIO',this.consultaEAD.length)
+            if (response.data[0][1]==true) {
+              this.integrantesEAD = response.data[3]
+              console.log("Integrantes EAD",this.integrantesEAD)
+            }else{
+              console.log("no se logro consultar los Integrantes EAD")
+            }
         }
       }).catch(error => {
         console.log("Error en la consulta :-( "+ error)
@@ -384,6 +390,7 @@ const app = {
       return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Supervisor')
     },
     seleccionadosIntegrantes(){
+      this.ids =[]
       this.idsIntegrantes =[]
       this.nombresIntegrantes =[]
       var nombres = [];
@@ -392,7 +399,6 @@ const app = {
         for(var i=0;i<this.checkIntegrantes.length;i++){
           var nombre = this.checkIntegrantes[i].split('<->')[1];
           var id = this.checkIntegrantes[i].split('<->')[0];
-
           nombres.push(nombre)
           ids.push(id)
         }
@@ -430,8 +436,23 @@ const app = {
         ids_integrantes:this.ids
       }).then(response => {
         console.log(response.data)
-        if (response.data[0] == true) {
+        if (response.data[0][0] == true) {
           alert("Equipo EAD, creado con éxito")
+          this.nombre_ead = ''
+          this.select_planta= ''
+          this.select_area= ''
+          this.select_proceso= ''
+          this.select_lider_equipo= ''
+          this.select_coordinador= ''
+          this.select_jefe_area= ''
+          this.select_ing_proceso= ''
+          this.select_ing_calidad= ''
+          this.select_supervisor= ''
+          this.idsIntegrantes =[]
+          this.nombresIntegrantes =[]
+          this.ids =[]
+          this.checkIntegrantes = []
+          this.consultarEAD();
         } else {
           alert("No se guardo.")
         }
