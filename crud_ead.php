@@ -16,10 +16,15 @@ if (isset($_SESSION['nombre'])) {
     
     if ($result) {
         $validaciones[0] = true;
+        $validaciones[1] = false;
         include("conexionBDSugerencias.php");
         if($result->num_rows>0){
             while ($fila = $result->fetch_array()) {
-                $equipos[] = $fila;
+                $idEquipo = $fila['id'];
+                if(!isset($equipos[$idEquipo])){
+                    $integrantes[$idEquipo] = []; 
+                }
+                $equipos[$idEquipo][] = $fila;
                 $idEAD = $fila['id'];
                 $integrantesIDs = json_decode($fila['integrantes'], true);
                 if (!empty($integrantesIDs) && is_array($integrantesIDs)) {
@@ -42,6 +47,8 @@ if (isset($_SESSION['nombre'])) {
                         }
                     }
             }
+        }else{
+            $validaciones[1] = true; 
         }
     } else {
         $validaciones[0] = false;

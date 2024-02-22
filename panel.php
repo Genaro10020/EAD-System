@@ -577,26 +577,26 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-xl-5 scroll5">
                         <div class="row">
-                            <div class=" col-6 d-flex justify-content-center" v-for="(cantidad, index) in consultaEAD.length" :key="index" >
-                                <div class="tarjeta my-2">
-                                    <div class="container text-center">
-                                        <label class="letrasCard text-center mb-2"> 
-                                            {{ consultaEAD[index].nombre_ead}}
-                                            <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3"> <i class="bi bi-pencil"></i>Actualizar</button>
-                                        </label>
-                                        <br>
-                                        <b class="letrasCard">Planta: </b>  {{consultaEAD[index].planta}}
-                                        <b class="letrasCard">Area: </b> {{consultaEAD[index].area}}<br>
-                                        {{}}
-
-                                        <ul class="text-start">
-                                            <li v-for="(integrantes,posicion) in integrantesEAD[consultaEAD[index].id]" style="margin-bottom: 2px; font-size: 12px;">
-                                              {{posicion+1}}.- {{ integrantes.colaborador }}
-                                            </li>
-                                        </ul>
-                                    </div>
+                        <div class="col-6 d-flex justify-content-center" v-for="(equipos, index) in consultaEAD" :key="index">
+                            <div class="tarjeta my-2">
+                                <div class="container text-center">
+                                    <label class="letrasCard text-center mb-2"> 
+                                        {{ equipos[0].nombre_ead }}
+                                        <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3" @click="editarEAD(equipos[0].id)">
+                                            <i class="bi bi-pencil"></i> Actualizar
+                                        </button>
+                                    </label>
+                                    <br>
+                                    <b class="letrasCard">Planta:</b> {{ equipos[0].planta }}
+                                    <b class="letrasCard">Area:</b> {{ equipos[0].area }}<br>
+                                    <ul class="text-start">
+                                        <li v-for="(integrante, posicion) in integrantesEAD[equipos[0].id]" style="margin-bottom: 2px; font-size: 12px;">
+                                            {{ posicion+1 }}.- {{ integrante.colaborador }}
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
+                        </div>
                         </div>
 
                 </div>
