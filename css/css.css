@@ -73,6 +73,35 @@ table,
     font-size: 0.7em;
 }
 
+.btn-actualizar{transition: transform 0.1s linear}
+.btn-actualizar:hover{transform: scale(1.2)}/*120%*/
+
+
+
+
+/*.update-btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .update-btn { transition: transform 0.1s linear; }
+  
+  .bi-pencil-fill {
+    font-size: 1.2em;
+    margin-right: 5px;
+  }
+
+  .update-btn:hover { transform: rotate(5deg); }*/
+
+
 .label-session {
     color: #585656;
     font-size: 1em;
@@ -144,38 +173,8 @@ ul {
 }
 
 
-.update-btn {
-    background-color: #007bff;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    padding: 5px 10px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
   
-  .update-btn { transition: transform 2s linear; }
-  
-  .bi-pencil-fill {
-    font-size: 1.2em;
-    margin-right: 5px;
-  }
 
-  .update-btn:hover { transform: rotate(360deg); }
-  
-  
-  @keyframes miAnimacion {
-    0% {
-      transform: rotate(0);
-    }
-    100% {
-      transform: rotate(360);
-    }
-  }
-  
  
 
 .btn_menu {

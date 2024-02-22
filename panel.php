@@ -72,7 +72,7 @@ if (isset($_SESSION['nombre'])) {
 
                     <div class="formulario col-12 mx-auto col-sm-112 col-lg-10  col-xl-8 col-xxl-6  pt-4 ps-2 pe-2 ps-lg-3  pe-lg-3  rounded shadow-sm">
                         <h6 class="text-center label-session "><b>{{titulo_formulario_usuarios}}</b></h6>
-                        <form @submit.prevent="nuevoActualizarUsuario" action="procesar_login.php" method="POST">
+                        <form @submit.prevent="nuevoActualizarUsuario"  method="POST">
                             <div class="mb-1">
                                 <label class=" label-session">Nombre</label>
                                 <input type="text" class="form-control" v-model="nombre" required>
@@ -582,7 +582,7 @@ if (isset($_SESSION['nombre'])) {
                                     <div class="container text-center">
                                         <label class="letrasCard text-center mb-2"> 
                                             {{ consultaEAD[index].nombre_ead}}
-                                            <button class="update-btn"> <i class="bi bi-pencil"></i>Actualizar</button>
+                                            <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3"> <i class="bi bi-pencil"></i>Actualizar</button>
                                         </label>
                                         <br>
                                         <b class="letrasCard">Planta: </b>  {{consultaEAD[index].planta}}
