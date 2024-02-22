@@ -17,26 +17,30 @@ if (isset($_SESSION['nombre'])) {
     if ($result) {
         $validaciones[0] = true;
         include("conexionBDSugerencias.php");
-        while ($fila = $result->fetch_array()) {
-            $equipos[] = $fila;
-            $idEAD = $fila['id'];
-            $integrantesIDs = json_decode($fila['integrantes'], true);
-            foreach ($integrantesIDs as $idIntegrante) {
-                if (!isset($integrantes[$idEAD])) {
-                    $integrantes[$idEAD] = []; // Inicializar el array si aún no existe
-                }
-                $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
-                $resultIntegrantes = $conexion->query($consultaIntegrantes);
-                if($resultIntegrantes){
-                    $validaciones[1] = true;
-                    if ($resultIntegrantes->num_rows > 0) {
-                        while ($datos = $resultIntegrantes->fetch_assoc()) {
-                            $integrantes[$idEAD][] = $datos; // Agregar datos al array usando $idEAD como clave
+        if($result->num_rows>0){
+            while ($fila = $result->fetch_array()) {
+                $equipos[] = $fila;
+                $idEAD = $fila['id'];
+                $integrantesIDs = json_decode($fila['integrantes'], true);
+                if (!empty($integrantesIDs) && is_array($integrantesIDs)) {
+                        foreach ($integrantesIDs as $idIntegrante) {
+                            if (!isset($integrantes[$idEAD])) {
+                                $integrantes[$idEAD] = []; // Inicializar el array si aún no existe
+                            }
+                            $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
+                            $resultIntegrantes = $conexion->query($consultaIntegrantes);
+                            if($resultIntegrantes){
+                                $validaciones[1] = true;
+                                if ($resultIntegrantes->num_rows > 0) {
+                                    while ($datos = $resultIntegrantes->fetch_assoc()) {
+                                        $integrantes[$idEAD][] = $datos; // Agregar datos al array usando $idEAD como clave
+                                    }
+                                }
+                            }else{
+                                $validaciones[1] = false;
+                            }
                         }
                     }
-                }else{
-                    $validaciones[1] = false;
-                }
             }
         }
     } else {
