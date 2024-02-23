@@ -11,10 +11,10 @@ if (isset($_SESSION['nombre'])) {
     $integrantes= array(); 
     switch ($accion) {
         case 'consultar':
-            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
-    $result = $conexion->query($consulta);
+        $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+        $result = $conexion->query($consulta);
     
-    if ($result) {
+        if ($result) {
         $validaciones[0] = true;
         $validaciones[1] = false;
         include("conexionBDSugerencias.php");
@@ -151,16 +151,39 @@ if (isset($_SESSION['nombre'])) {
             }else{
                 $validaciones[0] = "Error en actualizar ".$conexion->error;
             }
-            $conexion->close();
         break;
         case 'eliminar':
-          
-            break;
+            $idEquipo=$arreglo['id_equipo'];
+            $delete = "DELETE FROM equipos_ead WHERE id = ?";
+            $stmt = $conexion->prepare($delete);
+            if($stmt){
+                $validaciones[0] = true;
+                $stmt->bind_param("i",$idEquipo);
+                $stmt->execute();
+                $stmt->close();
+                include("conexionBDSugerencias.php");
+                $actualizar = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead = ? WHERE equipo_ead = ?";
+                $stmt = $conexion->prepare($actualizar);
+                if($stmt){
+                    $validaciones[1] = true;
+                    $nulo = null;
+                    $stmt->bind_param("si",$nulo,$idEquipo);
+                    $stmt->execute();
+                    $stmt->close();
+                }else{
+                    $validaciones[1] = "no se actualizo la tabla colaboradores ".$conexion->error;
+                }
 
+            }else{
+                $validaciones[0] = "No se elimino el equipo".$conexion->error;
+            }
+           
+            break;
         default:
-            # code...
+            $validaciones[] = "No existe esa opción";
             break;
     }
+    $conexion->close();
     echo json_encode([$validaciones,$equipos,$integrantesIDs,$integrantes]);
 } else {
     header("Location:index.php");

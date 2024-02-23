@@ -581,10 +581,7 @@ if (isset($_SESSION['nombre'])) {
                             <div class="tarjeta my-2">
                                 <div class="container text-center">
                                     <label class="letrasCard text-center mb-2"> 
-                                        {{ equipos[0].nombre_ead }} {{ equipos[0].id }}
-                                        <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id)">
-                                            <i class="bi bi-pencil"></i> Actualizar 
-                                        </button>
+                                            {{ equipos[0].nombre_ead }}
                                     </label>
                                     <br>
                                     <b class="letrasCard">Planta:</b> {{ equipos[0].planta }}
@@ -594,11 +591,23 @@ if (isset($_SESSION['nombre'])) {
                                             {{ posicion+1 }}.- {{ integrante.colaborador }}
                                         </li>
                                     </ul>
+                                                    
+                                </div>
+                                <div class="d-flex justify-content-center">
+                                    <div>
+                                        <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id)">
+                                            <i class="bi bi-pencil"></i> Actualizar 
+                                        </button>
+                                    </div>
+                                    <div> 
+                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="eliminarEquipo(equipos[0].id,equipos[0].nombre_ead)">
+                                            <i class="bi bi-pencil"></i> Eliminar 
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         </div>
-
                 </div>
             </div>
             <div v-if="ventana=='equiposEAD'" class="row"> <!--bloque CREAR EAD-->

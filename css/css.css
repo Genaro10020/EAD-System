@@ -73,8 +73,8 @@ table,
     font-size: 0.7em;
 }
 
-.btn-actualizar{transition: transform 0.1s linear}
-.btn-actualizar:hover{transform: scale(1.2)}/*120%*/
+.btn-actualizar, .btn-eliminar{transition: transform 0.1s linear}
+.btn-actualizar:hover, .btn-eliminar:hover{transform: scale(1.2)}/*120%*/
 
 
 

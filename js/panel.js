@@ -362,7 +362,7 @@ const app = {
             this.consultaEAD= response.data[1];
             if (response.data[0][1]==true) {
               this.integrantesEAD = response.data[3]
-              console.log("Integrantes EAD",this.integrantesEAD)
+              //console.log("Integrantes EAD",this.integrantesEAD)
             }else{
               console.log("no se logro consultar los Integrantes EAD")
             }
@@ -407,7 +407,6 @@ const app = {
       }
       this.nombresIntegrantes = nombres;//simplemente para mostrar los nombres seleccionados
       this.ids = ids;
-
     },
     crearEAD(accion) {
       if(!this.nombre_ead){ return alert("Favor de agregar Nombre de EAD")}
@@ -438,12 +437,13 @@ const app = {
         ids_integrantes:this.ids,
         idEquipo:this.idEquipo
       }).then(response => {
-        console.log(response.data)
+        //console.log(response.data)
         if (response.data[0][0] !== true) {alert("los datos no se guardaron correctamente");return;}
         if(accion=="actualizar"){
           if (response.data[0][1] !== true ||response.data[0][2] !== true ) {alert("los datos no se guardaron correctamente");return;}
         }
           alert("Se guardo con Éxito")
+          this.var_actualizarEAD = false;
           this.nombre_ead = ''
           this.select_planta= ''
           this.select_area= ''
@@ -465,12 +465,12 @@ const app = {
       })
     },
     datosParaEditarEAD(id_equipo){
+      console.log("ID EAD: "+id_equipo)
       this.idEquipo = id_equipo
       this.idsIntegrantes =[]
       this.nombresIntegrantes =[]
       this.ids =[]
       this.checkIntegrantes = []
-      console.log('Datos de EAD',this.consultaEAD)
       this.var_actualizarEAD = true;
       this.nombre_ead = this.consultaEAD[id_equipo][0].nombre_ead
       this.select_planta= this.consultaEAD[id_equipo][0].planta
@@ -484,7 +484,7 @@ const app = {
       this.select_supervisor= this.consultaEAD[id_equipo][0].supervisor
       var arregloColaboradores = [];
       this.integrantesEAD[id_equipo].forEach(function(element){
-        console.log(element.id+'<->'+element.colaborador)
+        //console.log(element.id+'<->'+element.colaborador)
         arregloColaboradores.push(element.id+'<->'+element.colaborador);
       });
       this.checkIntegrantes = arregloColaboradores; //actualizo el check con los integrantes del equipo
@@ -506,6 +506,22 @@ const app = {
       this.nombresIntegrantes =[]
       this.ids =[]
       this.checkIntegrantes = []
+    },
+    eliminarEquipo(id_equipo,nombre){
+      console.log(id_equipo)
+      if(!confirm("Desea Eliminar el EAD con nombre: "+nombre)){return} 
+      axios.post("crud_ead.php",{
+        id_equipo:id_equipo,
+        accion:'eliminar'
+      }).then(response =>{
+        console.log(response.data);
+        if(response.data[0][0]!=true || response.data[0][1]!=true){return "No se elimino correctamente el equipo"}
+        alert("Se elimino correctamente");
+        this.consultarEAD();
+      }).catch(error =>{
+        console.log("Error en axios: "+error)
+
+      })
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
