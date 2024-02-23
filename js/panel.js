@@ -3,6 +3,7 @@ const app = {
   data() {
     return {
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
+      var_actualizarEAD:false,
       ventana: 'Usuarios',
       accion: 'insertar',
       accion_departamento: '',
@@ -459,9 +460,40 @@ const app = {
         alert("Axios CrearEAD :-(" + error)
       })
     },
-    editarEAD(id_equipo){
-      console.log(this.consultaEAD[id_equipo])
-
+    datosParaEditarEAD(id_equipo){
+      console.log('Datos de EAD',this.consultaEAD)
+      this.var_actualizarEAD = true;
+      this.nombre_ead = this.consultaEAD[id_equipo][0].nombre_ead
+      this.select_planta= this.consultaEAD[id_equipo][0].planta
+      this.select_area= this.consultaEAD[id_equipo][0].area
+      this.select_proceso= this.consultaEAD[id_equipo][0].proceso
+      this.select_lider_equipo= this.consultaEAD[id_equipo][0].lider_equipo
+      this.select_coordinador= this.consultaEAD[id_equipo][0].coordinador
+      this.select_jefe_area= this.consultaEAD[id_equipo][0].jefe_area
+      this.select_ing_proceso= this.consultaEAD[id_equipo][0].ing_procesos
+      this.select_ing_calidad= this.consultaEAD[id_equipo][0].ing_calidad
+      this.select_supervisor= this.consultaEAD[id_equipo][0].supervisor
+      this.idsIntegrantes =[]
+      this.nombresIntegrantes =[]
+      this.ids =[]
+      this.checkIntegrantes = []
+    },
+    cancelarActualizar(){
+      this.var_actualizarEAD = false;
+      this.nombre_ead = ''
+      this.select_planta= ''
+      this.select_area= ''
+      this.select_proceso= ''
+      this.select_lider_equipo= ''
+      this.select_coordinador= ''
+      this.select_jefe_area= ''
+      this.select_ing_proceso= ''
+      this.select_ing_calidad= ''
+      this.select_supervisor= ''
+      this.idsIntegrantes =[]
+      this.nombresIntegrantes =[]
+      this.ids =[]
+      this.checkIntegrantes = []
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

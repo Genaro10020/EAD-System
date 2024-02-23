@@ -308,6 +308,41 @@ button {
     box-shadow: 1px 1px 2px #151515;
     border: none;
 }
+.botones-actualizar {
+    width: 130px;
+    background-color: #ffc423;
+    color: black;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+
+    transition: all 0.3s;
+}
+
+.botones-actualizar:hover {
+    background-color: #faf86e;
+    color: black;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+.botones-cancelar {
+    width: 130px;
+    background-color: #dbdbdb;
+    color: black;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+
+    transition: all 0.3s;
+}
+
+.botones-cancelar:hover {
+    background-color: #f0f0f0;
+    color: black;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
 
 .verde {
     background-color: #3bb46e
