@@ -62,6 +62,7 @@ const app = {
       idsIntegrantes:[],
       consultaEAD:[],
       integrantesEAD:[],
+      idEquipo:[],
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -396,7 +397,7 @@ const app = {
       this.nombresIntegrantes =[]
       var nombres = [];
       var ids = [];
-      if(this.checkIntegrantes!== null &&this.checkIntegrantes.length>0){
+      if(this.checkIntegrantes!== null && this.checkIntegrantes.length>0){
         for(var i=0;i<this.checkIntegrantes.length;i++){
           var nombre = this.checkIntegrantes[i].split('<->')[1];
           var id = this.checkIntegrantes[i].split('<->')[0];
@@ -404,11 +405,11 @@ const app = {
           ids.push(id)
         }
       }
-      this.nombresIntegrantes = nombres;
+      this.nombresIntegrantes = nombres;//simplemente para mostrar los nombres seleccionados
       this.ids = ids;
 
     },
-    crearEAD() {
+    crearEAD(accion) {
       if(!this.nombre_ead){ return alert("Favor de agregar Nombre de EAD")}
       if(!this.select_planta){ return alert("Seleccione Planta")}
       if(!this.select_area){ return alert("Seleccione Área")}
@@ -421,8 +422,9 @@ const app = {
       if(!this.select_supervisor){ return alert("Seleccione Supervisor")}
       if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integranes")}
 
+
       axios.post("crud_ead.php", {
-        accion: 'insertar',
+        accion: accion,
         nombre: this.nombre_ead,
         planta: this.select_planta,
         area: this.select_area,
@@ -433,11 +435,15 @@ const app = {
         ing_proceso: this.select_ing_proceso,
         ing_calidad: this.select_ing_calidad,
         supervisor: this.select_supervisor,
-        ids_integrantes:this.ids
+        ids_integrantes:this.ids,
+        idEquipo:this.idEquipo
       }).then(response => {
         console.log(response.data)
-        if (response.data[0][0] == true) {
-          alert("Equipo EAD, creado con éxito")
+        if (response.data[0][0] !== true) {alert("los datos no se guardaron correctamente");return;}
+        if(accion=="actualizar"){
+          if (response.data[0][1] !== true ||response.data[0][2] !== true ) {alert("los datos no se guardaron correctamente");return;}
+        }
+          alert("Se guardo con Éxito")
           this.nombre_ead = ''
           this.select_planta= ''
           this.select_area= ''
@@ -453,14 +459,17 @@ const app = {
           this.ids =[]
           this.checkIntegrantes = []
           this.consultarEAD();
-        } else {
-          alert("No se guardo.")
-        }
+        
       }).catch(error => {
         alert("Axios CrearEAD :-(" + error)
       })
     },
     datosParaEditarEAD(id_equipo){
+      this.idEquipo = id_equipo
+      this.idsIntegrantes =[]
+      this.nombresIntegrantes =[]
+      this.ids =[]
+      this.checkIntegrantes = []
       console.log('Datos de EAD',this.consultaEAD)
       this.var_actualizarEAD = true;
       this.nombre_ead = this.consultaEAD[id_equipo][0].nombre_ead
@@ -473,10 +482,13 @@ const app = {
       this.select_ing_proceso= this.consultaEAD[id_equipo][0].ing_procesos
       this.select_ing_calidad= this.consultaEAD[id_equipo][0].ing_calidad
       this.select_supervisor= this.consultaEAD[id_equipo][0].supervisor
-      this.idsIntegrantes =[]
-      this.nombresIntegrantes =[]
-      this.ids =[]
-      this.checkIntegrantes = []
+      var arregloColaboradores = [];
+      this.integrantesEAD[id_equipo].forEach(function(element){
+        console.log(element.id+'<->'+element.colaborador)
+        arregloColaboradores.push(element.id+'<->'+element.colaborador);
+      });
+      this.checkIntegrantes = arregloColaboradores; //actualizo el check con los integrantes del equipo
+      this.seleccionadosIntegrantes() //lo llamo para recuperar ids y nombres
     },
     cancelarActualizar(){
       this.var_actualizarEAD = false;

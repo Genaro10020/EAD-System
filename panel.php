@@ -557,8 +557,8 @@ if (isset($_SESSION['nombre'])) {
                                     </ul>
                             </div>
                             <div class="col-12 text-center mt-4 mb-2">
-                                <button  v-if="var_actualizarEAD" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2" @click="actualizarEAD()">Actualizar EAD</button>
-                                <button  v-if="!var_actualizarEAD" class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD()">Crear EAD</button>
+                                <button  v-if="var_actualizarEAD" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD('actualizar')">Actualizar EAD</button>
+                                <button  v-if="!var_actualizarEAD" class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD('insertar')">Crear EAD</button>
                                 <button  v-if="var_actualizarEAD" class="botones-cancelar rounded-pill border-0 my-1 px-2 mb-2 ms-2" @click="cancelarActualizar()">Cancelar</button>
                             </div>
                         </div>
@@ -581,9 +581,9 @@ if (isset($_SESSION['nombre'])) {
                             <div class="tarjeta my-2">
                                 <div class="container text-center">
                                     <label class="letrasCard text-center mb-2"> 
-                                        {{ equipos[0].nombre_ead }}
+                                        {{ equipos[0].nombre_ead }} {{ equipos[0].id }}
                                         <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id)">
-                                            <i class="bi bi-pencil"></i> Actualizar
+                                            <i class="bi bi-pencil"></i> Actualizar 
                                         </button>
                                     </label>
                                     <br>

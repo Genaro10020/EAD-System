@@ -97,6 +97,62 @@ if (isset($_SESSION['nombre'])) {
                 }
             }
             break;
+        case 'actualizar':
+            
+            $idEquipo = $arreglo['idEquipo'];
+            $nombre = $arreglo['nombre'];
+            $planta = $arreglo['planta'];
+            $area = $arreglo['area'];
+            $proceso = $arreglo['proceso'];
+            $lider_equipo = $arreglo['lider'];
+            $coordinador = $arreglo['coordinador'];
+            $jefe_area = $arreglo['jefe_area'];
+            $ing_proceso = $arreglo['ing_proceso'];
+            $ing_calidad = $arreglo['ing_calidad'];
+            $supervisor = $arreglo['supervisor'];
+            $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
+
+            //Actualizo Equipos EAD    
+            $actualizar = "UPDATE equipos_ead SET nombre_ead = ?,planta = ?,area = ? ,proceso = ?,lider_equipo = ?,coordinador = ?,jefe_area = ?,ing_procesos = ?,ing_calidad = ?,supervisor = ?,integrantes = ? WHERE id = ?";
+            $stmt = $conexion->prepare($actualizar);
+            if($stmt){
+                $validaciones[0] = true;
+                $stmt->bind_param('sssssssssssi',$nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes,$idEquipo);
+                $stmt->execute();
+                $stmt->close();
+                 //Elimino el id a todos los integrantes para posteriormente colocarles el ID nuevamente pero ya con los nuevos integrantes (Evito que no se me escape ningun integrante)
+                    include("conexionBDSugerencias.php");
+                    $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE equipo_ead=?";
+                    $stmt = $conexion->prepare($update);
+                    if($stmt){
+                        $validaciones[1] = true;
+                        $nulo = null;
+                        $stmt->bind_param("si",$nulo,$idEquipo);
+                        $stmt->execute();
+                        $stmt->close();
+
+                        $id_integrante = json_decode($ids_integrantes,true);
+                        foreach($id_integrante as $elemento ){//ahora a cada elemento le agrego el id del equipo. tanto a los nuevo como los existes, por eso limpio antes.
+                            $validaciones[] =$elemento;
+                            $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=?";
+                            $stmt=$conexion->prepare($update);
+                            if($stmt!==false){
+                                $validaciones[2] =true;
+                                $stmt->bind_param("si",$idEquipo,$elemento);
+                                $stmt->execute();
+                                $stmt->close();
+                            }else{
+                                $validaciones[2] ="Error al actualizar: ".$conexion->error;
+                            }
+                        }
+                    }else{
+                        $validaciones[1] = "Error al limpiar id equipo". $conexion->error;
+                    }
+            }else{
+                $validaciones[0] = "Error en actualizar ".$conexion->error;
+            }
+            $conexion->close();
+        break;
         case 'eliminar':
           
             break;
