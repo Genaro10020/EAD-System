@@ -32,7 +32,7 @@ if (isset($_SESSION['nombre'])) {
                             if (!isset($integrantes[$idEAD])) {
                                 $integrantes[$idEAD] = []; // Inicializar el array si aún no existe
                             }
-                            $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
+                            $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante' ORDER BY equipo_ead DESC";
                             $resultIntegrantes = $conexion->query($consultaIntegrantes);
                             if($resultIntegrantes){
                                 $validaciones[1] = true;

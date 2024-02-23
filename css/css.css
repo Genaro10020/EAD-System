@@ -223,6 +223,7 @@ ul {
     /* Establece la altura máxima del div con scroll */
 }
 
+
 .scroll2 {
     overflow: auto;
     height: 30vh;

@@ -359,8 +359,10 @@ const app = {
       }).then(response => {
         console.log("Consulta EAD",response.data)
         if(response.data[0][0]==true){
-            this.consultaEAD= response.data[1];
-            if (response.data[0][1]==true) {
+
+          this.consultaEAD =response.data[1]
+
+            if (response.data[0][1]==true) {             
               this.integrantesEAD = response.data[3]
               //console.log("Integrantes EAD",this.integrantesEAD)
             }else{
