@@ -63,6 +63,11 @@ const app = {
       consultaEAD:[],
       integrantesEAD:[],
       idEquipo:[],
+      //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
+      EADFiltrado:[],
+      select_planta_foro:'',
+      select_area_foro:'',
+
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -359,8 +364,14 @@ const app = {
       }).then(response => {
         console.log("Consulta EAD",response.data)
         if(response.data[0][0]==true){
-
-          this.consultaEAD =response.data[1]
+          //this.consultaEAD =response.data[1]
+              var numeros = Object.keys(response.data[1]).map(Number); //tomando los indices del objeto
+              const comparar = (a, b) => b - a;// b es mayo que a positivo contrario negativo y si son iguales el resultado es 0
+              const ordenando = numeros.sort(comparar) //metodo que me pemite hacer la comparacion de dos variables sort
+              //console.log('Ordenando', ordenando); // [1, 2, 3, 4, 5]
+              const nuevoOrden = ordenando.map(num => response.data[1][num.toString()]);
+              //console.log('Nuevo Orden', nuevoOrden); // [1, 2, 3, 4, 5]
+              this.consultaEAD = nuevoOrden;
 
             if (response.data[0][1]==true) {             
               this.integrantesEAD = response.data[3]
@@ -466,24 +477,25 @@ const app = {
         alert("Axios CrearEAD :-(" + error)
       })
     },
-    datosParaEditarEAD(id_equipo){
-      console.log("ID EAD: "+id_equipo)
-      this.idEquipo = id_equipo
+    datosParaEditarEAD(id_equipo,index){
+
+     console.log("ID EAD: "+id_equipo)
+       this.idEquipo = id_equipo
       this.idsIntegrantes =[]
       this.nombresIntegrantes =[]
       this.ids =[]
       this.checkIntegrantes = []
       this.var_actualizarEAD = true;
-      this.nombre_ead = this.consultaEAD[id_equipo][0].nombre_ead
-      this.select_planta= this.consultaEAD[id_equipo][0].planta
-      this.select_area= this.consultaEAD[id_equipo][0].area
-      this.select_proceso= this.consultaEAD[id_equipo][0].proceso
-      this.select_lider_equipo= this.consultaEAD[id_equipo][0].lider_equipo
-      this.select_coordinador= this.consultaEAD[id_equipo][0].coordinador
-      this.select_jefe_area= this.consultaEAD[id_equipo][0].jefe_area
-      this.select_ing_proceso= this.consultaEAD[id_equipo][0].ing_procesos
-      this.select_ing_calidad= this.consultaEAD[id_equipo][0].ing_calidad
-      this.select_supervisor= this.consultaEAD[id_equipo][0].supervisor
+      this.nombre_ead = this.consultaEAD[index][0].nombre_ead
+      this.select_planta= this.consultaEAD[index][0].planta
+      this.select_area= this.consultaEAD[index][0].area
+      this.select_proceso= this.consultaEAD[index][0].proceso
+      this.select_lider_equipo= this.consultaEAD[index][0].lider_equipo
+      this.select_coordinador= this.consultaEAD[index][0].coordinador
+      this.select_jefe_area= this.consultaEAD[index][0].jefe_area
+      this.select_ing_proceso= this.consultaEAD[index][0].ing_procesos
+      this.select_ing_calidad= this.consultaEAD[index][0].ing_calidad
+      this.select_supervisor= this.consultaEAD[index][0].supervisor
       var arregloColaboradores = [];
       this.integrantesEAD[id_equipo].forEach(function(element){
         //console.log(element.id+'<->'+element.colaborador)
@@ -520,6 +532,27 @@ const app = {
         if(response.data[0][0]!=true || response.data[0][1]!=true){return "No se elimino correctamente el equipo"}
         alert("Se elimino correctamente");
         this.consultarEAD();
+      }).catch(error =>{
+        console.log("Error en axios: "+error)
+
+      })
+    },
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////CREAR COMPETENCIAS/////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    cosultarEADxPlantaxArea(){
+      console.log()
+      axios.get("crearCompetenciasController.php",{
+       params: {
+          accion:'Filtrar'
+       }
+      }).then(response =>{
+        console.log(response.data);
+        this.EADFiltrado = response.data[0];
+        
       }).catch(error =>{
         console.log("Error en axios: "+error)
 

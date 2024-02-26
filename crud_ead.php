@@ -8,7 +8,7 @@ if (isset($_SESSION['nombre'])) {
     $validaciones = [];
     $equipos = array();
     $integrantesIDs = array(); 
-    $integrantes= array(); 
+    $integrantes= array();  
     switch ($accion) {
         case 'consultar':
         $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
@@ -32,7 +32,7 @@ if (isset($_SESSION['nombre'])) {
                             if (!isset($integrantes[$idEAD])) {
                                 $integrantes[$idEAD] = []; // Inicializar el array si aún no existe
                             }
-                            $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante' ORDER BY equipo_ead DESC";
+                            $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
                             $resultIntegrantes = $conexion->query($consultaIntegrantes);
                             if($resultIntegrantes){
                                 $validaciones[1] = true;
@@ -47,6 +47,7 @@ if (isset($_SESSION['nombre'])) {
                         }
                     }
             }
+
         }else{
             $validaciones[1] = true; 
         }
