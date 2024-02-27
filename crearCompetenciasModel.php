@@ -1,10 +1,10 @@
 <?php
 include("conexionGhoner.php");
-    function consultarEADxPlantaxArea(){
+    function consultarEADxPlantaxArea($planta,$area){
         global $conexion;
         $resultado = [];
         $estado = false;
-            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+            $consulta = "SELECT * FROM equipos_ead WHERE planta LIKE '%$planta%' AND area LIKE '%$area%' ORDER BY id DESC";
             $query = $conexion->query($consulta);
             if($query){
                 while ($datos=mysqli_fetch_array($query)){

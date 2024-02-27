@@ -9,9 +9,12 @@ if(isset($_SESSION['nombre'])){
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                if (isset($_GET['accion']) && $_GET['accion']=='Filtrar') {
-                   $resultado = consultarEADxPlantaxArea();
+                if(isset($_GET['accion']) && $_GET['accion']=='Filtrar'){
+                   $planta= $_GET['planta']; 
+                   $area= $_GET['area'];
+                        $resultado = consultarEADxPlantaxArea($planta,$area);
                 }
+               
                 break;
             case 'POST':
 

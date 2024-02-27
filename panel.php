@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia')"><b>Crear Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('CompetenciaArea')"><b>Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
@@ -1533,15 +1533,14 @@ if (isset($_SESSION['nombre'])) {
                             <div class="input-group" style="padding:2px 2px;">
                                 <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Planta: </span>
                                 <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
-                                    <option selected value="" disabled>Seleccione planta...</option>
-                                    <option v-for="planta in plantas">Planta {{planta.nombre}}
-                                    <option>
+                                    <option v-for="planta in plantas">{{planta.nombre}}
+                                    <option selected value="">Mostrar todas</option>
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Area: </span>
-                                <select class="form-control select  me-2" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                    <option selected value="" disabled>Seleccione área...</option>
-                                    <option v-for="area in areas">Área {{area.nombre}}
-                                    <option>
+                                <select class="form-control select  me-2" v-model="select_area_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
+                                    <option v-for="area in areas">{{area.nombre}}</option>
+                                    <option selected value="">Mostrar todas</option>
+
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
                                 <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
@@ -1560,6 +1559,9 @@ if (isset($_SESSION['nombre'])) {
                                                 <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
                                             </div>
                                             <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">{{equipo.nombre_ead}}</label>
+                                        </div>
+                                        <div v-show="EADFiltrado.length<=0">
+                                            <label class="form-control text-start text-danger" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">No existen EAD's con planta y área seleccionada.</label>
                                         </div>
                                     </div>
                                 </div>
