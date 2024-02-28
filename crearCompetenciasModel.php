@@ -17,36 +17,31 @@ include("conexionGhoner.php");
             return array ($resultado,$estado);
     }
 
-    function consultarMisionesRelacionadas(){
+    function guardarForo($nombre_foro,$planta,$area,$ids_ead,$ids_evaluadores){
         global $conexion;
-        $resultado = [];
-        $estado = false;
-            $consulta = "SELECT a.id, a.nombre, a.siglas, a.id_misiones, b.nombre AS nombre_mision, b.id AS mision_id FROM pilares as a LEFT JOIN misiones as b on b.id = a.id_misiones"; //ACOMODAR LA CONSULTA POR QUE TE TRAE TODO REVUELTAO
-            $query = $conexion->query($consulta);
-        if($query){
-            while($datos=mysqli_fetch_array($query)){
-                $resultado [] = $datos;
-            }
-                $estado = true;
-        } else{
-                $estado = false;
-        }
-        return array ($resultado,$estado);
-    }
-
-    function insertarMision($nueva){
-        global $conexion;
-        $query = "INSERT INTO misiones (nombre) VALUES (?)";
+        $estado = [];
+        $query = "INSERT INTO foros (nombre_foro,planta,area) VALUES (?,?,?)";
         $stmt = $conexion->prepare($query);
-        $stmt->bind_param("s", $nueva);
-        if($stmt->execute()){
-            $estado = true;
-        }else{
-            $estado = false;
-        }
+        $stmt->bind_param("sss", $nombre_foro,$planta,$area);
+        if($stmt->execute()){//guardo el foro
+            $estado[0] = true;
+            $ultimo_id = $conexion->insert_id;// tomo el id nuevo creado.
+            foreach ($ids_ead as $id_ead) {
+                $query2="UPDATE equipos_ead SET id_foro=? WHERE id=?";
+                $stmt = $conexion->prepare($query2);
+                $stmt -> bind_param('ii',$ultimo_id,$id_ead); //insertando el id del foro en cada equipo
+                if($stmt ->execute()){
+                    $estado[1] = true;
+                }else{
+                    $estado[1] = $conexion->error;
+                }
+            }
 
+        }else{
+            $estado[0] =$conexion->error;
+        }
         $stmt->close();
-        return $estado;
+        return array($estado,$ids_ead,$ids_evaluadores);
     }
 
     function actualizarMision($id,$nuevoNombre){

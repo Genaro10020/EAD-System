@@ -30,6 +30,7 @@ const app = {
       nuevo_departamento: '',
       nuevo_tipo_usuario: '',
       arreglo: [100],
+      evaluadores:[],
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -65,9 +66,13 @@ const app = {
       idEquipo:[],
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
       EADFiltrado:[],
+      areasEADs:[] ,
+      plantasEADs: [] ,
+      nombre_foro:'',
       select_planta_foro:'',
       select_area_foro:'',
-
+      ckeckEADForo:[],
+      ckeckEvaluadores:[],
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -102,6 +107,9 @@ const app = {
         this.subareas = response.data.Subareas
         this.tipos = response.data.TiposUsuario
         this.usuarios = response.data.Usuarios
+
+        this.evaluadores = this.usuarios.filter(usuario => usuario.tipo_usuario === "Evaluador")//filtra
+
       }).catch(error => {
         //console.log('Erro :-(' + error)
       })
@@ -362,7 +370,7 @@ const app = {
       axios.post("crud_ead.php",{
         accion:'consultar'
       }).then(response => {
-        console.log("Consulta EAD",response.data)
+        //console.log("Consulta EAD",response.data)
         if(response.data[0][0]==true){
           //this.consultaEAD =response.data[1]
               var numeros = Object.keys(response.data[1]).map(Number); //tomando los indices del objeto
@@ -543,22 +551,64 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    cosultarEADxPlantaxArea(){
-      console.log(this.select_planta_foro+" "+this.select_area_foro)
-      axios.get("crearCompetenciasController.php",{
-       params: {
-          accion:'Filtrar',
-          planta:this.select_planta_foro,
-          area:this.select_area_foro
-       }
+    consultarPlantasEADs(){//Se activa al seleccionar la opcion de crear competencias
+    
+      axios.post("crud_ead.php",{
+           accion:'consultarPlantasEADs',
+       }).then(response =>{
+         console.log(response.data);
+         this.plantasEADs = response.data[4].plantas;
+       }).catch(error =>{
+         console.log("Error en axios: "+error)
+       })
+    },
+    cosultarEADxArea(){ //se activa cuando selecciono una Planta
+      this.EADFiltrado = [];
+      this.select_area_foro = "";
+      axios.post("crud_ead.php",{
+           accion:'consultarAreasEADs',
+           planta:this.select_planta_foro,
+       }).then(response =>{
+         console.log(response.data);
+         this.areasEADs = response.data[4].areas;
+       }).catch(error =>{
+         console.log("Error en axios: "+error)
+       })
+    },
+    cosultarEADxPlantaxArea(){// se activa cuando selecciono una area
+      //console.log(this.select_planta_foro+" "+this.select_area_foro)
+      if(this.select_planta_foro !="" &&  this.select_area_foro !=""){
+          axios.get("crearCompetenciasController.php",{
+            params: {
+              accion:'Filtrar',
+              planta:this.select_planta_foro,
+              area:this.select_area_foro
+            }
+          }).then(response =>{
+            //console.log(response.data);
+            this.EADFiltrado = response.data[0];
+          }).catch(error =>{
+            console.log("Error en axios: "+error)
+          })
+      }
+    },
+    crearForo(){
+      axios.post("crearCompetenciasController.php",{
+        accion:"CrearForo",
+        nombre_foro:this.nombre_foro,
+        planta:this.select_planta_foro,
+        area:this.select_area_foro,
+        ids_ead:this.ckeckEADForo,
+        evaluadores:this.ckeckEvaluadores
       }).then(response =>{
-        console.log(response.data);
-        this.EADFiltrado = response.data[0];
-        
+        console.log("Crear Foro",response.data)
+        if(response.data[0][0]!=true ){return alert("Algo salio mal")}
+        else{
+          alert("Foro guardado correctamente.")
+        }
       }).catch(error =>{
-        console.log("Error en axios: "+error)
-
-      })
+        console.log("error en axios: CrearForo(): "+error);
+      });
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -616,8 +666,6 @@ const app = {
       //console.log(arreglo)
       this.datosGraficaRechazo[index] = valor;
       this.sumarDatosGraficas()
-
-
       document.getElementById('myChart').remove();
       // Crea un nuevo elemento canvas
       var newCanvas = document.createElement('canvas');

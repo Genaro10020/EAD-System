@@ -16,21 +16,21 @@ if (isset($_SESSION['nombre'])) {
 
         <div id="app" class="col-12" style="min-height: 80vh;">
             <div class="  d-flex text-center">
-                <div class="col-1 dropdown" style="width:150px;  ">
+                <div class="col-1 dropdown" style="width:150px;  z-index: 5000; ">
                     <p class="dropbtn text-white" style="max-height:10px;">
                         <i class="bi bi-list">Menú</i>
                     </p>
                     <div class="dropdown-content">
                         <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                         <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea()"><b>Crear Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs(),cosultarEADxPlantaxArea()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
-                        <a><button class="btn_menu" @click="ventanas('CompetenciaArea')"><b>Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Evaluar</b></button></a>
                         <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
@@ -60,7 +60,7 @@ if (isset($_SESSION['nombre'])) {
                                     <button class="btn_menu"  @click="ventanas('Graficas')" ><b>Graficas</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
-                                    <button class="btn_menu"  @click="ventanas('CompetenciaArea')" ><b>Competencia de area</b></button>
+                                    <button class="btn_menu"  @click="ventanas('Competencias')" ><b>Competencia de area</b></button>
                                 </div>
                                 <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2 mt-sm-0 mt-lg-2">
                                     <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button>
@@ -158,8 +158,8 @@ if (isset($_SESSION['nombre'])) {
                                     <td class="text-center">{{usuario.planta}}</td>
                                     <td>{{usuario.area}}</td>
                                     <td>{{usuario.subarea}}</td>
-                                    <td class="text-center">{{usuario.tipo_usuario}}</td>
-                                    <td class="text-center">{{usuario.tipo_acceso}}</td>
+                                    <td>{{usuario.tipo_usuario}}</td>
+                                    <td>{{usuario.tipo_acceso}}</td>
                                     <td class="text-center"><button v-if="bandera_alta_o_actualizar == 1" class="btn btn-warning btn-actualizar px-2 py-0" @click="actualizarUsuario('actualizar',usuario.id)">Actualizar</button></td>
                                     <td class="text-center"><button v-if="usuario.tipo_acceso=='Usuario' && bandera_alta_o_actualizar == 1" class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarUsuario(usuario.id)">Eliminar</button></td>
                                 </tr>
@@ -690,7 +690,7 @@ if (isset($_SESSION['nombre'])) {
                     <div class="d-flex">
                         <div class="scroll" style=" max-height: 400px;">
                             <table class="text-center ms-3 me-5">
-                                <thead>
+                                <thead class="sticky-top">
                                     <tr>
                                         <th class="border border-dark" style="font-size: 13px;">
                                             Dia
@@ -1406,7 +1406,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>
             </div>
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
-            <div v-if="ventana=='CompetenciaArea'">
+            <div v-if="ventana=='Competencias'">
                             <div class=" row col-12 text-center d-flex justify-content-center mt-2 ">
                                 <div class="col-4">
                                     <span class="mx-2">Seleccione Foro: </span>
@@ -1418,21 +1418,25 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                             </div>
+
                 <div class="col-12 mt-3">
                     <div class="col-4 offset-4">
                         <div class="imagenEngrane"></div>
                         <div class="border text-center">Ganador: </div>
                         <div class="border border-top-0 text-center">The Winner</div>
                     </div>
-                </div>
-                <div class="col-12 mt-3">
-                    <div class="d-flex offset-3">
-                        <div class="col-4 me-3">
+                    <div class="d-flex offset-4">
+                        <div class="col-2 me-3">
                             <div class="imagenEngrane"></div>
                             <div class="border  text-center">Equipo 1 </div>
                             <div class=" border border-top-0 text-center">Nombre del Equipo</div>
                         </div>
-                        <div class="col-4">
+                        <div class="col-2">
+                            <div class="imagenEngrane"></div>
+                            <div class="border text-center">Equipo 2 </div>
+                            <div class="border border-top-0 text-center">Nombre del Equipo</div>
+                        </div>
+                        <div class="col-2">
                             <div class="imagenEngrane"></div>
                             <div class="border text-center">Equipo 2 </div>
                             <div class="border border-top-0 text-center">Nombre del Equipo</div>
@@ -1523,7 +1527,7 @@ if (isset($_SESSION['nombre'])) {
                         <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                             <div class=" d-flex" style="padding:2px 2px;">
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e;">Nombre del foro: </span>
-                                <input class="form-control select " style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
+                                <input class="form-control select" v-model="nombre_foro" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
                                 </input>
                             </div>
                         </div>
@@ -1532,15 +1536,15 @@ if (isset($_SESSION['nombre'])) {
                         <div class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                             <div class="input-group" style="padding:2px 2px;">
                                 <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Planta: </span>
-                                <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
-                                    <option v-for="planta in plantas">{{planta.nombre}}
-                                    <option selected value="">Mostrar todas</option>
+                                <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxArea()">
+                                    <option value="" selected disabled >Seleccione..</option>
+                                    <option v-for="planta in plantasEADs">{{planta}}
+                                   
                                 </select>
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Area: </span>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Área: </span>
                                 <select class="form-control select  me-2" v-model="select_area_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
-                                    <option v-for="area in areas">{{area.nombre}}</option>
-                                    <option selected value="">Mostrar todas</option>
-
+                                    <option value="" selected disabled>Seleccione..</option>    
+                                    <option v-for="area in areasEADs">{{area}}</option>
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
                                 <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
@@ -1556,31 +1560,31 @@ if (isset($_SESSION['nombre'])) {
                                     <div class="scroll2">
                                         <div class="input-group mb-1" v-for="equipo in EADFiltrado">
                                             <div class="input-group-text" style="border-radius: 0px;">
-                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                                <input class="form-check-input" type="checkbox" v-model="ckeckEADForo" :value="equipo.id"  value="" aria-label="Checkbox for following text input">
                                             </div>
                                             <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">{{equipo.nombre_ead}}</label>
                                         </div>
                                         <div v-show="EADFiltrado.length<=0">
-                                            <label class="form-control text-start text-danger" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">No existen EAD's con planta y área seleccionada.</label>
+                                            <label class="form-control text-start text-secondary" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">No existen EAD's con planta y área seleccionada.</label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-6 ms-2">
                                     <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
-                                        Evaluadores
+                                    Evaluadores
                                     </div>
                                     <div class="scroll3">
-                                        <div class="input-group mb-1" v-for="i in 10">
+                                        <div class="input-group mb-1" v-for="evaluador in evaluadores">
                                             <div class="input-group-text" style="border-radius: 0px;">
-                                                <input class="form-check-input" type="checkbox" value="" aria-label="Checkbox for following text input">
+                                                <input class="form-check-input" type="checkbox" v-model="ckeckEvaluadores" :value="evaluador.id" aria-label="Checkbox for following text input">
                                             </div>
-                                            <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">Evaluador</label>
+                                            <label class="form-control text-start" aria-label="Text input with checkbox"  style="border-radius: 0px; font-size:0.8em">{{evaluador.nombre}}</label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div>
-                                <button class="botones-crear rounded-pill mt-2 border-0">Crear foro</button>
+                                <button class="botones-crear rounded-pill mt-2 border-0" @click="crearForo()">Crear foro</button>
                             </div>
                         </div>
                     </div>

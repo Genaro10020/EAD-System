@@ -5,7 +5,6 @@ if(isset($_SESSION['nombre'])){
         header('Content-Type: application/json');
         include("crearCompetenciasModel.php");
         $accion = $arreglo['accion'];
-        $nuevo = $arreglo['nuevo_tipo'];
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
@@ -17,7 +16,16 @@ if(isset($_SESSION['nombre'])){
                
                 break;
             case 'POST':
-
+                if(isset($arreglo['accion']) && $arreglo['accion']=='CrearForo'){
+                    $nombre_foro = $arreglo['nombre_foro'];
+                    $planta= $arreglo['planta'];
+                    $area = $arreglo['area'];
+                    //$ids_ead=json_encode($arreglo['ids_ead'],JSON_UNESCAPED_UNICODE);
+                    //$ids_evaluadores=json_encode($arreglo['evaluadores'],JSON_UNESCAPED_UNICODE);
+                    $ids_ead=$arreglo['ids_ead'];
+                    $ids_evaluadores=$arreglo['evaluadores'];
+                    $resultado = guardarForo($nombre_foro,$planta,$area,$ids_ead,$ids_evaluadores);
+                }
                 break;
             case 'PUT':
 
