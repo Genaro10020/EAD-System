@@ -292,13 +292,62 @@ button {
     color: #cbc8c8;
 }
 
+.btn-circle-agregar{
+    background-color: #4c895b;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+    transition: all 0.3s;
+}
+
+.btn-circle-agregar:hover{
+    background-color: #2e693d;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+.btn-circle-actualizar{
+    background-color: #ffc423;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+    transition: all 0.3s;
+}
+
+.btn-circle-actualizar:hover{
+    background-color: #ce9e19;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+.btn-circle-eliminar{
+    background-color: #b75252;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+    transition: all 0.3s;
+}
+
+.btn-circle-eliminar:hover{
+    background-color: #a23838;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+
+
 .botones-crear {
     width: 130px;
     background-color: #4c895b;
     color: white;
     font-size: 0.9em;
     box-shadow: 1px 2px 5px #151515;
-
     transition: all 0.3s;
 }
 

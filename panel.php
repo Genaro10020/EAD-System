@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs(),cosultarEADxPlantaxArea()"><b>Crear Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
@@ -1526,7 +1526,7 @@ if (isset($_SESSION['nombre'])) {
                     <div class="col-12">
                         <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                             <div class=" d-flex" style="padding:2px 2px;">
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e;">Nombre del foro: </span>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e; font-size: 0.8em">Nombre del foro: </span>
                                 <input class="form-control select" v-model="nombre_foro" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
                                 </input>
                             </div>
@@ -1535,31 +1535,31 @@ if (isset($_SESSION['nombre'])) {
                     <div class="col-12">
                         <div class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                             <div class="input-group" style="padding:2px 2px;">
-                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Planta: </span>
+                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
                                 <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxArea()">
                                     <option value="" selected disabled >Seleccione..</option>
                                     <option v-for="planta in plantasEADs">{{planta}}
                                    
                                 </select>
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Área: </span>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Área: </span>
                                 <select class="form-control select  me-2" v-model="select_area_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
                                     <option value="" selected disabled>Seleccione..</option>    
                                     <option v-for="area in areasEADs">{{area}}</option>
                                 </select>
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);">Fecha: </span>
+                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
                                 <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
                                 </input>
                             </div>
                         </div>
                         <div class=" text-center mt-3 ">
                             <div class="d-flex">
-                                <div class="col-6">
-                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e;font-size:14px;">
+                                <div class="col-6" >
+                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:0.8em;">
                                         Elija los EAD
                                     </div>
                                     <div class="scroll2">
                                         <div class="input-group mb-1" v-for="equipo in EADFiltrado">
-                                            <div class="input-group-text" style="border-radius: 0px;">
+                                            <div class="input-group-text" style="border-radius: 0px; ">
                                                 <input class="form-check-input" type="checkbox" v-model="ckeckEADForo" :value="equipo.id"  value="" aria-label="Checkbox for following text input">
                                             </div>
                                             <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">{{equipo.nombre_ead}}</label>
@@ -1570,9 +1570,20 @@ if (isset($_SESSION['nombre'])) {
                                     </div>
                                 </div>
                                 <div class="col-6 ms-2">
-                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:14px;">
-                                    Evaluadores
-                                    </div>
+                                <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:0.8em; display: flex; justify-content: space-between; align-items: center;  justify-content: center;">
+                                            <div class="container text-center">
+                                                    <div class="row">
+                                                        <div  class="col-5">
+                                                            Evaluadores
+                                                        </div>
+                                                        <div class="col-7">
+                                                            <button class="btn-circle-agregar rounded-pill px-2 border-0" @click="modalEvaluadores()"><i class="bi bi-plus-circle"></i></button>
+                                                            <button class="btn-circle-actualizar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores()"><i class="bi bi-arrow-up-circle"></i></button>
+                                                            <button class="btn-circle-eliminar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores()"><i class="bi bi-x-circle"></i></button>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                </div>
                                     <div class="scroll3">
                                         <div class="input-group mb-1" v-for="evaluador in evaluadores">
                                             <div class="input-group-text" style="border-radius: 0px;">
@@ -1597,7 +1608,7 @@ if (isset($_SESSION['nombre'])) {
                                 <thead class="sticky-top">
                                     <tr>
                                         <th>
-                                            Nombre de equipo
+                                            Nombre
                                         </th>
                                         <th>
                                             Visualizar

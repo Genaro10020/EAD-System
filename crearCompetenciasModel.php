@@ -20,9 +20,10 @@ include("conexionGhoner.php");
     function guardarForo($nombre_foro,$planta,$area,$ids_ead,$ids_evaluadores){
         global $conexion;
         $estado = [];
-        $query = "INSERT INTO foros (nombre_foro,planta,area) VALUES (?,?,?)";
+        $query = "INSERT INTO foros (nombre_foro,planta,area,foro) VALUES (?,?,?,?)";
         $stmt = $conexion->prepare($query);
-        $stmt->bind_param("sss", $nombre_foro,$planta,$area);
+        $foro = "áreas";
+        $stmt->bind_param("sss", $nombre_foro,$planta,$area,$foro);
         if($stmt->execute()){//guardo el foro
             $estado[0] = true;
             $ultimo_id = $conexion->insert_id;// tomo el id nuevo creado.
