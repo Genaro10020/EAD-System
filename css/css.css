@@ -226,19 +226,19 @@ ul {
 
 .scroll2 {
     overflow: auto;
-    height: 30vh;
+    height: 20vh;
     /* Establece la altura máxima del div con scroll */
 }
 
 .scroll3 {
     overflow: auto;
-    height: 30vh;
+    height: 20vh;
     /* Establece la altura máxima del div con scroll */
 }
 
 .scroll4 {
     overflow: auto;
-    height: 25vh;
+    height: 30vh;
     /* Establece la altura máxima del div con scroll */
 }
 

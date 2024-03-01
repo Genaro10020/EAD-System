@@ -65,14 +65,23 @@ const app = {
       integrantesEAD:[],
       idEquipo:[],
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
+      foros:[],
       EADFiltrado:[],
       areasEADs:[] ,
       plantasEADs: [] ,
       nombre_foro:'',
       select_planta_foro:'',
       select_area_foro:'',
+      fecha_foro:'',
       ckeckEADForo:[],
       ckeckEvaluadores:[],
+      accion_evaluador:'',
+      nombre_evaluador:'',
+      nomina_evaluador:'',
+      contrasena_evaluador:'',
+      correo_evaluador:'',
+      id_evaluador:'',
+      posicion_evaluador:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -108,7 +117,7 @@ const app = {
         this.tipos = response.data.TiposUsuario
         this.usuarios = response.data.Usuarios
 
-        this.evaluadores = this.usuarios.filter(usuario => usuario.tipo_usuario === "Evaluador")//filtra
+        //this.evaluadores = this.usuarios.filter(usuario => usuario.tipo_usuario === "Evaluador")//filtra
 
       }).catch(error => {
         //console.log('Erro :-(' + error)
@@ -551,6 +560,24 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    consultarForos(){// se activa cuando selecciono una area
+      //console.log(this.select_planta_foro+" "+this.select_area_foro)
+          axios.get("competenciasController.php",{
+            params: {
+              accion:'Consultar'
+            }
+          }).then(response =>{
+            console.log(response.data);
+            if(response.data[0]==true){
+              this.foros = response.data[1];
+            }else{
+              console.log("error en la consulta de foros")
+            }
+            //this.EADFiltrado = response.data[0];
+          }).catch(error =>{
+            console.log("Error en axios: "+error)
+          })
+    },
     consultarPlantasEADs(){//Se activa al seleccionar la opcion de crear competencias
       axios.post("crud_ead.php",{
            accion:'consultarPlantasEADs',
@@ -577,7 +604,7 @@ const app = {
     cosultarEADxPlantaxArea(){// se activa cuando selecciono una area
       //console.log(this.select_planta_foro+" "+this.select_area_foro)
       if(this.select_planta_foro !="" &&  this.select_area_foro !=""){
-          axios.get("crearCompetenciasController.php",{
+          axios.get("competenciasController.php",{
             params: {
               accion:'Filtrar',
               planta:this.select_planta_foro,
@@ -591,23 +618,144 @@ const app = {
           })
       }
     },
+    modalEvaluadores(accion){
+      this.accion_evaluador = accion
+      if(accion == 'Crear'){
+        //limpio el formulario
+        this.nombre_evaluador = ''
+        this.nomina_evaluador = ''
+        this.contrasena_evaluador = ''
+        this.correo_evaluador = ''
+        this.myModal = new bootstrap.Modal(document.getElementById('modal_evaluadores'));
+        this.myModal.show();
+      }
+
+      if(accion=='Actualizar'){
+        console.log(this.ckeckEvaluadores)
+        if(this.ckeckEvaluadores.length==1){
+          this.myModal = new bootstrap.Modal(document.getElementById('modal_evaluadores'));
+          this.myModal.show();
+          var id_evaluador = this.ckeckEvaluadores[0]
+          var objetoEncontrado = this.evaluadores.find(function(objeto) {//busco el id en el objeto para asigar los datos
+            return objeto.id === id_evaluador;
+          });
+          if (objetoEncontrado) {
+            console.log("SE ENCONTRO",objetoEncontrado);
+            this.nombre_evaluador = objetoEncontrado.nombre
+            this.nomina_evaluador = objetoEncontrado.nomina
+            this.contrasena_evaluador = objetoEncontrado.contrasena
+            this.correo_evaluador = objetoEncontrado.correo
+          } else {
+            alert("Problemas para actulizar al Evaluador")
+          }
+        }else if(this.ckeckEvaluadores.length>1){
+          alert("Solo se puedo actulizar 1 evaluador, no varios a la vez.")
+        }else{
+          alert("Selecciona un evaluador para actulizarlo.")
+        }
+      }
+    },
+    consultarEvaludores(){
+      axios.post("insertar_actualizar_eliminar_evaluador.php",{
+        accion: 'consultar'
+      }).then(response => {
+        console.log(response.data)
+        this.evaluadores = response.data;
+      }).catch(error =>{
+        console.log("Algo salio mal en Axios: "+error);
+      })
+    },
+    guardarEvaluador(accion){// insertar y guardar
+      var id_evaluador;
+      if(accion=="actualizar"){
+        id_evaluador = parseInt(this.ckeckEvaluadores[0]);
+      }
+      if(this.nombre_evaluador=='' || this.nomina_evaluador=='' || this.contrasena_evaluador == '' || this.correo_evaluador == ''){return alert("No deje campos vacios")}
+      axios.post("insertar_actualizar_eliminar_evaluador.php",{
+        nombre:this.nombre_evaluador,
+        nomina:this.nomina_evaluador,
+        contrasena:this.contrasena_evaluador,
+        correo:this.correo_evaluador,
+        accion: accion,
+        id_evaluador:id_evaluador
+
+      }).then(response => {
+        if(response.data==true){
+            alert("Operación realizada con éxito");
+            this.consultarEvaludores()
+            this.nombre_evaluador = ''
+            this.nomina_evaluador = ''
+            this.contrasena_evaluador = ''
+            this.correo_evaluador = ''
+            this.myModal.hide();
+        }else{
+          alert("Algo salio mal")
+        }
+      }).catch(error =>{
+          console.log("error en axios: "+error)
+      })
+    },
+    eliminarEvaluador(){// insertar y guardar
+      if(this.ckeckEvaluadores.length==1){
+        if(!confirm("Seguro que desea eliminar este evaluador?")){return}
+        axios.post("insertar_actualizar_eliminar_evaluador.php",{
+          accion: 'eliminar',
+          id_evaluador:this.ckeckEvaluadores[0]
+        }).then(response => {
+          if(response.data==true){
+              alert("Se elimino con éxito");
+              this.ckeckEvaluadores = []
+              this.consultarEvaludores()
+          }else{
+            alert("Algo salio mal")
+          }
+        }).catch(error =>{
+            console.log("error en axios: "+error)
+        })
+      }else if(this.ckeckEvaluadores.length<=0){
+        alert("Seleccion un Evaluador para eliminar")
+      }else if(this.ckeckEvaluadores.length>1){
+        alert("Solo se puedo elimibar 1 evaluador, no varios a la vez.")
+      }
+     
+
+    },
     crearForo(){
-      axios.post("crearCompetenciasController.php",{
+      if(!this.nombre_foro){return alert("Agregue el nombre al foto")}
+      if(!this.select_planta_foro){return alert("Seleccione Planta")}
+      if(!this.select_area_foro){return alert("Seleccione Área")}
+      if(!this.fecha_foro){return alert("Seleccione una Fecha")}
+      if(this.ckeckEADForo.length<=0){return alert("Seleccione los EAD's")}
+      if(this.ckeckEvaluadores.length<=0){return alert("Seleccione Evaluadores")}
+
+      axios.post("competenciasController.php",{
         accion:"CrearForo",
         nombre_foro:this.nombre_foro,
         planta:this.select_planta_foro,
         area:this.select_area_foro,
+        fecha:this.fecha_foro,
         ids_ead:this.ckeckEADForo,
         evaluadores:this.ckeckEvaluadores
       }).then(response =>{
         console.log("Crear Foro",response.data)
         if(response.data[0][0]!=true ){return alert("Algo salio mal")}
         else{
+          this.nombre_foro = ''
+          this.select_planta_foro = ''
+          this.select_area_foro = ''
+          this.fecha_foro = ''
+          this.ckeckEADForo = []
+          this.ckeckEvaluadores =[]
+          this.EADFiltrado = []
           alert("Foro guardado correctamente.")
         }
       }).catch(error =>{
         console.log("error en axios: CrearForo(): "+error);
       });
+    },
+    modalForosDetalles(){
+      this.myModal = new bootstrap.Modal(document.getElementById('modal_foros_detalles')); 
+      this.myModal.show();
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

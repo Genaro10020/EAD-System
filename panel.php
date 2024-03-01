@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs()"><b>Crear Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
@@ -1547,7 +1547,7 @@ if (isset($_SESSION['nombre'])) {
                                     <option v-for="area in areasEADs">{{area}}</option>
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
-                                <input type="date" class="form-control select" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
+                                <input type="date" class="form-control select" v-model="fecha_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
                                 </input>
                             </div>
                         </div>
@@ -1571,21 +1571,21 @@ if (isset($_SESSION['nombre'])) {
                                 </div>
                                 <div class="col-6 ms-2">
                                 <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:0.8em; display: flex; justify-content: space-between; align-items: center;  justify-content: center;">
-                                            <div class="container text-center">
-                                                    <div class="row">
-                                                        <div  class="col-5">
-                                                            Evaluadores
-                                                        </div>
-                                                        <div class="col-7">
-                                                            <button class="btn-circle-agregar rounded-pill px-2 border-0" @click="modalEvaluadores()"><i class="bi bi-plus-circle"></i></button>
-                                                            <button class="btn-circle-actualizar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores()"><i class="bi bi-arrow-up-circle"></i></button>
-                                                            <button class="btn-circle-eliminar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores()"><i class="bi bi-x-circle"></i></button>
-                                                        </div>
-                                                    </div>
+                                <div class="container text-center">
+                                        <div class="row">
+                                            <div  class="col-5">
+                                                Evaluadores
                                             </div>
+                                            <div class="col-7">
+                                                <button class="btn-circle-agregar rounded-pill px-2 border-0" @click="modalEvaluadores('Crear')"><i class="bi bi-plus-circle"></i></button>
+                                                <button class="btn-circle-actualizar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores('Actualizar')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                <button class="btn-circle-eliminar rounded-pill px-2 border-0 ms-1" @click="eliminarEvaluador()"><i class="bi bi-x-circle"></i></button>
+                                            </div>
+                                        </div>
+                                </div>
                                 </div>
                                     <div class="scroll3">
-                                        <div class="input-group mb-1" v-for="evaluador in evaluadores">
+                                        <div class="input-group mb-1" v-for="(evaluador,index) in evaluadores">
                                             <div class="input-group-text" style="border-radius: 0px;">
                                                 <input class="form-check-input" type="checkbox" v-model="ckeckEvaluadores" :value="evaluador.id" aria-label="Checkbox for following text input">
                                             </div>
@@ -1606,28 +1606,26 @@ if (isset($_SESSION['nombre'])) {
                         <div class="scroll4">
                             <table class=" table table-bordered text-center  mt-3">
                                 <thead class="sticky-top">
-                                    <tr>
+                                    <tr class="table-active">
                                         <th>
                                             Nombre
                                         </th>
                                         <th>
-                                            Visualizar
+                                            Detalles
                                         </th>
                                         <th>
                                             Actualizar
                                         </th>
-                                        <th>
-                                            Eliminar
-                                        </th>
+                                      
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="i in 10" style="font-size:0.8em">
+                                    <tr v-for="foro in foros" style="font-size:0.8em">
                                         <td>
-                                            nombre1
+                                            {{foro.nombre_foro}}
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-success px-3 py-1 " data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            <button type="button" class="btn btn-success px-3 py-1 " @click="modalForosDetalles()">
                                                 <i class="bi bi-eye" style="font-size:0.8em"></i>
                                             </button>
                                         </td>
@@ -1636,16 +1634,68 @@ if (isset($_SESSION['nombre'])) {
                                                 Actualizar
                                             </button>
                                         </td>
-                                        <td>
-                                            <button class="btn btn-danger btn-eliminar">
-                                                Eliminar
-                                            </button>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
+
+                               <!--ModalUsuarios-->
+                                    <div id="modal_evaluadores" class="modal" tabindex="-1" role="dialog">
+                                        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <label style="font-size:1em"  class="modal-title">{{accion_evaluador}} evaluador</label>
+                                                    <button type="button" class="btn-close" @click="cerrarModal()" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-center d-flex justify-content-center">
+                                                        <div class="row" v-if="accion_evaluador=='Crear'">
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Nombre</span>
+                                                                    <input type="text" class="w-75" v-model="nombre_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">No. Nómina</span>
+                                                                    <input type="text" class="w-75" v-model="nomina_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Password</span>
+                                                                    <input type="text" class="w-75" v-model="contrasena_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;" >Correo</span>
+                                                                    <input type="text" class="w-75" v-model="correo_evaluador">
+                                                                </div>
+                                                        </div>
+                                                        <div class="row" v-if="accion_evaluador=='Actualizar'">
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Nombre</span>
+                                                                    <input type="text" class="w-75" v-model="nombre_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">No. Nómina</span>
+                                                                    <input type="text" class="w-75" v-model="nomina_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Password</span>
+                                                                    <input type="text" class="w-75" v-model="contrasena_evaluador">
+                                                                </div>
+                                                                <div class="input-group mb-3">
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;" >Correo</span>
+                                                                    <input type="text" class="w-75" v-model="correo_evaluador">
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button v-if="accion_evaluador=='Crear'" type="button" class="btn btn-primary py-1" @click="guardarEvaluador('insertar')" >Guardar</button>
+                                                    <button v-if="accion_evaluador=='Actualizar'" type="button" class="btn btn-warning py-1" @click="guardarEvaluador('actualizar')" >Actualizar</button>
+                                                    <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            <!--FinModalDeDepartamento-->
+
                             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
-                            <div class="modal modal-xl" id="exampleModal" tabindex="-1">
+                            <div  id="modal_foros_detalles" class="modal modal-xl" id="exampleModal" tabindex="-1">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">

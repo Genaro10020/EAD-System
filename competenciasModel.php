@@ -1,5 +1,23 @@
 <?php
 include("conexionGhoner.php");
+
+    function consultarForos(){
+        global $conexion;
+        $resultado = [];
+        $estado = false;
+        $consulta = "SELECT * FROM foros";
+        $query = $conexion->query($consulta);
+        if ($query->num_rows > 0) {
+            while ($fila = $query->fetch_assoc()) {
+                 $resultado [] = $fila;
+            }
+            $estado=true;
+        }
+
+        return array($estado,$resultado);
+    }
+
+
     function consultarEADxPlantaxArea($planta,$area){
         global $conexion;
         $resultado = [];
@@ -17,13 +35,13 @@ include("conexionGhoner.php");
             return array ($resultado,$estado);
     }
 
-    function guardarForo($nombre_foro,$planta,$area,$ids_ead,$ids_evaluadores){
+    function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores){
         global $conexion;
         $estado = [];
-        $query = "INSERT INTO foros (nombre_foro,planta,area,foro) VALUES (?,?,?,?)";
+        $query = "INSERT INTO foros (nombre_foro,planta,area,foro,fecha) VALUES (?,?,?,?,?)";
         $stmt = $conexion->prepare($query);
-        $foro = "áreas";
-        $stmt->bind_param("sss", $nombre_foro,$planta,$area,$foro);
+        $foro = "Áreas";
+        $stmt->bind_param("sssss", $nombre_foro,$planta,$area,$foro,$fecha);
         if($stmt->execute()){//guardo el foro
             $estado[0] = true;
             $ultimo_id = $conexion->insert_id;// tomo el id nuevo creado.
@@ -37,7 +55,6 @@ include("conexionGhoner.php");
                     $estado[1] = $conexion->error;
                 }
             }
-
         }else{
             $estado[0] =$conexion->error;
         }
