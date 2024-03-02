@@ -82,6 +82,7 @@ const app = {
       correo_evaluador:'',
       id_evaluador:'',
       posicion_evaluador:'',
+      tituloModal:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -707,7 +708,7 @@ const app = {
               this.ckeckEvaluadores = []
               this.consultarEvaludores()
           }else{
-            alert("Algo salio mal")
+            alert("No se puede eliminar, cuenta con evaluaciones realizadas.")
           }
         }).catch(error =>{
             console.log("error en axios: "+error)
@@ -717,8 +718,6 @@ const app = {
       }else if(this.ckeckEvaluadores.length>1){
         alert("Solo se puedo elimibar 1 evaluador, no varios a la vez.")
       }
-     
-
     },
     crearForo(){
       if(!this.nombre_foro){return alert("Agregue el nombre al foto")}
@@ -738,24 +737,45 @@ const app = {
         evaluadores:this.ckeckEvaluadores
       }).then(response =>{
         console.log("Crear Foro",response.data)
-        if(response.data[0][0]!=true ){return alert("Algo salio mal")}
-        else{
-          this.nombre_foro = ''
-          this.select_planta_foro = ''
-          this.select_area_foro = ''
-          this.fecha_foro = ''
-          this.ckeckEADForo = []
-          this.ckeckEvaluadores =[]
-          this.EADFiltrado = []
-          alert("Foro guardado correctamente.")
+        if (response.data[0][0] !== true) {
+          return alert("Algo salio mal");
+        } else if (response.data[0][1] !== true) {
+          return alert("Algo salio mal");
+        } else if (response.data[0][2] !== true) {
+          return alert("Algo salio mal");
+        } else {
+          this.nombre_foro = "";
+          this.select_planta_foro = "";
+          this.select_area_foro = "";
+          this.fecha_foro = "";
+          this.ckeckEADForo = [];
+          this.ckeckEvaluadores = [];
+          this.EADFiltrado = [];
+          alert("Foro guardado correctamente.");
+          this.consultarForos()
         }
+
       }).catch(error =>{
         console.log("error en axios: CrearForo(): "+error);
       });
     },
-    modalForosDetalles(){
+    modalForosDetalles(nombre){
       this.myModal = new bootstrap.Modal(document.getElementById('modal_foros_detalles')); 
       this.myModal.show();
+      this.tituloModal = nombre;
+    },
+    consultarDetallesForo(id){
+      axios.get("competenciasController.php",{
+        params:{
+          accion:"DetallesForo",
+          id:id
+        }
+      }).then(response=>{
+        let respuesta = response.data;
+        console.log(respuesta);
+      }).catch(error=>{
+          console.log("Error en axios "+error)
+      })
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                         <a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
@@ -1600,13 +1600,13 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                     </div>
                     <div class="">
-                        <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:14px;">
+                        <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:0.8em;">
                             Foros creados
                         </div>
                         <div class="scroll4">
-                            <table class=" table table-bordered text-center  mt-3">
+                            <table class=" table table-bordered text-center ">
                                 <thead class="sticky-top">
-                                    <tr class="table-active">
+                                    <tr class="table-active" style="font-size:0.8em !important" >
                                         <th>
                                             Nombre
                                         </th>
@@ -1616,7 +1616,6 @@ if (isset($_SESSION['nombre'])) {
                                         <th>
                                             Actualizar
                                         </th>
-                                      
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -1625,7 +1624,7 @@ if (isset($_SESSION['nombre'])) {
                                             {{foro.nombre_foro}}
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-success px-3 py-1 " @click="modalForosDetalles()">
+                                            <button type="button" class="btn btn-success px-3 py-1 " @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
                                                 <i class="bi bi-eye" style="font-size:0.8em"></i>
                                             </button>
                                         </td>
@@ -1699,10 +1698,10 @@ if (isset($_SESSION['nombre'])) {
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
+                                            <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body">
+                                        <div class="modal-body" style="font-size: 0.8em;">
                                             <table class="table table-bordered table-striped">
                                                 <thead class="thead-dark">
                                                     <tr>

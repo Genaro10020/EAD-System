@@ -16,6 +16,10 @@ if(isset($_SESSION['nombre'])){
                    $area= $_GET['area'];
                         $resultado = consultarEADxPlantaxArea($planta,$area);
                 }
+                if(isset($_GET['accion']) && $_GET['accion']=='DetallesForo'){
+                    $id= $_GET['id']; 
+                         $resultado = consultarDetallesForo($id);
+                 }
                 break;
             case 'POST':
                 if(isset($arreglo['accion']) && $arreglo['accion']=='CrearForo'){
