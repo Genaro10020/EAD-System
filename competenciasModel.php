@@ -19,48 +19,97 @@ include("conexionGhoner.php");
 
     function consultarDetallesForo($id){
         global $conexion;
-        $resultado = array();
+        $EADsForo = array();
+        $evaluadoresForo = array();
+        $calificacionEvaludorForo = array();
         $estado = false;
+        $estado2 = false;
+        $estado3 = false;
+
        // Consulta preparada para evitar inyección SQL
-$consulta = "SELECT foros.*, equipos_ead.*, ead_foro.*, calificacion.*, evaluadores.*
-FROM foros
-INNER JOIN equipos_ead ON foros.id = equipos_ead.id_foro
-LEFT JOIN ead_foro ON foros.id = ead_foro.id_foro
-LEFT JOIN calificacion ON ead_foro.id = calificacion.id_ead_foro
-LEFT JOIN evaluadores ON calificacion.id_evaluador = evaluadores.id
-WHERE foros.id = ?";
+        $consulta = "SELECT ead_foro.id,equipos_ead.nombre_ead,equipos_ead.planta,equipos_ead.area,proyecto_ead.nombre_proyecto 
+        FROM equipos_ead 
+        JOIN ead_foro 
+        ON equipos_ead.id = ead_foro.id_equipos_ead
+        LEFT JOIN proyecto_ead ON ead_foro.id = proyecto_ead.id_ead_foro 
+        WHERE ead_foro.id_foro = ?"; //consulto los equipos ligados al foro id
 
-// Preparar la consulta
-if ($stmt = $conexion->prepare($consulta)) {
-// Vincular parámetro
-$stmt->bind_param("s", $id);
+        // Preparar la consulta
+        if ($stmt = $conexion->prepare($consulta)) {
+        // Vincular parámetro
+        $stmt->bind_param("i", $id);
 
-// Ejecutar la consulta
-if ($stmt->execute()) {
-// Obtener resultados
-$resultado = array();
-$result = $stmt->get_result();
-while ($fila = $result->fetch_assoc()) {
-    $resultado[] = $fila;
-}
-$estado = true;
-} else {
-// Manejar error de ejecución de la consulta
- 
-$estado = $conexion->error;
-// Log o manejo del error
-}
+        // Ejecutar la consulta
+        if ($stmt->execute()) {
+        // Obtener resultados
+        $result = $stmt->get_result();
+        while ($fila = $result->fetch_assoc()) {
+            $EADsForo[] = $fila;
+        }
+        $estado = true;
+            //recuperando los datos de los evaluadores del foro id
+            $consulta2 = "SELECT evaluadores.id, evaluadores.nombre FROM ead_foro 
+            JOIN calificacion ON ead_foro.id = calificacion.id_ead_foro
+            JOIN evaluadores ON calificacion.id_evaluador = evaluadores.id
+            WHERE ead_foro.id_foro = ? GROUP BY calificacion.id_evaluador";
+            $stmt = $conexion->prepare($consulta2);
+            $stmt->bind_param("i",$id);
+                if($stmt->execute()){
+                    $datos=$stmt->get_result();
+                    while ($fila = $datos->fetch_assoc()) {
+                        $evaluadoresForo[] = $fila;
+                    }
+                    $estado2 = true;
+                        //recuperando calificacion por evaluador
+                        $consulta2 = "SELECT ead_foro.id AS id_ead_foro, evaluadores.id AS id_evaluador, 
+                        evaluadores.nombre, calificacion.calificacion
+                 FROM ead_foro 
+                 JOIN calificacion ON ead_foro.id = calificacion.id_ead_foro
+                 JOIN evaluadores ON calificacion.id_evaluador = evaluadores.id
+                 WHERE ead_foro.id_foro = ?";
+                        $stmt = $conexion->prepare($consulta2);
+                        $stmt->bind_param("i",$id);
+                            if($stmt->execute()){
+                                $datos=$stmt->get_result();
+                                while ($fila = $datos->fetch_assoc()) {
+                                    $id_ead_foro = $fila['id_ead_foro'];
+                                    $id_evaluador = $fila['id_evaluador'];
+                                    $calificacion = $fila['calificacion'];
+                            
+                                    if (!isset($calificacionEvaludorForo[$id_ead_foro])) {
+                                        $calificacionEvaludorForo[$id_ead_foro]['suma'] = 0;
+                                    }
+                                    if (!isset($calificacionEvaludorForo[$id_ead_foro][$id_evaluador])) {
+                                        $calificacionEvaludorForo[$id_ead_foro][$id_evaluador] = array(
+                                            'nombre' => $fila['nombre'],
+                                            'calificacion' => $calificacion,
+                                        );
+                                    }
+                            
+                                    // Sumamos la calificación al total del foro y al evaluador
+                                    $calificacionEvaludorForo[$id_ead_foro]['suma'] += $calificacion;
+                                }
+                                $estado3 = true;
+                            }else{
+                                $estado3 = false;
+                            }
+                            
+                }else{
+                    $estado2 = false;
+                }
+        } else {
+        // Manejar error de ejecución de la consulta
+        $estado = $conexion->error;
+        }
+        // Cerrar declaración
+        $stmt->close();
+        } else {
+        // Manejar error de preparación de la consulta
+        $estado = $conexion->error;
+        // Log o manejo del error
+        }
 
-// Cerrar declaración
-$stmt->close();
-} else {
-// Manejar error de preparación de la consulta
-;
-$estado = $conexion->error;
-// Log o manejo del error
-}
-
-        return array($estado,$resultado);
+        return array($estado,$EADsForo,$estado2,$evaluadoresForo,$estado3,$calificacionEvaludorForo);
     }
 
     function consultarEADxPlantaxArea($planta,$area){

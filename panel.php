@@ -1611,6 +1611,12 @@ if (isset($_SESSION['nombre'])) {
                                             Nombre
                                         </th>
                                         <th>
+                                            Planta
+                                        </th>
+                                        <th>
+                                            Área
+                                        </th>
+                                        <th>
                                             Detalles
                                         </th>
                                         <th>
@@ -1619,13 +1625,19 @@ if (isset($_SESSION['nombre'])) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="foro in foros" style="font-size:0.8em">
+                                    <tr class="middle-center" v-for="foro in foros" style="font-size:0.8em">
                                         <td>
                                             {{foro.nombre_foro}}
                                         </td>
                                         <td>
-                                            <button type="button" class="btn btn-success px-3 py-1 " @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
-                                                <i class="bi bi-eye" style="font-size:0.8em"></i>
+                                            {{foro.planta}}
+                                        </td>
+                                        <td>
+                                            {{foro.area}}
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-success btn-actualizar" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
+                                                <i class="bi bi-eye" style="font-size:1em"></i>
                                             </button>
                                         </td>
                                         <td>
@@ -1695,72 +1707,54 @@ if (isset($_SESSION['nombre'])) {
 
                             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
                             <div  id="modal_foros_detalles" class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-dialog modal-dialog-centered  modal-xxl">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" style="font-size: 0.8em;">
-                                            <table class="table table-bordered table-striped">
-                                                <thead class="thead-dark">
-                                                    <tr>
-                                                        <th>#</th>
-                                                        <th>EADs</th>
-                                                        <th>Área</th>
-                                                        <th>Planta</th>
-                                                        <th>Nombre EAD</th>
-                                                        <th>Proyecto</th>
-                                                        <th>Evaluador 1</th>
-                                                        <th>Evaluador 2</th>
-                                                        <th>Evaluador 3</th>
-                                                        <th>Evaluador 4</th>
-                                                        <th>Calificacion Final</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th><b>1</b></th>
-                                                        <td><b>EAD 1</b></td>
-                                                        <td>Formación</td>
-                                                        <td>Enerya</td>
-                                                        <td>Los Rinos</td>
-                                                        <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><b>2</b></th>
-                                                        <td><b>EAD 2</b></td>
-                                                        <td>Etiquetado</td>
-                                                        <td>Riasa</td>
-                                                        <td>Las Maquinas</td>
-                                                        <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><b>3</b></th>
-                                                        <td><b>EAD 3</b></td>
-                                                        <td>Riasa - Enerya</td>
-                                                        <td>Planta A</td>
-                                                        <td>Los Pajaros Azules</td>
-                                                        <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                                                </tbody>
-                                            </table>
+                                                <div class="scroll2">
+                                                    <table class="table table-bordered table-striped">
+                                                        <thead class="thead-dark bg-secondary">
+                                                            <tr class="table-active text-center">
+                                                                <th>#</th>
+                                                                <th>EADs</th>
+                                                                <th>Planta</th>
+                                                                <th>Área</th>
+                                                                <th>Proyecto</th>
+                                                                <th  v-for="(evaluador,index) in evaluadoresForo">
+                                                                    <label style="font-size:0.8em">{{evaluador.nombre}}</label><br>
+                                                                    <span class="badge text-bg-primary">Evaluador {{index+1}}</span>
+                                                                </th>
+                                                                <th>Calificación</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr class="middle-center" v-for="(foroEAD, index) in eadsForo">
+                                                                <th><b>{{index+1}}</b></th>
+                                                                <td>{{foroEAD.nombre_ead}}</td>
+                                                                <td>{{foroEAD.planta}}</td>
+                                                                <td>{{foroEAD.area}}</td>
+                                                                <td class="text-center">
+                                                                  <label v-if="foroEAD.nombre_proyecto">{{foroEAD.nombre_proyecto}}</label>
+                                                                   <input v-else  type="text" v-model=""></input>
+                                                                </td>
+                                                                <td v-for="evaluador in evaluadoresForo">
+                                                                    <label v-if="calificacionEvaluadorForo[foroEAD.id]">
+                                                                        {{calificacionEvaluadorForo[foroEAD.id][evaluador.id].calificacion}}
+                                                                    </label>
+                                                                </td>
+                                                                <td>
+                                                                    <label v-if="calificacionEvaluadorForo[foroEAD.id]">
+                                                                           <b>{{calificacionEvaluadorForo[foroEAD.id].suma}}</b>
+                                                                    </label>
+                                                                </td>
+                                                            </tr>
+                                                            <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
