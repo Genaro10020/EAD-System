@@ -27,12 +27,15 @@ include("conexionGhoner.php");
         $estado3 = false;
 
        // Consulta preparada para evitar inyección SQL
-        $consulta = "SELECT ead_foro.id,equipos_ead.nombre_ead,equipos_ead.planta,equipos_ead.area,proyecto_ead.nombre_proyecto 
-        FROM equipos_ead 
-        JOIN ead_foro 
-        ON equipos_ead.id = ead_foro.id_equipos_ead
-        LEFT JOIN proyecto_ead ON ead_foro.id = proyecto_ead.id_ead_foro 
-        WHERE ead_foro.id_foro = ?"; //consulto los equipos ligados al foro id
+       $consulta = "SELECT ead_foro_id, nombre_ead, id_evaluador, planta, area, suma 
+       FROM (
+          SELECT ef.id AS ead_foro_id, e.nombre_ead, c.id_evaluador, e.planta, e.area, SUM(c.calificacion) AS suma 
+          FROM equipos_ead e
+          JOIN ead_foro ef ON e.id = ef.id_equipos_ead
+          JOIN calificacion c ON c.id_ead_foro = ef.id
+          WHERE ef.id_foro = ?
+          GROUP BY ef.id_equipos_ead 
+       ) AS subconsulta ORDER BY suma DESC";
 
         // Preparar la consulta
         if ($stmt = $conexion->prepare($consulta)) {
@@ -63,10 +66,10 @@ include("conexionGhoner.php");
                         //recuperando calificacion por evaluador
                         $consulta2 = "SELECT ead_foro.id AS id_ead_foro, evaluadores.id AS id_evaluador, 
                         evaluadores.nombre, calificacion.calificacion
-                 FROM ead_foro 
-                 JOIN calificacion ON ead_foro.id = calificacion.id_ead_foro
-                 JOIN evaluadores ON calificacion.id_evaluador = evaluadores.id
-                 WHERE ead_foro.id_foro = ?";
+                        FROM ead_foro 
+                        JOIN calificacion ON ead_foro.id = calificacion.id_ead_foro
+                        JOIN evaluadores ON calificacion.id_evaluador = evaluadores.id
+                        WHERE ead_foro.id_foro = ?";
                         $stmt = $conexion->prepare($consulta2);
                         $stmt->bind_param("i",$id);
                             if($stmt->execute()){

@@ -26,13 +26,14 @@ if (isset($_SESSION['nombre'])) {
                         <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                         <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                         <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                        <!--<a><button class="btn_menu" @click="ventanas('equiposEAD')"><b>Equipos EAD</b></button></a> Comentado en produccion-->
+                        <!--<a><i class="bi bi-question-circle">Preguntas</i></a>
+                        <a><button class="btn_menu" @click="ventanas('Preguntas')"><b>Preguntas</b></button></a>-->
                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
                         <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
-                        <a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>
+                        <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
-                        <a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Evaluar</b></button></a>
+                        <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                         <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                         <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
                         <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
@@ -41,6 +42,7 @@ if (isset($_SESSION['nombre'])) {
                 <div class="row  divLineaMenu w-100 d-flex text-center align-items-end text-light" style="font-size:14px">
                        <label class="text-center"> {{ventana}}</label>
                 </div>
+                <!---->
                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                     <button class="btn_menu" @click="ventanas('usuarios')"><b>Usuarios</b></button>
                                 </div>
@@ -610,44 +612,9 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                 </div>
             </div>
-            <div v-if="ventana=='equiposEAD'" class="row"> <!--bloque CREAR EAD-->
+            <div v-if="ventana=='Preguntas'" class="row"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
-
-                <table class="mx-2 mb-5 table table-hover border-dark text-center">
-                    <thead>
-                        <tr>
-                            <th>Nombre del equipo</th>
-                            <th>Planta</th>
-                            <th>Area</th>
-                            <th>Proceso</th>
-                            <th>Lider del equipo</th>
-                            <th>Cordinador</th>
-                            <th>Jefe de area</th>
-                            <th>Ing. Procesos</th>
-                            <th>Ing. Calidad</th>
-                            <th>Supervisor</th>
-                            <th>Integrantes del equipo</th>
-                        </tr>
-                    </thead>
-                    <tbody style="text-align: center">
-                        <tr style="vertical-align: middle">
-                            <td>Nombre del equipo</td>
-                            <td>Planta</td>
-                            <td>Area</td>
-                            <td>Proceso</td>
-                            <td>Lider del equipo</td>
-                            <td>Cordinador</td>
-                            <td>Jefe de area</td>
-                            <td>Ing. Procesos</td>
-                            <td>Ing. Calidad</td>
-                            <td>Supervisor</td>
-                            <td>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br>Integrantes del equipo<br></td>
-                        </tr>
-
-
-                    </tbody>
-                </table>
-
+                        Bloque de crear preguntas
                 <!--///////////////////////////////////////-->
             </div>
             <!--///////////////////////////////////////-->
@@ -1454,11 +1421,11 @@ if (isset($_SESSION['nombre'])) {
                 </div>
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
-            <div v-if="ventana == 'CompetenciaPlanta'">
+            <div v-if="ventana == 'Evaluar'">
                 <div class="col-12 d-flex justify-content-center">
-                        <table class="table table-bordered table-striped mt-5">
-                                                <thead class="thead-dark">
-                                                    <tr>
+                                            <table class="table table-bordered mt-5">
+                                                <thead class="thead-dark bg-secondary">
+                                                    <tr class="table-active text-center">
                                                         <th>#</th>
                                                         <th>EADs</th>
                                                         <th>Área</th>
@@ -1466,50 +1433,20 @@ if (isset($_SESSION['nombre'])) {
                                                         <th>Nombre EAD</th>
                                                         <th>Proyecto</th>
                                                         <th>Evaluador 1</th>
-                                                        <th>Evaluador 2</th>
-                                                        <th>Evaluador 3</th>
-                                                        <th>Evaluador 4</th>
-                                                        <th>Calificacion Final</th>
+                                                        <th>Calificación Final</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr>
+                                                    <tr class="text-center">
                                                         <th><b>1</b></th>
                                                         <td><b>EAD 1</b></td>
                                                         <td>Formación</td>
                                                         <td>Enerya</td>
                                                         <td>Los Rinos</td>
                                                         <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><b>2</b></th>
-                                                        <td><b>EAD 2</b></td>
-                                                        <td>Etiquetado</td>
-                                                        <td>Riasa</td>
-                                                        <td>Las Maquinas</td>
-                                                        <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th><b>3</b></th>
-                                                        <td><b>EAD 3</b></td>
-                                                        <td>Riasa - Enerya</td>
-                                                        <td>Planta A</td>
-                                                        <td>Los Pajaros Azules</td>
-                                                        <td>Proyecto A</td>
-                                                        <td><b>Evaluador A</b></td>
-                                                        <td><b>Evaluador B</b></td>
-                                                        <td><b>Evaluador C</b></td>
-                                                        <td><b>Evaluador D</b></td>
+                                                        <td>
+                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2">Evaluar</button>
+                                                        </td>
                                                         <td>Pendiente</td>
                                                     </tr>
                                                     <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
@@ -1722,7 +1659,6 @@ if (isset($_SESSION['nombre'])) {
                                                                 <th>EADs</th>
                                                                 <th>Planta</th>
                                                                 <th>Área</th>
-                                                                <th>Proyecto</th>
                                                                 <th  v-for="(evaluador,index) in evaluadoresForo">
                                                                     <label style="font-size:0.8em">{{evaluador.nombre}}</label><br>
                                                                     <span class="badge text-bg-primary">Evaluador {{index+1}}</span>
@@ -1736,18 +1672,14 @@ if (isset($_SESSION['nombre'])) {
                                                                 <td>{{foroEAD.nombre_ead}}</td>
                                                                 <td>{{foroEAD.planta}}</td>
                                                                 <td>{{foroEAD.area}}</td>
-                                                                <td class="text-center">
-                                                                  <label v-if="foroEAD.nombre_proyecto">{{foroEAD.nombre_proyecto}}</label>
-                                                                   <input v-else  type="text" v-model=""></input>
-                                                                </td>
                                                                 <td v-for="evaluador in evaluadoresForo">
-                                                                    <label v-if="calificacionEvaluadorForo[foroEAD.id]">
-                                                                        {{calificacionEvaluadorForo[foroEAD.id][evaluador.id].calificacion}}
+                                                                    <label v-if="calificacionEvaluadorForo[foroEAD.ead_foro_id]">
+                                                                        {{calificacionEvaluadorForo[foroEAD.ead_foro_id][evaluador.id].calificacion}}
                                                                     </label>
                                                                 </td>
                                                                 <td>
-                                                                    <label v-if="calificacionEvaluadorForo[foroEAD.id]">
-                                                                           <b>{{calificacionEvaluadorForo[foroEAD.id].suma}}</b>
+                                                                    <label>
+                                                                    <b>{{foroEAD.suma}}</b>
                                                                     </label>
                                                                 </td>
                                                             </tr>
