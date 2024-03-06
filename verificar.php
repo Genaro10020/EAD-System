@@ -17,13 +17,30 @@ $contrasena = $arreglo['contrasena'];
                             $_SESSION['nombre']=$dato['nombre'];
                             $_SESSION['nomina']=$dato['nomina'];
                             $_SESSION['planta']=$dato['planta'];
-                    $resultado = "Autorizado";
+                            $_SESSION['tipo_acceso']=$dato['tipo_acceso'];
+                            $resultado = "Autorizado";
                             }
                 }else{
-                    $resultado = "Verifique";
+                    $consultarEvaluador = "SELECT * FROM evaluadores WHERE nomina='$usuario' AND contrasena='$contrasena'";
+                    $query2=$conexion->query($consultarEvaluador);
+                    if($query2){
+                            if (mysqli_num_rows($query2) > 0) {
+                                while($row = mysqli_fetch_array($query2)){
+                                    $_SESSION['id']=$row['id'];
+                                    $_SESSION['nombre']=$row['nombre'];
+                                    $_SESSION['nomina']=$row['nomina'];
+                                    $_SESSION['tipo_acceso']="Evaluador";
+                                    $resultado = "Autorizado";
+                                }
+                            }else{
+                                $resultado = "Verifique";
+                            }   
+                    }else{
+                        $resultado = "Error ".$conexion->error;
+                    }
+                           
                 }
      
-   
 
 echo json_encode($resultado);
 ?>

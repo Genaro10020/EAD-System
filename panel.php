@@ -7,7 +7,7 @@ if (isset($_SESSION['nombre'])) {
     <head>
         <?php include('head.php'); ?>
     </head>
-
+   
     <body class="container-fluid">
 
         <header>
@@ -15,28 +15,47 @@ if (isset($_SESSION['nombre'])) {
         </header>
 
         <div id="app" class="col-12" style="min-height: 80vh;">
+        <?php
+         if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Evaluador'){//redirecciono a la ventana
+            ?>
+                {{ventanas('Evaluar')}}
+                {{consultarCompetenciaIDevaluador()}}
+            <?php
+            }
+            ?>
             <div class="  d-flex text-center">
                 <div class="col-1 dropdown" style="width:150px;  z-index: 5000; ">
                     <p class="dropbtn text-white" style="max-height:10px;">
                         <i class="bi bi-list">Menú</i>
                     </p>
                     <div class="dropdown-content">
-                        <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
-                        <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                        <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                        <!--<a><i class="bi bi-question-circle">Preguntas</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Preguntas')"><b>Preguntas</b></button></a>-->
-                        <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
-                        <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
-                        <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
-                        <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
-                        <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
-                        <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-                        <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
-                        <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
+                            <?php
+                                if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Admin'){
+                            ?>
+                                    <a><i class="bi bi-gear-fill">Configuracion</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                    <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                    <!--<a><i class="bi bi-question-circle">Preguntas</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Preguntas')"><b>Preguntas</b></button></a>-->
+                                    <a><i class="bi bi-trophy-fill"> Competencias</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
+                                    <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
+                                    <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
+                                    <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
+                                    <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
+                                    <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
+                            <?php
+                                }else if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Evaluador'){
+                            ?>
+                                    <a><i class="bi bi-trophy-fill"> Competencias</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
+                            <?php
+                                }
+                            ?>
                     </div>
                 </div>
                 <div class="row  divLineaMenu w-100 d-flex text-center align-items-end text-light" style="font-size:14px">
@@ -1601,7 +1620,7 @@ if (isset($_SESSION['nombre'])) {
                                                                     <input type="text" class="w-75" v-model="nombre_evaluador">
                                                                 </div>
                                                                 <div class="input-group mb-3">
-                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">No. Nómina</span>
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Usuario</span>
                                                                     <input type="text" class="w-75" v-model="nomina_evaluador">
                                                                 </div>
                                                                 <div class="input-group mb-3">
@@ -1619,7 +1638,7 @@ if (isset($_SESSION['nombre'])) {
                                                                     <input type="text" class="w-75" v-model="nombre_evaluador">
                                                                 </div>
                                                                 <div class="input-group mb-3">
-                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">No. Nómina</span>
+                                                                    <span class="input-group-text w-25" style="font-size: 0.8em;">Usuario</span>
                                                                     <input type="text" class="w-75" v-model="nomina_evaluador">
                                                                 </div>
                                                                 <div class="input-group mb-3">

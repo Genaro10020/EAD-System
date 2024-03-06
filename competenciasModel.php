@@ -7,11 +7,13 @@ include("conexionGhoner.php");
         $estado = false;
         $consulta = "SELECT * FROM foros";
         $query = $conexion->query($consulta);
+        if($query){
+            $estado=true;
+        }
         if ($query->num_rows > 0) {
             while ($fila = $query->fetch_assoc()) {
                  $resultado [] = $fila;
             }
-            $estado=true;
         }
 
         return array($estado,$resultado);
@@ -150,6 +152,7 @@ include("conexionGhoner.php");
                 if($stmt->execute()){
                     $estado[1] = true;
                     $ultimo_id_ead_foros=$conexion->insert_id; //tomo el id de ead_foro
+
                         //INSERTANDO EVALUADORES EN CALIFICACIONES
                         foreach ($ids_evaluadores as $id_eval) {
                             $query3="INSERT  INTO calificacion (id_ead_foro, id_evaluador) VALUES (?,?)";
@@ -158,6 +161,24 @@ include("conexionGhoner.php");
                             if($stmt ->execute()){
                                 $estado[2] = true;
                                 $conexion->insert_id; //tomo el id de ead_foro
+
+                                        $seleccionar = "SELECT * FROM preguntas";//selecciono las preguntas para replicar
+                                        $resultados = mysqli_query($conexion,$seleccionar);
+                                        if($resultados){
+                                            $estado[3] = true;
+                                            while($fila = mysqli_fetch_array($resultados)){
+                                                $etapa = $fila['etapa'];
+                                                $peso = $fila['peso'];
+                                                $pregunta = $fila['pregunta'];
+                                                $insertando = "INSERT INTO preguntas_evaluador (id_evaluador,id_ead_foro,etapa,peso,pregunta) VALUES (?,?,?,?,?)";
+                                                $stmt = $conexion->prepare($insertando);
+                                                $stmt->bind_param("iisss", $id_eval,$ultimo_id_ead_foros, $etapa, $peso, $pregunta);
+                                                if($stmt->execute()){
+                                                    $estado[4] = true;
+                                                }
+                                            }
+                                        }
+
                             }else{
                                 $estado[2] = $conexion->error;
                             }
