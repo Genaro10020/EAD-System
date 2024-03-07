@@ -41,7 +41,7 @@ if(isset($_SESSION['nombre'])){
 
                 break;
         default:
-        $val = "Método HTTP no permitido";
+        $resultado = "Método HTTP no permitido";
         //http_response_code(405); // Método no permitido
         break;
         }

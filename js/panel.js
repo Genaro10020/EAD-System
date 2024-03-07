@@ -4,6 +4,7 @@ const app = {
     return {
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
       var_actualizarEAD:false,
+      tipo_usuario: '',
       ventana: 'Usuarios',
       accion: 'insertar',
       accion_departamento: '',
@@ -87,6 +88,20 @@ const app = {
       eadsForo:[],	
       evaluadoresForo:[],	
       calificacionEvaluadorForo:[],
+      //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
+      equiposEvaluador:[],
+      etapas_preguntas:'',
+      preguntas_evaluar:'',
+      selectedOption:null,
+      datosEvaluar:[],
+      total_maximos:0,
+      sumaPuntosMaximos: 0,
+      sumaPuntosReales: 0,
+      sumaPonderacion: 0,
+      calificacionEAD: 0,
+      id_ead_foro:'',
+      id_calificacion:'',
+      mensaje:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -109,8 +124,22 @@ const app = {
   },
   mounted() {
     this.consultarUsuarios()
+    this.datosTipoUsuario()//tomo datos de session
   },
   methods: {
+   /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
+    datosTipoUsuario(){
+     axios.post("datos_user.php",{
+     }).then(response =>{
+      this.tipo_usuario = response.data[0]
+        if(response.data[0] =="Evaluador"){
+          this.ventanas('Evaluar');
+          this.consultarCompetenciaIDevaluador();
+        }
+     }).catch(error =>{
+      console.log('Error en  axios tipoUser '+error);
+     })
+    },
     /*/////////////////////////////////////////////////////////////////////////////////USUARIOS*/
     consultarUsuarios() {
       axios.post('consulta_PlantasAreasSubareasUsuarios.php', {
@@ -720,11 +749,11 @@ const app = {
       }else if(this.ckeckEvaluadores.length<=0){
         alert("Seleccion un Evaluador para eliminar")
       }else if(this.ckeckEvaluadores.length>1){
-        alert("Solo se puedo elimibar 1 evaluador, no varios a la vez.")
+        alert("Solo se puedo eliminar 1 evaluador, no varios a la vez.")
       }
     },
     crearForo(){
-      if(!this.nombre_foro){return alert("Agregue el nombre al foto")}
+      if(!this.nombre_foro){return alert("Agregue el nombre al foro")}
       if(!this.select_planta_foro){return alert("Seleccione Planta")}
       if(!this.select_area_foro){return alert("Seleccione Área")}
       if(!this.fecha_foro){return alert("Seleccione una Fecha")}
@@ -806,13 +835,125 @@ const app = {
     consultarCompetenciaIDevaluador(){
       axios.get("evaluarController.php",{
         params:{
-          accion: 'IDEvaludor'
+          accion: 'IDEvaluador'
         }
       }).then(response=>{
         console.log(response.data)
+        if(response.data[0]==true){
+          this.equiposEvaluador = response.data[1];
+        }else{
+          console.log("Error en la consulta IDEvaluador "+response.data[0])
+        }
       }).catch(error=>{
         console.log("Error en axios: "+error)
       });
+    },
+    modalPreguntas(nombre_equipo){
+      this.myModal = new bootstrap.Modal(document.getElementById('modalEvaluacion'));
+      this.myModal.show();
+      this.tituloModal = nombre_equipo;
+    },
+    IDCalifiacion(id_calificacion,id_ead_foro){//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
+      this.id_calificacion = id_calificacion;
+      this.id_ead_foro = id_ead_foro;
+    },
+    consultarPreguntasEvaluador(id_ead_foro){
+      axios.get("evaluacionPreguntasController.php",{
+        params:{
+          accion:'preguntasEvaluador',
+          id_ead_foro: id_ead_foro
+        }
+      }).then(response => {
+        console.log('Preguntas',response.data);
+        if(response.data[0]==true){
+          this.preguntas_evaluar = response.data[1];
+          this.datosEvaluar = response.data[2];
+
+          let sumaPuntosMaximos = 0;
+          let sumaPuntosReales = 0;
+          let sumaPonderacion = 0;
+          let calificacion = 0;
+
+            // Iteramos sobre las claves del objeto datosEvaluar
+            for (let etapa in this.datosEvaluar) {
+                sumaPuntosMaximos += this.datosEvaluar[etapa].puntos_maximos;
+                sumaPuntosReales += this.datosEvaluar[etapa].puntos_reales;
+                sumaPonderacion += this.datosEvaluar[etapa].ponderacion;
+            }  
+            this.sumaPuntosMaximos = sumaPuntosMaximos;
+            this.sumaPuntosReales = sumaPuntosReales;
+            this.sumaPonderacion= sumaPonderacion;
+
+            calificacion = (((sumaPuntosReales/sumaPuntosMaximos)*sumaPonderacion/100)*100).toFixed(2)
+            this.calificacionEAD = calificacion;
+         //this.etapas_preguntas = response.data = response.data[2];
+        }else{
+          console.log("Algo no salio bien en la consulta");
+        }
+      }).catch(error=>{
+          console.log('Error axios'+error)
+      })
+    },
+    guardarValor(id_pregunta,id_ead_foro,valor){
+    
+     switch (valor) {
+        case 0:
+          this.mensaje = "0: No Cumplimiento (La pregunta no se abordó en absoluto)."
+        break;
+        case 1:
+          this.mensaje = "1: Cumplimiento Mínimo (Se abordó superficialmete, insuficiente y poco clara)."
+        break;
+        case 2:
+          this.mensaje = "2: Cumplimiento Básico (Se abordó de manera mínima, carece de detalles)."
+        break;
+        case 3:
+          this.mensaje = "3: Cumplimiento Satisfactorio (Se abordó adecuadamente, respuesta clara y completa, pero sin destacar)."
+        break;
+        case 4:
+          this.mensaje = "4: Cumplimiento Notable (Se abordó de manera excelente, respuesta detallada y esfuerzo adicional)."
+        break;
+        case 5:
+          this.mensaje = "5: Excelencia (Se abordó de manera excepcional, respuesta sobresaliente, creativa y original)."
+     
+      default:
+        break;
+     }
+      this.title = 
+
+      axios.post("evaluacionPreguntasController.php",{
+        id_pregunta:id_pregunta,
+        id_ead_foro:id_ead_foro,
+        valor:valor
+      }).then(response => {
+        //console.log("GUARDAR PREGUNTA",response.data)
+        if(response.data[0]==true){
+          //console.log("Se guardo: "+id_pregunta)
+          this.consultarPreguntasEvaluador(id_ead_foro)// para actualizar la calificacion tiempo real pero es pesado.
+        }else{
+          console.log("Algo no salio al guardar");
+        }
+      }).catch(error=>{
+          console.log('Error axios'+error)
+      })
+    },
+    enviarCalificacion(){
+      console.log("IDCalificaicon",this.id_calificacion);
+      console.log("Calificacion",this.calificacionEAD);
+      axios.put("evaluacionPreguntasController.php",{
+        id_calificacion:this.id_calificacion,
+        calificacionEAD:this.calificacionEAD,
+      }).then(response => {
+        //console.log('ENVIANDO CALIFICACION',response.data)
+        if(response.data[0]==true){
+          alert("La Calificación fue Guardada Correctamente!");
+          this.myModal.hide();
+          this.consultarCompetenciaIDevaluador();
+        }else{
+          console.log("Algo no salio al guardar");
+        }
+      }).catch(error=>{
+          console.log('Error axios'+error)
+      })
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@ if(isset($_SESSION['nombre'])){
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                if(isset($_GET['accion']) && $_GET['accion']=="IDEvaludor"){//consultando equipo EAD x ID del evaluador
+                if(isset($_GET['accion']) && $_GET['accion']=="IDEvaluador"){//consultando equipo EAD x ID del evaluador
                     $id_evaluador = $_SESSION['id'];
                     $resultado=consultarCompetenciaXEvaluador($id_evaluador);
                 }

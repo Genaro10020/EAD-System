@@ -223,6 +223,37 @@ ul {
     /* Establece la altura máxima del div con scroll */
 }
 
+.opcion-radio {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 15px;
+    height: 15px;
+    border: 1px solid #717471;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+  }
+  
+  .opcion-radio:checked {
+    background-color: #57b340;
+  }
+
+  .label-radios {
+    display: inline-block;
+    font-size: 1em;
+    color: #333;
+    margin-right: 10px;
+    cursor: pointer;
+  }
+
+ 
+  
+  /* Estilos para cuando el radio button está seleccionado */
+  .opcion-radio:checked + .label-radios {
+    font-weight: bold;
+    color: #1b5013; /* Cambia el color cuando está seleccionado */
+  }
 
 .scroll2 {
     overflow: auto;

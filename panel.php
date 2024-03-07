@@ -15,16 +15,8 @@ if (isset($_SESSION['nombre'])) {
         </header>
 
         <div id="app" class="col-12" style="min-height: 80vh;">
-        <?php
-         if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Evaluador'){//redirecciono a la ventana
-            ?>
-                {{ventanas('Evaluar')}}
-                {{consultarCompetenciaIDevaluador()}}
-            <?php
-            }
-            ?>
             <div class="  d-flex text-center">
-                <div class="col-1 dropdown" style="width:150px;  z-index: 5000; ">
+                <div class="col-1 dropdown" style="width:150px;  z-index: 2; ">
                     <p class="dropbtn text-white" style="max-height:10px;">
                         <i class="bi bi-list">Menú</i>
                     </p>
@@ -49,17 +41,18 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
                             <?php
-                                }else if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Evaluador'){
-                            ?>
-                                    <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
-                            <?php
                                 }
                             ?>
                     </div>
                 </div>
                 <div class="row  divLineaMenu w-100 d-flex text-center align-items-end text-light" style="font-size:14px">
-                       <label class="text-center"> {{ventana}}</label>
+                       <div class="col-6 col-lg-4">
+                       <label class="text-center"  style="font-size: 0.7em"> ventana:  {{ventana}}</label>
+                                
+                       </div>
+                       <div class="col-6 col-lg-8 text-end">
+                       <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>
+                        </div>
                 </div>
                 <!---->
                 <!-- <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
@@ -1441,40 +1434,131 @@ if (isset($_SESSION['nombre'])) {
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'Evaluar'">
-                <div class="col-12 d-flex justify-content-center">
-                                            <table class="table table-bordered mt-5">
-                                                <thead class="thead-dark bg-secondary">
-                                                    <tr class="table-active text-center">
-                                                        <th>#</th>
-                                                        <th>EADs</th>
-                                                        <th>Área</th>
-                                                        <th>Planta</th>
-                                                        <th>Nombre EAD</th>
-                                                        <th>Proyecto</th>
-                                                        <th>Evaluador 1</th>
-                                                        <th>Calificación Final</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr class="text-center">
-                                                        <th><b>1</b></th>
-                                                        <td><b>EAD 1</b></td>
-                                                        <td>Formación</td>
-                                                        <td>Enerya</td>
-                                                        <td>Los Rinos</td>
-                                                        <td>Proyecto A</td>
-                                                        <td>
-                                                            <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2">Evaluar</button>
-                                                        </td>
-                                                        <td>Pendiente</td>
-                                                    </tr>
-                                                    <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                                                </tbody>
-                                            </table>        
-                    </div>       
-            </div>
+                    <div class="scroll">
+                        <div class="col-12 d-flex justify-content-center">
+                                    <table class="table table-bordered mt-5">
+                                        <thead class="thead-dark bg-secondary">
+                                            <tr class="table-active text-center">
+                                                <th>Orden</th>
+                                                <th>Planta</th>
+                                                <th>Área</th>
+                                                <th>Nombre EAD</th>
+                                                <th>Evaluador</th>
+                                                <th>Calificación Final</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="text-center" v-for="(equipoEvaluador, index) in equiposEvaluador">
+                                                <th><b>{{index+1}}</b></th>
+                                                <td>{{equipoEvaluador.planta}}</td>
+                                                <td>{{equipoEvaluador.area}}</td>
+                                                <td>{{equipoEvaluador.nombre_ead}}</td>
+                                                <td>
+                                                    <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0"  class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" 
+                                                    @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Reevaluar</button>
+                                                 
+                                                    <button v-else class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" 
+                                                    @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Evaluar</button>
+                                                </td>
+                                                <td> {{equipoEvaluador.calificacion}}</td>
+                                            </tr>
+                                            <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+                                        </tbody>
+                                    </table>        
+                        </div>       
+                    </div>
+            
             <!-- FIN DE COMPETENCIA PLANTA -->
-
+            <!--Modal Preguntas Evaluacion-->
+                <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em;">
+                        <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down modal-xl">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <label class="modal-title">Evaluación: {{tituloModal}}</label>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                            <div class="d-flex justify-content-center text-end text-primary"><b>{{mensaje}}</b></div>
+                                        <div v-for="(preguntas,etapas,bloques) in preguntas_evaluar"><!--No estoy necesitando la variable preguntas solo etapas y bloques es index un simple numero--->
+                                            <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="bg-dark text-light" colspan="2" scope="col">{{bloques+1}} - {{etapas}}</th>
+                                                            <th scope="col">{{preguntas_evaluar[etapas][0].peso}}% <label style="font-size:1.2em"> </label></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(pregunta,index) in preguntas_evaluar[etapas]"><!--Aqui tomo las preguntas-->
+                                                        <th scope="row">{{bloques+1}}.{{index+1}}</th>
+                                                            <td style="min-width: 58%;">{{pregunta.pregunta}}</td>
+                                                            <td style="min-width: 42%;" class="text-center">
+                                                                <input type="radio" class="opcion-radio"  :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
+                                                                <label class="label-radios ms-1">0</label>
+                                                                <input type="radio" class="opcion-radio"  :value="pregunta.valor"   :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
+                                                                <label  class="label-radios ms-1">1</label>
+                                                                <input type="radio" class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 2" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,2)">
+                                                                <label  class="label-radios ms-1">2</label>
+                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"   :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 3" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,3)">
+                                                                <label  class="label-radios ms-1">3</label>
+                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 4" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,4)">
+                                                                <label  class="label-radios ms-1">4</label>
+                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 5" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,5)">
+                                                                <label  class="label-radios ms-1">5</label>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="mt-5">
+                                            <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col"  class="bg-dark text-light" >#</th>
+                                                            <th scope="col"  class="bg-dark text-light" >Etapas</th>
+                                                            <th scope="col"  class="bg-dark text-light" >Puntos Maximos</th>
+                                                            <th scope="col"  class="bg-dark text-light" >Puntos Reales</th>
+                                                            <th scope="col"  class="bg-dark text-light" >Ponderación</th>
+                                                            <th scope="col"  class="bg-dark text-light" >Calificación</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template v-for="(preguntas,etapas,bloques) in preguntas_evaluar">
+                                                            <tr><!--Aqui tomo las preguntas-->
+                                                            <th scope="row">{{bloques+1}}.</th>
+                                                                <td>{{etapas}}</td>
+                                                                <td>{{datosEvaluar[etapas].puntos_maximos}}</td>
+                                                                <td>{{datosEvaluar[etapas].puntos_reales}}</td>
+                                                                <td>{{datosEvaluar[etapas].ponderacion}}%</td>
+                                                                <td>{{(((datosEvaluar[etapas].puntos_reales / datosEvaluar[etapas].puntos_maximos) * (datosEvaluar[etapas].ponderacion / 100)) * 100).toFixed(2)}}</td>
+                                                            </tr>
+                                                        </template>
+                                                        <tr>
+                                                            <td></td>
+                                                            <td>Total</td>
+                                                            <td>{{sumaPuntosMaximos}}</td>
+                                                            <td>{{sumaPuntosReales}}</td>
+                                                            <td>{{sumaPonderacion}}</td>
+                                                            <td>{{calificacionEAD}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                            </table>
+                                        </div>
+                            </div>
+                            <div class="modal-footer justify-content-evelyn align-items-center">
+                                <div class="d-flex col-12 justify-content-center">
+                                    <div class="col-7 text-end">
+                                        <button type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1" ></i>Enviar Calificación</button>
+                                    </div>
+                                    <div class="col-5 text-end">
+                                        <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal"  style="font-size: 1em;">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+            <!--Fin modal-->
+            </div>
 
             <!--/////////////////////////////////CREAR COMPETENCIA PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'Crear Competencia'">
@@ -1593,7 +1677,7 @@ if (isset($_SESSION['nombre'])) {
                                         </td>
                                         <td>
                                             <button class="btn btn-success btn-actualizar" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
-                                                <i class="bi bi-eye" style="font-size:1em"></i>
+                                                <i class="bi bi-eye" style="font-size:1.2m"></i>
                                             </button>
                                         </td>
                                         <td>
@@ -1625,7 +1709,7 @@ if (isset($_SESSION['nombre'])) {
                                                                 </div>
                                                                 <div class="input-group mb-3">
                                                                     <span class="input-group-text w-25" style="font-size: 0.8em;">Password</span>
-                                                                    <input type="text" class="w-75" v-model="contrasena_evaluador">
+                                                                    <input type="text" class="w-75" v-model="contrasena_evaluador"> 
                                                                 </div>
                                                                 <div class="input-group mb-3">
                                                                     <span class="input-group-text w-25" style="font-size: 0.8em;" >Correo</span>
@@ -1663,13 +1747,13 @@ if (isset($_SESSION['nombre'])) {
 
                             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
                             <div  id="modal_foros_detalles" class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered  modal-xxl">
+                                <div class="modal-dialog modal-dialog-centered modal-fullscreen-down p-5">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
-                                        <div class="modal-body" style="font-size: 0.8em;">
+                                        <div class="modal-body" style="font-size: 1em;">
                                                 <div class="scroll2">
                                                     <table class="table table-bordered table-striped">
                                                         <thead class="thead-dark bg-secondary">
@@ -1679,7 +1763,7 @@ if (isset($_SESSION['nombre'])) {
                                                                 <th>Planta</th>
                                                                 <th>Área</th>
                                                                 <th  v-for="(evaluador,index) in evaluadoresForo">
-                                                                    <label style="font-size:0.8em">{{evaluador.nombre}}</label><br>
+                                                                    <label style="font-size:1em">{{evaluador.nombre}}</label><br>
                                                                     <span class="badge text-bg-primary">Evaluador {{index+1}}</span>
                                                                 </th>
                                                                 <th>Calificación</th>
@@ -1698,7 +1782,7 @@ if (isset($_SESSION['nombre'])) {
                                                                 </td>
                                                                 <td>
                                                                     <label>
-                                                                    <b>{{foroEAD.suma}}</b>
+                                                                    <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(2)}}</b>
                                                                     </label>
                                                                 </td>
                                                             </tr>
@@ -1824,80 +1908,6 @@ if (isset($_SESSION['nombre'])) {
                             </table>
                         </div>-->
                         <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
-                        <div class="modal modal-xl" id="exampleModal" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Visualizacion de competencias en </h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <table class="table table-bordered table-striped">
-                                            <thead class="thead-dark">
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>EADs</th>
-                                                    <th>Área</th>
-                                                    <th>Planta</th>
-                                                    <th>Nombre EAD</th>
-                                                    <th>Proyecto</th>
-                                                    <th>Evaluador 1</th>
-                                                    <th>Evaluador 2</th>
-                                                    <th>Evaluador 3</th>
-                                                    <th>Evaluador 4</th>
-                                                    <th>Calificacion Final</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <th><b>1</b></th>
-                                                    <td><b>EAD 1</b></td>
-                                                    <td>Formación</td>
-                                                    <td>Enerya</td>
-                                                    <td>Los Rinos</td>
-                                                    <td>Proyecto A</td>
-                                                    <td><b>Evaluador A</b></td>
-                                                    <td><b>Evaluador B</b></td>
-                                                    <td><b>Evaluador C</b></td>
-                                                    <td><b>Evaluador D</b></td>
-                                                    <td>Pendiente</td>
-                                                </tr>
-                                                <tr>
-                                                    <th><b>2</b></th>
-                                                    <td><b>EAD 2</b></td>
-                                                    <td>Etiquetado</td>
-                                                    <td>Riasa</td>
-                                                    <td>Las Maquinas</td>
-                                                    <td>Proyecto A</td>
-                                                    <td><b>Evaluador A</b></td>
-                                                    <td><b>Evaluador B</b></td>
-                                                    <td><b>Evaluador C</b></td>
-                                                    <td><b>Evaluador D</b></td>
-                                                    <td>Pendiente</td>
-                                                </tr>
-                                                <tr>
-                                                    <th><b>3</b></th>
-                                                    <td><b>EAD 3</b></td>
-                                                    <td>Riasa - Enerya</td>
-                                                    <td>Planta A</td>
-                                                    <td>Los Pajaros Azules</td>
-                                                    <td>Proyecto A</td>
-                                                    <td><b>Evaluador A</b></td>
-                                                    <td><b>Evaluador B</b></td>
-                                                    <td><b>Evaluador C</b></td>
-                                                    <td><b>Evaluador D</b></td>
-                                                    <td>Pendiente</td>
-                                                </tr>
-                                                <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
