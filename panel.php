@@ -1492,18 +1492,21 @@ if (isset($_SESSION['nombre'])) {
                                                         <th scope="row">{{bloques+1}}.{{index+1}}</th>
                                                             <td style="min-width: 58%;">{{pregunta.pregunta}}</td>
                                                             <td style="min-width: 42%;" class="text-center">
-                                                                <input type="radio" class="opcion-radio"  :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
+                                                                <input type="radio" class="opcion-radio"  :value="0" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
                                                                 <label class="label-radios ms-1">0</label>
-                                                                <input type="radio" class="opcion-radio"  :value="pregunta.valor"   :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
+                                                                <input type="radio" class="opcion-radio"  :value="1" v-model="pregunta.valor"    :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
                                                                 <label  class="label-radios ms-1">1</label>
-                                                                <input type="radio" class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 2" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,2)">
+                                                                <input type="radio" class="opcion-radio" :value="2" v-model="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 2" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,2)">
                                                                 <label  class="label-radios ms-1">2</label>
-                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"   :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 3" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,3)">
+                                                                <input type="radio"  class="opcion-radio" :value="3" v-model="pregunta.valor"   :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 3" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,3)">
                                                                 <label  class="label-radios ms-1">3</label>
-                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 4" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,4)">
+                                                                <input type="radio"  class="opcion-radio" :value="4" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 4" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,4)">
                                                                 <label  class="label-radios ms-1">4</label>
-                                                                <input type="radio"  class="opcion-radio" :value="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 5" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,5)">
+                                                                <input type="radio"  class="opcion-radio" :value="5" v-model="pregunta.valor"  :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 5" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,5)">
                                                                 <label  class="label-radios ms-1">5</label>
+                                                            </td>
+                                                            <td>
+                                                                <i v-if="pregunta.valor!=null" class="text-success bi bi-check2"></i>
                                                             </td>
                                                         </tr>
                                                     </tbody>
@@ -1547,7 +1550,8 @@ if (isset($_SESSION['nombre'])) {
                             <div class="modal-footer justify-content-evelyn align-items-center">
                                 <div class="d-flex col-12 justify-content-center">
                                     <div class="col-7 text-end">
-                                        <button type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1" ></i>Enviar Calificación</button>
+                                        <button v-if="examenFinalizado=='Finalizado'" type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1" ></i>Enviar Calificación</button>
+                                        <button v-else type="button" class="btn btn-secondary" @click="contestarEvaluacion()"><i class="bi bi-send-fill me-1" ></i>Enviar Calificación</button>
                                     </div>
                                     <div class="col-5 text-end">
                                         <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal"  style="font-size: 1em;">Cerrar</button>
@@ -1747,14 +1751,14 @@ if (isset($_SESSION['nombre'])) {
 
                             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
                             <div  id="modal_foros_detalles" class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered modal-fullscreen-down p-5">
+                                <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down p-5">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" style="font-size: 1em;">
-                                                <div class="scroll2">
+                                                <div class="scroll5">
                                                     <table class="table table-bordered table-striped">
                                                         <thead class="thead-dark bg-secondary">
                                                             <tr class="table-active text-center">
@@ -1782,8 +1786,19 @@ if (isset($_SESSION['nombre'])) {
                                                                 </td>
                                                                 <td>
                                                                     <label>
-                                                                    <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(2)}}</b>
+                                                                        <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(2)}}</b>
                                                                     </label>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class=""></td>
+                                                                <td class=""></td>
+                                                                <td class=""></td>
+                                                                <td class=""></td>
+                                                                <td :colspan="evaluadoresForo.length">
+                                                                </td>
+                                                                <td class="text-primary fw-bold">
+                                                                    {{promedioCalificaciones}}
                                                                 </td>
                                                             </tr>
                                                             <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->

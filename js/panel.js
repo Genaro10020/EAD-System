@@ -88,6 +88,8 @@ const app = {
       eadsForo:[],	
       evaluadoresForo:[],	
       calificacionEvaluadorForo:[],
+      sum:0,
+      promedioCalificaciones:0,
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador:[],
       etapas_preguntas:'',
@@ -102,6 +104,7 @@ const app = {
       id_ead_foro:'',
       id_calificacion:'',
       mensaje:'',
+      examenFinalizado:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -812,6 +815,16 @@ const app = {
                 this.evaluadoresForo= response.data[3];
                     if(response.data[4]==true){
                       this.calificacionEvaluadorForo= response.data[5];
+
+                          const valoresSuma =  this.eadsForo.map(objeto => parseFloat((objeto.suma/this.evaluadoresForo.length).toFixed(2)));
+                          var suma =0;
+                          for (let i = 0; i < valoresSuma.length; i++) {
+                            const element = valoresSuma[i];
+                              suma += element;
+                          }
+                          //console.log(suma)
+                          this.promedioCalificaciones = parseFloat((suma.toFixed(2))/this.eadsForo.length).toFixed(2);
+
                     }else{
                       console.log("error en la consulta de calificacion por evaluador"+response.data[4]);
                     }
@@ -849,6 +862,7 @@ const app = {
       });
     },
     modalPreguntas(nombre_equipo){
+      this.mensaje = ''
       this.myModal = new bootstrap.Modal(document.getElementById('modalEvaluacion'));
       this.myModal.show();
       this.tituloModal = nombre_equipo;
@@ -868,6 +882,7 @@ const app = {
         if(response.data[0]==true){
           this.preguntas_evaluar = response.data[1];
           this.datosEvaluar = response.data[2];
+          this.examenFinalizado = response.data[4];
 
           let sumaPuntosMaximos = 0;
           let sumaPuntosReales = 0;
@@ -954,6 +969,9 @@ const app = {
       }).catch(error=>{
           console.log('Error axios'+error)
       })
+    },
+    contestarEvaluacion(){
+        alert("Favor de contestar todas las preguntas")
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
