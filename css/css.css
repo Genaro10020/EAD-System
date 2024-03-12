@@ -69,15 +69,13 @@ select[type]:focus,
 table,
 .btn-actualizar,
 .btn-eliminar,
-.btn-guardar {
-    font-size: 0.7em;
+.btn-guardar,
+.btn-cerrar-foro{
+    font-size: 0.9em;
 }
 
-.btn-actualizar, .btn-eliminar{transition: transform 0.1s linear}
-.btn-actualizar:hover, .btn-eliminar:hover{transform: scale(1.2)}/*120%*/
-
-
-
+.btn-actualizar, .btn-cerrar-foro, .btn-eliminar{transition: transform 0.1s linear}
+.btn-cerrar-foro:hover, .btn-actualizar:hover, .btn-eliminar:hover{transform: scale(1.2)}/*120%*/
 
 /*.update-btn {
     background-color: #007bff;

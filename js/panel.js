@@ -90,6 +90,9 @@ const app = {
       calificacionEvaluadorForo:[],
       sum:0,
       promedioCalificaciones:0,
+      input_nombre_proyecto:[],
+      editar_nombre_proyecto:'',
+      id_foro:'',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador:[],
       etapas_preguntas:'',
@@ -801,6 +804,7 @@ const app = {
       this.tituloModal = nombre;
     },
     consultarDetallesForo(id){
+      this.id_foro = id;
       axios.get("competenciasController.php",{
         params:{
           accion:"DetallesForo",
@@ -808,7 +812,7 @@ const app = {
         }
       }).then(response=>{
         if(response.data){
-          console.log('Cosulta Foro',response.data);
+          console.log('Consulta Foro',response.data);
           if(response.data[0]==true){
             this.eadsForo= response.data[1];
               if(response.data[2]==true){
@@ -824,7 +828,7 @@ const app = {
                           }
                           //console.log(suma)
                           this.promedioCalificaciones = parseFloat((suma.toFixed(2))/this.eadsForo.length).toFixed(2);
-
+                          this.editar_nombre_proyecto = ''; //la reseteo despues de la consulta para que el nombre se refleje sin un pequeño salto, si la borras no perjudica en el funcionanmiento
                     }else{
                       console.log("error en la consulta de calificacion por evaluador"+response.data[4]);
                     }
@@ -838,6 +842,51 @@ const app = {
       }).catch(error=>{
           console.log("Error en axios "+error)
       })
+    },
+    estatusForo(id_foro,nombre_foro,estatus){
+      var nuevoEstatus;
+        if(estatus=="Abierto"){
+          nuevoEstatus="Cerrado";
+        }
+        if(estatus=="Cerrado"){
+          nuevoEstatus="Abierto";
+        }
+      //if(!confirm("El "+"'"+nombre_foro+"'"+" cambiará al estado: "+nuevoEstatus)){return}   
+      axios.put("foroController.php",{
+        id_foro:id_foro,
+        nuevoEstatus:nuevoEstatus
+      }).then(response =>{
+          if(response.data!=true){return alert("Algo salio mal")}else{
+            this.consultarForos();
+          }
+      }).catch(error =>{
+          console.log(error)
+      })
+    },
+    editarNombreProyecto(index){
+      console.log(index)
+      this.editar_nombre_proyecto = index
+    },
+    guardarNombreProyecto(id_ead_foro,index){
+     
+      var nuevo_nombre = document.getElementById("input"+index).value;
+      axios.put("competenciasController.php",{
+          accion:'',
+          id_ead_foro:id_ead_foro,
+          nombre_proyecto: nuevo_nombre
+      }).then(response=>{
+          console.log(response.data)
+          if(response.data==true){
+            this.consultarDetallesForo(this.id_foro)
+            
+          }else{
+            alert("No se guardo el nombre del Proyecto");
+          }
+      }).catch({
+
+      }).finally({
+        
+      });
     },
      //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

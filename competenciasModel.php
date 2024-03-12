@@ -29,9 +29,9 @@ include("conexionGhoner.php");
         $estado3 = false;
 
        // Consulta preparada para evitar inyección SQL
-       $consulta = "SELECT ead_foro_id, nombre_ead, id_evaluador, planta, area, suma 
+       $consulta = "SELECT ead_foro_id, proyecto, nombre_ead, id_evaluador, planta, area, suma 
        FROM (
-          SELECT ef.id AS ead_foro_id, e.nombre_ead, c.id_evaluador, e.planta, e.area, SUM(c.calificacion) AS suma 
+          SELECT ef.id AS ead_foro_id, ef.proyecto, e.nombre_ead, c.id_evaluador, e.planta, e.area, SUM(c.calificacion) AS suma 
           FROM equipos_ead e
           JOIN ead_foro ef ON e.id = ef.id_equipos_ead
           JOIN calificacion c ON c.id_ead_foro = ef.id
@@ -137,10 +137,11 @@ include("conexionGhoner.php");
     function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores){
         global $conexion;
         $estado = [];
-        $query = "INSERT INTO foros (nombre_foro,planta,area,foro,fecha) VALUES (?,?,?,?,?)";
+        $query = "INSERT INTO foros (nombre_foro,planta,area,foro,fecha,estatus) VALUES (?,?,?,?,?,?)";
         $stmt = $conexion->prepare($query);
         $foro = "Áreas";
-        $stmt->bind_param("sssss", $nombre_foro,$planta,$area,$foro,$fecha);
+        $estatus = "Abierto";
+        $stmt->bind_param("ssssss", $nombre_foro,$planta,$area,$foro,$fecha,$estatus);
         if($stmt->execute()){//guardo el foro
             $estado[0] = true;
             $ultimo_id = $conexion->insert_id;// tomo el id nuevo creado del foro.
@@ -194,12 +195,12 @@ include("conexionGhoner.php");
         return array($estado,$ids_ead,$ids_evaluadores);
     }
 
-    function actualizarMision($id,$nuevoNombre){
+    function actualizandoNombreProyecto($id,$nombre){
         global $conexion;
         $estado = false;
-        $update = "UPDATE misiones SET nombre=? WHERE  id=?";
+        $update = "UPDATE ead_foro SET proyecto=? WHERE id=?";
         $stmt = $conexion->prepare($update);
-        $stmt->bind_param("si", $nuevoNombre, $id);
+        $stmt->bind_param("si", $nombre, $id);
         if($stmt->execute()){
             $estado = true;
         }
@@ -209,7 +210,7 @@ include("conexionGhoner.php");
 
 
 
-    function eliminarMision($id){
+    function eliminar($id){
         global $conexion;
         $estado = false;
         $delete = "DELETE FROM misiones WHERE id=?";

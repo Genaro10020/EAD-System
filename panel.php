@@ -1443,6 +1443,7 @@ if (isset($_SESSION['nombre'])) {
                                                 <th>Planta</th>
                                                 <th>Área</th>
                                                 <th>Nombre EAD</th>
+                                                <th>Proyecto</th>
                                                 <th>Evaluador</th>
                                                 <th>Calificación Final</th>
                                             </tr>
@@ -1453,6 +1454,7 @@ if (isset($_SESSION['nombre'])) {
                                                 <td>{{equipoEvaluador.planta}}</td>
                                                 <td>{{equipoEvaluador.area}}</td>
                                                 <td>{{equipoEvaluador.nombre_ead}}</td>
+                                                <td>{{equipoEvaluador.proyecto}}</td>
                                                 <td>
                                                     <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0"  class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" 
                                                     @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Reevaluar</button>
@@ -1664,6 +1666,9 @@ if (isset($_SESSION['nombre'])) {
                                             Detalles
                                         </th>
                                         <th>
+                                            Estatus
+                                        </th>
+                                        <th>
                                             Actualizar
                                         </th>
                                     </tr>
@@ -1681,13 +1686,15 @@ if (isset($_SESSION['nombre'])) {
                                         </td>
                                         <td>
                                             <button class="btn btn-success btn-actualizar" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
-                                                <i class="bi bi-eye" style="font-size:1.2m"></i>
+                                                <i class="bi bi-eye-fill"></i>
                                             </button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-warning btn-actualizar">
-                                                Actualizar
-                                            </button>
+                                                <button v-if="foro.estatus=='Cerrado'" class="btn btn-danger btn-cerrar-foro " @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)"><i class="bi bi-door-open-fill"></i> Cerrado</button>
+                                                <button  v-if="foro.estatus=='Abierto'" class="btn btn-success btn-cerrar-foro" @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)" ><i class="bi bi-door-closed-fill"></i> Abierto</button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-warning btn-actualizar">Actualizar</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1749,9 +1756,9 @@ if (isset($_SESSION['nombre'])) {
                                     </div>
                             <!--FinModalDeDepartamento-->
 
-                            <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
-                            <div  id="modal_foros_detalles" class="modal modal-xl" id="exampleModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down p-5">
+                            <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
+                            <div  id="modal_foros_detalles" class="modal" id="exampleModal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered modal-fullscreen  p-5">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
@@ -1763,7 +1770,8 @@ if (isset($_SESSION['nombre'])) {
                                                         <thead class="thead-dark bg-secondary">
                                                             <tr class="table-active text-center">
                                                                 <th>#</th>
-                                                                <th>EADs</th>
+                                                                <th>EAD's</th>
+                                                                <th>Proyecto</th>
                                                                 <th>Planta</th>
                                                                 <th>Área</th>
                                                                 <th  v-for="(evaluador,index) in evaluadoresForo">
@@ -1777,6 +1785,18 @@ if (isset($_SESSION['nombre'])) {
                                                             <tr class="middle-center" v-for="(foroEAD, index) in eadsForo">
                                                                 <th><b>{{index+1}}</b></th>
                                                                 <td>{{foroEAD.nombre_ead}}</td>
+                                                                <td width="300px">
+                                                                    <div class="row">
+                                                                            <div class="div col-10 d-flex align-items-center">
+                                                                                <input :id="'input'+index" v-if="editar_nombre_proyecto===index" type="text" class="form-control" :value="foroEAD.proyecto"/>
+                                                                                <label v-else class="text-start">{{foroEAD.proyecto}}</label>
+                                                                            </div>
+                                                                            <div class="div col-1  d-flex align-items-center justify-content-center">
+                                                                                <button type="button" v-if="editar_nombre_proyecto===index" @click="guardarNombreProyecto(foroEAD.ead_foro_id,index)"><i class="bi bi-floppy-fill"></i></button>     <!--GUARDAR-->
+                                                                                <button type="button" v-else   @click="editarNombreProyecto(index)"><i class="bi bi-pencil-fill"></i></button>        <!--EDITAR-->
+                                                                            </div>
+                                                                    </div>
+                                                                </td>
                                                                 <td>{{foroEAD.planta}}</td>
                                                                 <td>{{foroEAD.area}}</td>
                                                                 <td v-for="evaluador in evaluadoresForo">
@@ -1795,8 +1815,8 @@ if (isset($_SESSION['nombre'])) {
                                                                 <td class=""></td>
                                                                 <td class=""></td>
                                                                 <td class=""></td>
-                                                                <td :colspan="evaluadoresForo.length">
-                                                                </td>
+                                                                <td class=""></td>
+                                                                <td :colspan="evaluadoresForo.length"></td>
                                                                 <td class="text-primary fw-bold">
                                                                     {{promedioCalificaciones}}
                                                                 </td>
