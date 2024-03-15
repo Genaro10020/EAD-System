@@ -65,6 +65,7 @@ const app = {
       consultaEAD:[],
       integrantesEAD:[],
       idEquipo:[],
+      //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
       foros:[],
@@ -357,6 +358,19 @@ const app = {
       }).catch(error => {
         alert("Axios error :-(" + error)
       })
+    },
+    /*/////////////////////////////////////////////////////////////////////////////////PREGUNTAS*/
+    consultarPreguntas(){
+      axios.get('preguntasController.php',{
+      
+
+      }).then((response)=>{
+        console.log("Preguntas",response.data)
+      }).catch(error => {
+        console.log("Error en axios :-("+error);
+      }).finally({
+
+      });
     },
     /*/////////////////////////////////////////////////////////////////////////////////SCORECARD*/
     consultarObjetivos() {

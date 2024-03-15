@@ -29,8 +29,8 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                                    <!--<a><i class="bi bi-question-circle">Preguntas</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('Preguntas')"><b>Preguntas</b></button></a>-->
+                                    <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
                                     <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
@@ -624,14 +624,57 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                 </div>
             </div>
-            <div v-if="ventana=='Preguntas'" class="row"> <!--bloque PREGUNTAS-->
+            <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
-                        Bloque de crear preguntas
+                <div class="row text-center">
+                    <div class="col-12 col-lg-4">
+                        <span class="badge text-bg-secondary">Etapas</span>
+                        <table class="table m-2">
+                            <thead class="table-light">
+                               <th>#</th>
+                               <th>Etapa</th>
+                               <th>Peso</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td></td>
+                                    <td></td> 
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-12 col-lg-8">
+                        <span class="badge text-bg-secondary">Cuestionario</span>
+                        <table class="table m-2">
+                            <thead>
+                                <th width="max-width:100px">
+                                    Etapa
+                                </th>
+                                <th width="max-width:100px">
+                                    Peso
+                                </th>
+                                <th>
+                                    Pregunta
+                                </th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <!--///////////////////////////////////////-->
             </div>
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'">
-
                 <!-- <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
                                     <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
                                         <button class="btn_menu2" @click="graficas('Rechazos')"><b>Rechazos</b></button>
@@ -1529,7 +1572,7 @@ if (isset($_SESSION['nombre'])) {
                                                     <tbody>
                                                         <template v-for="(preguntas,etapas,bloques) in preguntas_evaluar">
                                                             <tr><!--Aqui tomo las preguntas-->
-                                                            <th scope="row">{{bloques+1}}.</th>
+                                                                <th scope="row">{{bloques+1}}.</th>
                                                                 <td>{{etapas}}</td>
                                                                 <td>{{datosEvaluar[etapas].puntos_maximos}}</td>
                                                                 <td>{{datosEvaluar[etapas].puntos_reales}}</td>
@@ -1774,7 +1817,7 @@ if (isset($_SESSION['nombre'])) {
                                                                 <th>Proyecto</th>
                                                                 <th>Planta</th>
                                                                 <th>Área</th>
-                                                                <th  v-for="(evaluador,index) in evaluadoresForo">
+                                                                <th v-for="(evaluador,index) in evaluadoresForo">
                                                                     <label style="font-size:1em">{{evaluador.nombre}}</label><br>
                                                                     <span class="badge text-bg-primary">Evaluador {{index+1}}</span>
                                                                 </th>
@@ -1782,16 +1825,16 @@ if (isset($_SESSION['nombre'])) {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr class="middle-center" v-for="(foroEAD, index) in eadsForo">
+                                                            <tr class="align-middle" v-for="(foroEAD, index) in eadsForo">
                                                                 <th><b>{{index+1}}</b></th>
                                                                 <td>{{foroEAD.nombre_ead}}</td>
                                                                 <td width="300px">
                                                                     <div class="row">
-                                                                            <div class="div col-10 d-flex align-items-center">
+                                                                            <div class="div col-10 d-flex align-content-center my-auto">
                                                                                 <input :id="'input'+index" v-if="editar_nombre_proyecto===index" type="text" class="form-control" :value="foroEAD.proyecto"/>
                                                                                 <label v-else class="text-start">{{foroEAD.proyecto}}</label>
                                                                             </div>
-                                                                            <div class="div col-1  d-flex align-items-center justify-content-center">
+                                                                            <div class="div col-1  d-flex align-content-center  my-auto">
                                                                                 <button type="button" v-if="editar_nombre_proyecto===index" @click="guardarNombreProyecto(foroEAD.ead_foro_id,index)"><i class="bi bi-floppy-fill"></i></button>     <!--GUARDAR-->
                                                                                 <button type="button" v-else   @click="editarNombreProyecto(index)"><i class="bi bi-pencil-fill"></i></button>        <!--EDITAR-->
                                                                             </div>
