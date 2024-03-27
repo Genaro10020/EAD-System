@@ -27,6 +27,8 @@ if (isset($_SESSION['nombre'])) {
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarCompromisos()"><b> Gestion de Sesiones</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
@@ -87,49 +89,48 @@ if (isset($_SESSION['nombre'])) {
                     <div class="formulario col-12 mx-auto col-sm-112 col-lg-10  col-xl-8 col-xxl-6  pt-4 ps-2 pe-2 ps-lg-3  pe-lg-3  rounded shadow-sm">
                         <h6 class="text-center label-session "><b>{{titulo_formulario_usuarios}}</b></h6>
                         <form @submit.prevent="nuevoActualizarUsuario"  method="POST">
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class=" label-session">Nombre</label>
                                 <input type="text" class="form-control" v-model="nombre" required>
                             </div>
 
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class=" label-session ">Nómina (Usuario)</label>
                                 <input type="text" class="form-control" v-model="nomina" required>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class=" label-session ">Contraseña:</label>
                                 <input type="text" class="form-control" v-model="contrasena" required>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class="label-session">Planta</label>
                                 <select v-model="selector_planta" class="form-control select">
                                     <option disabled default selected value="">Seleccione Planta..</option>
                                     <option v-for="planta in plantas" :value="planta.nombre">{{planta.nombre}}</option>
                                 </select>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class="label-session ">Área</label>
                                 <select v-model="selector_area" class="form-control select">
                                     <option disabled default selected value="">Seleccione Área..</option>
                                     <option v-for="area in areas" :value="area.nombre">{{area.nombre}}</option>
                                 </select>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class=" label-session ">Procesos</label>
                                 <select v-model="selector_subarea" class="form-control select">
                                     <option disabled default selected value="">Seleccione Proceso.</option>
                                     <option v-for="subarea in subareas" :value="subarea.nombre">{{subarea.nombre}}</option>
                                 </select>
                             </div>
-                            <div class="mb-1">
-                                <label class=" label-session ">Tipo Usuario</label>
+                            <div class="mb-2">
+                                <label class=" label-session ">Tipo Usuario</label>  <button class="btn btn-success btn-actualizar px-1 py-0" @click="datosModalTipoUsuario()"><i class="bi bi-plus-circle"></i></button>
                                 <select v-model="selector_tipo_usuario" class="form-control select">
                                     <option disabled default selected value="">Seleccione Tipo..</option>
                                     <option v-for="tipo in tipos" :value="tipo">{{tipo}}</option>
-                                    <option class="text-success" @click="datosModalTipoUsuario()">Nuevo / Eliminar</option>
                                 </select>
                             </div>
-                            <div class="mb-1">
+                            <div class="mb-2">
                                 <label class=" label-session ">Accesos</label>
                                 <select v-model="selector_tipo_acceso" class="form-control select">
                                     <option disabled default selected value="">Seleccione Acceso..</option>
@@ -595,7 +596,7 @@ if (isset($_SESSION['nombre'])) {
                             <div class="tarjeta my-2">
                                 <div class="container text-center">
                                     <label class="letrasCard text-center mb-2"> 
-                                            {{ equipos[0].nombre_ead }}
+                                            {{ equipos[0].nombre_ead }} 
                                     </label>
                                     <br>
                                     <b class="letrasCard">Planta:</b> {{ equipos[0].planta }}
@@ -623,6 +624,93 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         </div>
                 </div>
+
+
+                <!--Modal Asistencia-->
+                <div id="modal_asistencia" class="modal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="mx-auto">Asistencia</h6>
+                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
+                            </div>
+                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
+                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
+                                    <label class="mx-2 my-auto">Fecha:</label>
+                                    <input type="date"/>
+                                </div>
+                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
+                                    <label class="mx-2 my-auto">Fase:</label>
+                                    <select v-model="anio_seleccionado">
+                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                                    </select>
+                                </div>
+                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
+                                    <label class="mx-2 my-auto">Etapa:</label>
+                                    <select v-model="select_plantillas">
+                                        <option v-for="plantilla in plantillas" :value="plantilla">{{plantilla}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                                <button type="button" class="btn btn-primary py-1">Guardar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin Modal Asistencia-->
+
+            </div>
+            <div v-if="ventana == 'Gestion Sesiones'">
+                        <div class="row">
+                                <div class="col-12 text-center">
+                                        <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>
+                                </div>
+                                <div class="col-4"></div>
+                                <div class="col-4"></div>
+                                <div class="col-4"></div>
+                              <div>
+                                        <table class="table mt-2">
+                                                <thead>
+                                                    <tr class="table-secondary">
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Compromiso</th>
+                                                        <th scope="col">Fecha</th>
+                                                        <th scope="col">Estatus</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
+                                                        <td>
+                                                            <button class="btn btn-danger btn-boton px-2 py-0" style="font-size: 0.7em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i>Cancelar</button>
+                                                        </td>
+                                                        <td>
+                                                        <input v-model="compromiso" type="text" class="form-control"/>
+                                                        </td>
+                                                        <td>
+                                                        <input v-model="fecha_compromiso"type="date"  class="form-control"/>
+                                                        </td>
+                                                        <td>
+                                                            0%
+                                                        </td>   
+                                                    </tr>
+                                                    <tr v-for="compromiso in compromisos">
+                                                        <th scope="row">1</th>
+                                                        <td>
+                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
+                                                        </td>
+                                                        <td>
+                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
+                                                        </td>
+                                                        <td>
+                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                        </table>
+                              </div>
+                            </div>
             </div>
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
@@ -673,6 +761,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--///////////////////////////////////////-->
             </div>
+
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'">
                 <!-- <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
@@ -717,18 +806,18 @@ if (isset($_SESSION['nombre'])) {
                                         <th class="border border-dark" style="font-size: 13px;">
                                             Dia
                                         </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
+                                        <th class="border border-dark" style="font-size: 13px;">
                                             Merma
                                         </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(i,index) in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
+                                        <td class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
                                             {{i}}
                                         </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input :id="'graficaRechazo'+index" value="datosGraficaRechazo" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                            <input :id="'graficaRechazo'+index" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
                                         </td>
                                     </tr>
                                     <tr>

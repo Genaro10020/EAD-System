@@ -65,6 +65,11 @@ const app = {
       consultaEAD:[],
       integrantesEAD:[],
       idEquipo:[],
+        ////////////////////////////////////////////////////////////////////////////////////*AGREGAR COMPROMISO*/
+      agregar_compromiso: false,
+      compromisos:[],
+      compromiso:'',
+      fecha_compromiso:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -607,6 +612,38 @@ const app = {
         console.log("Error en axios: "+error)
 
       })
+    },
+    modalCompromisos(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modal_compromisos"));
+      this.myModal.show();
+    },
+    modalAsitencia(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
+      this.myModal.show();
+    },
+    consultarCompromisos(){
+      axios.get('compromisosController.php', {
+        params:{
+          accion:'Consultar'
+        }
+      }).then(response =>{
+          console.log(response.data)
+          if(response.data[0]==true){
+            this.compromisos=response.data[1];
+          }else{
+            console.log("Error en la consulta");
+          }
+      }).catch({
+
+      })
+    },
+    agregarCompromiso(){
+      this.agregar_compromiso = true;
+    },
+    cancelarCompromiso(){
+      this.compromiso = ''
+      this.fecha_compromiso = ''
+      this.agregar_compromiso=false
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

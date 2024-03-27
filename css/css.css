@@ -321,6 +321,14 @@ button {
     color: #cbc8c8;
 }
 
+.btn-circle-nuevo{
+    background-color: #4c895b;
+    color: white;
+    font-size: 0.8em;
+    transition: all 0.3s;
+    border: none;
+}
+
 .btn-circle-agregar{
     background-color: #4c895b;
     color: white;
@@ -535,6 +543,10 @@ button {
     .btn-actualizar,
     .btn-eliminar,
     .btn-guardar {
+        font-size: 0.7em;
+    }
+
+    .btn-boton{
         font-size: 0.7em;
     }
 
