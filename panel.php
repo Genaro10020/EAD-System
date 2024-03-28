@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarCompromisos()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarCompromisos(),consultarEAD(),consultarAvanceEtapas()"><b> Gestion de Sesiones</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
@@ -605,8 +605,7 @@ if (isset($_SESSION['nombre'])) {
                                         <li v-for="(integrante, posicion) in integrantesEAD[equipos[0].id]" style="margin-bottom: 2px; font-size: 12px;">
                                             {{ posicion+1 }}.- {{ integrante.colaborador }}
                                         </li>
-                                    </ul>
-                                                    
+                                    </ul>          
                                 </div>
                                 <div class="d-flex justify-content-center">
                                     <div>
@@ -624,8 +623,6 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         </div>
                 </div>
-
-
                 <!--Modal Asistencia-->
                 <div id="modal_asistencia" class="modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
@@ -660,17 +657,45 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <!--Fin Modal Asistencia-->
-
             </div>
-            <div v-if="ventana == 'Gestion Sesiones'">
-                        <div class="row">
+            <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
+                           <div class="row">
+                                <div class="col-12 d-flex justify-content-center text-center mt-3">
+                                    <div class="input-group mb-3 w-25" style="min-width:200px">
+                                        <label class="input-group-text">Equipo:</label>
+                                        <select class="form-select" >
+                                            <option v-for="equipos in consultaEAD">{{equipos[0].nombre_ead}}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                           </div>
+                           <div class="row mt-2 d-flex bg-primary">   
+                                    <div class="col-4">
+                                        <div class="input-group mb-3 w-25 mx-auto" style="min-width:200px">
+                                            <label class="input-group-text">Etapas:</label>
+                                            <select class="form-select" >
+                                                <option v-for="etapa in etapas">{{etapa.etapa}}</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="input-group mb-3  w-25 mx-auto">
+                                            <span class="input-group-text" id="basic-addon1">Paso</span>
+                                            <input type="text" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                         <div class="input-group mb-3  w-25 mx-auto">
+                                            <span class="input-group-text" id="basic-addon1">Fecha</span>
+                                            <input type="date" class="form-control">
+                                        </div>
+                                    </div>
+                            </div>  
+                                <hr>
                                 <div class="col-12 text-center">
                                         <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>
                                 </div>
-                                <div class="col-4"></div>
-                                <div class="col-4"></div>
-                                <div class="col-4"></div>
-                              <div>
+                              <div class="row">
                                         <table class="table mt-2">
                                                 <thead>
                                                     <tr class="table-secondary">
@@ -710,7 +735,7 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                         </table>
                               </div>
-                            </div>
+                          
             </div>
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->

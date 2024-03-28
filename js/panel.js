@@ -114,6 +114,7 @@ const app = {
       id_calificacion:'',
       mensaje:'',
       examenFinalizado:'',
+      etapas:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       grafica: 'Rechazos',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
@@ -620,6 +621,22 @@ const app = {
     modalAsitencia(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
       this.myModal.show();
+    },
+    consultarAvanceEtapas(){
+      axios.get('avanceEtapasController.php', {
+        params:{
+          accion:'Consultar'
+        }
+      }).then(response =>{
+          console.log('Etapas',response.data)
+          if(response.data[0]==true){
+            this.etapas=response.data[1];
+          }else{
+            console.log("Error en la consulta");
+          }
+      }).catch({
+
+      })
     },
     consultarCompromisos(){
       axios.get('compromisosController.php', {
