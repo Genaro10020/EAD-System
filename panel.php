@@ -659,38 +659,106 @@ if (isset($_SESSION['nombre'])) {
                 <!--Fin Modal Asistencia-->
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
-                           <div class="row">
-                                <div class="col-12 d-flex justify-content-center text-center mt-3">
-                                    <div class="input-group mb-3 w-25" style="min-width:200px">
-                                        <label class="input-group-text">Equipo:</label>
-                                        <select class="form-select" >
-                                            <option v-for="equipos in consultaEAD">{{equipos[0].nombre_ead}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                           </div>
-                           <div class="row mt-2 d-flex bg-primary">   
-                                    <div class="col-4">
-                                        <div class="input-group mb-3 w-25 mx-auto" style="min-width:200px">
-                                            <label class="input-group-text">Etapas:</label>
-                                            <select class="form-select" >
-                                                <option v-for="etapa in etapas">{{etapa.etapa}}</option>
+
+                           <div class="row barra-gris">  
+                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
+                                        <div class="input-group w-25" style="min-width:300px">
+                                            <label class="input-group-text">Equipo </label>
+                                            <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID()">
+                                                <option value="" selected>Seleccione..</option>
+                                                <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                            </select>
+                                        </div>
+                                    </div> 
+                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
+                                        <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
+                                            <label class="input-group-text">Etapas </label>
+                                            <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada()" >
+                                                <option value="" selected>Seleccione..</option>
+                                                <option v-for="etapa in etapas" :value="etapa.id">{{etapa.etapa}}</option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                        <div class="input-group mb-3  w-25 mx-auto">
-                                            <span class="input-group-text" id="basic-addon1">Paso</span>
-                                            <input type="text" class="form-control">
+                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
+                                        <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
+                                            <label class="input-group-text" id="basic-addon1">Fase </label>
+                                            <select class="form-select" v-model="select_fase">
+                                                <option value="" selected>Seleccione..</option>
+                                                <option v-for = "fase in fases_etapa" :value="fase.fase">{{fase.fase}}</option>
+                                            </select>
                                         </div>
                                     </div>
-                                    <div class="col-4">
-                                         <div class="input-group mb-3  w-25 mx-auto">
-                                            <span class="input-group-text" id="basic-addon1">Fecha</span>
+                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
+                                         <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
+                                            <label class="input-group-text" id="basic-addon1">Fecha</label>   
                                             <input type="date" class="form-control">
                                         </div>
                                     </div>
                             </div>  
+                            
+                            <!--Integrantes-->
+                            <div class="row">
+                                <div class="col-12 col-lg-4 d-flex justify-content-center">
+                                    <div class="tarjeta my-2">
+                                        <div v-if="EADIntegrantes.length>0" class="container text-center">
+                                            <label class="letrasCard text-center mb-2"> 
+
+                                            </label>
+                                            <br>
+                                            <b class="letrasCard">Planta:</b>  {{planta_ead}}
+                                            <b class="letrasCard">Area:</b> {{area_ead}}<br>
+                                                <div class="row"> 
+                                                    <div class="col-10">
+                                                        <ul class="text-start">
+                                                            <li v-for="integrantes in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
+                                                            {{integrantes.colaborador}}
+                                                            </li>
+                                                        </ul>      
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <ul class="text-start">
+                                                            <li v-for="integrantes in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
+                                                                <input v-model="asistieron" :value="integrantes.id" type="checkbox"/>
+                                                            </li>
+                                                        </ul>    
+                                                    </div>
+                                                </div>
+                                                <div class="text-center">
+                                                    <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3"><i class="bi bi-floppy-fill"></i> Guardar Asistencia</button>
+                                                </div>
+                                        </div>
+                                        <div v-else>
+                                            "Seleccione EAD para visualizar integrantes."
+                                        </div>
+                                       
+                                       
+                                    </div>
+                                </div>
+                                <div class="col-12 col-lg-8">
+                                        <table class="table table-bordered mt-2">
+                                                <thead class="table-active">
+                                                    <tr class="text-center">
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Fecha</th>
+                                                        <th scope="col">Etapa</th>
+                                                        <th scope="col">Fase</th>
+                                                        <th scope="col">% Asistencia</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row" class="text-center">1</th>
+                                                        <td>Mark</td>
+                                                        <td>Otto</td>
+                                                        <td>@mdo</td>
+                                                        <td class="text-center">@mdo</td>
+                                                    </tr>
+                                                </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                            <!---->
+
                                 <hr>
                                 <div class="col-12 text-center">
                                         <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>

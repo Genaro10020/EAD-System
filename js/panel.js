@@ -65,11 +65,20 @@ const app = {
       consultaEAD:[],
       integrantesEAD:[],
       idEquipo:[],
-        ////////////////////////////////////////////////////////////////////////////////////*AGREGAR COMPROMISO*/
+        ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       agregar_compromiso: false,
       compromisos:[],
       compromiso:'',
       fecha_compromiso:'',
+      select_session_equipo:'',
+      select_etapa:'',
+      select_fase:'',
+      fases_etapa:'',
+      integrantes_EADXid:[],
+      EADIntegrantes:[],
+      planta:'',
+      area:'',
+      asistieron:[],
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -611,7 +620,6 @@ const app = {
         this.consultarEAD();
       }).catch(error =>{
         console.log("Error en axios: "+error)
-
       })
     },
     modalCompromisos(){
@@ -621,6 +629,27 @@ const app = {
     modalAsitencia(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
       this.myModal.show();
+    },
+    consultarEADXID(){
+      var id = this.select_session_equipo.split('<->')[0];
+      this.planta_ead = this.select_session_equipo.split('<->')[2];
+      this.area_ead = this.select_session_equipo.split('<->')[3];
+      axios.post('crud_ead.php', {
+          accion:'consutarEAD',
+          id_ead:id
+      }).then(response =>{
+        if(response.data[0][0]!=true && response.data[0][1]!=true){
+            return console.log(response.data)
+        }else{
+          this.EADIntegrantes = response.data[3];
+        }
+
+        this.asistieron = response.data[3].map(integrante => integrante.id);
+
+      
+      }).catch(error =>{
+        console.log("Erro en axios"+ error)
+      })
     },
     consultarAvanceEtapas(){
       axios.get('avanceEtapasController.php', {
@@ -637,6 +666,23 @@ const app = {
       }).catch({
 
       })
+    },
+    consultarFaseXetapaSeleccionada(){
+      axios.get("avanceFaseController.php",{
+        params:{
+          accion:"ConsultarXIDEtapa",
+          id_etapa:this.select_etapa
+        }
+      }).then(response =>{
+          if(response.data[0]!=true){ return console.log(response.data);}
+          this.fases_etapa = response.data[1];
+          this.select_fase = ""
+      }).catch(error =>{
+          console.log("Error en axios :-("+error);
+      }).finally({
+
+      })
+      
     },
     consultarCompromisos(){
       axios.get('compromisosController.php', {

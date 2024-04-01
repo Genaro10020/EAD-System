@@ -39,6 +39,10 @@ a:hover {
     font-size: 18px;
 }
 
+.barra-gris{
+    background: rgb(36,36,36);
+    background: linear-gradient(0deg, rgba(36,36,36,1) 0%, rgba(215,215,215,1) 100%); 
+}
 
 .formulario {
     width: 70%;
