@@ -30,7 +30,7 @@ const app = {
       departamento: '',
       nuevo_departamento: '',
       nuevo_tipo_usuario: '',
-      arreglo: [100],
+      arreglo: [],
       evaluadores:[],
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
@@ -41,7 +41,6 @@ const app = {
       ugb: '',
       meses: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
       mes_seleccionado: 'Enero',
-      anios: [],
       anio_seleccionado: 2023,
       select_plantillas: 'Placas',
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
@@ -66,7 +65,13 @@ const app = {
       integrantesEAD:[],
       idEquipo:[],
         ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
+      myModal:'',
+      login:false,
       agregar_compromiso: false,
+      actualizar_compromiso: false,
+      existeImagenSeleccionada: false,
+      documento_session:[],
+      random:'',
       compromisos:[],
       compromiso:'',
       fecha_compromiso:'',
@@ -74,11 +79,39 @@ const app = {
       select_etapa:'',
       select_fase:'',
       fases_etapa:'',
+      fecha_session:'',
       integrantes_EADXid:[],
       EADIntegrantes:[],
+      IDsIntegrantes:[],
       planta:'',
       area:'',
       asistieron:[],
+      seguimiento_session:[],
+      fases_seleccionadas:[],
+      fases_usadas:[],
+      porcentaje:[10,20,30,40,50,60,80,90,100],
+      faseUsadaEnOtroSeguimiento:[],
+      input_actualizar:'',
+      actualizar_session:false,
+      index_session_actualizar:'',
+      id_gestion_session:'',
+      cantidadFasesP:'',
+      cantidadFasesD:'',
+      cantidadFasesC:'',
+      cantidadFasesA:'',
+      sumaFasesP:'',
+      sumaFasesD:'',
+      sumaFasesC:'',
+      sumaFasesA:'',
+      llevaP:0,
+      faltaP:100,
+      llevaD:0,
+      faltaD:100,
+      llevaC:0,
+      faltaC:100,
+      llevaA:0,
+      faltaA:100,
+      
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -108,6 +141,8 @@ const app = {
       input_nombre_proyecto:[],
       editar_nombre_proyecto:'',
       id_foro:'',
+      responsable_compromiso:'',
+      compromiso_status:0,
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador:[],
       etapas_preguntas:'',
@@ -125,7 +160,11 @@ const app = {
       examenFinalizado:'',
       etapas:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
+      anio_grafica:'',
+      mes_grafica:'',
       grafica: 'Rechazos',
+      anios: [2024,2025,2026,2027,2028,2029,2030,2031,2032,2033,2034,2035],
+      equipo_grafica:'',
       numerosTablas: [15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 'DIA'],
       numerosTablas2: [1, 2],
       numerosTablas3: [150, 145, 140, 135, 130, 125, 120, 115, 110, 105, 100, 95, 90, 85, 80, 'DIA'],
@@ -133,12 +172,18 @@ const app = {
       numeroTablasAccidentes: [5, 4, 3, 2, 1, 'DIA'],
       numeroTablasActosInseguros: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 'DIA'],
       numeroTablasProyectos: [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 'DIA'],
-      tipoTabla: ['Rechazos', 'Merma', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'Ausentismo', 'Cumplimiento del proyecto'],
+      tipoTabla: ['Rechazos', 'Merma', 'Eficiencia', 'Accidentes', 'Actos Inseguros', 'Ausentismo', 'Cumplimiento del proyecto'],
       tipoTablas: '',
       clasificaciones: ['ITEM', 'CAUSA', 'CANTIDAD'],
       datosDiasMerma: ["20", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       sumaTabla: 0,
       datosGraficaRechazo: [],
+      datosGraficaMerma: [],
+      datosGraficaEficiencia: [],
+      datosGraficaAccidentes: [],
+      datosGraficaActosInseguros: [],
+      datosGraficaAusentismo: [],
+      datosGraficaCumplimientoProyecto: [],
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
 
@@ -438,11 +483,11 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"))
       this.myModal.show()
     },
-    cicloAnios() {
-      for (let i = 2023; i < 2100; i++) {
+    /*cicloAnios() {
+      for (let i = 2023; i < 2050; i++) {
         this.anios.push(i)
       }
-    },
+    },*/
     /*/////////////////////////////////////////////////////////////////////////////////CREACIÓN DE EQUIPOS DE ALTO DESEMPEÑO */
     consultarEAD(){
       axios.post("crud_ead.php",{
@@ -564,7 +609,6 @@ const app = {
       })
     },
     datosParaEditarEAD(id_equipo,index){
-
      console.log("ID EAD: "+id_equipo)
        this.idEquipo = id_equipo
       this.idsIntegrantes =[]
@@ -622,14 +666,345 @@ const app = {
         console.log("Error en axios: "+error)
       })
     },
-    modalCompromisos(){
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////GESTION DE SESIONES////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    modalDocumentoGestionSession(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modal"));
+      this.myModal.show();
+    },
+    buscarDocumentos(){
+      var id = this.select_session_equipo.split('<->')[0];
+      axios.post("buscar_documentos.php", {
+        id_equipo:id
+      }).then(response => {
+            this.documento_session = response.data
+            if (this.documento_session.length > 0) {
+              console.log(this.documento_session + "Archivos encontrados.")
+              this.random = Math.random()
+            } else {
+              console.log(this.documento_session + "Sin imagen encontrada.")
+            }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    uploadFile() {
+      this.login = true
+      var id = this.select_session_equipo.split('<->')[0];
+
+      let formData = new FormData();
+      var files = this.$refs.ref_imagen.files;
+      var totalfiles = this.$refs.ref_imagen.files.length;
+    
+      for (var index = 0; index < totalfiles; index++) {
+        formData.append("files[]", files[index]);//arreglo de documentos_seguimiento
+      }
+      formData.append("id_equipo", id);
+      axios.post("subir_documento.php", formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" }
+        }).then(response => {
+          console.log(response.data);
+          if(response.data.length>0){
+                this.documento_session = response.data;
+                  if (this.documento_session.length > 0) {
+                    document.getElementById("input_file_seguimiento").value = ""
+                    this.existeImagenSeleccionada = false;
+                    this.random = Math.random()
+                  }
+          }else{
+            this.login = false
+            alert("Verifique la extension del archivo o Intente nuevamente.")
+          }
+        })
+        .catch(error => {
+          this.login = false
+          console.log(error);
+        }).finally(() => {
+          this.login = false
+        });
+    },
+    eliminarDocumento(ruta){
+
+      var ruta = ruta;
+      var partes = ruta.split("/");
+      var nombreArchivo = partes[partes.length - 1];
+
+      Swal.fire({
+        //title: "Desea eliminar el registro?",
+        html: "<label>Esta seguro de eliminar el archivo! <b>"+nombreArchivo+"</b></label>",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, Eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed){
+            axios.post("eliminar_documento.php",{
+              ruta_eliminar: ruta
+              }).then( reponse=>{
+              console.log(reponse)
+              if(reponse.data=="Archivo Eliminado"){
+                alert("Archivo/Documento Eliminado con Éxito")
+                this.buscarDocumentos()
+              }else if(reponse.data=="No Eliminado"){
+                  alert("Algo no salio bien no se logro Eliminar.")
+              }else{
+                  alert("Error al eliminar el Documento.")
+              }
+            }).catch(error =>{
+              console.log("Error :-("+error)
+            })
+        }
+      });
+
+     }, 
+    varificandoSelecionSeguimiento() {
+      var imagen_seleccion = document.getElementById('input_file_seguimiento').value;
+      if (imagen_seleccion != null) {
+        this.existeImagenSeleccionada = true;
+      }
+    },
+    consultarCantidadFaseXEtapas(){
+       axios.get("avanceFaseController.php",{
+          params:{
+            accion:"consultarFases",
+          }
+        }).then(response =>{
+          if(!response.data[0]==true){
+            return "No se logro contar la cantidad de fase por etapa"+console.log(response.data[0]);
+          } 
+           console.log('TotalFasesXetapa',response.data)
+           this.cantidadFasesP = response.data[1][0].cantidad
+           this.cantidadFasesD = response.data[1][1].cantidad 
+           this.cantidadFasesC = response.data[1][2].cantidad
+           this.cantidadFasesA = response.data[1][3].cantidad
+        }).catch(error =>{
+            console.log("Error en axios :-("+error);
+        }).finally({
+
+        })
+    },
+    circulosPDCA(){
+      //P
+      const ctxP = document.getElementById('pdcaP');
+      if (!ctxP) {
+        console.error("No se obtuvo elemento pdcs.");
+        return;
+      }
+
+      // Destruye el gráfico existente si ya existe
+      let existingChart = Chart.getChart(ctxP);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+
+      
+      const dataP = {
+        labels: [
+         // 'Green',
+         // 'White',
+        ],
+        datasets: [{
+          label: [],
+          data: [this.llevaP, this.faltaP],
+          backgroundColor: [
+            'rgb( 26, 193, 54 )',
+            'rgb(255, 255, 255)',
+          ],
+          borderColor: [
+            'rgb(26, 193, 54)',
+          ],
+          borderWidth: 1,
+          hoverOffset: 4
+        }]
+      };
+
+      new Chart(ctxP, {
+        type: 'doughnut',
+        data: dataP,
+        options: {
+          plugins: {},
+          layout: {
+              padding: {
+                  bottom: 10, // Ajusta este valor según sea necesario
+              }
+          }
+      }
+      });
+
+          //D
+          const ctxD = document.getElementById('pdcaD');
+          if (!ctxD) {
+            console.error("No se obtuvo elemento pdcs.");
+            return;
+          }
+
+          // Destruye el gráfico existente si ya existe
+          let existingChartD = Chart.getChart(ctxD);
+          if (existingChartD) {
+            existingChartD.destroy();
+          }
+
+          
+          const dataD = {
+            labels: [
+             // 'Green',
+             // 'White',
+            ],
+            datasets: [{
+              label: [],
+              data: [this.llevaD, this.faltaD],
+              backgroundColor: [
+                'rgb( 26, 193, 54 )',
+                'rgb(255, 255, 255)',
+              ],
+              borderColor: [
+                'rgb(26, 193, 54)',
+              ],
+              borderWidth: 1,
+              hoverOffset: 4
+            }]
+          };
+          new Chart(ctxD, {
+            type: 'doughnut',
+            data: dataD,
+            options: {
+              plugins: {},
+              layout: {
+                  padding: {
+                      bottom: 10, // Ajusta este valor según sea necesario
+                  }
+              }
+          }
+          });
+
+          //C
+          const ctxC = document.getElementById('pdcaC');
+          if (!ctxC) {
+            console.error("No se obtuvo elemento pdcs.");
+            return;
+          }
+
+          
+          // Destruye el gráfico existente si ya existe
+          let existingChartC = Chart.getChart(ctxC);
+          if (existingChartC) {
+            existingChartC.destroy();
+          }
+
+          const dataC = {
+            labels: [
+             // 'Green',
+             // 'White',
+            ],
+            datasets: [{
+              label: [],
+              data: [this.llevaC, this.faltaC],
+              backgroundColor: [
+                'rgb( 26, 193, 54 )',
+                'rgb(255, 255, 255)',
+              ],
+              borderColor: [
+                'rgb(26, 193, 54)',
+              ],
+              borderWidth: 1,
+              hoverOffset: 4
+            }]
+          };
+          new Chart(ctxC, {
+            type: 'doughnut',
+            data: dataC,
+            options: {
+              plugins: {},
+              layout: {
+                  padding: {
+                      bottom: 10, // Ajusta este valor según sea necesario
+                  }
+              }
+          }
+          });
+
+          //A
+          const ctxA = document.getElementById('pdcaA');
+          if (!ctxA) {
+            console.error("No se obtuvo elemento pdcs.");
+            return;
+          }
+
+          // Destruye el gráfico existente si ya existe
+          let existingChartA = Chart.getChart(ctxA);
+          if (existingChartA) {
+            existingChartA.destroy();
+          }
+
+          
+          const dataA = {
+            labels: [
+             // 'Green',
+             // 'White',
+            ],
+            datasets: [{
+              label: [],
+              data: [this.llevaA, this.faltaA],
+              backgroundColor: [
+                'rgb( 26, 193, 54 )',
+                'rgb(255, 255, 255)',
+              ],
+              borderColor: [
+                'rgb(26, 193, 54)',
+              ],
+              borderWidth: 1,
+              hoverOffset: 4
+            }]
+          };
+          new Chart(ctxA, {
+            type: 'doughnut',
+            data: dataA,
+           options: {
+              plugins: {},
+              layout: {
+                  padding: {
+                      bottom: 10, // Ajusta este valor según sea necesario
+                  }
+              }
+          }
+          });
+    },
+    porcetajeTotal(){
+      var porcentaje = ((this.llevaP+this.llevaD+this.llevaC+this.llevaA)/4).toFixed(2)
+      return  porcentaje > 0 ? porcentaje + '%' : '0%';
+    },
+    tomarDiaActual(){
+      var fechaActual = new Date();
+      var dia = fechaActual.getDate().toString().padStart(2, '0');
+      var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0'); // Se suma 1 porque los meses van de 0 a 11
+      var año = fechaActual.getFullYear();
+      var fechaFormateada = año + '-' + mes + '-' + dia;
+      this.fecha_session = fechaFormateada;
+      
+      if(this.select_session_equipo!=''){
+          this.buscarDocumentos()
+      }
+      
+      setTimeout(()=>{
+        this.circulosPDCA()
+      },300)
+      
+    },
+    /*modalCompromisos(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_compromisos"));
       this.myModal.show();
     },
     modalAsitencia(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
       this.myModal.show();
-    },
+    },*/
     consultarEADXID(){
       var id = this.select_session_equipo.split('<->')[0];
       this.planta_ead = this.select_session_equipo.split('<->')[2];
@@ -642,11 +1017,10 @@ const app = {
             return console.log(response.data)
         }else{
           this.EADIntegrantes = response.data[3];
+          this.IDsIntegrantes = response.data[3].map(integrante => integrante.id);
+          this.asistieron = response.data[3].map(integrante => integrante.id);
+          this.tomarDiaActual()
         }
-
-        this.asistieron = response.data[3].map(integrante => integrante.id);
-
-      
       }).catch(error =>{
         console.log("Erro en axios"+ error)
       })
@@ -668,33 +1042,235 @@ const app = {
       })
     },
     consultarFaseXetapaSeleccionada(){
+      this.fases_seleccionadas =[];
+      var id = this.select_etapa.split('<->')[0];
       axios.get("avanceFaseController.php",{
         params:{
           accion:"ConsultarXIDEtapa",
-          id_etapa:this.select_etapa
+          id_etapa:id
         }
       }).then(response =>{
           if(response.data[0]!=true){ return console.log(response.data);}
           this.fases_etapa = response.data[1];
           this.select_fase = ""
+
       }).catch(error =>{
           console.log("Error en axios :-("+error);
       }).finally({
 
       })
-      
     },
-    consultarCompromisos(){
-      axios.get('compromisosController.php', {
+    fasesUtilizadas(){
+       //buscado todas las fases ya usadas de esa etapa
+       var tamanio=this.seguimiento_session.length
+       var arregloSeguimiento=this.seguimiento_session
+       var fasesUsadas= [];
+ 
+       var id = this.select_etapa.split('<->')[0];
+       for (let i = 0; i < tamanio; i++) {
+         if(JSON.parse(arregloSeguimiento[i].etapa)[0]===id){
+          fasesUsadas = fasesUsadas.concat(JSON.parse(arregloSeguimiento[i].fase));
+         }
+       }
+       this.fases_usadas = fasesUsadas
+       //this.fases_seleccionadas = fasesUsadas;
+    },
+    faseUsada(fase){
+      if(this.actualizar_session){
+        return this.faseUsadaEnOtroSeguimiento.includes(fase);
+      }else{
+        return this.fases_usadas.includes(fase);
+      }
+    },
+    consultarSeguimientoSession(){
+      var id_equipo = this.select_session_equipo.split('<->')[0];
+      axios.get("gestionSesionesController.php",{
         params:{
-          accion:'Consultar'
+          accion:"ConsultarSeguimiento",
+          id_equipo:id_equipo
         }
       }).then(response =>{
-          console.log(response.data)
+        //console.log("Tomando las Etapas",response.data[1].map(datos=>datos.etapa))
+        if(response.data[0]==true){
+            this.seguimiento_session = response.data[1];
+            console.log("Seguimiento",response.data[1])
+            var seguimiento = response.data[1]
+            var suma1 = 0;var suma2 = 0;var suma3 = 0;var suma4 = 0;
+            for (let i = 0; i < seguimiento.length; i++) {
+              if(parseInt(JSON.parse(seguimiento[i].etapa)[0])===1){//P Que se llevan
+                suma1+=JSON.parse(seguimiento[i].fase).length
+              }
+              if(parseInt(JSON.parse(seguimiento[i].etapa)[0])===2){//D Que se llevan
+                suma2+=JSON.parse(seguimiento[i].fase).length
+              }
+              if(parseInt(JSON.parse(seguimiento[i].etapa)[0])===3){//C Que se llevan
+                suma3+=JSON.parse(seguimiento[i].fase).length
+              }
+              if(parseInt(JSON.parse(seguimiento[i].etapa)[0])===4){//A Que se llevan
+                suma4+=JSON.parse(seguimiento[i].fase).length
+              }
+             //console.log("PARSEANDO"+i,parseInt(JSON.parse(seguimiento[i].etapa)[0]))
+            }
+
+            this.sumaFasesP=suma1
+            this.sumaFasesD=suma2
+            this.sumaFasesC=suma3
+            this.sumaFasesA=suma4
+
+            var valorMaximo = 100
+            this.llevaP = parseFloat((100 / this.cantidadFasesP * this.sumaFasesP).toFixed(2));
+            this.llevaD = parseFloat((100 / this.cantidadFasesD * this.sumaFasesD).toFixed(2));
+            this.llevaC = parseFloat((100 / this.cantidadFasesC * this.sumaFasesC).toFixed(2));
+            this.llevaA = parseFloat((100 / this.cantidadFasesA * this.sumaFasesA).toFixed(2));
+            
+
+            this.faltaP=valorMaximo - this.llevaP
+            this.faltaD=valorMaximo - this.llevaD
+            this.faltaC=valorMaximo - this.llevaC
+            this.faltaA=valorMaximo - this.llevaA
+            
+            this.circulosPDCA()
+            this.fasesUtilizadas()
+        }else{
+          console.log("Error en la consulta"+response.data[0])
+        }
+      
+      }).catch(error=>{
+        console.log("Error en axios :-( "+error);
+      })
+    },
+    convertirArregloFase(stringFases) {
+      var arreglo = JSON.parse(stringFases);
+        for (var i = 0; i < arreglo.length; i++) {
+          arreglo[i] = arreglo[i].trim();
+        }
+        return arreglo;
+    },
+
+    guardarActualizarSession(accion){
+      if(this.select_session_equipo==""){return Swal.fire({
+                                          //title: "Guardado",
+                                          text: "Favor de seleccionar un Equipo",
+                                          icon: "question"
+                                        });}
+      if(this.select_etapa==""){return Swal.fire({
+                                          //title: "Guardado",
+                                          text: "Seleccione una Etapa",
+                                          icon: "question"
+                                        });}
+      if(this.fases_seleccionadas.length<=0){return  Swal.fire({
+                                            //title: "Guardado",
+                                            text: "Seleccione minimo una Fase",
+                                            icon: "question"
+                                          });}
+      if(this.fecha_session==""){return alert ("Seleccione Fecha")}
+
+      var id_equipo = this.select_session_equipo.split('<->')[0];
+      var porcentaje = (this.asistieron.length / this.IDsIntegrantes.length)*100;
+      porcentaje = porcentaje.toFixed(2);
+
+      var arregloEtapa = [];
+      arregloEtapa [0] = this.select_etapa.split('<->')[0]
+      arregloEtapa [1] = this.select_etapa.split('<->')[1]
+      axios.post('gestionSesionesController.php', {
+        accion:accion,
+        id_gestion_session: this.id_gestion_session,
+        id_equipo: id_equipo,
+        fecha:this.fecha_session,
+        etapa:arregloEtapa,
+        fases:this.fases_seleccionadas,
+        ids_integrantes: this.IDsIntegrantes,
+        asistieron: this.asistieron,
+        porcentaje: porcentaje,
+      }).then(response =>{
+         if(response.data==true){
+              if(accion=="Guardar"){
+                Swal.fire({
+                  title: "Guardado",
+                  text: "Registro guardado con éxito",
+                  icon: "success"
+                });
+              }else if(accion=="Actualizar"){
+                Swal.fire({
+                  title: "Actualizado",
+                  text: "Registro Actualizado con éxito",
+                  icon: "success"
+                });
+              }
+            this.reseteandoDatos()
+            this.consultarSeguimientoSession()
+         }else{
+          alert("Problemas al guardar el Seguimiento");
+          console.log("FALLO",response.data)
+         }
+      }).catch({
+
+      })
+    },
+    
+    tomandoEtapa(arregloIdEtapa){
+      var arreglo = JSON.parse(arregloIdEtapa)//tomando unicamente etapa
+     return arreglo[1];
+    },
+    actualizarSession(index,id_seguimiento){
+      this.id_gestion_session =id_seguimiento;
+      this.actualizar_session=true
+      this.index_session_actualizar = index;
+      console.log(this.seguimiento_session[index])
+      this.asistieron = JSON.parse(this.seguimiento_session[index].asistencia)
+      var IdEtapa = [];
+      IdEtapa = JSON.parse(this.seguimiento_session[index].etapa)
+      var id_etapa = IdEtapa[0]
+      var etapa= IdEtapa[1]
+      this.select_etapa=id_etapa+"<->"+etapa;
+      console.log(this.asistieron)
+      this.consultarFaseXetapaSeleccionada()
+      this.fases_seleccionadas = JSON.parse(this.seguimiento_session[index].fase)
+
+      var tamanio=this.seguimiento_session.length
+      var arregloSeguimiento=this.seguimiento_session
+      var fasesUsadas= [];
+
+      var id = this.select_etapa.split('<->')[0];
+      for (let i = 0; i < tamanio; i++) {
+        if(JSON.parse(arregloSeguimiento[i].etapa)[0]===id){
+         fasesUsadas = fasesUsadas.concat(JSON.parse(arregloSeguimiento[i].fase));
+        }
+      }
+      var usadas = fasesUsadas
+      var seleccionadas = this.fases_seleccionadas
+        // Filtrar this.fases_seleccionadas eliminando los elementos que están presentes en this.fases_usadas
+
+      const fases_seleccionadas_sin_coincidencias = usadas.filter(fase => !seleccionadas.includes(fase));
+      this.faseUsadaEnOtroSeguimiento=fases_seleccionadas_sin_coincidencias
+    },
+    reseteandoDatos(){
+      this.actualizar_session=false
+      this.index_session_actualizar=''
+      this.select_etapa = ''
+      this.fases_seleccionadas =[];
+      this.fases_etapa = [];
+      this.tomarDiaActual()
+      this.asistieron=this.EADIntegrantes.map(integrante=>integrante.id)
+    },
+    consultarCompromisos(){
+          this.compromiso = ''
+          this.fecha_compromiso = ''
+          this.actualizar_compromiso = false;
+          this.agregar_compromiso=false
+          
+      var id_equipo = this.select_session_equipo.split('<->')[0];
+      axios.get('compromisosController.php', {
+        params:{
+          accion:'Consultar',
+          id_equipo:id_equipo
+        }
+      }).then(response =>{
+        console.log('Compromisos', response.data)
           if(response.data[0]==true){
             this.compromisos=response.data[1];
           }else{
-            console.log("Error en la consulta");
+            console.log("Error en la consulta"+response.data);
           }
       }).catch({
 
@@ -702,11 +1278,178 @@ const app = {
     },
     agregarCompromiso(){
       this.agregar_compromiso = true;
+      this.compromiso = ''
+      this.fecha_compromiso = ''
+      this.responsable_compromiso =''
+      this.input_actualizar = '',
+      this.actualizar_compromiso = false
     },
     cancelarCompromiso(){
       this.compromiso = ''
       this.fecha_compromiso = ''
+      this.responsable_compromiso =''
       this.agregar_compromiso=false
+    },
+    
+    guardarCompromiso(){
+      if(this.compromiso=='' || this.responsable_compromiso=='' || this.fecha_compromiso==''){return alert("Todos los campos de compromiso son requeridos.")}
+      var id_equipo = this.select_session_equipo.split('<->')[0];
+      axios.post("compromisosController.php",{
+       id_equipo:id_equipo,
+       compromiso:this.compromiso,
+       responsable:this.responsable_compromiso,
+       fecha:this.fecha_compromiso
+      }).then(response =>{
+        if(response.data==true){
+          alert("Compromiso Guardado con Éxito.");
+          this.compromiso = ''
+          this.fecha_compromiso = ''
+          this.consultarCompromisos();
+        }else{
+          console.log(response.data);
+        }
+      }).catch(error => {
+        console.log("Error en axios:"+error);
+      })
+    },
+
+    actualizandoCompromiso(id_compromiso){
+      if(this.compromiso=='' ||this.responsable_compromiso=='' || this.fecha_compromiso==''){return alert("Todos los campos de compromiso son requeridos.")}
+      axios.put("compromisosController.php",{
+       accion:'Actualizar Compromiso',
+       id_compromiso:id_compromiso,
+       compromiso:this.compromiso,
+       responsable:this.responsable_compromiso,
+       fecha:this.fecha_compromiso
+      }).then(response =>{
+        if(response.data==true){
+          alert("Compromiso Actualizado con Éxito.");
+          this.compromiso = ''
+          this.fecha_compromiso = ''
+          this.actualizar_compromiso = false;
+          this.consultarCompromisos();
+        }else{
+          console.log(response.data);
+        }
+      }).catch(error => {
+        console.log("Error en axios:"+error);
+      })
+    },
+    actualizarPorcentajeCompromiso(compromiso_id){
+      var porcentaje = document.getElementById("selectPorcentaje"+compromiso_id).value;
+      axios.put("compromisosController.php",{
+        accion:'Actualizar Porcentaje',
+        compromiso_id:compromiso_id,
+        porcentaje:porcentaje
+       }).then(response =>{
+        //console.log(response.data)
+         if(response.data==true){
+           alert("Porcentaje actualizado con Éxito.");
+           this.compromiso = ''
+           this.fecha_compromiso = ''
+           this.actualizar_compromiso = false;
+           this.consultarCompromisos();
+         }else{
+           console.log(response.data);
+         }
+       }).catch(error => {
+         console.log("Error en axios:"+error);
+       })
+
+    },
+    actualizarCompromiso(index){
+      this.actualizar_compromiso = true;
+      this.agregar_compromiso=false
+      this.input_actualizar = index  
+      this.compromiso=this.compromisos[index-1].compromiso;
+      this.responsable_compromiso=this.compromisos[index-1].id_responsable;
+      this.fecha_compromiso=this.compromisos[index-1].fecha;
+    },
+    cancelarActualizarCompromiso(){
+      this.compromiso = ''
+      this.fecha_compromiso = ''
+      this.actualizar_compromiso = false;
+    },
+    cambiarformato(fecha){
+     var apart = fecha.split('-');
+     return apart[2]+"/"+apart[1]+"/"+apart[0]
+    },
+    eliminarCompromiso(id_compromiso){
+      Swal.fire({
+        //title: "Desea eliminar el registro?",
+        html: "<label>Esta seguro de eliminar este compromiso</label>",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, Eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed){
+          axios.delete("compromisosController.php",{
+            params:{
+              id_compromiso:id_compromiso
+            }
+            }).then(response =>{
+                if(response.data==true){
+                    Swal.fire({
+                      title: "Eliminado",
+                      text: "Se elimino con éxito",
+                      icon: "success"
+                    });
+                  this.consultarCompromisos();
+                }else{
+                  console.log("No se logro eliminar"+ response.data)
+                  Swal.fire({
+                    title: "Mensaje",
+                    text: "No se logro eliminar",
+                    icon: "warning"
+                  });
+                }
+            }).catch(err =>{
+                console.log("Error en axios: "+err)
+            })
+        }
+      });
+    },
+  
+    eliminarGestionSession(id_session){
+
+      Swal.fire({
+        //title: "Desea eliminar el registro?",
+        text: "Esta seguro de eliminar este registro!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, Eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+              //console.log(id_session)
+              axios.delete("gestionSesionesController.php",{
+                params : {
+                    id_session:id_session
+                }
+              }).then(response=>{
+                if(response.data==true){
+                    Swal.fire({
+                      //title: "Eliminado!",
+                      text: "Registro Eliminado.",
+                      icon: "success"
+                    });
+                    this.consultarSeguimientoSession()
+                }else{
+                    alert("Problemas al Eliminar");
+                    console.log("Problema al eliminar",response.data);
+                }
+              }).catch(error=>{
+                console.log("Error en axios"+error)
+              })
+        }
+      });
+
+
+      //if(!confirm("Esta seguro que desea eliminar este registro")){ return}
+
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -933,11 +1676,10 @@ const app = {
                 this.evaluadoresForo= response.data[3];
                     if(response.data[4]==true){
                       this.calificacionEvaluadorForo= response.data[5];
-
                           const valoresSuma =  this.eadsForo.map(objeto => parseFloat((objeto.suma/this.evaluadoresForo.length).toFixed(2)));
                           var suma =0;
                           for (let i = 0; i < valoresSuma.length; i++) {
-                            const element = valoresSuma[i];
+                              const element = valoresSuma[i];
                               suma += element;
                           }
                           //console.log(suma)
@@ -982,7 +1724,6 @@ const app = {
       this.editar_nombre_proyecto = index
     },
     guardarNombreProyecto(id_ead_foro,index){
-     
       var nuevo_nombre = document.getElementById("input"+index).value;
       axios.put("competenciasController.php",{
           accion:'',
@@ -1138,74 +1879,227 @@ const app = {
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////////////////////INICIO DE LAS FUNCIONES/////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////GRAFICAS/////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    tablaGraficas(index, valor) {
+    diasDelMesAnio(){
+      var anio
+      var mes
+        console.log(this.anio_grafica+''+this.mes_grafica)
+        if(this.anio_grafica!='' && this.mes_grafica!=''){
+          if(this.mes_grafica=='Enero'){mes = 1}
+          if(this.mes_grafica=='Febrero'){mes = 2}
+          if(this.mes_grafica=='Marzo'){mes = 3}
+          if(this.mes_grafica=='Abril'){mes = 4}
+          if(this.mes_grafica=='Mayo'){mes = 5}
+          if(this.mes_grafica=='Junio'){mes = 6}
+          if(this.mes_grafica=='Julio'){mes = 7}
+          if(this.mes_grafica=='Agosto'){mes = 8}
+          if(this.mes_grafica=='Septiembre'){mes = 9}
+          if(this.mes_grafica=='Octubre'){mes = 10}
+          if(this.mes_grafica=='Noviembre'){ mes = 11}
+          if(this.mes_grafica=='Diciembre'){mes = 12}
+          
+          anio = this.anio_grafica;
+          var ultimoDiaMes = new Date(anio, mes, 0);
+          return ultimoDiaMes.getDate()
+        }
+    },  
+    tablaGraficas() {
+      setTimeout(()=>{
+       var datos = [];
+       console.log("RECHAZOS",this.datosGraficaRechazo.length)
+        if(this.tipoTablas=='Rechazos'){
+          datos = this.datosGraficaRechazo
+        }else if(this.tipoTablas=='Merma'){
+          datos = this.datosGraficaMerma
+        }else if(this.tipoTablas=='Eficiencia'){
+          datos = this.datosGraficaEficiencia
+        }else if(this.tipoTablas=='Accidentes'){
+          datos = this.datosGraficaAccidentes
+        }else if(this.tipoTablas=='Actos Inseguros'){
+          datos = this.datosGraficaActosInseguros
+        }else if(this.tipoTablas=='Ausentismo'){
+          datos = this.datosGraficaAusentismo
+        }else if(this.tipoTablas=='Cumplimiento del proyecto'){
+          datos = this.datosGraficaCumplimientoProyecto
+        }
+        console.log("Tabla: ",this.tipoTablas,"datos: ",datos)
+        const ctx = document.getElementById('myChart');
+        if (!ctx) {
+          console.error("No se pudo obtener la referencia al elemento canvas.");
+          return;
+        }
 
-      this.arreglo[index] = valor
-      //console.log('tablaGraficas');
+        // Destruye el gráfico existente si ya existe
+        let existingChart = Chart.getChart(ctx);
+        if (existingChart) {
+          existingChart.destroy();
+        }
 
-      const ctx = document.getElementById('myChart');
-
-      if (!ctx) {
-        console.error("No se pudo obtener la referencia al elemento canvas.");
-        return;
-      }
-
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-          datasets: [{
-            label: 'Rechazos',
-            data: this.arreglo,
-            borderWidth: 1
-          }]
-        },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+            datasets: [{
+              label: this.tipoTablas,
+              data: datos,
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              },
+              x: {
+                beginAtZero: true
+              }
             }
           }
-        }
-      });
-
+        });
+      },200)
     },
-    graficasEAD() {
-      if (this.tipoTabla == 'Rechazos') {
-        this.insertandoValores(0)
-      } else if (this.tipoTabla == 'Merma') {
-        this.insertandoValores(0)
+    consultadoValoresGrafica(){
+     if(this.tipoTablas && this.equipo_grafica && this.anio_grafica && this.mes_grafica){
+      var mes;
+      if(this.mes_grafica=='Enero'){mes = 1}
+      if(this.mes_grafica=='Febrero'){mes = 2}
+      if(this.mes_grafica=='Marzo'){mes = 3}
+      if(this.mes_grafica=='Abril'){mes = 4}
+      if(this.mes_grafica=='Mayo'){mes = 5}
+      if(this.mes_grafica=='Junio'){mes = 6}
+      if(this.mes_grafica=='Julio'){mes = 7}
+      if(this.mes_grafica=='Agosto'){mes = 8}
+      if(this.mes_grafica=='Septiembre'){mes = 9}
+      if(this.mes_grafica=='Octubre'){mes = 10}
+      if(this.mes_grafica=='Noviembre'){ mes = 11}
+      if(this.mes_grafica=='Diciembre'){mes = 12}
+
+
+      var id_equipo = this.equipo_grafica.split('<->')[0];
+        axios.get("graficasController.php",{
+          params:{
+            grafica:this.tipoTablas,
+            id_equipo:id_equipo,
+            anio:this.anio_grafica,
+            mes:mes
+          }
+        }).then(response =>{
+          //console.log("consulta grafica",response.data)
+          if(response.data[0]==true){
+              const nuevoArreglo = [];
+              response.data[1].forEach(valores => {
+                  nuevoArreglo[(valores.dia-1)] = valores.valor;//la resto ya que el arreglo empieza en 0
+              });
+              if(this.tipoTablas=='Rechazos'){
+                this.datosGraficaRechazo = nuevoArreglo
+              }else if(this.tipoTablas=='Merma'){
+                this.datosGraficaMerma = nuevoArreglo
+              }else if(this.tipoTablas=='Eficiencia'){
+                this.datosGraficaEficiencia = nuevoArreglo
+              }else if(this.tipoTablas=='Accidentes'){
+                this.datosGraficaAccidentes = nuevoArreglo
+              }else if(this.tipoTablas=='Actos Inseguros'){
+                this.datosGraficaActosInseguros = nuevoArreglo
+              }else if(this.tipoTablas=='Ausentismo'){
+                this.datosGraficaAusentismo = nuevoArreglo
+              }else if(this.tipoTablas=='Cumplimiento del proyecto'){
+                this.datosGraficaCumplimientoProyecto = nuevoArreglo
+              }
+              this.tablaGraficas()
+
+          }else{
+            console.log("Algo salio mal al consultar los datos de la grafica")
+          }
+        }).catch(error =>{
+          console.log("Error en axios :-("+error)
+        })
+     }
+    },
+    insertandoValores(index){
+      var valor = 0;
+      if(this.tipoTablas=='Rechazos'){
+        valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
+        this.datosGraficaRechazo[index] = valor;
+        this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Merma'){
+        valor = parseFloat(document.getElementById('graficaMerma' + index).value);
+        this.datosGraficaMerma[index] = valor;
+        this.sumaTabla = this.datosGraficaMerma.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Eficiencia'){
+        valor = parseFloat(document.getElementById('graficaEficiencia' + index).value);
+        this.datosGraficaEficiencia[index] = valor;
+        this.sumaTabla = this.datosGraficaEficiencia.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Accidentes'){
+        valor = parseFloat(document.getElementById('graficaAccidentes' + index).value);
+        this.datosGraficaAccidentes[index] = valor;
+        this.sumaTabla = this.datosGraficaAccidentes.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Actos Inseguros'){
+        valor = parseFloat(document.getElementById('graficaActosInseguros' + index).value);
+        this.datosGraficaActosInseguros[index] = valor;
+        this.sumaTabla = this.datosGraficaActosInseguros.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Ausentismo'){
+        valor = parseFloat(document.getElementById('graficaAusentismo' + index).value);
+        this.datosGraficaAusentismo[index] = valor;
+        this.sumaTabla = this.datosGraficaAusentismo.reduce((total, valor) => total + valor, 0);
+      }else if(this.tipoTablas=='Cumplimiento del proyecto'){
+        valor = parseFloat(document.getElementById('graficaCumplimiento' + index).value);
+        this.datosGraficaCumplimientoProyecto[index] = valor;
+        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) => total + valor, 0);
       }
-
-
+      
+        var dia = (index+1)
+        this.saveDateDay(dia,valor)
     },
+    saveDateDay(dia,valor){
+      var mes;
+      if(this.mes_grafica=='Enero'){mes = 1}
+      if(this.mes_grafica=='Febrero'){mes = 2}
+      if(this.mes_grafica=='Marzo'){mes = 3}
+      if(this.mes_grafica=='Abril'){mes = 4}
+      if(this.mes_grafica=='Mayo'){mes = 5}
+      if(this.mes_grafica=='Junio'){mes = 6}
+      if(this.mes_grafica=='Julio'){mes = 7}
+      if(this.mes_grafica=='Agosto'){mes = 8}
+      if(this.mes_grafica=='Septiembre'){mes = 9}
+      if(this.mes_grafica=='Octubre'){mes = 10}
+      if(this.mes_grafica=='Noviembre'){ mes = 11}
+      if(this.mes_grafica=='Diciembre'){mes = 12}
 
-    insertandoValores(index) {
-      //console.log(index)
-      var valor = parseFloat(document.getElementById('graficaRechazo' + index).value) || 0;
-      //console.log("index:" + index)
-      //console.log("valor:" + valor)
-      //console.log(arreglo)
-      this.datosGraficaRechazo[index] = valor;
-      this.sumarDatosGraficas()
-      document.getElementById('myChart').remove();
-      // Crea un nuevo elemento canvas
-      var newCanvas = document.createElement('canvas');
-      newCanvas.id = 'myChart';
-      // Agrega el nuevo elemento al DOM (por ejemplo, como un hijo de algún contenedor)
-      var container = document.getElementById('divCanvas'); // Reemplaza 'container' con el ID de tu contenedor
-      container.appendChild(newCanvas);
+       var id_equipo = this.equipo_grafica.split('<->')[0];
+       var nombre_ead = this.equipo_grafica.split('<->')[1];
+       var planta = this.equipo_grafica.split('<->')[2];
+       var area = this.equipo_grafica.split('<->')[3];
+       
+        axios.post("graficasController.php",{
+          planta: planta,
+          area: area,
+          id_equipo: id_equipo,
+          nombre_ead: nombre_ead,
+          grafica: this.tipoTablas,
+          anio: this.anio_grafica,
+          mes: mes,
+          dia: dia,
+          valor:valor
+        }).then(response=>{
+          if(response.data==true){
+                Swal.fire({
+                  title: "Guardado",
+                  text: "Se guardo con éxito",
+                  icon: "success"
+                });
+          }else{
+            console.log("Datos Guardados"+response.data)
+          }
+          this.tablaGraficas()
+        }).catch(error=>{
+            console.log(error)
+        }).finally(()=>{
 
-      this.tablaGraficas(index, valor)
+        })
     },
-
-    sumarDatosGraficas() {
-      this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) => total + valor, 0);
-    }
 
   }
 };
@@ -1215,5 +2109,3 @@ const App = Vue.createApp(app);
 
 App.mount("#app");
 
-
-////////////////////////////////////////////// chartjs para crear graficas

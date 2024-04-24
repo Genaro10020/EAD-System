@@ -20,6 +20,8 @@
 <!--TITULO SISTEMA-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap&family=Archivo+Black&family=Signika+Negative&display=swap&family=Rajdhani:wght@500&display=swap&family=Roboto:wght@400&display=swap&family=Onest:wght@300&display=swap" rel="stylesheet" rel="stylesheet"> 
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap&family=Archivo+Black&family=Signika+Negative&display=swap&family=Rajdhani:wght@500&display=swap&family=Roboto:wght@400&display=swap&family=Onest:wght@300&family=Orelega+One&display=swap" rel="stylesheet" rel="stylesheet"> 
 <!--CHARTJS-->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!--SWEETALERT2-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

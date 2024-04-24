@@ -16,7 +16,7 @@ if (isset($_SESSION['nombre'])) {
 
         <div id="app" class="col-12" style="min-height: 80vh;">
             <div class="  d-flex text-center">
-                <div class="col-1 dropdown" style="width:150px;  z-index: 2; ">
+                <div class="col-1 dropdown" style="width:150px;  z-index: 2000; ">
                     <p class="dropbtn text-white" style="max-height:10px;">
                         <i class="bi bi-list">Menú</i>
                     </p>
@@ -28,7 +28,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarCompromisos(),consultarEAD(),consultarAvanceEtapas()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),consultarUsuarios()"><b> Gestion de Sesiones</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
@@ -41,7 +41,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                                     <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Graficas')"><b>Graficas</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
                             <?php
                                 }
                             ?>
@@ -123,8 +123,8 @@ if (isset($_SESSION['nombre'])) {
                                     <option v-for="subarea in subareas" :value="subarea.nombre">{{subarea.nombre}}</option>
                                 </select>
                             </div>
-                            <div class="mb-2">
-                                <label class=" label-session ">Tipo Usuario</label>  <button class="btn btn-success btn-actualizar px-1 py-0" @click="datosModalTipoUsuario()"><i class="bi bi-plus-circle"></i></button>
+                            <div class="mb-2">                                                                
+                                <label class=" label-session ">Tipo usuario</label>  <label  @click="datosModalTipoUsuario()"><i class="icono-mas bi bi-plus-circle p-1"></i></label>
                                 <select v-model="selector_tipo_usuario" class="form-control select">
                                     <option disabled default selected value="">Seleccione Tipo..</option>
                                     <option v-for="tipo in tipos" :value="tipo">{{tipo}}</option>
@@ -323,14 +323,13 @@ if (isset($_SESSION['nombre'])) {
             <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD-->
                 <!--Selector de tipo de plantilla para visualizar-->
 
-                <div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard(),cicloAnios()">Crear Score</button></div>
+                <div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard()">Crear Score</button></div>
                 <div class="col-12 text-dark fw-bold">
                     <div class="col-4 ms-2">
                         <select v-model="ver_plantillas" @change="consultarScoreCard()">
                             <option value="">Todos los ScoreCard</option>
                             <option v-for="plantilla in tipoPlantillas" :value="plantilla">{{plantilla}}</option>
                         </select>
-
                     </div>
                 </div>
                 <div class="scroll w-100">
@@ -590,7 +589,7 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                     </div>
                 </div>
-                <div class=" col-xl-5 scroll5">
+                <div class=" col-xl-5 scroll6">
                         <div class="row">
                         <div class="col-6 d-flex justify-content-center" v-for="(equipos, index) in consultaEAD" :key="index">
                             <div class="tarjeta my-2">
@@ -624,7 +623,7 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                 </div>
                 <!--Modal Asistencia-->
-                <div id="modal_asistencia" class="modal" tabindex="-1" role="dialog">
+                <!--<div id="modal_asistencia" class="modal" tabindex="-1" role="dialog">
                     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -655,155 +654,347 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 <!--Fin Modal Asistencia-->
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
-
                            <div class="row barra-gris">  
-                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
-                                        <div class="input-group w-25" style="min-width:300px">
-                                            <label class="input-group-text">Equipo </label>
-                                            <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID()">
+                                    <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
+                                        <button class="py-1 me-2" style="font-size:12px" :class="{'btn btn-success': documento_session.length > 0, 'btn btn-primary': documento_session.length <= 0}" @click="modalDocumentoGestionSession()" :disabled="!select_session_equipo.length" >
+                                            <i class="bi bi-folder-plus"></i> 
+                                            Documento ({{documento_session.length}})
+                                        </button>
+                                         <div class="input-group mt-1 mb-1" style="width:300px">
+                                            <label class="input-group-text" id="basic-addon1"  style="font-size:0.7em">Fecha</label>   
+                                            <input v-model="fecha_session" type="date" class="form-control" style="font-size:0.7em" @change="buscarDocumentos()">
+                                        </div>
+                                    </div>
+                                    <div class="col-12 col-lg-6 ">
+                                            <div class="d-flex justify-content-center">
+                                                    <div  class="col-3 col-sm-3 d-flex justify-content-center">
+                                                        <div class="text-center"  style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1" >P</label></div>
+                                                        <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaP"></canvas><br>
+                                                        <label style="margin-top:30px;font-size:0.7em">{{llevaP}}%</label>
+                                                    </div>
+                                                    <div  class="col-3 col-sm-3 d-flex justify-content-center">
+                                                        <div class="text-center"  style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1" >D</label></div>
+                                                        <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaD"></canvas>
+                                                        <label style="margin-top:30px;font-size:0.7em">{{llevaD}}%</label>
+                                                    </div>
+                                                    <div  class="col-3 col-sm-3 d-flex justify-content-center">
+                                                        <div class="text-center"  style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1" >C</label></div>
+                                                        <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaC"></canvas>
+                                                        <label style="margin-top:30px;font-size:0.7em">{{llevaC}}%</label>
+                                                    </div>
+                                                    <div  class="col-3 col-sm-3 d-flex justify-content-center">
+                                                        <div class="text-center"  style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1" >A</label></div>
+                                                        <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaA"></canvas>
+                                                        <label style="margin-top:30px;font-size:0.7em">{{llevaA}}%</label>
+                                                    </div>
+                                            </div>
+                                    </div>
+                            </div>  
+                           
+                            <!--Tarjeta Integrantes-->
+                            <div class="row">
+                              
+                                <div class="col-12 col-xl-3 d-flex justify-content-center">
+                                   
+                                    <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
+                                        <h5 class="text-center pasos">1. Asistencia</h5>
+                                        <div class="input-group" style="min-width:270px">
+                                            <label class="input-group-text"  style="font-size:0.8em">Equipo </label>
+                                            <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos()" style="font-size:0.8em">
                                                 <option value="" selected>Seleccione..</option>
                                                 <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                             </select>
                                         </div>
-                                    </div> 
-                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
-                                        <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
-                                            <label class="input-group-text">Etapas </label>
-                                            <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada()" >
-                                                <option value="" selected>Seleccione..</option>
-                                                <option v-for="etapa in etapas" :value="etapa.id">{{etapa.etapa}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
-                                        <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
-                                            <label class="input-group-text" id="basic-addon1">Fase </label>
-                                            <select class="form-select" v-model="select_fase">
-                                                <option value="" selected>Seleccione..</option>
-                                                <option v-for = "fase in fases_etapa" :value="fase.fase">{{fase.fase}}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-lg-6 col-xl-3 d-flex justify-content-center align-items-center">
-                                         <div class="input-group w-25 mt-2 mb-2" style="min-width:300px">
-                                            <label class="input-group-text" id="basic-addon1">Fecha</label>   
-                                            <input type="date" class="form-control">
-                                        </div>
-                                    </div>
-                            </div>  
-                            
-                            <!--Integrantes-->
-                            <div class="row">
-                                <div class="col-12 col-lg-4 d-flex justify-content-center">
-                                    <div class="tarjeta my-2">
                                         <div v-if="EADIntegrantes.length>0" class="container text-center">
                                             <label class="letrasCard text-center mb-2"> 
-
                                             </label>
                                             <br>
                                             <b class="letrasCard">Planta:</b>  {{planta_ead}}
                                             <b class="letrasCard">Area:</b> {{area_ead}}<br>
                                                 <div class="row"> 
-                                                    <div class="col-10">
+                                                    <div class="col-12">
                                                         <ul class="text-start">
-                                                            <li v-for="integrantes in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
-                                                            {{integrantes.colaborador}}
+                                                            <li v-for="(integrantes,index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
+                                                                <input class="me-2" v-model="asistieron" :value="integrantes.id" type="checkbox"/>
+                                                                {{index+1}}.- {{integrantes.colaborador}}
                                                             </li>
                                                         </ul>      
                                                     </div>
-                                                    <div class="col-2">
-                                                        <ul class="text-start">
-                                                            <li v-for="integrantes in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
-                                                                <input v-model="asistieron" :value="integrantes.id" type="checkbox"/>
-                                                            </li>
-                                                        </ul>    
-                                                    </div>
-                                                </div>
-                                                <div class="text-center">
-                                                    <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3"><i class="bi bi-floppy-fill"></i> Guardar Asistencia</button>
                                                 </div>
                                         </div>
-                                        <div v-else>
+                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-75">
                                             "Seleccione EAD para visualizar integrantes."
                                         </div>
-                                       
-                                       
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-8">
-                                        <table class="table table-bordered mt-2">
-                                                <thead class="table-active">
-                                                    <tr class="text-center">
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">Fecha</th>
-                                                        <th scope="col">Etapa</th>
-                                                        <th scope="col">Fase</th>
-                                                        <th scope="col">% Asistencia</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="row" class="text-center">1</th>
-                                                        <td>Mark</td>
-                                                        <td>Otto</td>
-                                                        <td>@mdo</td>
-                                                        <td class="text-center">@mdo</td>
-                                                    </tr>
-                                                </tbody>
-                                        </table>
+                                <!--Tarjeta Fases-->
+                                <div class="col-12 col-xl-3 d-flex justify-content-center">
+                                    <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
+                                        <h5 class="text-center pasos">2. Etapa y fases</h5>
+                                        <div class="input-group" style="min-width:270px">
+                                            <label class="input-group-text"  style="font-size:0.8em">Etapa </label>
+                                            <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
+                                                <option value="" selected>Seleccione..</option>
+                                                <option v-for="etapa in etapas" :value="etapa.id+'<->'+etapa.etapa">{{etapa.etapa}}</option>
+                                            </select>
+                                        </div>
+                                        <div v-if="fases_etapa.length>0" class="container text-center">
+                                            <label class="letrasCard text-center mb-2"> 
+                                            </label>
+                                            <br>
+                                            <b class="letrasCard">Fases</b>
+                                                <div class="row"> 
+                                                    <div class="col-12">
+                                                        <ul class="text-start">
+                                                            <li v-for="fase in fases_etapa" style="margin-bottom: 2px; font-size: 12px;">
+                                                                <input v-model="fases_seleccionadas" :value="fase.fase" type="checkbox" :disabled="faseUsada(fase.fase)"/>.-{{fase.fase}}
+                                                            </li>
+                                                        </ul>      
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-75">
+                                            <label>"Seleccione Etapa para visualizar las Fases."</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--tabla seguimiento session-->
+                                <div class="col-12 col-xl-6">
+                                        <h5 class="text-center pasos mt-2"> Historial asistencia, etapas y fases.</h5>
+                                        <div class="progress " style="height: 15px;"><!--Porcentaje Total-->
+                                        <div class="text-bg-secondary rounded-start ps-2 d-flex align-items-center" style="font-size:0.7em"><span>Avance Proyecto:</span></div>
+                                            <div class="progress-bar" role="progressbar" :style="'width:'+porcetajeTotal()+'!important;'"   aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" v-cloak><label style="font-size:10px">{{porcetajeTotal()}}</label></div>
+                                        </div>
+                                        <div class="scroll5">
+                                            <table class="table table-bordered mt-2" style="font-size:0.7em">
+                                                    <thead class="table-active">
+                                                        <tr class="text-center">
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Fecha</th>
+                                                            <th scope="col">Etapa</th>
+                                                            <th scope="col">Fase</th>
+                                                            <th scope="col">% Asistencia</th>
+                                                            <th scope="col"></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="align-middle" v-for="(seguimiento,index) in seguimiento_session" :key="index" :class="{'table-warning': index_session_actualizar==index && actualizar_session}">
+                                                            <th scope="row" class="text-center">{{index+1}}</th>
+                                                            <td>{{cambiarformato(seguimiento.fecha)}}</td>
+                                                            <td>{{tomandoEtapa(seguimiento.etapa)}}</td>
+                                                            <td>
+                                                            <ul>
+                                                                <li v-for="(fase, faseIndex) in convertirArregloFase(seguimiento.fase)">
+                                                                    {{fase}}
+                                                                </li>
+                                                            </ul>
+                                                            </td>
+                                                            <td class="text-center">{{seguimiento.porcentaje_asistencia}} %</td>
+                                                            <td class="text-center">
+                                                                <div v-if="!actualizar_compromiso && !actualizar_session">
+                                                                    <button class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em; min-width:80px;" @click="actualizarSession(index,seguimiento.id)"> <i class="bi bi-arrow-clockwise"><br></i> Actualizar</button><br>
+                                                                    <button class="btn btn-danger btn-boton px-2 py-0 ms-2 mt-2" style="font-size: 0.9em; min-width:80px;" @click="eliminarGestionSession(seguimiento.id)"> <i class="bi bi-trash-fill"><br></i> Eliminar</button>
+                                                                </div>
+                                                                <div v-if="!actualizar_compromiso && actualizar_session">
+                                                                        <button v-if="index_session_actualizar===index" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em; min-width:80px;"  @click="reseteandoDatos()"> <i class="bi bi-x-lg"><br></i> Cancelar</button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                        <tr  v-if="seguimiento_session.length<=0">
+                                                            <th colspan="6" class="text-center">Sin seguimiento</th>
+                                                        </tr>
+                                                    </tbody>
+                                            </table>
+                                        </div>
                                 </div>
                             </div>
-                            <!---->
-
+                            <div v-if="!agregar_compromiso && !actualizar_compromiso" class="text-center">
+                                <button v-if="actualizar_session" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Actualizar')"><i class="bi bi-floppy"></i></i> Actualizar</button>
+                                <button v-else class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Guardar')"><i class="bi bi-floppy-fill"></i> Guardar</button>
+                               
+                            </div>
+                                <div v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
                                 <hr>
-                                <div class="col-12 text-center">
-                                        <button class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>
+                                        <div class="col-12 text-center">
+                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>
+                                        </div>
+                                        <div class="row" style="font-size:0.9em">
+                                                    <table class="table mt-2">
+                                                            <thead>
+                                                                <tr class="table-secondary">
+                                                                    <th scope="col">#</th>
+                                                                    <th scope="col" class="text-center">Compromiso</th>
+                                                                    <th scope="col" class="text-center">Responsable</th>
+                                                                    <th scope="col">Fecha</th>
+                                                                    <th scope="col">Estatus</th>
+                                                                    <th scope="col"></th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
+                                                                    <td class="text-center" style="width: 200px;">
+                                                                        <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                        <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input v-model="compromiso" type="text" class="form-control"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select  v-model="responsable_compromiso">
+                                                                            <option value="" selected disabled>Seleccione responsable.</option>
+                                                                            <option v-for="usuario in usuarios" :value="usuario.id">{{usuario.nombre}}</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <input v-model="fecha_compromiso" type="date" class="form-control"/>
+                                                                    </td>
+                                                                    <td>
+                                                                        <label>0%</label>
+                                                                    </td>
+                                                                    <td>
+
+                                                                    </td>
+                                                                </tr>
+                                                                <tr v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
+                                                                    <th scope="row" style="width: 200px;">{{index+1}} 
+                                                                        <button v-if="!actualizar_compromiso"  class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                                                                        <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)"  class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                        <button  v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                    </th>
+                                                                    <td>
+                                                                        <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control"/>
+                                                                        <label v-else> {{commitment.compromiso}}</label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
+                                                                            <option value="" selected disabled>Seleccione responsable.</option>
+                                                                            <option v-for="usuario in usuarios" :value="usuario.id">{{usuario.nombre}}</option>
+                                                                        </select>
+                                                                        <label v-else>{{commitment.nombre}}</label>
+                                                                    </td>
+                                                                    <td style="width:200px">
+                                                                        <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
+                                                                        <label v-else>{{cambiarformato(commitment.fecha)}}</label>
+                                                                    </td>
+                                                                    <td>
+                                                                        <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
+                                                                        <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
+                                                                            <option value="0" selected disabled>0 %</option>
+                                                                            <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                                                        </select>
+                                                                    </td>
+                                                                    <td>
+                                                                        <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                    </table>
+                                        </div>
                                 </div>
-                              <div class="row">
-                                        <table class="table mt-2">
-                                                <thead>
-                                                    <tr class="table-secondary">
-                                                        <th scope="col">#</th>
-                                                        <th scope="col">Compromiso</th>
-                                                        <th scope="col">Fecha</th>
-                                                        <th scope="col">Estatus</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
-                                                        <td>
-                                                            <button class="btn btn-danger btn-boton px-2 py-0" style="font-size: 0.7em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i>Cancelar</button>
-                                                        </td>
-                                                        <td>
-                                                        <input v-model="compromiso" type="text" class="form-control"/>
-                                                        </td>
-                                                        <td>
-                                                        <input v-model="fecha_compromiso"type="date"  class="form-control"/>
-                                                        </td>
-                                                        <td>
-                                                            0%
-                                                        </td>   
-                                                    </tr>
-                                                    <tr v-for="compromiso in compromisos">
-                                                        <th scope="row">1</th>
-                                                        <td>
-                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
-                                                        </td>
-                                                        <td>
-                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
-                                                        </td>
-                                                        <td>
-                                                        <input v-if="agregar_compromiso" type="text" class="form-control"/>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                        </table>
-                              </div>
-                          
+                          <!--  <hr>-->
+
+
+                             <!--MODAL DOCUMENTO--->
+                 <!-- Modal Eliminar/Actualizar Seguimiento-->
+                 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h6 class="modal-title" id="exampleModalLabel" >Documento/s <b>{{select_session_equipo.split('<->')[1]}}</b></h6>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                        <div class="text-center">
+                                                <form @submit.prevent="uploadFile()">
+                                                    Subir Documento
+                                                        <div class="col-12">
+                                                            <div class="custom-file mt-2 mb-3"> 
+                                                            <input type="file" id="input_file_seguimiento" @change="varificandoSelecionSeguimiento()" ref="ref_imagen" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-12" v-if="existeImagenSeleccionada && login!=true" >
+                                                            <button  type="submit" name="upload" class="btn btn-primary">Subir Archivos </button>
+                                                        </div>
+                                                        <div v-if="login==true" class="d-flex justify-content-center">
+                                                            <div>
+                                                                <img class="mx-auto" style="width:50px;" src="img/loading.gif" /><label>Subiendo...</label>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                          <!-- Mostrando los archivos cargados SEGUIMIENTO-->
+                                                        <div v-if="documento_session.length>0" >
+                                                        <hr>
+                                                                <div class="col-12" v-for= "(archivos,index) in documento_session">
+                                                                    <div class="row">
+                                                                        <span class="badge bg-secondary">Documento {{index+1}}</span><br>
+                                                                            <div class="mt-1">
+                                                                                <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos)" style="font-size:14px;" >Eliminar</button>
+                                                                            </div>
+                                                                    </div>
+                                                                    <!--Mostar los JPG y PNG-->
+                                                                    <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                                        <img  :src="documento_session[index]" style="width:50%" class="mb-5"></img>
+                                                                    </div>
+                                                                     <!--Mostrar PDF-->
+                                                                     <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='pdf'"  class="col-12 text-center">
+                                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                                            <iframe  :src="documento_session[index]" style="width:100%;height:500px;" class="mb-5"></iframe>
+                                                                    </div>
+                                                                    <!--Mostrar Word-->
+                                                                    <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='doc' || archivos.slice(archivos.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                                            <a :href="archivos" :download="nombre_de_descarga">
+                                                                                <img src="img/word.png" style="width:200px" class="mb-5"></img>
+                                                                            </a>
+                                                                    </div>
+                                                                    <!--Mostrar Excel-->
+                                                                    <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='xls' || archivos.slice(archivos.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                                            <a :href="archivos" :download="nombre_de_descarga">
+                                                                                <img src="img/excel.png" style="width:200px" class="mb-5"></img>
+                                                                            </a>
+                                                                    </div>
+                                                                    <!--Mostrar Power Point -->
+                                                                    <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1)=='pptx'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                                            <a :href="archivos" :download="nombre_de_descarga">
+                                                                            <img  src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
+                                                                            </a>
+                                                                    </div>
+                                                                      <!--Mostrar .RAR-->
+                                                                      <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                                            <a :href="archivos" :download="nombre_de_descarga">
+                                                                            <img  src="img/rar.png" style="width:200px" class="mb-5"></img>
+                                                                            </a>
+                                                                    </div>
+                                                                     <!--Mostrar .RAR-->
+                                                                     <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
+                                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                                            <a :href="archivos" :download="nombre_de_descarga">
+                                                                            <img  src="img/zip.png" style="width:200px" class="mb-5"></img>
+                                                                            </a>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+                                                </form>
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                                </div>
+                            </div>
+                    </div>
+                <!--Fin Modal subir seguimiento-->
+                <!--FIN MODAL DOCUMENTO-->
+
+
             </div>
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
@@ -857,756 +1048,795 @@ if (isset($_SESSION['nombre'])) {
 
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'">
-                <!-- <div class=" row d-flex justify-content-center align-items-center p-1 text-center my-2">
-                                    <div class="col-12 col-sm-3  col-lg-2 col-xl-2 col-xxl-2 ">
-                                        <button class="btn_menu2" @click="graficas('Rechazos')"><b>Rechazos</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3   col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2" @click="graficas('Merma')"><b>Merma</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2"  @click="graficas('Eficiencia')" ><b>Eficiencia</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2"  @click="graficas('Accidentes')" ><b>Accidentes</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2"  @click="graficas('Actos inseguros')" ><b>Actos inseguros</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2"  @click="graficas('Ausentismo')" ><b>Ausentismo</b></button>
-                                    </div>
-                                    <div class="col-12 col-sm-3 col-lg-2  col-xl-2 col-xxl-2">
-                                        <button class="btn_menu2"  @click="graficas('Cumplimiento del proyecto')" ><b>Cumplimiento del proyecto</b></button>
-                                    </div>
-                            </div> -->
-                <div class="input-group my-3">
-                    <span class="input-group-text">Seleccione tabla</span>
-                    <select v-model="tipoTablas" @change="graficasEAD()">
-                        <option value="">Seleccione...</option>
-                        <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
-                    </select>
-
-                </div>
-
-                <!--/////////////////////////////////////////////////////////////////INICIA RECHAZOS -->
-                <div v-if="tipoTablas == 'Rechazos'">
-                    <div class="d-flex">
-                        <div class="scroll" style=" max-height: 400px;">
-                            <table class="text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Merma
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="(i,index) in 31">
-                                        <td class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                            <input :id="'graficaRechazo'+index" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            {{sumaTabla}}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="row d-flex barra-gris justify-content-center">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="input-group my-3">
+                                <span class="input-group-text" style="width:100px">Tabla</span>
+                                <select class="w-50" v-model="tipoTablas" @change="consultadoValoresGrafica()">
+                                    <option value="">Seleccione...</option>
+                                    <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
+                                </select>
+                            </div>         
                         </div>
-                        <table>
-                            <thead>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="input-group my-3">
+                                <span class="input-group-text" style="width:100px" >Equipo</span>
+                                <select class="w-50" v-model="equipo_grafica" @change="consultadoValoresGrafica()">
+                                    <option value="">Seleccione...</option>
+                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="input-group my-3">
+                                    <span class="input-group-text" style="width:100px">Año</span>
+                                    <select class="w-50" v-model="anio_grafica" @change="consultadoValoresGrafica()">
+                                    <option value="">Seleccione...</option>
+                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="input-group my-3"> 
+                                    <span class="input-group-text" style="width:100px">Mes</span>    
+                                    <select class="w-50"  v-model="mes_grafica"  @change="consultadoValoresGrafica()">
+                                    <option value="">Seleccione...</option>
+                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                                    </select>
+                            </div>
+                        </div>
+                      
+                </div>  
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark">
-                                    <div class="d-flex justify-content-center" id="divCanvas" style="min-width: 80vw; max-height:40vh;">
-                                        <canvas id="myChart"></canvas>
-                                    </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="d-flex col-4 offset-4 mt-2">
-                        <table class=" text-center table table-bordered ">
-                            <thead>
+                <!--/////////////////////////////////////////////////////////////////GRAFICA RECHAZOS -->
+                <div v-if="tipoTablas == 'Rechazos'">
+                    <div class="row d-flex">
+                        <div class="col-12">
+                                <div class="scroll-w col-12"><!--dias-->
+                                    <table class="text-center mx-auto my-2">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Día
+                                                </th>
+                                                <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Suma
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Rechazos
+                                                </th>
+                                                <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                        <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                        <input class="input-container ms-2" type="text"></input>
-                                    </th>
-                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                        <select class="ms-2">
-                                            <option v-for="mes in meses">
-                                                {{mes}}
-                                            </option>
-                                        </select>
-                                    </th>
-                                </tr>
-                                <tr style="background-color: #002060; color: white;">
-                                    <th>CAUSAS</th>
-                                    <th>FECHA</th>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></input></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                            </tbody>
-                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="tabla-encabezado">
+                                                        <th class=" text-center  border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de rechazos</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center  border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center  border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                        <td class="border border-dark">
+                                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                                    <canvas id="myChart" class="w-100"></canvas>
+                                                            </div>       
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
+
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS <button class="btn-circle-nuevo px-2 rounded">+</button></th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td>
+                                                                    <select>
+                                                                        <option value="" v-for="dia in diasDelMesAnio()" :value="dia">{{dia}}/{{mes_grafica}}/{{anio_grafica}}</option>
+                                                                    </select>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                        </div>
                     </div>
                 </div>
                 <!--/////////////////////////////////////////////////VENTANA DE MERMA////////////////////////////////////////////////////////////////////-->
                 <div v-if="tipoTablas == 'Merma'" class="row">
-                    <div class="col-12 d-flex">
-                        <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Merma
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="row d-flex">
+                        <div class="col-12">
+                                <div class="scroll-w col-12"><!--dias-->
+                                    <table class="text-center mx-auto my-2">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Día
+                                                </th>
+                                                <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Promedio
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Merma
+                                                </th>
+                                                <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                    <input :id="'graficaMerma'+index" :value="datosGraficaMerma[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
-                        <table>
-                            <thead>
+                        <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de merma</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
-                                    </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="d-flex col-4 offset-4 mt-2">
-                        <table class=" text-center table table-bordered ">
-                            <thead>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de Merma</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: 93Kg. promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                    <td class="border border-dark">
+                                                    <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                            <canvas id="myChart" class="w-100"></canvas>
+                                                    </div>       
+                                                    </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                        <input class="input-container ms-2" type="text"></input>
-                                    </th>
-                                    <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                        <select class="ms-2">
-                                            <option v-for="mes in meses">
-                                                {{mes}}
-                                            </option>
-                                        </select>
-                                    </th>
-                                </tr>
-                                <tr style="background-color: #002060; color: white;">
-                                    <th>CAUSAS</th>
-                                    <th>FECHA</th>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></input></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="text" style="width: 350px;"></td>
-                                    <td><input type="date"></input></td>
-                            </tbody>
-                        </table>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                        </div>
                     </div>
                 </div>
-
-                <!--/////////////////////////////////////////////////VENTANA DE EFICIENCIA////////////////////////////////////////////////////////////////////-->
+                <!--/////////////////////////////////////////////////GRAFICA EFICIENCIA////////////////////////////////////////////////////////////////////-->
                 <div v-if="tipoTablas == 'Eficiencia'">
-                    <div class="col-12 d-flex   ">
-                        <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Eficiencia
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                        <table>
-                            <thead>
-
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
+                        <div class="row d-flex">
+                            <div class="col-12">
+                                    <div class="scroll-w col-12"><!--dias-->
+                                        <table class="text-center mx-auto my-2">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Día
+                                                    </th>
+                                                    <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Promedio
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Eficiencia
+                                                    </th>
+                                                    <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                        <input :id="'graficaEficiencia'+index" :value="datosGraficaEficiencia[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        {{sumaTabla}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class=" col-12">
-                        <div class="d-flex col-4 offset-4 mt-2 ">
-                            <table class=" text-center table table-bordered ">
-                                <thead>
+                            </div>
+                            <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                            <input class="input-container ms-2" type="text"></input>
-                                        </th>
-                                        <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                            <select class="ms-2">
-                                                <option v-for="mes in meses">
-                                                    {{mes}}
-                                                </option>
-                                            </select>
-                                        </th>
-                                    </tr>
-                                    <tr style="background-color: #002060; color: white;">
-                                        <th>CAUSAS</th>
-                                        <th>FECHA</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="date"></input></td>
-                                </tbody>
-                            </table>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de Eficiencia</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                    <td class="border border-dark">
+                                                    <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                            <canvas id="myChart" class="w-100"></canvas>
+                                                    </div>       
+                                                    </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
+
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                            </div>
                         </div>
-                    </div>
                 </div>
-                <!--/////////////////////////////////////////////////VENTANA DE Accidentes ////////////////////////////////////////////////////////////////////-->
+                <!--/////////////////////////////////////////////////GRAFICA ACCIDENTES ////////////////////////////////////////////////////////////////////-->
                 <div v-if="tipoTablas == 'Accidentes'">
-                    <div class="col-12 d-flex   ">
-                        <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Accidentes
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                        <table>
-                            <thead>
-
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
+                    <div class="row d-flex">
+                            <div class="col-12">
+                                    <div class="scroll-w col-12"><!--dias-->
+                                        <table class="text-center mx-auto my-2">
+                                            <thead class="sticky-top">
+                                                <tr>
+                                                    
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Día
+                                                    </th>
+                                                    <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                        {{i}}
+                                                    </td>
+                                                    <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Promedio
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                        Accidentes
+                                                    </th>
+                                                    <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                        <input :id="'graficaAccidentes'+index" :value="datosGraficaAccidentes[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    </td>
+                                                    <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                        {{sumaTabla}}
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class=" col-12">
-                        <div class="d-flex col-4 offset-4 mt-2 ">
-                            <table class=" text-center table table-bordered ">
-                                <thead>
+                            </div>
+                            <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                            <input class="input-container ms-2" type="text" style="width: 300px;"></input>
-                                        </th>
-                                        <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                            <select class="ms-2">
-                                                <option v-for="mes in meses">
-                                                    {{mes}}
-                                                </option>
-                                            </select>
-                                        </th>
-                                    </tr>
-                                    <tr style="background-color: #002060; color: white;">
-                                        <th>Accidente</th>
-                                        <th>Nombre</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                </tbody>
-                            </table>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de Accidentes</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                    <td class="border border-dark">
+                                                    <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                            <canvas id="myChart" class="w-100"></canvas>
+                                                    </div>       
+                                                    </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                            <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
+
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                            </div>
                         </div>
-                    </div>
                 </div>
-                <!--/////////////////////////////////////////////////VENTANA DE ACTOS INSEGUROS ////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Actos inseguros'">
-                    <div class="col-12 d-flex   ">
-                        <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Accidentes
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <!--/////////////////////////////////////////////////GRAFICA ACTOS INSEGUROS////////////////////////////////////////////////////////////////////-->
+                <div v-if="tipoTablas == 'Actos Inseguros'">
+                    <div class="row d-flex">
+                        <div class="col-12">
+                                <div class="scroll-w col-12"><!--dias-->
+                                    <table class="text-center mx-auto my-2">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Día
+                                                </th>
+                                                <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Promedio
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Rechazos
+                                                </th>
+                                                <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                    <input :id="'graficaActosInseguros'+index" :value="datosGraficaActosInseguros[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
-                        <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                        <table>
-                            <thead>
+                        <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
-                                    </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class=" col-12">
-                        <div class="d-flex col-4 offset-4 mt-2 ">
-                            <table class=" text-center table table-bordered ">
-                                <thead>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de rechazos</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                    <td class="border border-dark">
+                                                    <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                            <canvas id="myChart" class="w-100"></canvas>
+                                                    </div>       
+                                                    </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
 
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th colspan="2" style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                            <input class="input-container ms-2" type="text" style="width: 300px;"></input>
-                                        </th>
-                                        <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                            <select class="ms-2">
-                                                <option v-for="mes in meses">
-                                                    {{mes}}
-                                                </option>
-                                            </select>
-                                        </th>
-                                    </tr>
-                                    <tr style="background-color: #002060; color: white;">
-                                        <th>Acto inseguro</th>
-                                        <th>Nombre</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></td>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                </tbody>
-                            </table>
-                        </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                            </div>
                     </div>
                 </div>
                 <!--/////////////////////////////////////////////////VENTANA DE AUSENTISMO ////////////////////////////////////////////////////////////////////-->
                 <div v-if="tipoTablas == 'Ausentismo'">
-                    <div class="col-12 d-flex   ">
-                        <div class="scroll" style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead class="sticky-top">
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Ausentismo
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 31">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                    <div class="row d-flex">
+                        <div class="col-12">
+                                <div class="scroll-w col-12"><!--dias-->
+                                    <table class="text-center mx-auto my-2">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Día
+                                                </th>
+                                                <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Promedio
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Rechazos
+                                                </th>
+                                                <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                    <input :id="'graficaAusentismo'+index" :value="datosGraficaAusentismo[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
-                        <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                        <table>
-                            <thead>
+                        <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
-                                    </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class=" col-12">
-                        <div class="d-flex col-4 offset-4 mt-2 ">
-                            <table class=" text-center table table-bordered ">
-                                <thead>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de ausentismo</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                    <td class="border border-dark">
+                                                    <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                            <canvas id="myChart" class="w-100"></canvas>
+                                                    </div>       
+                                                    </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
 
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                            <input class="input-container ms-2" type="text" style="width: 300px;"></input>
-                                        </th>
-                                        <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                            <select class="ms-2">
-                                                <option v-for="mes in meses">
-                                                    {{mes}}
-                                                </option>
-                                            </select>
-                                        </th>
-                                    </tr>
-                                    <tr style="background-color: #002060; color: white;">
-                                        <th>Nombre</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 250px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                </tbody>
-                            </table>
-                        </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                            </div>
                     </div>
                 </div>
-                <!--/////////////////////////////////////////////////VENTANA DE CUMPLIMIENTO DE PROYECTO ////////////////////////////////////////////////////////////////////-->
+                <!--/////////////////////////////////////////////////GRAFICA CUMPLIMIENTO DE PROYECTO ////////////////////////////////////////////////////////////////////-->
                 <div v-if="tipoTablas == 'Cumplimiento del proyecto'">
-                    <div class="col-12 d-flex   ">
-                        <div style=" max-height: 500px;">
-                            <table class="  text-center ms-3 me-5">
-                                <thead>
-                                    <tr>
-                                        <th class="border border-dark" style="font-size: 13px;">
-                                            Dia
-                                        </th>
-                                        <th class="border border-dark" style="font-size: 13spx;">
-                                            Faltas
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr v-for="i in 4">
-                                        <td class="border border-dark" style="  height: 20px; width: 40px; font-size: 13px;">
-                                            {{i}}
-                                        </td>
-                                        <td class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px; ">
-                                            <input class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-dark" style="font-size: 13px; height: 20px; width: 60px;">
-
-                                        </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                            SUMA
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <div class="row d-flex">
+                        <div class="col-12">
+                                <div class="scroll-w col-12"><!--dias-->
+                                    <table class="text-center mx-auto my-2">
+                                        <thead class="sticky-top">
+                                            <tr>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Día
+                                                </th>
+                                                <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;" >
+                                                    {{i}}
+                                                </td>
+                                                <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Promedio
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                                    Rechazos
+                                                </th>
+                                                <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                                    <input :id="'graficaCumplimiento'+index" :value="datosGraficaCumplimientoProyecto[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                </td>
+                                                <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                                    {{sumaTabla}}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                         </div>
-                        <!--////////////////////////////////////////////////////////////////// INICIA TABLA PARA GRAFICA -->
-                        <table>
-                            <thead>
+                        <div class="col-12 ">
+                                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                                            <table class="text-center table table-bordered">
+                                                <thead>
 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de rechazos</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #kg promedio diario</th>
-                                </tr>
-                                <tr>
-                                    <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                </tr>
-                                <td class="border border-dark" style="width: 40px; ">
-                                    <div id="divCanvas" style="min-height: 30hv; min-width: 80vw; ">
-                                        <canvas id="myChart"></canvas>
-                                    </div>
-                                </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class=" col-12">
-                        <div class="d-flex col-4 offset-4 mt-2 ">
-                            <table class=" text-center table table-bordered ">
-                                <thead>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica Cumplimiento de Proyecto</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                                    </tr>
+                                                        <td class="border border-dark">
+                                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                                    <canvas id="myChart" class="w-100"></canvas>
+                                                            </div>       
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="scroll-w col-12">
+                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                                    <table class="text-center table table-bordered">
+                                                        <thead>
 
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                            <input class="input-container ms-2" type="text" style="width: 300px;"></input>
-                                        </th>
-                                        <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                            <select class="ms-2">
-                                                <option v-for="mes in meses">
-                                                    {{mes}}
-                                                </option>
-                                            </select>
-                                        </th>
-                                    </tr>
-                                    <tr style="background-color: #002060; color: white;">
-                                        <th>Nombre</th>
-                                        <th>Fecha</th>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 250px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                    </tr>
-                                    <tr>
-                                        <td><input type="text" style="width: 350px;"></input></td>
-                                        <td><input type="date"></input></td>
-                                </tbody>
-                            </table>
-                        </div>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
+                                                                    <input class="input-container ms-2" type="text"></input>
+                                                                </th>
+                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
+                                                                    <select class="ms-2">
+                                                                        <option v-for="mes in meses">
+                                                                            {{mes}}
+                                                                        </option>
+                                                                    </select>
+                                                                </th>
+                                                            </tr>
+                                                            <tr style="background-color: #002060; color: white;">
+                                                                <th>CAUSAS</th>
+                                                                <th>FECHA</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><input type="text" style="width: 350px;"></td>
+                                                                <td><input type="date"></input></td>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                        </div>
+                            </div>
                     </div>
+                  
                 </div>
             </div>
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
@@ -1990,7 +2220,7 @@ if (isset($_SESSION['nombre'])) {
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body" style="font-size: 1em;">
-                                                <div class="scroll5">
+                                                <div class="scroll6">
                                                     <table class="table table-bordered table-striped">
                                                         <thead class="thead-dark bg-secondary">
                                                             <tr class="table-active text-center">

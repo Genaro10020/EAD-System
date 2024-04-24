@@ -10,6 +10,10 @@ if(isset($_SESSION['nombre'])){
                 if (isset($_GET['id_etapa']) && isset($_GET['accion']) && $_GET['accion']==="ConsultarXIDEtapa"){
                     $id_etapa = $_GET['id_etapa'];
                     $resultado = consultarFaseXIDEtapa($id_etapa);
+                }else if($_GET['accion']==="consultarFases"){
+                    $resultado = consultarEtapasYFases();
+                }else{
+                    $resultado = "No existe esa opción en GET";
                 }
                 break;
             case 'POST':
