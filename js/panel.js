@@ -1267,7 +1267,7 @@ const app = {
         }
       }).then(response =>{
         console.log('Compromisos', response.data)
-          if(response.data[0]==true){
+          if(response.data[0]==true && response.data[2]==true){
             this.compromisos=response.data[1];
           }else{
             console.log("Error en la consulta"+response.data);
@@ -1322,6 +1322,7 @@ const app = {
        responsable:this.responsable_compromiso,
        fecha:this.fecha_compromiso
       }).then(response =>{
+        console.log('Compromisos',response.data)
         if(response.data==true){
           alert("Compromiso Actualizado con Éxito.");
           this.compromiso = ''

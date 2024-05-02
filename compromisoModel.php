@@ -1,19 +1,46 @@
 <?php
 include("conexionGhoner.php");
+
     function consultarCompromisos($id_equipo){
         global $conexion;
-        $estado = false;
+        $estado1 = false;
+        $estado2 = false;
         $resultado = [];
-
-        $consulta = "SELECT *, compromisos.id AS id FROM compromisos LEFT JOIN usuarios ON compromisos.id_responsable = usuarios.id WHERE id_equipo = ?";
+        $vueltas=0;
+        $consulta = "SELECT * FROM compromisos WHERE id_equipo = ?";//consulto los compromisos
         if ($stmt = $conexion->prepare($consulta)) {
             $stmt->bind_param("i",$id_equipo);
             if ($stmt->execute()) {
-                $estado = true;
+                $estado1 = true;
                 $result = $stmt->get_result();
                 while ($fila = $result->fetch_assoc()) {
                     $resultado[] = $fila;
                 }
+                include("conexionBDSugerencias.php");
+
+                if(count($resultado)<=0){
+                    $estado2 = true;
+                }
+                  for($i=0; $i<count($resultado);$i++){
+                    $id = $resultado[$i]['id_responsable'];
+                    //$id_equipo = $resultado[''];
+                    $consulta = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = ?";//consulto el nombre del resposnable en tabla colaboradores
+                        if ($stmt = $conexion->prepare($consulta)) {
+                            $stmt->bind_param("i",$id);
+                            if ($stmt->execute()) {
+                                $estado2 = true;
+                                $result = $stmt->get_result();
+                                while ($fila = $result->fetch_assoc()) {
+                                    $resultado[$i]['nombre_responsable'] = $fila['colaborador'];
+                                    $resultado[$i]['nomina_colaborador'] = $fila['numero_nomina'];
+                                }
+                            } else {
+                                $resultado = $stmt->error;
+                            }
+                        } else {
+                            $resultado = $conexion->error;
+                        }
+                  }
                 $stmt->close();
             } else {
                 $resultado = $stmt->error;
@@ -21,8 +48,7 @@ include("conexionGhoner.php");
         } else {
             $resultado = $conexion->error;
         }
-    
-        return array($estado, $resultado);
+        return array($estado1, $resultado,$estado2);
     }
 
     function guardarCompromiso($id_equipo,$fecha,$compromiso,$responsable){

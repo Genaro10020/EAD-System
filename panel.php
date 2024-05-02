@@ -845,8 +845,8 @@ if (isset($_SESSION['nombre'])) {
                                                                     </td>
                                                                     <td>
                                                                         <select  v-model="responsable_compromiso">
-                                                                            <option value="" selected disabled>Seleccione responsable.</option>
-                                                                            <option v-for="usuario in usuarios" :value="usuario.id">{{usuario.nombre}}</option>
+                                                                            <option value="" selected disabled>Seleccione responsable</option>
+                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
                                                                         </select>
                                                                     </td>
                                                                     <td>
@@ -871,10 +871,10 @@ if (isset($_SESSION['nombre'])) {
                                                                     </td>
                                                                     <td>
                                                                         <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                                            <option value="" selected disabled>Seleccione responsable.</option>
-                                                                            <option v-for="usuario in usuarios" :value="usuario.id">{{usuario.nombre}}</option>
+                                                                            <option value="" selected disabled>Seleccione responsable</option>
+                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
                                                                         </select>
-                                                                        <label v-else>{{commitment.nombre}}</label>
+                                                                        <label v-else>{{commitment.nombre_responsable}}</label>
                                                                     </td>
                                                                     <td style="width:200px">
                                                                         <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
