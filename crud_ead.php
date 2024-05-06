@@ -10,9 +10,16 @@ if (isset($_SESSION['nombre'])) {
     $equipos = array();
     $integrantesIDs = array(); 
     $integrantes= array();  
+   
     switch ($accion) {
         case 'consultar':
-        $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+        if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario']=='Coordinador'){
+            $area =  $_SESSION['area'];
+            $consulta = "SELECT * FROM equipos_ead WHERE area ='$area' ORDER BY id DESC";
+        }else{
+            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+        }
+        
         $result = $conexion->query($consulta);
     
         if ($result) {

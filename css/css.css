@@ -180,9 +180,21 @@ ul {
 }
 
 
-  
+input[type=number]::-webkit-inner-spin-button,/*Elimina los botones de incrementar y decrementar*/
+input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 
- 
+input[type=number] {
+        -moz-appearance: textfield; /* Firefox */
+        height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; 
+    }
+
+    input.inpus-number-graficas:focus{
+        background-color: #a4f18f;
+    }
+
 
 .btn_menu {
     box-shadow: inset 0px 1px 0px 0px #cf866c;

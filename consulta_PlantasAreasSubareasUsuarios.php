@@ -44,8 +44,12 @@ if(isset($_SESSION['nombre'])){
             }
         }
 
-
-        $consulta = "SELECT * FROM usuarios ORDER BY id DESC ";
+        if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario']=='Coordinador'){
+            $area =  $_SESSION['area'];
+            $consulta = "SELECT * FROM usuarios WHERE area ='$area' ORDER BY id DESC";
+        }else{
+            $consulta = "SELECT * FROM usuarios ORDER BY id DESC ";
+        }
         $query = $conexion ->query($consulta);
         if(mysqli_num_rows($query) > 0){
             $resultado['Usuarios'] = array();

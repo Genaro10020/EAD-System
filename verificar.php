@@ -10,15 +10,17 @@ $contrasena = $arreglo['contrasena'];
   
     //Verificar SI existe usuario
    
-        $consulta = "SELECT * FROM usuarios WHERE nomina = '$usuario' AND contrasena = '$contrasena' AND tipo_acceso = 'Admin'";
+        $consulta = "SELECT * FROM usuarios WHERE nomina = '$usuario' AND contrasena = '$contrasena'";
         $query=$conexion->query($consulta);
                 if(mysqli_num_rows($query)>0){
                         while ($dato=mysqli_fetch_array($query)) {
-                            $_SESSION['nombre']=$dato['nombre'];
-                            $_SESSION['nomina']=$dato['nomina'];
-                            $_SESSION['planta']=$dato['planta'];
-                            $_SESSION['tipo_acceso']=$dato['tipo_acceso'];
-                            $resultado = "Autorizado";
+                                $_SESSION['nombre']=$dato['nombre'];
+                                $_SESSION['nomina']=$dato['nomina'];
+                                $_SESSION['planta']=$dato['planta'];
+                                $_SESSION['area']=$dato['area'];
+                                $_SESSION['tipo_usuario']=$dato['tipo_usuario'];
+                                $_SESSION['tipo_acceso']=$dato['tipo_acceso'];//acceso admin defaul
+                                $resultado = "Autorizado";
                             }
                 }else{
                     $consultarEvaluador = "SELECT * FROM evaluadores WHERE nomina='$usuario' AND contrasena='$contrasena'";
@@ -40,7 +42,5 @@ $contrasena = $arreglo['contrasena'];
                     }
                            
                 }
-     
-
 echo json_encode($resultado);
 ?>

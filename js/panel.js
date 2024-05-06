@@ -191,17 +191,26 @@ const app = {
   },
   mounted() {
     this.consultarUsuarios()
-    this.datosTipoUsuario()//tomo datos de session
+    this.ventanaSegunTipoUsuario()//tomo datos de session
   },
   methods: {
    /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
-    datosTipoUsuario(){
+   ventanaSegunTipoUsuario(){
      axios.post("datos_user.php",{
      }).then(response =>{
+      console.log("Dato usr",response.data[0])
       this.tipo_usuario = response.data[0]
         if(response.data[0] =="Evaluador"){
           this.ventanas('Evaluar');
           this.consultarCompetenciaIDevaluador();
+        }else if(response.data[0]=="Coordinador"){
+          this.ventanas('Gestion Sesiones');
+          this.consultarEAD()
+          this.consultarAvanceEtapas()
+          this.tomarDiaActual()
+          this.consultarCantidadFaseXEtapas()
+        }else{
+          //si no es ninguno anterior es Admin
         }
      }).catch(error =>{
       console.log('Error en  axios tipoUser '+error);
@@ -2092,7 +2101,7 @@ const app = {
                   icon: "success"
                 });
           }else{
-            console.log("Datos Guardados"+response.data)
+            console.log("No se guardo "+response.data)
           }
           this.tablaGraficas()
         }).catch(error=>{

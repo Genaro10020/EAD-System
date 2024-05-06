@@ -23,14 +23,20 @@ if (isset($_SESSION['nombre'])) {
                     <div class="dropdown-content">
                             <?php
                                 if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Admin'){
-                            ?>
+
+                                        if($_SESSION['tipo_usuario']=='Admin' || $_SESSION['tipo_usuario']=='Coordinador'){
+                                        ?>
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                        <?php } ?>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),consultarUsuarios()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas()"><b> Gestion de Sesiones</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                        <?php
+                                        if($_SESSION['tipo_usuario']=='Admin'){
+                                        ?>
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
@@ -39,6 +45,7 @@ if (isset($_SESSION['nombre'])) {
                                     <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                     <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
+                                        <?php } ?>
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                                     <a><button class="btn_menu" @click="ventanas('score'), consultarScoreCard(),consultarObjetivos()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
@@ -1116,7 +1123,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)"  @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
@@ -1217,7 +1224,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Merma
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaMerma'+index" :value="datosGraficaMerma[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaMerma'+index" :value="datosGraficaMerma[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
@@ -1325,7 +1332,7 @@ if (isset($_SESSION['nombre'])) {
                                                         Eficiencia
                                                     </th>
                                                     <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                        <input :id="'graficaEficiencia'+index" :value="datosGraficaEficiencia[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                        <input :id="'graficaEficiencia'+index" :value="datosGraficaEficiencia[index]" @change="insertandoValores(index)" class=" inpus-number-graficas text-center" type="number">
                                                     </td>
                                                     <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                         {{sumaTabla}}
@@ -1433,7 +1440,7 @@ if (isset($_SESSION['nombre'])) {
                                                         Accidentes
                                                     </th>
                                                     <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                        <input :id="'graficaAccidentes'+index" :value="datosGraficaAccidentes[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                        <input :id="'graficaAccidentes'+index" :value="datosGraficaAccidentes[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                     </td>
                                                     <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                         {{sumaTabla}}
@@ -1541,7 +1548,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaActosInseguros'+index" :value="datosGraficaActosInseguros[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaActosInseguros'+index" :value="datosGraficaActosInseguros[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
@@ -1649,7 +1656,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaAusentismo'+index" :value="datosGraficaAusentismo[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaAusentismo'+index" :value="datosGraficaAusentismo[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
@@ -1757,7 +1764,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaCumplimiento'+index" :value="datosGraficaCumplimientoProyecto[index]" @change="insertandoValores(index)" class="text-center" type="number" style=" height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; ">
+                                                    <input :id="'graficaCumplimiento'+index" :value="datosGraficaCumplimientoProyecto[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
