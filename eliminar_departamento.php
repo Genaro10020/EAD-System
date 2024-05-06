@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if(isset($_SESSION['nombre'])){
@@ -9,42 +8,40 @@ if(isset($_SESSION['nombre'])){
         $departamento = $arreglo['departamento'];
         $id = $arreglo['id'];
 
+                        if($departamento=="Planta"){
+                        //Verificar SI existe usuario
+                        $delete = "DELETE FROM plantas WHERE id='$id'";
+                        $query = $conexion->query($delete);
+                        if ($query) {
+                            $resultado = $query;
+                        } else {
+                            $resultado = "Error en la consulta: " . mysqli_error($conexion);
+                        }
+                        
+                        }else if($departamento=="Area"){
+                                    //Verificar SI existe usuario
+                                    $delete = "DELETE FROM areas WHERE id='$id'";
+                                    $query = $conexion->query($delete);
+                                    if ($query) {
+                                        $resultado = $query;
+                                    } else {
+                                        $resultado = "Error en la consulta: " . mysqli_error($conexion);
+                                    }
 
+                        }else if($departamento=="Subarea"){
+                                    //Verificar SI existe usuario
+                                    $delete = "DELETE FROM subareas WHERE id='$id'";
+                                    $query = $conexion->query($delete);
+                                    if ($query) {
+                                        $resultado = $query;
+                                    } else {
+                                        $resultado = "Error en la consulta: " . mysqli_error($conexion);
+                                    }
 
-        if($departamento=="Planta"){
-                    //Verificar SI existe usuario
-                    $delete = "DELETE FROM plantas WHERE id='$id'";
-                    $query = $conexion->query($delete);
-                    if ($query) {
-                        $resultado = $query;
-                    } else {
-                        $resultado = "Error en la consulta: " . mysqli_error($conexion);
-                    }
-                    
-        }else if($departamento=="Área"){
-                    //Verificar SI existe usuario
-                    $delete = "DELETE FROM areas WHERE id='$id'";
-                    $query = $conexion->query($delete);
-                    if ($query) {
-                        $resultado = $query;
-                    } else {
-                        $resultado = "Error en la consulta: " . mysqli_error($conexion);
-                    }
-
-        }else if($departamento=="Subárea"){
-                    //Verificar SI existe usuario
-                    $delete = "DELETE FROM subareas WHERE id='$id'";
-                    $query = $conexion->query($delete);
-                    if ($query) {
-                        $resultado = $query;
-                    } else {
-                        $resultado = "Error en la consulta: " . mysqli_error($conexion);
-                    }
-
-        }else{
-            
-        }
-             
+                        }else{
+                            $resultado = "El controlador no encontro".$departamento;
+                        }
+                
 
         echo json_encode($resultado);
 }else{

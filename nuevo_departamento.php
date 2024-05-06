@@ -41,7 +41,7 @@ if(isset($_SESSION['nombre'])){
                     }
 
         }else{
-            
+            $resultado = "No se encontro el departamento ".$departamento;
         }
                     
 

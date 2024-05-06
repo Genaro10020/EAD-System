@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 if(isset($_SESSION['nombre'])){
@@ -44,7 +43,7 @@ if($departamento=="Planta"){
             }
 
 }else{
-    
+    $resultado = "No se encontro ".$departamento;
 }
              
 

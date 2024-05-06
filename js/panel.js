@@ -320,7 +320,6 @@ const app = {
         this.selector_subarea = ''
         this.selector_tipo_usuario = ''
         this.selector_tipo_acceso = ''
-
       } else if (this.accion == "actualizar") {
         this.bandera_alta_o_actualizar = 2
         this.texto_btn_submit = 'Actualizar'
@@ -403,24 +402,24 @@ const app = {
         id: this.id, //bien al cliquear modal.
         nombre: this.nuevo_departamento
       }).then(response => {
-        //console.log(response.data)
+        console.log(response.data)
         if (response.data == true) {
           this.myModal.hide()
           this.consultarUsuarios();
         } else {
-          alert("No se elimino correctamente :-(")
+          alert("No se actualizó correctamente :-(")
         }
       }).catch(error => {
         alert("Axios error :-(" + error)
       })
     },
-    eliminarDepartamento(departamento, id) {
+    eliminarDepartamento(departamento, id){
       if (!confirm("¿Esta seguro/a que desea Eliminar la " + departamento + "?")) return
       axios.post("eliminar_departamento.php", {
         departamento: departamento,
         id: id
       }).then(response => {
-        //console.log(response.data)
+        console.log("Respuesta la eliminar",response.data)
         if (response.data == true) {
           this.consultarUsuarios();
         } else {

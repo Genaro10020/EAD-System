@@ -245,7 +245,7 @@ if (isset($_SESSION['nombre'])) {
                                     <th scope="col">Eliminar</th>
                                 </tr>
                             </thead>
-                            <tbody class=" border-dark">
+                            <tbody class=" border-dark text-start">
                                 <tr v-for="(planta, index) in plantas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{planta.nombre}}</td>
@@ -270,12 +270,12 @@ if (isset($_SESSION['nombre'])) {
                                     <th scope="col">Eliminar</th>
                                 </tr>
                             </thead>
-                            <tbody class=" border-dark">
+                            <tbody class=" border-dark text-start">
                                 <tr v-for="(area, index) in areas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{area.nombre}}</td>
                                     <td><button class="btn btn-warning btn-actualizar px-2 py-0" @click="datosModal('Área','Actualizar',area.id,area.nombre)">Actualizar</button></td>
-                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Área',area.id)">Eliminar</button></td>
+                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Area',area.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -295,12 +295,12 @@ if (isset($_SESSION['nombre'])) {
                                     <th scope="col">Eliminar</th>
                                 </tr>
                             </thead>
-                            <tbody class=" border-dark">
+                            <tbody class=" border-dark text-start">
                                 <tr v-for="(subarea, index) in subareas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{subarea.nombre}}</td>
                                     <td><button class="btn btn-warning btn-actualizar px-2 py-0" @click="datosModal('Subárea','Actualizar',subarea.id,subarea.nombre)">Actualizar</button></td>
-                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Subárea',subarea.id)">Eliminar</button></td>
+                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Subarea',subarea.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -624,7 +624,7 @@ if (isset($_SESSION['nombre'])) {
                                         </button>
                                     </div>
                                     <div> 
-                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="eliminarEquipo(equipos[0].id,equipos[0].nombre_ead)">
+                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="(equipos[0].id,equipos[0].nombre_ead)">
                                             <i class="bi bi-pencil"></i> Eliminar 
                                         </button>
                                     </div>
@@ -2411,8 +2411,6 @@ if (isset($_SESSION['nombre'])) {
         </div>
         <script src="js/panel.js?<? echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
-        
-
     </body>
 
     </html>
