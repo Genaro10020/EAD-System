@@ -7,8 +7,8 @@ if (isset($_SESSION['nombre'])) {
 
     $resultado = [];
     //Verificar SI existe usuario
-
-    $consulta = "SELECT * FROM usuarios_colocaboradores_sugerencias ORDER BY id DESC ";
+    $buscar_colaborador= $arreglo['buscar_colaborador'];
+    $consulta = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE colaborador LIKE '%$buscar_colaborador%' || numero_nomina LIKE '%$buscar_colaborador%' ORDER BY id DESC ";
     $query = $conexion->query($consulta);
     if (mysqli_num_rows($query) > 0) {
         $resultado['Colaboradores'] = array();

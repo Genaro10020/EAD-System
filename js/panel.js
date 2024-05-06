@@ -64,6 +64,7 @@ const app = {
       consultaEAD:[],
       integrantesEAD:[],
       idEquipo:[],
+      buscar_colaborador:'',
         ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       myModal:'',
       login:false,
@@ -240,7 +241,8 @@ const app = {
 
     /*/////////////////////////////////////////////////////////////////////////////////CONSULTA COLABORADORS*/
     consultarColaboradores() {
-      axios.post('consulta_colaboradores.php', {
+      axios.post('consulta_Colaboradores.php', {
+        buscar_colaborador: this.buscar_colaborador
       }).then(response => {
         //console.log(response.data)
         this.colaboradores = response.data.Colaboradores

@@ -587,6 +587,10 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class="col-12 col-lg-3 col-xl-2"><!--Colaboradores-->
                     <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
+                    <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Buscar por nombre o nómina" v-model="buscar_colaborador"  @keyup="consultarColaboradores()" aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
                             <input class="form-check-input" type="checkbox" :value="colaborador.id+'<->'+colaborador.colaborador"  v-model="checkIntegrantes" @change="seleccionadosIntegrantes()" id="flexCheckDefault">
@@ -1169,12 +1173,8 @@ if (isset($_SESSION['nombre'])) {
                                                                 <th style="background-color: #002060; color: white;"><label>Responsable:</label>
                                                                     <input class="input-container ms-2" type="text"></input>
                                                                 </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
+                                                                <th style="background-color: #002060; color: white;">Mes:
+                                                                   <label> {{ mes_grafica}}</label>
                                                                 </th>
                                                             </tr>
                                                             <tr style="background-color: #002060; color: white;">
