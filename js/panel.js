@@ -65,6 +65,7 @@ const app = {
       integrantesEAD:[],
       idEquipo:[],
       buscar_colaborador:'',
+      ocultar_mostar_estrella:'none',
         ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       myModal:'',
       login:false,
@@ -619,6 +620,10 @@ const app = {
       })
     },
     datosParaEditarEAD(id_equipo,index){
+      var estrellas = document.querySelectorAll('[id^=estrella]');
+      for(var i = 0; i < estrellas.length; i++) {
+        estrellas[i].style.display = "none";
+      }
      console.log("ID EAD: "+id_equipo)
        this.idEquipo = id_equipo
       this.idsIntegrantes =[]
@@ -637,6 +642,7 @@ const app = {
       this.select_ing_calidad= this.consultaEAD[index][0].ing_calidad
       this.select_supervisor= this.consultaEAD[index][0].supervisor
       var arregloColaboradores = [];
+  
       this.integrantesEAD[id_equipo].forEach(function(element){
         //console.log(element.id+'<->'+element.colaborador)
         arregloColaboradores.push(element.id+'<->'+element.colaborador);
@@ -675,6 +681,26 @@ const app = {
       }).catch(error =>{
         console.log("Error en axios: "+error)
       })
+    },
+    mostrar(index){
+      if(this.select_lider_equipo==''){
+        document.getElementById('estrella'+index).style="display:block;";
+      }
+    },
+    ocultar(index){
+      if(this.select_lider_equipo==''){
+        document.getElementById('estrella'+index).style="display:none";
+      }
+      
+    },
+    asignarLiderEquipo(index){
+      var estrellas = document.querySelectorAll('[id^=estrella]');
+      for(var i = 0; i < estrellas.length; i++) {
+        estrellas[i].style.display = "none";
+      }
+
+      document.getElementById('estrella'+index).style="display:block;color:#e28a18";
+      this.select_lider_equipo = this.checkIntegrantes[index]
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

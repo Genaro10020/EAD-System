@@ -30,10 +30,11 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                                         <?php } ?>
-                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas()"><b> Gestion de Sesiones</b></button></a>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas()"><b> Gestion de Sesiones</b></button></a>
+                                   
                                         <?php
                                         if($_SESSION['tipo_usuario']=='Admin'){
                                         ?>
@@ -506,15 +507,7 @@ if (isset($_SESSION['nombre'])) {
                                 </div>
                             </div>
                             <div class="col-12"><!--Lider del Equipo-->
-                                <div class="input-group mt-3">
-                                    <span class="text-ezquierdo-form input-group-text">Líder del Equipo</span>
-                                    <select v-model="select_lider_equipo" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
-                                        <option v-for="usuario in filtraLiderEquipo()">
-                                            {{usuario.nombre}}
-                                        </option>
-                                    </select>
-                                </div>
+                                
                             </div>
                             <div class="col-12"><!---->
                                 <div class="input-group mt-3">
@@ -571,11 +564,13 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                             </div>
-                            <div :show="nombresIntegrantes.lenght>0" class="col-12 text-center " style="font-size:10px">
-                           <label class="mt-2"> Integrantes:</label>
+                            <div v-if="checkIntegrantes.length>0" class="col-12 text-center " style="font-size:10px">
+                                    <label class="mt-2"> Integrantes:</label>
                                     <ul class="text-start">
-                                        <li v-for="(nombre,index) in nombresIntegrantes">{{index+1}}.- {{nombre}}</li>
+                                         <li class="listaIntegrantes d-flex d-block" v-for="(integrantes,index) in checkIntegrantes" @mouseover="mostrar(index)" @mouseleave="ocultar(index)" @click="asignarLiderEquipo(index)"> {{index+1}}.- {{integrantes.split("<->")[1]}} <i style="display:none" :id="'estrella'+index" class="estrella bi-star-fill"></i></li> 
                                     </ul>
+                                    <label v-if="select_lider_equipo==''" class="alert alert-warning p-2">De los integrantes seleccionados, de click para identificar el Líder</label>
+                                    <label v-if="select_lider_equipo!=''" >Líder el Equipo:</label><b>{{select_lider_equipo.split("<->")[1]}}</b>
                             </div>
                             <div class="col-12 text-center mt-4 mb-2">
                                 <button  v-if="var_actualizarEAD" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2" @click="crearEAD('actualizar')">Actualizar EAD</button>

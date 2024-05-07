@@ -191,10 +191,19 @@ input[type=number] {
         height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; 
     }
 
-    input.inpus-number-graficas:focus{
-        background-color: #a4f18f;
-    }
+input.inpus-number-graficas:focus{
+    background-color: #a4f18f;
+}
 
+.listaIntegrantes{
+    font-weight: normal;
+}
+
+.listaIntegrantes:hover{
+    color:#e28a18;
+    cursor: pointer;
+    font-weight: bold;
+}
 
 .btn_menu {
     box-shadow: inset 0px 1px 0px 0px #cf866c;
