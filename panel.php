@@ -619,7 +619,7 @@ if (isset($_SESSION['nombre'])) {
                                         </button>
                                     </div>
                                     <div> 
-                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="(equipos[0].id,equipos[0].nombre_ead)">
+                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="eliminarEquipo(equipos[0].id,equipos[0].nombre_ead)">
                                             <i class="bi bi-pencil"></i> Eliminar 
                                         </button>
                                     </div>
