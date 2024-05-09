@@ -15,8 +15,8 @@ if (is_dir($ruta)){
     while (($archivo = readdir($gestor)) !== false)  {
         // Solo buscamos archivos sin entrar en subdirectorios
         if (is_file($ruta."/".$archivo)) {
-                $respuesta [] =  "http://localhost/EAD-System/".$ruta."/".$archivo;
-                //$respuesta [] =  $ruta."/".$archivo;
+                //$respuesta [] =  "http://localhost/EAD-System/".$ruta."/".$archivo;
+                $respuesta [] =  $ruta."/".$archivo;
         }    
     }
     // Cierra el gestor de directorios
