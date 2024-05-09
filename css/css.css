@@ -623,6 +623,7 @@ button {
 
     .btn-boton{
         font-size: 0.7em;
+        box-shadow: 1px 3px 2px #545454;
     }
 
     .formulario {

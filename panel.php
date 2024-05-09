@@ -183,8 +183,8 @@ if (isset($_SESSION['nombre'])) {
                                     <td>{{usuario.subarea}}</td>
                                     <td>{{usuario.tipo_usuario}}</td>
                                     <td>{{usuario.tipo_acceso}}</td>
-                                    <td class="text-center"><button v-if="bandera_alta_o_actualizar == 1" class="btn btn-warning btn-actualizar px-2 py-0" @click="actualizarUsuario('actualizar',usuario.id)">Actualizar</button></td>
-                                    <td class="text-center"><button v-if="usuario.tipo_acceso=='Usuario' && bandera_alta_o_actualizar == 1" class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarUsuario(usuario.id)">Eliminar</button></td>
+                                    <td class="text-center"><button v-if="bandera_alta_o_actualizar == 1" class="btn btn-warning btn-boton px-2 py-0" @click="actualizarUsuario('actualizar',usuario.id)">Actualizar</button></td>
+                                    <td class="text-center"><button v-if="usuario.tipo_acceso=='Usuario' && bandera_alta_o_actualizar == 1" class="btn btn-danger btn-boton px-2 py-0" @click="eliminarUsuario(usuario.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -216,8 +216,8 @@ if (isset($_SESSION['nombre'])) {
                                     <tbody>
                                         <tr v-for="(tipo, index) in tipos" :key="index">
                                             <td>{{tipo}}</td>
-                                            <!--<td><button class="btn btn-warning btn-actualizar px-2 py-0">Actualizar</button></td>-->
-                                            <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="tipoUsuariosCRUD('eliminar',tipo)">Eliminar</button></td>
+                                            <!--<td><button class="btn btn-warning btn-boton px-2 py-0">Actualizar</button></td>-->
+                                            <td><button class="btn btn-danger btn-boton px-2 py-0" @click="tipoUsuariosCRUD('eliminar',tipo)">Eliminar</button></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -250,8 +250,8 @@ if (isset($_SESSION['nombre'])) {
                                 <tr v-for="(planta, index) in plantas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{planta.nombre}}</td>
-                                    <td><button class="btn btn-warning btn-actualizar px-2 py-0" @click="datosModal('Planta','Actualizar',planta.id,planta.nombre)">Actualizar</button></td>
-                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0 " @click="eliminarDepartamento('Planta',planta.id)">Eliminar</button></td>
+                                    <td><button class="btn btn-warning btn-boton px-2 py-0" @click="datosModal('Planta','Actualizar',planta.id,planta.nombre)">Actualizar</button></td>
+                                    <td><button class="btn btn-danger btn-boton px-2 py-0 " @click="eliminarDepartamento('Planta',planta.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -275,8 +275,8 @@ if (isset($_SESSION['nombre'])) {
                                 <tr v-for="(area, index) in areas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{area.nombre}}</td>
-                                    <td><button class="btn btn-warning btn-actualizar px-2 py-0" @click="datosModal('Área','Actualizar',area.id,area.nombre)">Actualizar</button></td>
-                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Area',area.id)">Eliminar</button></td>
+                                    <td><button class="btn btn-warning btn-boton px-2 py-0" @click="datosModal('Área','Actualizar',area.id,area.nombre)">Actualizar</button></td>
+                                    <td><button class="btn btn-danger btn-boton px-2 py-0" @click="eliminarDepartamento('Area',area.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -300,8 +300,8 @@ if (isset($_SESSION['nombre'])) {
                                 <tr v-for="(subarea, index) in subareas">
                                     <th scope="row">{{index+1}}</th>
                                     <td>{{subarea.nombre}}</td>
-                                    <td><button class="btn btn-warning btn-actualizar px-2 py-0" @click="datosModal('Subárea','Actualizar',subarea.id,subarea.nombre)">Actualizar</button></td>
-                                    <td><button class="btn btn-danger btn-eliminar px-2 py-0" @click="eliminarDepartamento('Subarea',subarea.id)">Eliminar</button></td>
+                                    <td><button class="btn btn-warning btn-boton px-2 py-0" @click="datosModal('Subárea','Actualizar',subarea.id,subarea.nombre)">Actualizar</button></td>
+                                    <td><button class="btn btn-danger btn-boton px-2 py-0" @click="eliminarDepartamento('Subarea',subarea.id)">Eliminar</button></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -581,7 +581,11 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
                 <div class="col-12 col-lg-3 col-xl-2"><!--Colaboradores-->
-                    <span class=" badge text-light bg-secondary mb-2">Selecciona los colaboradores</span>
+                                            <div class="d-flex justify-content-around mt-2 mb-1">
+                                                <button class="btn btn-success btn-boton px-2 py-0 me-2" @click="modalAltaColaborador()"><i class="bi bi-person-plus-fill"></i> Dar de alta colaborador</button>
+                                                <button class="btn btn-danger btn-boton px-2 py-0 ms-2"><i class="bi bi-person-x-fill"></i> Dar de baja colaborador</button>
+                                            </div>
+                    <span class=" badge text-light bg-secondary mb-2 w-100">Selecciona los colaboradores</span>
                     <div class="input-group mb-3">
                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-search"></i></span>
                     <input type="text" class="form-control" placeholder="Buscar por nombre o nómina" v-model="buscar_colaborador"  @keyup="consultarColaboradores()" aria-label="Username" aria-describedby="basic-addon1">
@@ -614,12 +618,12 @@ if (isset($_SESSION['nombre'])) {
                                 </div>
                                 <div class="d-flex justify-content-center">
                                     <div>
-                                        <button class="btn btn-warning btn-actualizar px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id,index)">
+                                        <button class="btn btn-warning btn-boton px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id,index)">
                                             <i class="bi bi-pencil"></i> Actualizar 
                                         </button>
                                     </div>
                                     <div> 
-                                        <button class="btn btn-danger btn-eliminar px-2 py-0 ms-3" @click="eliminarEquipo(equipos[0].id,equipos[0].nombre_ead)">
+                                        <button class="btn btn-danger btn-boton px-2 py-0 ms-3" @click="eliminarEquipo(equipos[0].id,equipos[0].nombre_ead)">
                                             <i class="bi bi-pencil"></i> Eliminar 
                                         </button>
                                     </div>
@@ -628,40 +632,43 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         </div>
                 </div>
-                <!--Modal Asistencia-->
-                <!--<div id="modal_asistencia" class="modal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="mx-auto">Asistencia</h6>
-                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
-                            </div>
-                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
-                                    <label class="mx-2 my-auto">Fecha:</label>
-                                    <input type="date"/>
+
+                 <!--Modal Alta-->
+                 <div id="modal_alta_colaborador" class="modal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h6 class="mx-auto">Alta de Colaborador</h6>
+                                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
+                                            </div>
+                                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
+                                                    <div class="input-group mb-3 w-75">
+                                                        <span class="input-group-text">Nombre</span>
+                                                        <input type="text" v-model="nombre_colaborador" class="form-control" placeholder="Nombre Completo">
+                                                    </div>
+                                                    <div class="input-group mb-3 w-75">
+                                                        <span class="input-group-text">Número</span>
+                                                        <input type="text" v-model="nomina_colaborador" class="form-control" placeholder="Coloque nómina" >
+                                                    </div>
+                                                    <div class="input-group mb-3 w-75">
+                                                        <span class="input-group-text">Planta</span>
+                                                        <select class="form-select" v-model="planta_colaborador">
+                                                            <option value="" disabled>Seleccione planta</option>
+                                                            <option value="ENERYA">Enerya</option>
+                                                            <option value="RIASA">Riasa</option>
+                                                        </select>
+                                                    </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                                                <button type="button" class="btn btn-primary py-1" @click="guardarNuevoColaborador()">Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
-                                    <label class="mx-2 my-auto">Fase:</label>
-                                    <select v-model="anio_seleccionado">
-                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
-                                    </select>
-                                </div>
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
-                                    <label class="mx-2 my-auto">Etapa:</label>
-                                    <select v-model="select_plantillas">
-                                        <option v-for="plantilla in plantillas" :value="plantilla">{{plantilla}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
-                                <button type="button" class="btn btn-primary py-1">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
-                <!--Fin Modal Asistencia-->
+                        <!--Fin Modal Alta-->
+
+
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                            <div class="row barra-gris">  
@@ -703,20 +710,18 @@ if (isset($_SESSION['nombre'])) {
                            
                             <!--Tarjeta Integrantes-->
                             <div class="row">
-                              
                                 <div class="col-12 col-xl-3 d-flex justify-content-center">
-                                   
                                     <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
                                         <h5 class="text-center pasos">1. Asistencia</h5>
                                         <div class="input-group" style="min-width:270px">
-                                            <label class="input-group-text"  style="font-size:0.8em">Equipo </label>
+                                            <label class="input-group-text" style="font-size:0.8em">Equipo </label>
                                             <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos()" style="font-size:0.8em">
                                                 <option value="" selected>Seleccione..</option>
                                                 <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                             </select>
                                         </div>
                                         <div v-if="EADIntegrantes.length>0" class="container text-center">
-                                            <label class="letrasCard text-center mb-2"> 
+                                            <label class="letrasCard text-center mb-2">
                                             </label>
                                             <br>
                                             <b class="letrasCard">Planta:</b>  {{planta_ead}}
@@ -732,7 +737,7 @@ if (isset($_SESSION['nombre'])) {
                                                     </div>
                                                 </div>
                                         </div>
-                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-75">
+                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-50">
                                             "Seleccione EAD para visualizar integrantes."
                                         </div>
                                     </div>
@@ -763,7 +768,7 @@ if (isset($_SESSION['nombre'])) {
                                                     </div>
                                                 </div>
                                         </div>
-                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-75">
+                                        <div v-else class="text-center d-flex justify-content-center align-items-center h-50">
                                             <label>"Seleccione Etapa para visualizar las Fases."</label>
                                         </div>
                                     </div>
@@ -903,9 +908,11 @@ if (isset($_SESSION['nombre'])) {
                                 </div>
                           <!--  <hr>-->
 
+                           
+
 
                              <!--MODAL DOCUMENTO--->
-                 <!-- Modal Eliminar/Actualizar Seguimiento-->
+                 <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
                  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered modal-xl">
                                 <div class="modal-content">
@@ -2142,7 +2149,7 @@ if (isset($_SESSION['nombre'])) {
                                             {{foro.area}}
                                         </td>
                                         <td>
-                                            <button class="btn btn-success btn-actualizar" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
+                                            <button class="btn btn-success btn-boton" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
                                                 <i class="bi bi-eye-fill"></i>
                                             </button>
                                         </td>
@@ -2151,7 +2158,7 @@ if (isset($_SESSION['nombre'])) {
                                                 <button  v-if="foro.estatus=='Abierto'" class="btn btn-success btn-cerrar-foro" @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)" ><i class="bi bi-door-closed-fill"></i> Abierto</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-warning btn-actualizar">Actualizar</button>
+                                            <button class="btn btn-warning btn-boton">Actualizar</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -2386,12 +2393,12 @@ if (isset($_SESSION['nombre'])) {
                                             </button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-warning btn-actualizar">
+                                            <button class="btn btn-warning btn-boton">
                                                 Actualizar
                                             </button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-danger btn-eliminar">
+                                            <button class="btn btn-danger btn-boton">
                                                 Eliminar
                                             </button>
                                         </td>

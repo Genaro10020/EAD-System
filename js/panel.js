@@ -113,7 +113,10 @@ const app = {
       faltaC:100,
       llevaA:0,
       faltaA:100,
-      
+      nombre_colaborador:'',
+      nomina_colaborador:'',
+      planta_colaborador:'',
+
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1033,14 +1036,37 @@ const app = {
       },300)
       
     },
-    /*modalCompromisos(){
-      this.myModal = new bootstrap.Modal(document.getElementById("modal_compromisos"));
-      this.myModal.show();
-    },
-    modalAsitencia(){
+   /* modalAsitencia(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
       this.myModal.show();
     },*/
+    
+    modalAltaColaborador(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modal_alta_colaborador"));
+      this.myModal.show();
+    },
+    guardarNuevoColaborador(){
+      if(this.nombre_colaborador=='' || this.nomina_colaborador=='' || this.planta_colaborador==''){return alert("Todos los campos son requeridos")} 
+      axios.post('colaboradorController.php', {
+        nombre:this.nombre_colaborador,
+        nomina:this.nomina_colaborador,
+        planta:this.planta_colaborador,
+      }).then(response =>{
+        if(response.data==true){
+          this.nombre_colaborador =''
+          this.nomina_colaborador =''
+          this.planta_colaborador = ''
+          this.myModal.hide();
+          this.consultarColaboradores()
+        }else{
+          console.log(response.data)
+        }
+        
+      }).catch(error =>{
+        console.log("Erro en axios"+ error)
+      })
+
+    },
     consultarEADXID(){
       var id = this.select_session_equipo.split('<->')[0];
       this.planta_ead = this.select_session_equipo.split('<->')[2];
