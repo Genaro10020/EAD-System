@@ -571,13 +571,13 @@ const app = {
       if(!this.select_planta){ return alert("Seleccione Planta")}
       if(!this.select_area){ return alert("Seleccione Área")}
       if(!this.select_proceso){ return alert("Seleccione Proceso")}
-      if(!this.select_lider_equipo){ return alert("Seleccione Líder de Equipo")}
       if(!this.select_coordinador){ return alert("Seleccione Coordinador")}
       if(!this.select_jefe_area){ return alert("Seleccione Jefe de Área")}
       if(!this.select_ing_proceso){ return alert("Seleccione Ing. de Proceso")}
       if(!this.select_ing_calidad){ return alert("Seleccione Ing. de Cálidad")}
       if(!this.select_supervisor){ return alert("Seleccione Supervisor")}
       if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integranes")}
+      if(!this.select_lider_equipo){ return alert("Seleccione Líder de Equipo")}
 
 
       axios.post("crud_ead.php", {
@@ -1065,7 +1065,10 @@ const app = {
       }).catch(error =>{
         console.log("Erro en axios"+ error)
       })
-
+    },
+    todasMayusculas(){
+      var texto=document.getElementById("nombre_colaborador").value;
+      this.nombre_colaborador = texto.toUpperCase();
     },
     consultarEADXID(){
       var id = this.select_session_equipo.split('<->')[0];

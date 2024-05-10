@@ -644,7 +644,7 @@ if (isset($_SESSION['nombre'])) {
                                             <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
                                                     <div class="input-group mb-3 w-75">
                                                         <span class="input-group-text">Nombre</span>
-                                                        <input type="text" v-model="nombre_colaborador" class="form-control" placeholder="Nombre Completo">
+                                                        <input type="text" id="nombre_colaborador" v-model="nombre_colaborador" class="form-control" @keyup="todasMayusculas()" placeholder="Nombre Completo">
                                                     </div>
                                                     <div class="input-group mb-3 w-75">
                                                         <span class="input-group-text">Número</span>
@@ -1129,7 +1129,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)"  @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
+                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)" @blur="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
