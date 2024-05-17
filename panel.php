@@ -1129,7 +1129,7 @@ if (isset($_SESSION['nombre'])) {
                                                     Rechazos
                                                 </th>
                                                 <td  v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)" @blur="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
+                                                    <input :id="'graficaRechazo'+index"   :value="datosGraficaRechazo[index]" @change="insertandoValores(index)"  @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
                                                 </td>
                                                 <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                                     {{sumaTabla}}
@@ -1166,31 +1166,60 @@ if (isset($_SESSION['nombre'])) {
                                         </div>
                                             <div class="scroll-w col-12">
                                                 <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
+                                                    <table class="text-center table table-bordered" style="font-size: 0.9em;">
                                                         <thead>
 
                                                         </thead>
                                                         <tbody>
                                                             <tr>
+                                                                <th style="background-color: #002060; color: white;"></th>
                                                                 <th style="background-color: #002060; color: white;"><label>Responsable:</label>
                                                                     <input class="input-container ms-2" type="text"></input>
                                                                 </th>
-                                                                <th style="background-color: #002060; color: white;">Mes:
+                                                                <th style="background-color: #002060; color: white;">Mes
                                                                    <label> {{ mes_grafica}}</label>
                                                                 </th>
                                                             </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS <button class="btn-circle-nuevo px-2 rounded">+</button></th>
+                                                            <tr style="background-color: #002060; color: white;" class="align-middle">
+                                                                <th><button class="btn btn-success btn-boton ms-1 rounded rounded-circle" @click="nuevo_compromiso=true" style="font-size: 0.8em;">+ </button></th>
+                                                                <th>CAUSAS</th>
                                                                 <th>FECHA</th>
                                                             </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
+                                                            <tr v-if="nuevo_compromiso==true" class="align-middle"><!--Nuevo Compromiso-->
+                                                                <td>
+                                                                    <button class="btn btn-success btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
+                                                                        <i class="bi bi-floppy-fill"></i> Guardar 
+                                                                    </button>
+                                                            
+                                                                    <button class="btn btn-danger btn-boton px-2 py-0 ms-3 my-1" @click="nuevo_compromiso=false" style="font-size: 0.8em;">
+                                                                        <i class="bi bi-sign-stop-fill"></i> Cancelar 
+                                                                    </button>
+                                                                </td>
+                                                                <td>
+                                                                    <input type="text" style="width: 350px;"></input>
+                                                                </td>
                                                                 <td>
                                                                     <select>
                                                                         <option value="" v-for="dia in diasDelMesAnio()" :value="dia">{{dia}}/{{mes_grafica}}/{{anio_grafica}}</option>
                                                                     </select>
                                                                 </td>
-                                                            </tr>
+                                                            </tr><!--Fin Nuevo Compromiso-->
+                                                            <tr v-if="nuevo_compromiso==false" class="align-middle"><!--Lista de compromisos-->
+                                                                <td>
+                                                                    <button class="btn btn-warning btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
+                                                                    <i class="bi bi-pencil"></i> Actualizar 
+                                                                    </button>
+                                                                    <button class="btn btn-danger btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
+                                                                    <i class="bi bi-trash2-fill"></i> Eliminar 
+                                                                    </button>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="">Descripción del compromiso</label>
+                                                                </td>
+                                                                <td>
+                                                                    <label class="">Fecha</label>
+                                                                </td>
+                                                            </tr><!--Fin lista de compromisos-->
                                                         </tbody>
                                                     </table>
                                                 </div>

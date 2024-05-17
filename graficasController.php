@@ -18,7 +18,7 @@ if(isset($_SESSION['nombre'])){
                 }
                 break;
             case 'POST':
-                if(isset($arreglo['planta']) && isset($arreglo['area']) && isset($arreglo['id_equipo']) && isset($arreglo['nombre_ead']) && isset($arreglo['grafica']) && isset($arreglo['anio']) && isset($arreglo['mes']) && isset($arreglo['dia']) && isset($arreglo['valor'])){
+                if(isset($arreglo['planta']) && isset($arreglo['area']) && isset($arreglo['id_equipo']) && isset($arreglo['nombre_ead']) && isset($arreglo['grafica']) && isset($arreglo['anio']) && isset($arreglo['mes']) && isset($arreglo['dia'])){
                     $planta=$arreglo['planta'];
                     $area = $arreglo['area'];
                     $id_equipo = $arreglo['id_equipo'];

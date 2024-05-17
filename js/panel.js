@@ -116,7 +116,7 @@ const app = {
       nombre_colaborador:'',
       nomina_colaborador:'',
       planta_colaborador:'',
-
+      nuevo_compromiso:false,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -576,7 +576,7 @@ const app = {
       if(!this.select_ing_proceso){ return alert("Seleccione Ing. de Proceso")}
       if(!this.select_ing_calidad){ return alert("Seleccione Ing. de Cálidad")}
       if(!this.select_supervisor){ return alert("Seleccione Supervisor")}
-      if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integranes")}
+      if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integrantes")}
       if(!this.select_lider_equipo){ return alert("Seleccione Líder de Equipo")}
 
 
@@ -2061,18 +2061,25 @@ const app = {
               });
               if(this.tipoTablas=='Rechazos'){
                 this.datosGraficaRechazo = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Merma'){
                 this.datosGraficaMerma = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Eficiencia'){
                 this.datosGraficaEficiencia = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Accidentes'){
                 this.datosGraficaAccidentes = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Actos Inseguros'){
                 this.datosGraficaActosInseguros = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Ausentismo'){
                 this.datosGraficaAusentismo = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }else if(this.tipoTablas=='Cumplimiento del proyecto'){
                 this.datosGraficaCumplimientoProyecto = nuevoArreglo
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }
               this.tablaGraficas()
 
@@ -2086,38 +2093,43 @@ const app = {
     },
     insertandoValores(index){
       var valor = 0;
+      console.log(this.datosGraficaRechazo);
       if(this.tipoTablas=='Rechazos'){
         valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
         this.datosGraficaRechazo[index] = valor;
-        this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+
       }else if(this.tipoTablas=='Merma'){
         valor = parseFloat(document.getElementById('graficaMerma' + index).value);
         this.datosGraficaMerma[index] = valor;
-        this.sumaTabla = this.datosGraficaMerma.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaMerma.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }else if(this.tipoTablas=='Eficiencia'){
         valor = parseFloat(document.getElementById('graficaEficiencia' + index).value);
         this.datosGraficaEficiencia[index] = valor;
-        this.sumaTabla = this.datosGraficaEficiencia.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaEficiencia.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }else if(this.tipoTablas=='Accidentes'){
         valor = parseFloat(document.getElementById('graficaAccidentes' + index).value);
         this.datosGraficaAccidentes[index] = valor;
-        this.sumaTabla = this.datosGraficaAccidentes.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaAccidentes.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }else if(this.tipoTablas=='Actos Inseguros'){
         valor = parseFloat(document.getElementById('graficaActosInseguros' + index).value);
         this.datosGraficaActosInseguros[index] = valor;
-        this.sumaTabla = this.datosGraficaActosInseguros.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaActosInseguros.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }else if(this.tipoTablas=='Ausentismo'){
         valor = parseFloat(document.getElementById('graficaAusentismo' + index).value);
         this.datosGraficaAusentismo[index] = valor;
-        this.sumaTabla = this.datosGraficaAusentismo.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaAusentismo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }else if(this.tipoTablas=='Cumplimiento del proyecto'){
         valor = parseFloat(document.getElementById('graficaCumplimiento' + index).value);
         this.datosGraficaCumplimientoProyecto[index] = valor;
-        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) => total + valor, 0);
+        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }
-      
-        var dia = (index+1)
-        this.saveDateDay(dia,valor)
+
+      if(valor==null || valor==undefined || valor==isNaN(valor)){
+        valor = NULL
+      }
+          var dia = (index+1)
+          this.saveDateDay(dia,valor)
     },
     saveDateDay(dia,valor){
       var mes;
@@ -2139,6 +2151,7 @@ const app = {
        var planta = this.equipo_grafica.split('<->')[2];
        var area = this.equipo_grafica.split('<->')[3];
        
+       console.log('Verificando variables','Planta: '+planta,'Area: '+area,'ID equipo: '+id_equipo,'Nombre EAD: '+nombre_ead,'tipoTabla: '+this.tipoTablas,'Anio Grafica: '+this.anio_grafica,'Mes:'+mes,'Dia:'+dia,+'Valor:'+valor)
         axios.post("graficasController.php",{
           planta: planta,
           area: area,
