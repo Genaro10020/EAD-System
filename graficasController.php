@@ -18,20 +18,25 @@ if(isset($_SESSION['nombre'])){
                 }
                 break;
             case 'POST':
-                if(isset($arreglo['planta']) && isset($arreglo['area']) && isset($arreglo['id_equipo']) && isset($arreglo['nombre_ead']) && isset($arreglo['grafica']) && isset($arreglo['anio']) && isset($arreglo['mes']) && isset($arreglo['dia'])){
-                    $planta=$arreglo['planta'];
-                    $area = $arreglo['area'];
-                    $id_equipo = $arreglo['id_equipo'];
-                    $nombre_ead = $arreglo['nombre_ead'];
-                    $grafica = $arreglo['grafica'];
-                    $anio = $arreglo['anio'];
-                    $mes = $arreglo['mes'];
-                    $dia = $arreglo['dia'];
-                    $valor = $arreglo['valor'];
-                    $resultado = guardarDatosGrafica($planta,$area,$id_equipo,$nombre_ead,$grafica,$anio,$mes,$dia,$valor);
-                }else{
-                    $resultado = "No llegaron todas las variables";
-                }
+                if(isset($arreglo['accion']) && $arreglo['accion']=="Guadar dato"){
+                        if(isset($arreglo['planta']) && isset($arreglo['area']) && isset($arreglo['id_equipo']) && isset($arreglo['nombre_ead']) && isset($arreglo['grafica']) && isset($arreglo['anio']) && isset($arreglo['mes']) && isset($arreglo['dia'])){
+                            $planta=$arreglo['planta'];
+                            $area = $arreglo['area'];
+                            $id_equipo = $arreglo['id_equipo'];
+                            $nombre_ead = $arreglo['nombre_ead'];
+                            $grafica = $arreglo['grafica'];
+                            $anio = $arreglo['anio'];
+                            $mes = $arreglo['mes'];
+                            $dia = $arreglo['dia'];
+                            $valor = $arreglo['valor'];
+                            $resultado = guardarDatosGrafica($planta,$area,$id_equipo,$nombre_ead,$grafica,$anio,$mes,$dia,$valor);
+                        }else{
+                            $resultado = "No llegaron todas las variables al guardar el dato";
+                        }
+                    }else{
+                            $resultado = "No llego ninguna acción".$arreglo['accion'];
+                    }
+                
                 break;
             case 'PUT':
     

@@ -1098,7 +1098,6 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                             </div>
                         </div>
-                      
                 </div>  
 
                 <!--/////////////////////////////////////////////////////////////////GRAFICA RECHAZOS -->
@@ -1164,66 +1163,11 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                            <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered" style="font-size: 0.9em;">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"></th>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;">Mes
-                                                                   <label> {{ mes_grafica}}</label>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;" class="align-middle">
-                                                                <th><button class="btn btn-success btn-boton ms-1 rounded rounded-circle" @click="nuevo_compromiso=true" style="font-size: 0.8em;">+ </button></th>
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr v-if="nuevo_compromiso==true" class="align-middle"><!--Nuevo Compromiso-->
-                                                                <td>
-                                                                    <button class="btn btn-success btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
-                                                                        <i class="bi bi-floppy-fill"></i> Guardar 
-                                                                    </button>
-                                                            
-                                                                    <button class="btn btn-danger btn-boton px-2 py-0 ms-3 my-1" @click="nuevo_compromiso=false" style="font-size: 0.8em;">
-                                                                        <i class="bi bi-sign-stop-fill"></i> Cancelar 
-                                                                    </button>
-                                                                </td>
-                                                                <td>
-                                                                    <input type="text" style="width: 350px;"></input>
-                                                                </td>
-                                                                <td>
-                                                                    <select>
-                                                                        <option value="" v-for="dia in diasDelMesAnio()" :value="dia">{{dia}}/{{mes_grafica}}/{{anio_grafica}}</option>
-                                                                    </select>
-                                                                </td>
-                                                            </tr><!--Fin Nuevo Compromiso-->
-                                                            <tr v-if="nuevo_compromiso==false" class="align-middle"><!--Lista de compromisos-->
-                                                                <td>
-                                                                    <button class="btn btn-warning btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
-                                                                    <i class="bi bi-pencil"></i> Actualizar 
-                                                                    </button>
-                                                                    <button class="btn btn-danger btn-boton px-2 py-0 ms-3 my-1" @click="" style="font-size: 0.8em;">
-                                                                    <i class="bi bi-trash2-fill"></i> Eliminar 
-                                                                    </button>
-                                                                </td>
-                                                                <td>
-                                                                    <label class="">Descripción del compromiso</label>
-                                                                </td>
-                                                                <td>
-                                                                    <label class="">Fecha</label>
-                                                                </td>
-                                                            </tr><!--Fin lista de compromisos-->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
+                                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                    <?php include("tabla_compromisos.php")?>
+                                                <!---->
+                                            </div>
                         </div>
                     </div>
                 </div>
@@ -1290,48 +1234,11 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                            <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
+                                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                  <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                  <!---->
+                                            </div>
                         </div>
                     </div>
                 </div>
@@ -1398,48 +1305,11 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                            <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
+                                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                <!---->
+                                            </div>
                             </div>
                         </div>
                 </div>
@@ -1506,47 +1376,10 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                            <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                        <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                <!---->
                                         </div>
                             </div>
                         </div>
@@ -1614,47 +1447,10 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                        <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                <!---->
                                         </div>
                             </div>
                     </div>
@@ -1722,47 +1518,10 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                        <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                <!---->
                                         </div>
                             </div>
                     </div>
@@ -1830,47 +1589,10 @@ if (isset($_SESSION['nombre'])) {
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <div class="scroll-w col-12">
-                                                <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                    <table class="text-center table table-bordered">
-                                                        <thead>
-
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th style="background-color: #002060; color: white;"><label>Responsable:</label>
-                                                                    <input class="input-container ms-2" type="text"></input>
-                                                                </th>
-                                                                <th style="background-color: #002060; color: white;"><label>Mes:</label>
-                                                                    <select class="ms-2">
-                                                                        <option v-for="mes in meses">
-                                                                            {{mes}}
-                                                                        </option>
-                                                                    </select>
-                                                                </th>
-                                                            </tr>
-                                                            <tr style="background-color: #002060; color: white;">
-                                                                <th>CAUSAS</th>
-                                                                <th>FECHA</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></input></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td><input type="text" style="width: 350px;"></td>
-                                                                <td><input type="date"></input></td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                        <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                                                <!--Tabla compromisos-->
+                                                  <?php include("tabla_compromisos.php")?>
+                                                <!---->
                                         </div>
                             </div>
                     </div>

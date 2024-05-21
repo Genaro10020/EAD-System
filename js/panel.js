@@ -116,7 +116,8 @@ const app = {
       nombre_colaborador:'',
       nomina_colaborador:'',
       planta_colaborador:'',
-      nuevo_compromiso:false,
+      nueva_causa:false,
+      actualizar_causa:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -189,6 +190,10 @@ const app = {
       datosGraficaActosInseguros: [],
       datosGraficaAusentismo: [],
       datosGraficaCumplimientoProyecto: [],
+      responsable_causa:'',
+      causa:'',
+      dia_grafica:1,
+      causas:[],
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
 
@@ -2082,6 +2087,7 @@ const app = {
                 this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
               }
               this.tablaGraficas()
+              this.consultarCausas()
 
           }else{
             console.log("Algo salio mal al consultar los datos de la grafica")
@@ -2151,8 +2157,9 @@ const app = {
        var planta = this.equipo_grafica.split('<->')[2];
        var area = this.equipo_grafica.split('<->')[3];
        
-       console.log('Verificando variables','Planta: '+planta,'Area: '+area,'ID equipo: '+id_equipo,'Nombre EAD: '+nombre_ead,'tipoTabla: '+this.tipoTablas,'Anio Grafica: '+this.anio_grafica,'Mes:'+mes,'Dia:'+dia,+'Valor:'+valor)
+       //console.log('Verificando variables','Planta: '+planta,'Area: '+area,'ID equipo: '+id_equipo,'Nombre EAD: '+nombre_ead,'tipoTabla: '+this.tipoTablas,'Anio Grafica: '+this.anio_grafica,'Mes:'+mes,'Dia:'+dia,+'Valor:'+valor)
         axios.post("graficasController.php",{
+          accion:'Guadar dato',
           planta: planta,
           area: area,
           id_equipo: id_equipo,
@@ -2179,7 +2186,187 @@ const app = {
 
         })
     },
+    consultarCausas(){
 
+      var mes;
+      if(this.mes_grafica=='Enero'){mes = 1}
+      if(this.mes_grafica=='Febrero'){mes = 2}
+      if(this.mes_grafica=='Marzo'){mes = 3}
+      if(this.mes_grafica=='Abril'){mes = 4}
+      if(this.mes_grafica=='Mayo'){mes = 5}
+      if(this.mes_grafica=='Junio'){mes = 6}
+      if(this.mes_grafica=='Julio'){mes = 7}
+      if(this.mes_grafica=='Agosto'){mes = 8}
+      if(this.mes_grafica=='Septiembre'){mes = 9}
+      if(this.mes_grafica=='Octubre'){mes = 10}
+      if(this.mes_grafica=='Noviembre'){ mes = 11}
+      if(this.mes_grafica=='Diciembre'){mes = 12}
+
+      
+
+      axios.get("causasController.php",{
+        params: {
+          grafica: this.tipoTablas,
+          equipo: this.equipo_grafica.split('<->')[1],
+          anio: this.anio_grafica,
+          mes: mes,
+        }
+      }).then(response =>{
+        if(response.data[0]==true){
+          this.causas = response.data[1]
+        }else{
+          console.log('No se realizó la consulta causas correctamente', response.data)
+        }
+      }).catch(error=>{
+        console.log(console.log("Error en axios"+error)) 
+      }).finally({
+
+      })
+    },
+    guardarCausa(){
+      if(this.tipoTablas==''){
+        return Swal.fire({
+          text: "No a seleccionado tipo de tabla/grafica",
+          icon: "warning"
+        });
+      }else if(this.equipo_grafica==''){
+        return Swal.fire({
+          text: "Selecciones equipo EAD",
+          icon: "warning"
+        });
+      }else if(this.responsable_causa==''){
+        return Swal.fire({
+          text: "Coloque al responsable",
+          icon: "warning"
+        });
+      }else if(this.causa==''){
+        return Swal.fire({
+          text: "Coloque una causa",
+          icon: "warning"
+        });
+      }else if(this.anio_grafica==''){
+        return Swal.fire({
+          text: "Seleccione un año",
+          icon: "warning"
+        });
+      }else if(this.mes_grafica==''){
+        return Swal.fire({
+          text: "Seleccione un mes",
+          icon: "warning"
+        });
+      }else if(this.dia_grafica==''){
+        return Swal.fire({
+          text: "Seleccione Fecha de causa",
+          icon: "warning"
+        });
+      }
+
+      var mes;
+      if(this.mes_grafica=='Enero'){mes = 1}
+      if(this.mes_grafica=='Febrero'){mes = 2}
+      if(this.mes_grafica=='Marzo'){mes = 3}
+      if(this.mes_grafica=='Abril'){mes = 4}
+      if(this.mes_grafica=='Mayo'){mes = 5}
+      if(this.mes_grafica=='Junio'){mes = 6}
+      if(this.mes_grafica=='Julio'){mes = 7}
+      if(this.mes_grafica=='Agosto'){mes = 8}
+      if(this.mes_grafica=='Septiembre'){mes = 9}
+      if(this.mes_grafica=='Octubre'){mes = 10}
+      if(this.mes_grafica=='Noviembre'){ mes = 11}
+      if(this.mes_grafica=='Diciembre'){mes = 12}
+
+      axios.post("causasController.php",{
+        tabla: this.tipoTablas,
+        equipo: this.equipo_grafica.split('<->')[1],
+        responsable: this.responsable_causa,
+        causa: this.causa,
+        anio: this.anio_grafica,
+        mes: mes,
+        dia: this.dia_grafica
+      }).then(response=>{
+        if(response.data==true){
+          this.nueva_causa = false
+          this.consultarCausas()
+              Swal.fire({
+                title: "Guardado",
+                text: "Causa guarda con éxito",
+                icon: "success"
+              });
+        }else{
+          console.log("No se guardo la causa "+response.data)
+        }
+      }).catch(error=>{
+          console.log(error)
+      }).finally(()=>{
+
+      })
+
+
+    },
+    editarCausa(index){
+      this.actualizar_causa = index+1
+      this.responsable_causa = this.causas[index].responsable
+      this.causa = this.causas[index].causa
+      this.dia_grafica =  this.causas[index].dia
+    },
+    actualizarCausa(id){
+        axios.put('causasController.php',{
+          id: id,
+          responsable: this.responsable_causa,
+          causa: this.causa,
+          tabla: this.tipoTablas,
+          dia: this.dia_grafica,
+        }).then(response =>{
+          if(response.data==true){
+            Swal.fire({
+              title: "Actualización",
+              text: "Se guardo con éxito",
+              icon: "success"
+            });
+            this.actualizar_causa = ''
+            this.consultarCausas()
+          }else{
+            alert("no se guardo correctamente")
+            console.log(response.data)
+          }
+        }).catch(error =>{
+          console.log("Error en axios causas"+error)  
+        }).finally({
+
+        })
+    },
+  eliminarCausa(id){
+      Swal.fire({
+        title: "Eliminar?",
+        text: "Esta seguro de eliminar el compromiso!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, Eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            axios.delete('causasController.php',{
+              params:{
+                id:id
+              }
+            }).then(response =>{
+              if(response.data==true){
+                Swal.fire({
+                  title: "Eliminado",
+                  text: "Causa eliminada con éxito",
+                  icon: "success"
+                });
+                this.consultarCausas()
+              }else{
+                console.log(response.data)
+              }
+            }).catch(error =>{
+              console.log("Error en axios causas"+error)
+            })
+        }
+      });
+    }
   }
 };
 

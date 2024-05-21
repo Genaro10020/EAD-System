@@ -57,9 +57,6 @@ include("conexionGhoner.php");
         return $answer;
     }
 
-    function actualizarEstatus(){
-
-    }
 
     function eliminar(){
        
