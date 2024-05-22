@@ -66,6 +66,7 @@ const app = {
       idEquipo:[],
       buscar_colaborador:'',
       ocultar_mostar_estrella:'none',
+      lider_anterior:'',
         ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       myModal:'',
       login:false,
@@ -165,6 +166,8 @@ const app = {
       mensaje:'',
       examenFinalizado:'',
       etapas:'',
+      //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
+      equipo_score:'',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
       anio_grafica:'',
       mes_grafica:'',
@@ -583,9 +586,8 @@ const app = {
       if(!this.select_supervisor){ return alert("Seleccione Supervisor")}
       if(this.checkIntegrantes.length<7){return alert ("Minimo 7 Integrantes")}
       if(!this.select_lider_equipo){ return alert("Seleccione Líder de Equipo")}
-
-
-      axios.post("crud_ead.php", {
+      console.log('ID EQUIPO',this.idEquipo)
+        axios.post("crud_ead.php", {
         accion: accion,
         nombre: this.nombre_ead,
         planta: this.select_planta,
@@ -598,10 +600,11 @@ const app = {
         ing_calidad: this.select_ing_calidad,
         supervisor: this.select_supervisor,
         ids_integrantes:this.ids,
-        idEquipo:this.idEquipo
+        idEquipo:this.idEquipo,
+        lider_anterior:this.lider_anterior
       }).then(response => {
-        //console.log(response.data)
-        if (response.data[0][0] !== true) {alert("los datos no se guardaron correctamente");return;}
+        console.log('Guardar/ActualizarEAD:',response.data)
+        if (response.data[0][0] !== true) {alert("los datos no se guardaron correctamente"); console.log(response.data); return;}
         if(accion=="actualizar"){
           if (response.data[0][1] !== true ||response.data[0][2] !== true ) {alert("los datos no se guardaron correctamente");return;}
         }
@@ -644,6 +647,7 @@ const app = {
       this.select_area= this.consultaEAD[index][0].area
       this.select_proceso= this.consultaEAD[index][0].proceso
       this.select_lider_equipo= this.consultaEAD[index][0].lider_equipo
+      this.lider_anterior= this.consultaEAD[index][0].lider_equipo
       this.select_coordinador= this.consultaEAD[index][0].coordinador
       this.select_jefe_area= this.consultaEAD[index][0].jefe_area
       this.select_ing_proceso= this.consultaEAD[index][0].ing_procesos

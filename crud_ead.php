@@ -143,6 +143,8 @@ if (isset($_SESSION['nombre'])) {
             $ing_calidad = $arreglo['ing_calidad'];
             $supervisor = $arreglo['supervisor'];
             $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
+            $lider = explode('<->', $lider_equipo);
+            (int)$id_lider = $lider[0];
             $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor,integrantes) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexion->prepare($insertar);
            
@@ -156,18 +158,34 @@ if (isset($_SESSION['nombre'])) {
                     $ultimo_id_insertado = $conexion->insert_id; // Obteniendo el último ID insertado
                     
                     include("conexionBDSugerencias.php");
-                    foreach($id_integrante as $elemento ){
-                        $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=?";
-                        $stmt=$conexion->prepare($update);
-                        if($stmt!==false){
-                            $validaciones[1] =true;
-                            $stmt->bind_param("si",$ultimo_id_insertado,$elemento);
-                            $stmt->execute();
-                            $stmt->close();
-                        }else{
-                            $validaciones[1] ="Error al actualizar: ".$conexion->error;
-                        }
+
+                    $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=?, lider_ead=? WHERE id=?";
+                    $stmt=$conexion->prepare($update);
+                    if($stmt!==false){
+                        $validaciones[1] =true;
+                        $eslider = "Si";
+                        $stmt->bind_param("ssi",$ultimo_id_insertado,$eslider,$id_lider);
+                        $stmt->execute();
+                        $vacio = '';
+                                foreach($id_integrante as $elemento ){
+                                    $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=? AND lider_ead=?";
+
+                                    $stmt=$conexion->prepare($update);
+                                    if($stmt!==false){
+                                        $validaciones[1] =true;
+                                        $stmt->bind_param("sis",$ultimo_id_insertado,$elemento,$vacio);
+                                        $stmt->execute();
+                                        $stmt->close();
+                                    }else{
+                                        $validaciones[1] ="Error al actualizar: ".$conexion->error;
+                                    }
+                                }
+                    }else{
+                        $validaciones[1] ="Error al actualizar: ".$conexion->error;
                     }
+
+
+                    
 
                 } else {
                     $validaciones[0] = "Error en Bind" . $stmt->error;
@@ -188,7 +206,15 @@ if (isset($_SESSION['nombre'])) {
             $ing_calidad = $arreglo['ing_calidad'];
             $supervisor = $arreglo['supervisor'];
             $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
+            $lider_anterior = $arreglo['lider_anterior'];
             
+            $lider = explode('<->', $lider_equipo);
+            (int)$id_lider = $lider[0];//nuevo lider
+
+            $anterior = explode('<->',$lider_anterior);
+            (int)$id_lider_anterior = $anterior[0];//anterior lider
+            
+
             //Actualizo Equipos EAD    
             $actualizar = "UPDATE equipos_ead SET nombre_ead = ?,planta = ?,area = ? ,proceso = ?,lider_equipo = ?,coordinador = ?,jefe_area = ?,ing_procesos = ?,ing_calidad = ?,supervisor = ?,integrantes = ? WHERE id = ?";
             $stmt = $conexion->prepare($actualizar);
@@ -197,34 +223,57 @@ if (isset($_SESSION['nombre'])) {
                 $stmt->bind_param('sssssssssssi',$nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes,$idEquipo);
                 $stmt->execute();
                 $stmt->close();
-                 //Elimino el id a todos los integrantes para posteriormente colocarles el ID nuevamente pero ya con los nuevos integrantes (Evito que no se me escape ningun integrante)
                     include("conexionBDSugerencias.php");
-                    $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE equipo_ead=?";
+                    //eliminado el lider anterior
+                    $update = "UPDATE usuarios_colocaboradores_sugerencias SET lider_ead=? WHERE id=?";
                     $stmt = $conexion->prepare($update);
                     if($stmt){
                         $validaciones[1] = true;
-                        $nulo = null;
-                        $stmt->bind_param("si",$nulo,$idEquipo);
-                        $stmt->execute();
-                        $stmt->close();
-
-                        $id_integrante = json_decode($ids_integrantes,true);
-                        foreach($id_integrante as $elemento ){//ahora a cada elemento le agrego el id del equipo. tanto a los nuevo como los existes, por eso limpio antes.
-                            $validaciones[] =$elemento;
-                            $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=?";
-                            $stmt=$conexion->prepare($update);
-                            if($stmt!==false){
-                                $validaciones[2] =true;
-                                $stmt->bind_param("si",$idEquipo,$elemento);
-                                $stmt->execute();
-                                $stmt->close();
+                        $limpiar = '';
+                        $stmt->bind_param("si",$limpiar,$id_lider_anterior);
+                        $stmt->execute(); 
+                         //insertando nuevo lider
+                             $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=?, lider_ead=? WHERE id=?";
+                             $stmt = $conexion->prepare($update);
+                            if($stmt){
+                                $validaciones[4] = true;
+                                $eslider = "Si";
+                                $stmt->bind_param("ssi",$idEquipo,$eslider,$id_lider);
+                                $stmt->execute(); 
+                                        //Elimino el id a todos los integrantes para posteriormente colocarles el ID nuevamente pero ya con los nuevos integrantes (Evito que no se me escape ningun integrante)
+                                        $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE equipo_ead=? AND lider_ead=?";//si es lider y es elijido en otro equipo seguira de lider anterior hasta que se cambiado por otro integrante donde el es lider
+                                        $stmt = $conexion->prepare($update);
+                                        if($stmt){
+                                            $validaciones[3] = true;
+                                            $nulo = null;
+                                            $vacio = '';
+                                            $stmt->bind_param("sis",$nulo,$idEquipo,$vacio);
+                                            $stmt->execute(); 
+                                            $stmt->close();
+                                            $id_integrante = json_decode($ids_integrantes,true);
+                                            foreach($id_integrante as $elemento ){//ahora a cada elemento le agrego el id del equipo. tanto a los nuevo como los existes, por eso limpio antes.
+                                                $validaciones[] =$elemento;
+                                                $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=? WHERE id=? AND lider_ead=?";//si es lider y es escogico en otro equipo por accidente evito colocar el id del nuevo equipo y se sigue manteniendo como lider
+                                                $stmt=$conexion->prepare($update);
+                                                if($stmt!==false){
+                                                    $validaciones[2] =true;
+                                                    $stmt->bind_param("sis",$idEquipo,$elemento,$vacio);
+                                                    $stmt->execute();
+                                                    $stmt->close();
+                                                }else{
+                                                    $validaciones[2] ="Error al actualizar: ".$conexion->error;
+                                                }
+                                            }
+                                        }else{
+                                            $validaciones[3] = "Error al limpiar id equipo". $conexion->error;
+                                        }
                             }else{
-                                $validaciones[2] ="Error al actualizar: ".$conexion->error;
+                                $validaciones[4] = "Error al limpiar id equipo". $conexion->error;
                             }
-                        }
                     }else{
-                        $validaciones[1] = "Error al limpiar id equipo". $conexion->error;
+                        $validaciones[1] = "Error al limpiar al lider anterior". $conexion->error;
                     }
+
             }else{
                 $validaciones[0] = "Error en actualizar ".$conexion->error;
             }
