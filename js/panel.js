@@ -1704,7 +1704,7 @@ const app = {
                     }
                 } else {
                     meses_semanas.push('Semana ' + datosKPIS[i].semana);
-                    datos_meses_semanas.push(datosKPIS[i].dato_semanal);
+                    datos_meses_semanas.push(parseFloat(datosKPIS[i].dato_semanal).toFixed(2));
                 }
             }
             console.log(meses_semanas)
