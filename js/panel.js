@@ -119,6 +119,32 @@ const app = {
       planta_colaborador:'',
       nueva_causa:false,
       actualizar_causa:'',
+      nombre_indicador:'',
+      tipo_unidad:'',
+      linea_base:'',
+      entitlement:'',
+      meta_calculada:'',
+      meta_retadora:'',
+      anio_kpi:'',
+      semana_kpi:'',
+      semanas_anio:'',
+      dato_semanal:'',
+      seguimientoKPIs:[],
+      datoGrafica_LineaBase:0,
+      datoGrafica_Entitlement:0,
+      datoGrafica_MetaCalculada:0,
+      datoGrafica_MetaRetadora:0,
+      datoGrafica_dato:0,
+      datoGrafica_semana_mes:'Semana',
+      datoGrafica_semana:'',
+      checkMes:false,
+      mes_cierre:'',
+      mes_cierre_anterior:'',
+      leyedasGafica:[],
+      datosGrafica:[],
+      actualizar_kpi:false,
+      actualizar_datoKPI:false,
+      idUpdateDatoKPI:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1045,11 +1071,6 @@ const app = {
       },300)
       
     },
-   /* modalAsitencia(){
-      this.myModal = new bootstrap.Modal(document.getElementById("modal_asistencia"));
-      this.myModal.show();
-    },*/
-    
     modalAltaColaborador(){
       this.myModal = new bootstrap.Modal(document.getElementById("modal_alta_colaborador"));
       this.myModal.show();
@@ -1094,6 +1115,8 @@ const app = {
           this.IDsIntegrantes = response.data[3].map(integrante => integrante.id);
           this.asistieron = response.data[3].map(integrante => integrante.id);
           this.tomarDiaActual()
+          this.consultarSeguimientoKPI()
+          
         }
       }).catch(error =>{
         console.log("Erro en axios"+ error)
@@ -1386,7 +1409,6 @@ const app = {
         console.log("Error en axios:"+error);
       })
     },
-
     actualizandoCompromiso(id_compromiso){
       if(this.compromiso=='' ||this.responsable_compromiso=='' || this.fecha_compromiso==''){return alert("Todos los campos de compromiso son requeridos.")}
       axios.put("compromisosController.php",{
@@ -1488,7 +1510,6 @@ const app = {
     },
   
     eliminarGestionSession(id_session){
-
       Swal.fire({
         //title: "Desea eliminar el registro?",
         text: "Esta seguro de eliminar este registro!",
@@ -1521,10 +1542,309 @@ const app = {
               })
         }
       });
+    },
 
+    abriModalKPI(){
+      this.actualizar_kpi = '';
+      this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
+      this.myModal.show();
+    },
+    tomarAnioActual(){
+     var time =new Date();
+     var year=time.getFullYear();
+     this.anio_kpi = year
+    },
+    semanasAnio() {
+      const date = new Date(this.anio_kpi, 0, 1);
+      const day = date.getDay();
+      const daysInYear = 365 + (this.anio_kpi % 4 === 0? 1 : 0) + (this.anio_kpi % 100 === 0? 0 : 1) + (this.anio_kpi % 400 === 0? 1 : 0);
+      this.semanas_anio = Math.ceil((daysInYear - day + 4) / 7);
+    },
+    convertirDecimal(variable){
+      var valor = this[variable].replace(/[^0-9.]/g,'');
+      valor = this.formatoNumero(valor)
+      this[variable] = valor;
+    },
+    formatoNumero(value) {// ejemplo de formato 1,300.00
+      const options2 = { style: 'decimal', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 };
+      const numberFormat2 = new Intl.NumberFormat('en-US', options2);
+      // Obtener el valor actual del campo y eliminar caracteres no deseados
+      const formattedValue = numberFormat2.format(value);
+      return formattedValue;
+    },
+    alertaSweet(titulo,texto,icono){
+      Swal.fire({
+        title: titulo,
+        text: texto,
+        icon: icono});//success,warning,danger
+    },
+    graficaKPI(){
+      console.log("grafica KPI");
+      const canvas = document.getElementById('canvaKPI');
+      const context = canvas.getContext('2d');
+    
+      if (!canvas) {
+        console.error("No se pudo obtener la referencia al elemento canvas.");
+        return;
+      }
+    
+      // Destruye el gráfico existente si ya existe
+      let existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+   
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+            labels: this.leyedasGafica,
+            datasets: [{
+                label: '',
+                data: this.datosGrafica,
+                backgroundColor: [
+                    'rgba(231, 7, 7, 0.9)',
+                    'rgba(255, 249, 51, 0.9)',
+                    'rgba(168, 238, 69, 0.9)',
+                    'rgba(34, 145, 66, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                    'rgba(0, 0, 0, 0.9)',
+                ],
+                borderWidth: 1,
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: this.nombre_indicador,
+                },
+            },
+            tooltips: {
+                enabled: true
+            },
+            scales: {
+                x: {
+                    display: true,
+                    position: 'bottom', //inferior
+                    ticks: {
+                        display: true,
+                        beginAtZero: true
+                    }
+                },
+                x2: {
+                  display: true,
+                  position: 'top',
+                  labels: this.datosGrafica.map(value => value +" "+this.tipo_unidad+""),
+                  ticks: {
+                    display: true,
+                    beginAtZero: true,
+                    color: this.datosGrafica.map((label, index) => {
+                      switch (index) {
+                        case 0:
+                          return 'red';
+                        case 1:
+                          return '#d8aa0a';
+                        case 2:
+                          return '#6bb92e';
+                        case 3:
+                        return 'green';
+                        default:
+                          return 'black';
+                      }
+                    })
+                  },
+                  grid: {
+                    display: false
+                  }
+                }
+            }
+        }
+    });
+    
+    },
+    consultarSeguimientoKPI(){
+      axios.get("seguimientoKpiController.php",{
+        params:{
+          id_equipo:this.select_session_equipo.split('<->')[0]
+        }
+      }).then(response =>{
+        if(response.data[0]==true){
+          this.seguimientoKPIs=response.data[1];
+          if(this.seguimientoKPIs.length>0){
+            //datos para la grafica
+            this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador
+            this.tipo_unidad = this.seguimientoKPIs[0].unidad
+            this.datoGrafica_LineaBase= parseFloat(this.seguimientoKPIs[0].linea_base).toFixed(2);
+            this.datoGrafica_Entitlement= parseFloat(this.seguimientoKPIs[0].entitlement).toFixed(2);
+            this.datoGrafica_MetaCalculada =  parseFloat(this.seguimientoKPIs[0].meta_calculada).toFixed(2);
+            this.datoGrafica_MetaRetadora=  parseFloat(this.seguimientoKPIs[0].meta_retadora).toFixed(2);
+            this.datoGrafica_semana= this.seguimientoKPIs[0].semana
+            //this.datoGrafica_dato= this.seguimientoKPIs[0].dato_semanal
+            //datos para el formulario
+            this.linea_base = parseFloat(this.seguimientoKPIs[0].linea_base).toFixed(2);
+            this.entitlement = parseFloat(this.seguimientoKPIs[0].entitlement).toFixed(2);
+            this.meta_calculada =parseFloat(this.seguimientoKPIs[0].meta_calculada).toFixed(2);
+            this.meta_retadora =parseFloat(this.seguimientoKPIs[0].meta_retadora).toFixed(2);
+            var meses_semanas = [];
+            var datos_meses_semanas = [];
+            var datosKPIS = this.seguimientoKPIs
+            
+            for (let i = 0; i < datosKPIS.length; i++) {
+                if (datosKPIS[i].mes_cierre !== '') {
+                    if (i === datosKPIS.length - 1 || datosKPIS[i].mes_cierre !== datosKPIS[i + 1].mes_cierre) {
+                      meses_semanas.push('Mes ' + datosKPIS[i].mes_cierre);
+                      datos_meses_semanas.push(parseFloat(datosKPIS[i].dato_semanal).toFixed(2));
+                    }
+                } else {
+                    meses_semanas.push('Semana ' + datosKPIS[i].semana);
+                    datos_meses_semanas.push(datosKPIS[i].dato_semanal);
+                }
+            }
+            console.log(meses_semanas)
+            console.log(datos_meses_semanas)
+            this.leyedasGafica = ['Línea Base', 'Entitlement', 'Meta Calculada', 'Meta Retadora'].concat(meses_semanas);//concatenando leyendass
+            this.datosGrafica = [this.datoGrafica_LineaBase, this.datoGrafica_Entitlement, this.datoGrafica_MetaCalculada, this.datoGrafica_MetaRetadora].concat(datos_meses_semanas)
+            this.graficaKPI()
+          }else{
+            this.nombre_indicador=''
+            this.tipo_unidad = ''
+            this.linea_base = ''
+            this.entitlement = ''
+            this.meta_calculada =''
+            this.meta_retadora =''
+            this.datoGrafica_LineaBase = 0
+            this.datoGrafica_Entitlement = 0
+            this.datoGrafica_MetaCalculada = 0
+            this.datoGrafica_MetaRetadora = 0
+            this.datoGrafica_dato = 0
+            this.leyedasGafica = []
+            this.datosGrafica = []
+            this.graficaKPI()
+          }
+          
+        }else{
+          console.log('Error en consulta',response.data)
+        }
+      }).catch( error =>{
+        console.log(error)
+      })
 
-      //if(!confirm("Esta seguro que desea eliminar este registro")){ return}
-
+    },
+    guardarSeguimientoKPI(){
+      if(this.nombre_indicador=='' || this.unidad==''){return this.alertaSweet('Nombre y Tipo unidad','Debe de colocar nombre del indicador o tipo de unidad','warning')}
+      if(this.semana_kpi==''){return this.alertaSweet('Seleccione Semana','Seleccione la semana','warning')}
+      if(this.checkMes==true && this.mes_cierre==''){return this.alertaSweet('Seleccione Mes','Seleccione el mes de cierre','warning')}
+      console.log("Semana Dato",this.dato_semanal)
+      axios.post("seguimientoKpiController.php",{
+      id_equipo:this.select_session_equipo.split('<->')[0],
+      nombre_indicador:this.nombre_indicador, 
+      unidad:this.tipo_unidad,
+      linea_base:this.linea_base,
+      entitlement:this.entitlement,
+      meta_calculada:this.meta_calculada,
+      meta_retadora:this.meta_retadora,
+      anio_kpi:this.anio_kpi,
+      semana_kpi:this.semana_kpi,
+      dato_semanal:this.dato_semanal,
+      mes_cierre:this.mes_cierre
+      }).then(response =>{
+        if(response.data==true){
+          this.linea_base= ''
+          this.entitlement = ''
+          this.meta_calculada = ''
+          this.meta_retadora = ''
+          this.dato_semanal = ''
+          this.mes_cierre = ''
+          this.myModal.hide();
+          this.consultarSeguimientoKPI()
+          this.checkMes = false
+        }else{
+          console.log("Problema al guardar",response.data);
+        }
+      }).catch(error =>{
+        console.log("Error en axios"+error)
+      })
+    },
+    updateBanderaKpi(input){
+      this.actualizar_kpi = input
+    },
+    cancelarKpi(){//reasiganción de datos a los input correspondiente
+      if(this.actualizar_kpi=='nombre_indicador'){this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador}
+      if(this.actualizar_kpi=='unidad'){this.tipo_unidad = this.seguimientoKPIs[0].unidad }
+      if(this.actualizar_kpi=='linea_base'){this.linea_base = this.seguimientoKPIs[0].linea_base}
+      if(this.actualizar_kpi=='entitlement'){this.entitlement = this.seguimientoKPIs[0].entitlement}
+      if(this.actualizar_kpi=='meta_calculada'){this.meta_calculada = this.seguimientoKPIs[0].meta_calculada}
+      if(this.actualizar_kpi=='meta_retadora'){this.meta_retadora = this.seguimientoKPIs[0].meta_retadora}
+      this.actualizar_kpi = false
+    },
+    asignarDatosKPI(index){
+      this.actualizar_datoKPI = true
+      var arregloKPI = this.seguimientoKPIs.slice().reverse()
+      this.idUpdateDatoKPI = arregloKPI[index].id
+      this.anio_kpi = arregloKPI[index].anio
+      this.mes_cierre =arregloKPI[index].mes_cierre
+      this.mes_cierre_anterior =arregloKPI[index].mes_cierre
+      this.dato_semanal = arregloKPI[index].dato_semanal
+      this.semana_kpi = arregloKPI[index].semana
+      console.log(this.idUpdateDatoKPI);
+    },
+    cancelarDatosKPI(){
+      this.idUpdateDatoKPI = ''
+      this.actualizar_datoKPI = false;
+      this.mes_cierre = ''
+      this.semana_kpi = ''
+      this.dato_semanal = ''
+      this.tomarAnioActual()
+    },
+    updateKpi(){
+      var new_valor = ''
+      if(this.actualizar_kpi=='nombre_indicador'){if(this.nombre_indicador==''){return "Coloque el nombre del indicador"}else{new_valor = this.nombre_indicador}}
+      if(this.actualizar_kpi=='unidad'){if(this.tipo_unidad==''){return "Coloque una unidad"}else{new_valor = this.tipo_unidad}}
+      if(this.actualizar_kpi=='linea_base'){if(this.linea_base==''){return "Coloque un valor en línea base"}else{new_valor = this.linea_base}}
+      if(this.actualizar_kpi=='entitlement'){if(this.entitlement==''){return "Coloque un valor en entitlement"}else{new_valor = this.entitlement}}
+      if(this.actualizar_kpi=='meta_calculada'){if(this.meta_calculada==''){return "Coloque un valor en meta calculada"}else{new_valor = this.meta_calculada}}
+      if(this.actualizar_kpi=='meta_retadora'){if(this.meta_retadora==''){return "Coloque un valor en meta retadora"}else{new_valor = this.meta_retadora}}
+      axios.put("seguimientoKpiController.php",{
+        accion:'Bases',
+        id_equipo:this.select_session_equipo.split('<->')[0],
+        actualizar:this.actualizar_kpi,
+        nuevo_valor:new_valor
+      }).then(response =>{
+          if(response.data==true){
+            this.actualizar_kpi=''
+            //this.myModal.hide();
+            this.consultarSeguimientoKPI()
+          }else{
+            console.log("algo salio mal");
+          }
+      }).catch(error =>{
+          console.log("Error en axios ",error)
+      })
+    },
+    guardarActualizacionDatoKPI(){
+      axios.put("seguimientoKpiController.php",{
+        accion:'Datos',
+        id_equipo:this.select_session_equipo.split('<->')[0],
+        id_registro:this.idUpdateDatoKPI,
+        anio:this.anio_kpi,
+        mes_cierre_anterior:this.mes_cierre_anterior,
+        mes_cierre:this.mes_cierre,
+        semana:this.semana_kpi,
+        dato_semanal:this.dato_semanal
+      }).then(response =>{
+          console.log(response.data)
+          this.consultarSeguimientoKPI()
+          this.cancelarDatosKPI()//reseteo variables
+      }).catch(error =>{
+          console.log("Error en axios ",error)
+      })
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

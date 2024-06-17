@@ -33,7 +33,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
                                    
                                         <?php
                                         if($_SESSION['tipo_usuario']=='Admin'){
@@ -845,89 +845,91 @@ if (isset($_SESSION['nombre'])) {
                                 <button v-else class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Guardar')"><i class="bi bi-floppy-fill"></i> Guardar</button>
                                
                             </div>
-                                <div v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
+                                <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
                                 <hr>
-                                        <div class="col-12 text-center">
-                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()"><i class="bi bi-plus-circle"></i> Compromiso</button>
-                                        </div>
-                                        <div class="row" style="font-size:0.9em">
-                                                    <table class="table mt-2">
-                                                            <thead>
-                                                                <tr class="table-secondary">
-                                                                    <th scope="col">#</th>
-                                                                    <th scope="col" class="text-center">Compromiso</th>
-                                                                    <th scope="col" class="text-center">Responsable</th>
-                                                                    <th scope="col">Fecha</th>
-                                                                    <th scope="col">Estatus</th>
-                                                                    <th scope="col"></th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
-                                                                    <td class="text-center" style="width: 200px;">
-                                                                        <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                                        <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input v-model="compromiso" type="text" class="form-control"/>
-                                                                    </td>
-                                                                    <td>
-                                                                        <select  v-model="responsable_compromiso">
-                                                                            <option value="" selected disabled>Seleccione responsable</option>
-                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td>
-                                                                        <input v-model="fecha_compromiso" type="date" class="form-control"/>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label>0%</label>
-                                                                    </td>
-                                                                    <td>
+                                    <div class="scroll2 col-12"><!--Inicio Scroll-->
+                                                <div class="row" style="font-size:0.8em">
+                                                            <table class="table mt-2">
+                                                                    <thead>
+                                                                        <tr class="table-secondary">
+                                                                            <th scope="col"># <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nuevo Compromiso</button></th>
+                                                                            <th scope="col" class="text-center">Compromiso</th>
+                                                                            <th scope="col" class="text-center">Responsable</th>
+                                                                            <th scope="col">Fecha</th>
+                                                                            <th scope="col">Estatus</th>
+                                                                            <th scope="col"></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
+                                                                            <td class="text-center" style="width: 200px;">
+                                                                                <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input v-model="compromiso" type="text" class="form-control"/>
+                                                                            </td>
+                                                                            <td>
+                                                                                <select  v-model="responsable_compromiso">
+                                                                                    <option value="" selected disabled>Seleccione responsable</option>
+                                                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input v-model="fecha_compromiso" type="date" class="form-control"/>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label>0%</label>
+                                                                            </td>
+                                                                            <td>
 
-                                                                    </td>
-                                                                </tr>
-                                                                <tr v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
-                                                                    <th scope="row" style="width: 200px;">{{index+1}} 
-                                                                        <button v-if="!actualizar_compromiso"  class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                                                                        <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)"  class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                                        <button  v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                                                    </th>
-                                                                    <td>
-                                                                        <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control"/>
-                                                                        <label v-else> {{commitment.compromiso}}</label>
-                                                                    </td>
-                                                                    <td>
-                                                                        <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                                            <option value="" selected disabled>Seleccione responsable</option>
-                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                                        </select>
-                                                                        <label v-else>{{commitment.nombre_responsable}}</label>
-                                                                    </td>
-                                                                    <td style="width:200px">
-                                                                        <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
-                                                                        <label v-else>{{cambiarformato(commitment.fecha)}}</label>
-                                                                    </td>
-                                                                    <td>
-                                                                        <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
-                                                                        <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                                            <option value="0" selected disabled>0 %</option>
-                                                                            <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
-                                                                        </select>
-                                                                    </td>
-                                                                    <td>
-                                                                        <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                    </table>
-                                        </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
+                                                                            <th scope="row" style="width: 200px;">{{index+1}} 
+                                                                                <button v-if="!actualizar_compromiso"  class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                                                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)"  class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                                <button  v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                            </th>
+                                                                            <td>
+                                                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control"/>
+                                                                                <label v-else> {{commitment.compromiso}}</label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
+                                                                                    <option value="" selected disabled>Seleccione responsable</option>
+                                                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                                                                </select>
+                                                                                <label v-else>{{commitment.nombre_responsable}}</label>
+                                                                            </td>
+                                                                            <td style="width:200px">
+                                                                                <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
+                                                                                <label v-else>{{cambiarformato(commitment.fecha)}}</label>
+                                                                            </td>
+                                                                            <td>
+                                                                                <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
+                                                                                <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
+                                                                                    <option value="0" selected disabled>0 %</option>
+                                                                                    <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                                                                </select>
+                                                                            </td>
+                                                                            <td>
+                                                                                <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                            </table>
+                                                </div>
+                                    </div><!--Fin scroll-->
+                                    <div class="col-12 d-flex justify-content-center">
+                                            <div class="col-12 text-center" style="max-width:1500px; min-width:600px; min-height:200px" >
+                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button> 
+                                                <br>
+                                                    <canvas class="p-5" id="canvaKPI"></canvas>
+                                            </div>
+                                    </div>
+
                                 </div>
-                          <!--  <hr>-->
-
-                           
-
-
                              <!--MODAL DOCUMENTO--->
                  <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
                  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -993,21 +995,21 @@ if (isset($_SESSION['nombre'])) {
                                                                     <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1)=='pptx'" class="col-12 text-center">
                                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
                                                                             <a :href="archivos" :download="nombre_de_descarga">
-                                                                            <img  src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
+                                                                                <img  src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
                                                                             </a>
                                                                     </div>
                                                                       <!--Mostrar .RAR-->
                                                                       <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
                                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
                                                                             <a :href="archivos" :download="nombre_de_descarga">
-                                                                            <img  src="img/rar.png" style="width:200px" class="mb-5"></img>
+                                                                                <img  src="img/rar.png" style="width:200px" class="mb-5"></img>
                                                                             </a>
                                                                     </div>
                                                                      <!--Mostrar .RAR-->
                                                                      <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
                                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
                                                                             <a :href="archivos" :download="nombre_de_descarga">
-                                                                            <img  src="img/zip.png" style="width:200px" class="mb-5"></img>
+                                                                                <img  src="img/zip.png" style="width:200px" class="mb-5"></img>
                                                                             </a>
                                                                     </div>
                                                                 </div>
@@ -1022,7 +1024,145 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                     </div>
                 <!--Fin Modal subir seguimiento-->
-                <!--FIN MODAL DOCUMENTO-->
+                 <!-- Inicio Modal KPIS-->
+                 <div class="modal fade" id="modalKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="exampleModalLabel" >Seguimiento KPI's</b></h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div v-if="select_session_equipo.length>0">
+                                                <div class="row">
+                                                        <div class="col-12 d-flex justify-content-center">
+                                                            <div class="tarjeta_kpis my-2 text-center">
+                                                                <div class="input-group mb-3" style="min-width:270px;" >
+                                                                    <label class="input-group-text w-25" style="font-size:0.8em">Nom. Indicador</label>
+                                                                    <input type="text" class="form-control" v-model="nombre_indicador" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='nombre_indicador'"/>
+                                                                    <div>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('nombre_indicador')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='nombre_indicador'" @click="updateKpi()"><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='nombre_indicador'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group mb-3" style="min-width:270px">
+                                                                    <label class="input-group-text w-25" style="font-size:0.8em">Tipo Unidad</label>
+                                                                    <input type="text" class="form-control" v-model="tipo_unidad" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0 && actualizar_kpi!='unidad'"/>
+                                                                    <div>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('unidad')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='unidad'" @click="updateKpi()"><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='unidad'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group mb-3" style="min-width:270px">
+                                                                    <label class="input-group-text w-25" style="font-size:0.8em">Línea B.</label>
+                                                                    <input type="text" class="form-control" v-model="linea_base" @blur="convertirDecimal('linea_base')" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0 && actualizar_kpi!='linea_base'"/>
+                                                                    <div>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('linea_base')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='linea_base'" @click="updateKpi()" ><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='linea_base'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group mb-3" style="min-width:270px">
+                                                                    <label class="input-group-text w-25" style="font-size:0.8em">Entitlement </label>
+                                                                    <input type="text" class="form-control" v-model="entitlement"  @blur="convertirDecimal('entitlement')" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0 && actualizar_kpi!='entitlement'"/>
+                                                                    <div>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('entitlement')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='entitlement'" @click="updateKpi()" ><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='entitlement'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group mb-3" style="min-width:270px">
+                                                                    <label class="input-group-text w-25" style="font-size:0.8em">Mta. Calc.</label>
+                                                                    <input type="text" class="form-control" v-model="meta_calculada" @blur="convertirDecimal('meta_calculada')" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0 && actualizar_kpi!='meta_calculada'"/>
+                                                                    <div>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('meta_calculada')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='meta_calculada'" @click="updateKpi()" ><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='meta_calculada'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="input-group mb-3" style="min-width:270px">
+                                                                        <label class="input-group-text w-25" style="font-size:0.8em">Mta. Ret.</label>
+                                                                        <input type="text" class="form-control" v-model="meta_retadora"  @blur="convertirDecimal('meta_retadora')" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0 && actualizar_kpi!='meta_retadora'"/>
+                                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('meta_retadora')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                                        <button class="btn-save" v-if="actualizar_kpi=='meta_retadora'" @click="updateKpi()" ><i class="bi bi-floppy"></i></button>
+                                                                        <button class="btn-cancelar"v-if="actualizar_kpi=='meta_retadora'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                                </div>
+                                                                <div :class="{ 'seccion_actulizar': !actualizar_kpi && actualizar_datoKPI}">
+                                                                        <div class="input-group mb-3" style="min-width:270px">
+                                                                            <label class="input-group-text w-25" style="font-size:0.8em">Año</label>
+                                                                            <select class="form-select" v-model="anio_kpi"  style="font-size:0.8em" @change="semanasAnio()" :disabled="actualizar_kpi!=false">
+                                                                                <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="input-group mb-3" style="min-width:270px">
+                                                                            <label class="input-group-text w-25" style="font-size:0.8em">Cerrar Mes</label>
+                                                                            <input type="checkbox" class="mx-2" v-model="checkMes" :disabled="actualizar_kpi!=false"/>
+                                                                            <select class="form-select w-50" style="font-size:0.8em" v-model="mes_cierre" :disabled="!checkMes">
+                                                                                <option value="" selected disabled>Seleccione mes</option>
+                                                                                <option v-show="actualizar_datoKPI" value="">Deshacer Cierre</option>
+                                                                                <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                                                                            </select>
+                                                                            <!--<label class="input-group-text w-15" style="font-size:0.8em">Dato Cierre</label>
+                                                                            <input type="text" class="form-control" style="font-size:0.8em" :disabled="!checkMes"/>-->
+                                                                        </div>
+                                                                        <div class="input-group mb-3" style="min-width:270px">
+                                                                            <label class="input-group-text w-25" style="font-size:0.8em">Semana</label>
+                                                                            <select class="form-select" v-model="semana_kpi" style="font-size:0.8em" :disabled="actualizar_kpi!=false">
+                                                                                <option value="" selected>Seleccione la semana</option>
+                                                                                <option v-for="semana in semanas_anio" :value="semana">{{semana}} Semana</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        
+                                                                        <div class="input-group mb-3" style="min-width:270px">
+                                                                            <label class="input-group-text w-25" style="font-size:0.8em">Dato</label>
+                                                                            <input type="text" class="form-control" v-model="dato_semanal" @blur="convertirDecimal('dato_semanal')" style="font-size:0.8em" :disabled="actualizar_kpi!=false"/>
+                                                                        </div>
+                                                                </div>
+                                                                <button v-if="actualizar_kpi==false && actualizar_datoKPI==false" class="btn btn-success btn-boton py-0"  style="font-size: 0.9em;" @click="guardarSeguimientoKPI()"><i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-warning btn-boton py-0 mt-3"  style="font-size: 0.9em;" @click="guardarActualizacionDatoKPI()"><i class="bi bi-floppy-fill"></i> Actualizar</button>
+                                                                <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-danger btn-boton py-0 ms-2 mt-3"  style="font-size: 0.9em;" @click="cancelarDatosKPI()"><i class="bi bi-x-circle-fill"></i> Cancelar</button>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                                    <!--Tabla registro KPIs-->
+                                                    <div class="scroll2">
+                                                            <table class="table table-bordered mt-2" style="font-size:0.7em">
+                                                                <thead class="table-active">
+                                                                    <tr class="text-center">
+                                                                        <th scope="col">#</th>
+                                                                        <th scope="col">Año</th>
+                                                                        <th scope="col">Mes Cierre</th>
+                                                                        <th scope="col">Semana</th>
+                                                                        <th scope="col">Dato</th>
+                                                                        <th scope="col">Actualizar</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr class="align-middle" v-for="(seguimientokpi,index) in seguimientoKPIs.slice().reverse()">
+                                                                        <th scope="row" class="text-center">{{index+1}}</th>
+                                                                        <td class="text-center">{{seguimientokpi.anio}}</td>
+                                                                        <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
+                                                                        <td class="text-center">{{seguimientokpi.semana}}</td>
+                                                                        <td>{{parseFloat(seguimientokpi.dato_semanal).toFixed(2)}}</td>
+                                                                        <td class="text-center">
+                                                                            <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <!--Tabla registro KPIs-->
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                <!--Fin Modal KPIS-->
 
 
             </div>
