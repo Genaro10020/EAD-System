@@ -1549,6 +1549,11 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
       this.myModal.show();
     },
+    abriModalGraficaFullKPI(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modalGraficaKPI"));
+      this.myModal.show();
+      this.graficaKPI('canvaKPIFull')
+    },
     tomarAnioActual(){
      var time =new Date();
      var year=time.getFullYear();
@@ -1578,9 +1583,9 @@ const app = {
         text: texto,
         icon: icono});//success,warning,danger
     },
-    graficaKPI(){
+    graficaKPI(idCanva){
       console.log("grafica KPI");
-      const canvas = document.getElementById('canvaKPI');
+      const canvas = document.getElementById(idCanva);
       const context = canvas.getContext('2d');
     
       if (!canvas) {
@@ -1625,6 +1630,15 @@ const app = {
                     display: true,
                     text: this.nombre_indicador,
                 },
+            },
+            animations: {
+              tension: {
+                duration: 1000,
+                easing: 'linear',
+                from: 1,
+                to: 0,
+                loop: true
+              }
             },
             tooltips: {
                 enabled: true
@@ -1711,7 +1725,7 @@ const app = {
             console.log(datos_meses_semanas)
             this.leyedasGafica = ['Línea Base', 'Entitlement', 'Meta Calculada', 'Meta Retadora'].concat(meses_semanas);//concatenando leyendass
             this.datosGrafica = [this.datoGrafica_LineaBase, this.datoGrafica_Entitlement, this.datoGrafica_MetaCalculada, this.datoGrafica_MetaRetadora].concat(datos_meses_semanas)
-            this.graficaKPI()
+            this.graficaKPI('canvaKPI')
           }else{
             this.nombre_indicador=''
             this.tipo_unidad = ''
@@ -1726,7 +1740,7 @@ const app = {
             this.datoGrafica_dato = 0
             this.leyedasGafica = []
             this.datosGrafica = []
-            this.graficaKPI()
+            this.graficaKPI('canvaKPI')
           }
           
         }else{

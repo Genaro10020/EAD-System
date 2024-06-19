@@ -48,7 +48,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                                         <?php } ?>
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('score'),consultarEAD()"><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
                             <?php
                                 }
@@ -328,7 +328,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--FinModalDeDepartamento-->
             </div><!--FIN BLOQUE USUARIOS-->
-            <div v-if="ventana=='score'" class="row"> <!--bloque SCORECARD-->
+            <div v-if="ventana=='ScoreCard'" class="row"> <!--bloque SCORECARD-->
                 <!--Selector de tipo de plantilla para visualizar-->
 
                <!--<div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard()">Crear Score</button></div>-->
@@ -342,7 +342,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>-->
                 <div class="scroll w-100">
                     <div class="mb-5">
-                        <!-- <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
+                                                    <!-- <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
                                                             <table class="mx-2 mb-5 table table-hover table-bordered border-dark text-center">
                                                                 <thead class="encabezado-tabla-scorecard">
                                                                 <tr>
@@ -387,7 +387,7 @@ if (isset($_SESSION['nombre'])) {
                                     </select>
                                 </div>
                                 <div class="col-4">
-                                    <span class="mx-2">Año: </span>
+                                    <span class="mx-2">Mes: </span>
                                     <select>
                                         <option disabled default selected value="">Seleccione...</option>
                                         <option v-for="mes in meses" :value="mes">{{mes}}</option>
@@ -847,8 +847,8 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                                 <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
                                 <hr>
-                                    <div class="scroll2 col-12"><!--Inicio Scroll-->
-                                                <div class="row" style="font-size:0.8em">
+                                    <div class="col-12 col-lg-6 d-flex"><!--Inicio Scroll-->
+                                                <div  class="scroll5 col-12" style="font-size:0.8em">
                                                             <table class="table mt-2">
                                                                     <thead>
                                                                         <tr class="table-secondary">
@@ -921,14 +921,17 @@ if (isset($_SESSION['nombre'])) {
                                                             </table>
                                                 </div>
                                     </div><!--Fin scroll-->
-                                    <div class="col-12 d-flex justify-content-center">
-                                            <div class="col-12 text-center" style="max-width:1500px; min-width:600px; min-height:200px" >
-                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button> 
-                                                <br>
-                                                    <canvas class="p-5" id="canvaKPI"></canvas>
+                                    <div class="col-12 col-lg-6">
+                                            <div class="row text-center">
+                                                <div class="offset-4 col-4" >
+                                                    <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button> 
+                                                </div>
+                                                <div class="col-4" >
+                                                    <buttton class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></buttton>
+                                                </div>
+                                                    <canvas style="width:100%" id="canvaKPI"></canvas>
                                             </div>
                                     </div>
-
                                 </div>
                              <!--MODAL DOCUMENTO--->
                  <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
@@ -1163,8 +1166,26 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                     </div>
                 <!--Fin Modal KPIS-->
-
-
+                 <!-- Inicio Modal GRAFICA KPIS VISTA FULL-->
+                 <div class="modal fade" id="modalGraficaKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-fullscreen p-5">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title" id="exampleModalLabel" >Seguimiento KPI's</b></h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                            <div class="offset-1 col-10">
+                                                <canvas id="canvaKPIFull"></canvas>
+                                            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                <!--Fin Modal GRAFICA KPIS VISTA FULL-->
             </div>
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
