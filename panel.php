@@ -729,7 +729,7 @@ if (isset($_SESSION['nombre'])) {
                             <div class="row">
                                 <div class="col-12 col-xl-3 d-flex justify-content-center">
                                     <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
-                                        <h5 class="text-center pasos">1. Asistencia</h5>
+                                        <h6 class="text-center pasos">1. Asistencia</h6>
                                         <div class="input-group" style="min-width:270px">
                                             <label class="input-group-text" style="font-size:0.8em">Equipo </label>
                                             <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos()" style="font-size:0.8em">
@@ -762,7 +762,7 @@ if (isset($_SESSION['nombre'])) {
                                 <!--Tarjeta Fases-->
                                 <div class="col-12 col-xl-3 d-flex justify-content-center">
                                     <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
-                                        <h5 class="text-center pasos">2. Etapa y fases</h5>
+                                        <h6 class="text-center pasos">2. Etapa y fases</h6>
                                         <div class="input-group" style="min-width:270px">
                                             <label class="input-group-text"  style="font-size:0.8em">Etapa </label>
                                             <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
@@ -792,7 +792,7 @@ if (isset($_SESSION['nombre'])) {
                                 </div>
                                 <!--tabla seguimiento session-->
                                 <div class="col-12 col-xl-6">
-                                        <h5 class="text-center pasos mt-2"> Historial asistencia, etapas y fases.</h5>
+                                        <h6 class="text-center pasos mt-2"> Historial asistencia, etapas y fases.</h6>
                                         <div class="progress " style="height: 15px;"><!--Porcentaje Total-->
                                         <div class="text-bg-secondary rounded-start ps-2 d-flex align-items-center" style="font-size:0.7em"><span>Avance Proyecto:</span></div>
                                             <div class="progress-bar" role="progressbar" :style="'width:'+porcetajeTotal()+'!important;'"   aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" v-cloak><label style="font-size:10px">{{porcetajeTotal()}}</label></div>
@@ -846,93 +846,154 @@ if (isset($_SESSION['nombre'])) {
                                
                             </div>
                                 <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
-                                <hr>
-                                    <div class="col-12 col-lg-6 d-flex"><!--Inicio Scroll-->
-                                                <div  class="scroll5 col-12" style="font-size:0.8em">
-                                                            <table class="table mt-2">
-                                                                    <thead>
-                                                                        <tr class="table-secondary">
-                                                                            <th scope="col"># <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nuevo Compromiso</button></th>
-                                                                            <th scope="col" class="text-center">Compromiso</th>
-                                                                            <th scope="col" class="text-center">Responsable</th>
-                                                                            <th scope="col">Fecha</th>
-                                                                            <th scope="col">Estatus</th>
-                                                                            <th scope="col"></th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                    <tbody>
-                                                                        <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
-                                                                            <td class="text-center" style="width: 200px;">
-                                                                                <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input v-model="compromiso" type="text" class="form-control"/>
-                                                                            </td>
-                                                                            <td>
-                                                                                <select  v-model="responsable_compromiso">
-                                                                                    <option value="" selected disabled>Seleccione responsable</option>
-                                                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                                                </select>
-                                                                            </td>
-                                                                            <td>
-                                                                                <input v-model="fecha_compromiso" type="date" class="form-control"/>
-                                                                            </td>
-                                                                            <td>
-                                                                                <label>0%</label>
-                                                                            </td>
-                                                                            <td>
+                               
+                                    <div class="col-12 col-lg-6"><!--Inicio Scroll-->
+                                            <div class="row barra-gris d-flex align-content-center " style="height:80px;" >  
+                                                <h6 class="text-center pasos mt-2"> Compromisos <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
+                                            </div>  
+                                                    <div class="col-12">
+                                                        <div class="scroll5 col-12" style="font-size:0.8em">
+                                                                    <table class="table mt-2">
+                                                                            <thead>
+                                                                                <tr class="table-secondary">
+                                                                                    <th scope="col"># <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nuevo Compromiso</button></th>
+                                                                                    <th scope="col" class="text-center">Compromiso</th>
+                                                                                    <th scope="col" class="text-center">Responsable</th>
+                                                                                    <th scope="col">Fecha</th>
+                                                                                    <th scope="col">Estatus</th>
+                                                                                    <th scope="col"></th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody>
+                                                                                <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
+                                                                                    <td class="text-center" style="width: 200px;">
+                                                                                        <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                                        <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <input v-model="compromiso" type="text" class="form-control"/>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <select  v-model="responsable_compromiso">
+                                                                                            <option value="" selected disabled>Seleccione responsable</option>
+                                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <input v-model="fecha_compromiso" type="date" class="form-control"/>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <label>0%</label>
+                                                                                    </td>
+                                                                                    <td>
 
-                                                                            </td>
-                                                                        </tr>
-                                                                        <tr v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
-                                                                            <th scope="row" style="width: 200px;">{{index+1}} 
-                                                                                <button v-if="!actualizar_compromiso"  class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                                                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)"  class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                                                <button  v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                                                            </th>
-                                                                            <td>
-                                                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control"/>
-                                                                                <label v-else> {{commitment.compromiso}}</label>
-                                                                            </td>
-                                                                            <td>
-                                                                                <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                                                    <option value="" selected disabled>Seleccione responsable</option>
-                                                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                                                </select>
-                                                                                <label v-else>{{commitment.nombre_responsable}}</label>
-                                                                            </td>
-                                                                            <td style="width:200px">
-                                                                                <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
-                                                                                <label v-else>{{cambiarformato(commitment.fecha)}}</label>
-                                                                            </td>
-                                                                            <td>
-                                                                                <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
-                                                                                <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                                                    <option value="0" selected disabled>0 %</option>
-                                                                                    <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
-                                                                                </select>
-                                                                            </td>
-                                                                            <td>
-                                                                                <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                            </table>
-                                                </div>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr v-if="compromisos.length>0" v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
+                                                                                    <th scope="row" style="width: 200px;">{{index+1}} 
+                                                                                        <button v-if="!actualizar_compromiso"  class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                                                                                        <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)"  class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                                                                        <button  v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                                                                    </th>
+                                                                                    <td>
+                                                                                        <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control"/>
+                                                                                        <label v-else> {{commitment.compromiso}}</label>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
+                                                                                            <option value="" selected disabled>Seleccione responsable</option>
+                                                                                            <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                                                                        </select>
+                                                                                        <label v-else>{{commitment.nombre_responsable}}</label>
+                                                                                    </td>
+                                                                                    <td style="width:200px">
+                                                                                        <input  v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date"  class="form-control"/>
+                                                                                        <label v-else>{{cambiarformato(commitment.fecha)}}</label>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
+                                                                                        <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
+                                                                                            <option value="0" selected disabled>0 %</option>
+                                                                                            <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                                                                        </select>
+                                                                                    </td>
+                                                                                    <td>
+                                                                                        <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"  @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
+                                                                                    </td>
+                                                                                </tr>
+                                                                                <tr v-else>
+                                                                                    <td colspan="6" class="text-center" style="background:#FBF7C7"> 
+                                                                                        Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con compromisos 
+                                                                                    </td>
+                                                                                </tr>
+                                                                            </tbody>
+                                                                    </table>
+                                                        </div>
+                                            </div>
                                     </div><!--Fin scroll-->
                                     <div class="col-12 col-lg-6">
-                                            <div class="row text-center">
-                                                <div class="offset-4 col-4" >
-                                                    <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button> 
-                                                </div>
-                                                <div class="col-4" >
-                                                    <buttton class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></buttton>
-                                                </div>
-                                                    <canvas style="width:100%" id="canvaKPI"></canvas>
+                                            <div class="row barra-gris d-flex align-content-center" style="height:80px;" >  
+                                                <h6 class="text-center pasos mt-2">Juntas de Arranque <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
+                                            </div>  
+                                            <div class="col-12"><!--Inicio Scroll-->
+                                                    <div class="scroll5 col-12" style="font-size:0.8em">
+                                                                <table class="table mt-2">
+                                                                        <thead>
+                                                                            <tr class="table-secondary">
+                                                                                <th scope="col" class="text-center">#</th>
+                                                                                <th scope="col" class="text-center">Asistencia</th>
+                                                                                <th scope="col" class="text-center">Hora Incial</th>
+                                                                                <th scope="col" class="text-center">Hora Final</th>
+                                                                                <th scope="col" class="text-center">Tiempo</th>
+                                                                                <th scope="col" class="text-center">Fotografía</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            <tr v-if="justasArranque.length>0" v-for="(juntas,index) in justasArranque" class="table-success">
+                                                                                <td class="text-center" style="width: 200px;">
+                                                                                    {{index+1}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{juntas.asistencia}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{juntas.hora_inicial}}
+                                                                                </td> 
+                                                                                <td class="text-center">
+                                                                                    {{juntas.hora_final}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{juntas.total_tiempo}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{juntas.fotografia}}
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr v-else>
+                                                                                <td colspan="6" class="text-center" style="background:#FBF7C7"> 
+                                                                                    Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con juntas de arranque 
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                </table>
+                                                    </div><!--Fin scroll-->
                                             </div>
                                     </div>
                                 </div>
+                        <!--KPI Inicio-->
+                            <div class="col-12 text-center" v-if="select_session_equipo.length>0">
+                                <div class="row barra-gris d-flex align-content-center" style="height:80px;" >  
+                                    <h6 class="text-center pasos mt-2"> Gráfica KPI <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
+                                </div>  
+                                    <div class="offset-4 col-4" >
+                                        <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button> 
+                                    </div>
+                                    <div class="col-4" >
+                                        <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button>
+                                    </div>
+                                        <canvas style="width:100%" id="canvaKPI"></canvas>
+                            </div>
+                        <!--KPI Final-->
                              <!--MODAL DOCUMENTO--->
                  <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
                  <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

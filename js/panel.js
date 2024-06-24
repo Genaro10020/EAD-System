@@ -145,6 +145,7 @@ const app = {
       actualizar_kpi:false,
       actualizar_datoKPI:false,
       idUpdateDatoKPI:'',
+      justasArranque:[],
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1116,7 +1117,7 @@ const app = {
           this.asistieron = response.data[3].map(integrante => integrante.id);
           this.tomarDiaActual()
           this.consultarSeguimientoKPI()
-          
+          this.consultarJuntasArranque()
         }
       }).catch(error =>{
         console.log("Erro en axios"+ error)
@@ -1631,15 +1632,6 @@ const app = {
                     text: this.nombre_indicador,
                 },
             },
-            animations: {
-              tension: {
-                duration: 1000,
-                easing: 'linear',
-                from: 1,
-                to: 0,
-                loop: true
-              }
-            },
             tooltips: {
                 enabled: true
             },
@@ -1858,6 +1850,19 @@ const app = {
           this.cancelarDatosKPI()//reseteo variables
       }).catch(error =>{
           console.log("Error en axios ",error)
+      })
+    },
+    consultarJuntasArranque(){
+      axios.get("juntasArranqueController.php",{
+        params:{
+          id_equipo:this.select_session_equipo.split('<->')[0]
+        }
+      }).then(response=>{
+         if(response.data[0]){
+          this.justasArranque = response.data[1]; 
+         }
+      }).catch(error=>{
+          console.log("Error en axios "+error);
       })
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
