@@ -80,4 +80,31 @@ include("conexionGhoner.php");
         return "Error en los parametos".$stmt->error;
        }
     }
+
+
+    function consultarSessionAsistencia($id_equipo,$anio,$mes){
+        $fecha = $anio."-".$mes;
+        global $conexion;
+        $resultado = [];
+        $estado = false;
+        $consulta = "SELECT * FROM gestion_sesiones WHERE id_equipo=?  AND DATE_FORMAT(fecha, '%Y-%m') = '$fecha'";
+            $stmt = $conexion->prepare($consulta);
+            if(!$stmt){
+                $estado = "Error al preparar ".$conexion->error;
+                return array($estado, $resultado);
+            }
+            $stmt->bind_param("i", $id_equipo);
+            if (!$stmt->execute()) {
+                $estado = "Error en la ejecución de la sentencia SQL:".$stmt->error;
+                return array($estado, $resultado);
+            }
+            $estado = true;
+            $datos=$stmt->get_result();
+            while ($fila=$datos->fetch_array()){ 
+                $resultado [] = $fila;
+            }
+        $stmt->close();
+        $conexion->close();
+        return array($estado, $resultado,$fecha);
+}
 ?>

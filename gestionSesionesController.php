@@ -10,10 +10,17 @@ if(isset($_SESSION['nombre'])){
         } 
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
+                    $id_equipo = $_GET['id_equipo'];
                     if($_GET['accion'] == "ConsultarSeguimiento"){
-                            $id_equipo = $_GET['id_equipo'];
                             $resultado = consultarSession($id_equipo);
-                        } 
+                        }else if($_GET['accion'] == "ConsultarSeguimientoAsistencia"){
+                            $anio=$_GET['anio'];
+                            $mes=$_GET['mes'];
+                            //consulto la gestion de sesiones para tomar el historia de asistencias ScoreCard
+                            $resultado = consultarSessionAsistencia($id_equipo,$anio,$mes);
+                        }else{
+                            $resultado = "No existe esta acción";
+                        }
                 break;
             case 'POST':
           

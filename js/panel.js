@@ -32,20 +32,6 @@ const app = {
       nuevo_tipo_usuario: '',
       arreglo: [],
       evaluadores:[],
-      /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
-      tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
-      ver_plantillas: '',
-      objetivos: [],
-      scorecard: [],
-      plantilla: '',
-      ugb: '',
-      meses: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
-      mes_seleccionado: 'Enero',
-      anio_seleccionado: 2023,
-      select_plantillas: 'Placas',
-      plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
-      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
-      columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       ////////////////////////////////////////////////////////////////////////////////////*CREAR EAD */
       colaboradores: [],
       nombre_ead: '',
@@ -226,7 +212,23 @@ const app = {
       causas:[],
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
-
+      /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
+      tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
+      ver_plantillas: '',
+      objetivos: [],
+      scorecard: [],
+      plantilla: '',
+      ugb: '',
+      meses: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+      mes_seleccionado: 'Enero',
+      anio_seleccionado: 2023,
+      select_plantillas: 'Placas',
+      plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
+      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
+      columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
+      asistenciaSC:0,
+      mes_score:'',
+      anio_score:''
     }
   },
   mounted() {
@@ -2550,7 +2552,7 @@ const app = {
       axios.get("causasController.php",{
         params: {
           grafica: this.tipoTablas,
-          equipo: this.equipo_grafica.split('<->')[1],
+          id_equipo: this.equipo_grafica.split('<->')[0],
           anio: this.anio_grafica,
           mes: mes,
         }
@@ -2617,9 +2619,10 @@ const app = {
       if(this.mes_grafica=='Octubre'){mes = 10}
       if(this.mes_grafica=='Noviembre'){ mes = 11}
       if(this.mes_grafica=='Diciembre'){mes = 12}
-
+      
       axios.post("causasController.php",{
         tabla: this.tipoTablas,
+        id_equipo:this.equipo_grafica.split('<->')[0],
         equipo: this.equipo_grafica.split('<->')[1],
         responsable: this.responsable_causa,
         causa: this.causa,
@@ -2709,6 +2712,55 @@ const app = {
             })
         }
       });
+    },
+    consultarSeguimientoAsistencia(){
+        if(this.equipo_score!='' && this.anio_score!='' && this.mes_score!=''){
+              var id_equipo = this.equipo_score.split('<->')[0];
+              var mes = this.mes_score;
+              mes_numero = this.mesesNumeros(mes)
+              console.log(mes_numero)
+                  axios.get("gestionSesionesController.php",{
+                    params:{
+                      accion:"ConsultarSeguimientoAsistencia",
+                      anio:this.anio_score,
+                      mes:mes_numero,
+                      id_equipo:id_equipo
+                    }
+                  }).then(response =>{
+                    if(response.data[0]==true){
+                      let historialAsistencia = [];
+                      console.log("Respuesta de asistencia: ",response.data)
+                      historialAsistencia = response.data[1].map(objetos=> objetos.porcentaje_asistencia)//tomo todo el historial de asistencias
+                      let tamanio = historialAsistencia.length //verifico en tamanio
+                      let sum = 0;
+                      historialAsistencia.forEach(elementos => sum += elementos); // sumo cada porcentaje del historial
+                      console.log(historialAsistencia)
+                      if(tamanio>0 || sum>0){
+                        this.asistenciaSC =  (sum/tamanio).toFixed(2); //la suma la divido entra la cantidad de asistencias
+                      }else{
+                        this.asistenciaSC =  0 
+                      }
+                    }else{
+                      console.log("Error en la consulta Asitencia",response.data)
+                    }
+                  }).catch(error=>{
+                    console.log("Error en axios :-( "+error);
+                  })
+        }
+    },
+    mesesNumeros(stringMes){
+        if(stringMes=='Enero'){return '01'}
+        if(stringMes=='Febrero'){return '02'}
+        if(stringMes=='Marzo'){return '03'}
+        if(stringMes=='Abril'){return '04'}
+        if(stringMes=='Mayo'){return '05'}
+        if(stringMes=='Junio'){return '06'}
+        if(stringMes=='Julio'){return '07'}
+        if(stringMes=='Agosto'){return '08'}
+        if(stringMes=='Septiembre'){return '09'}
+        if(stringMes=='Octubre'){return '10'}
+        if(stringMes=='Noviembre'){return '11'}
+        if(stringMes=='Diciembre'){return '12'}
     }
   }
 };

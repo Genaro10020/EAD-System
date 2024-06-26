@@ -328,155 +328,8 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--FinModalDeDepartamento-->
             </div><!--FIN BLOQUE USUARIOS-->
-            <div v-if="ventana=='ScoreCard'" class="row"> <!--bloque SCORECARD-->
-                <!--Selector de tipo de plantilla para visualizar-->
-
-               <!--<div class="col-12 text-center"> <button class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalScorecard()">Crear Score</button></div>-->
-                <!--<div class="col-12 text-dark fw-bold">
-                    <div class="col-4 ms-2">
-                        <select v-model="ver_plantillas" @change="consultarScoreCard()">
-                            <option value="">Todos los ScoreCard</option>
-                            <option v-for="plantilla in tipoPlantillas" :value="plantilla">{{plantilla}}</option>
-                        </select>
-                    </div>
-                </div>-->
-                <div class="scroll w-100">
-                    <div class="mb-5">
-                                                    <!-- <label class="d-flex justify-content-center mt-3 mb-3">{{ scoreArray[0].titulo }} ({{scoreArray[0].mes_anio}})</label>
-                                                            <table class="mx-2 mb-5 table table-hover table-bordered border-dark text-center">
-                                                                <thead class="encabezado-tabla-scorecard">
-                                                                <tr>
-                                                                    <th>V. Real</th>
-                                                                    <th v-for="(objetivo,index) in objetivos" :key="index"> 
-                                                                        <span v-for="(score, inde) in [scoreArray[scoreArray.length-scoreArray.length]]" key:="inde">
-                                                                            <label v-if="score['objetivo' + (index + 1)]==objetivo.id">{{objetivo.objetivo}}</label>
-                                                                        </span>
-                                                                    </th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                        <tr v-for="(score, index) in scoreArray" :class="{'verde': index >= 1 && index <= 3, 'amarillo':index >= 4 && index <=7,'rojo': index >=9 && index <=11 }">
-                                                                            <td v-if="index>=1" >{{score.valor_real}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo1}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo2}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo3}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo4}}</td>
-                                                                            <td v-if="index>=1">{{score.objetivo5}}</td>
-                                                                            <td v-if="index>=1">{{score.objetivo6}}</td>
-                                                                            <td v-if="index>=1">{{score.objetivo7}}</td>
-                                                                            <td v-if="index>=1">{{score.objetivo8}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo9}}</td>
-                                                                            <td v-if="index>=1" >{{score.objetivo10}}</td>
-                                                                        </tr>
-                                                                </tbody>
-                                                            </table> -->
-                        <div class=" col-12 row d-flex justify-content-center">
-                            <div class=" row col-12 text-center d-flex justify-content-center pt-3 ">
-                                <div class="col-4">
-                                    <span class="mx-2">Equipos EAD: </span>
-                                    <select v-model="equipo_score" @change="consultadoValoresGrafica()">
-                                    <option value="" disabled>Seleccione...</option>
-                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
-                                    </select>
-                                </div>
-                                <div class="col-4">
-                                    <span class="mx-2">Año: </span>
-                                    <select>
-                                        <option disabled default selected value="">Seleccione...</option>
-                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
-                                    </select>
-                                </div>
-                                <div class="col-4">
-                                    <span class="mx-2">Mes: </span>
-                                    <select>
-                                        <option disabled default selected value="">Seleccione...</option>
-                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
-                                    </select>
-                                </div>
-                               
-                            </div>
-                            <table style="max-width:1200px" class=" mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
-                                <thead>
-                                    <tr>
-                                        <th class="bg-dark"></th>
-                                        <th class="bg-dark"></th>
-                                        <th scope="row" class="bg-dark text-light" v-for="columnas in columnasSC">{{columnas}}</th>
-                                    </tr>
-                                <tbody>
-                                    <tr v-for="(filas,index1) in filasSC">
-                                        <td v-show="index1===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
-                                        <td v-show="index1==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
-                                        <td v-show="index1==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
-                                        <th scope="col" class="text-start">{{filas}}</th>
-                                        <td v-for="(columnas, index2) in columnasSC">
-                                            <label v-show="index1==0 && index2==0">#</label>
-                                            <label v-show="index1==1 && index2==0">Kg.</label>
-                                            <label v-show="index1==2 && index2==0">%</label>
-                                            <label v-show="index1==3 && index2==0">#</label>
-                                            <label v-show="index1==4 && index2==0">#</label>
-                                            <label v-show="index1==5 && index2==0">#</label>
-                                            <label v-show="index1==6 && index2==0">#</label>
-                                            <label v-show="index1==7 && index2==0">%</label>
-                                            <label v-show="index1==8 && index2==0">#</label>
-                                            <label v-show="index1==9 && index2==0">%</label>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
-
-                                        <td class="border border-1 border-dark border-start-1">
-                                            TOTAL
-                                        </td>
-                                    </tr>
 
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <!--ModalScorecard-->
-                <div id="modal" class="modal" tabindex="-1" role="dialog">
-                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="mx-auto">Nuevo ScoreCard</h5>
-                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
-                            </div>
-                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-4">
-                                    <label class="mx-2 my-auto">UGB: </label>
-                                    <input type="text" v-model="ugb"></input>
-                                </div>
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-2">
-                                    <label class="mx-2 my-auto">Mes:</label>
-                                    <select v-model="mes_seleccionado">
-                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
-                                    </select>
-                                </div>
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-2">
-                                    <label class="mx-2 my-auto">Año:</label>
-                                    <select v-model="anio_seleccionado">
-                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
-                                    </select>
-                                </div>
-                                <div class=" mb-5 mb-sm-0  col-12 col-sm-3">
-                                    <label class="mx-2 my-auto">Plantilla:</label>
-                                    <select v-model="select_plantillas">
-                                        <option v-for="plantilla in plantillas" :value="plantilla">{{plantilla}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
-                                <!--<button v-if="accion_departamento=='Actualizar'" type="button" class="btn btn-warning py-1" @click="actualizarDepartamento()">Actualizar</button>-->
-                                <button type="button" class="btn btn-primary py-1" @click="crearScoreCard()">Guardar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--FinModalDeDepartamento-->
-            </div> <!--FIN SCORECARD-->
             <div v-if="ventana=='Crear EAD'" class="row"> <!--bloque CREAR EAD-->
                 <div class="col-12 col-lg-6  col-xl-5 contenido d-flex justify-content-center align-items-center">
                     <div class="row contenido-form  border border-5 shadow-lg text-center">
@@ -1297,6 +1150,84 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--///////////////////////////////////////-->
             </div>
+
+                  <!--////////////////////////////////////////////////////////////////-->
+                  <div v-if="ventana=='ScoreCard'" class="row" style="font-size:0.9em"> <!--bloque SCORECARD-->
+                  <div class="d-flex justify-content-center pt-3 text-center">
+                                <div>
+                                    <span class="mx-2">Equipo: </span>
+                                    <select v-model="equipo_score" @change="consultarSeguimientoAsistencia()">
+                                    <option value="" disabled>Seleccione...</option>
+                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span class="mx-2">Año: </span>
+                                    <select v-model="anio_score" @change="consultarSeguimientoAsistencia()">
+                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span class="mx-2">Mes: </span>
+                                    <select v-model="mes_score" @change="consultarSeguimientoAsistencia()">
+                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class=" col-12 d-flex justify-content-center mx-auto">
+                                <div class="scroll-w p-3">
+                                        <table style="max-width:1400px; min-width:900px" class="mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-dark"></th>
+                                                    <th class="bg-dark"></th>
+                                                    <th scope="row" class="bg-dark text-light">Unidades</th>
+                                                    <th scope="row" class="bg-dark text-light">Valor actual</th>
+                                                    <th scope="row" class="bg-dark text-light">Puntos obtenidos</th>
+                                                    <th scope="row" class="bg-dark text-light">Ponderación</th>
+                                                    <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
+                                                </tr>
+                                            <tbody>
+                                                <tr v-for="(filas,fila) in filasSC">
+                                                    <td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
+                                                    <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
+                                                    <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
+                                                    <th scope="col" class="text-start">{{filas}}</th>
+                                                    <td>
+                                                        <label v-show="fila==0">#</label>
+                                                        <label v-show="fila==1">Kg.</label>
+                                                        <label v-show="fila==2">%</label>
+                                                        <label v-show="fila==3">#</label>
+                                                        <label v-show="fila==4">#</label>
+                                                        <label v-show="fila==5">#</label>
+                                                        <label v-show="fila==6">#</label>
+                                                        <label v-show="fila==7">%</label>
+                                                        <label v-show="fila==8">#</label>
+                                                        <label v-show="fila==9">%</label>
+                                                    </td>
+                                                    <td>
+                                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
+
+                                                    <td class="border border-1 border-dark border-start-1">
+                                                        TOTAL
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                        </div>
+            </div> <!--FIN SCORECARD-->
+            <!--////////////////////////////////////////////////////////////////-->
+
 
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'">
@@ -2290,6 +2221,10 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
             </div>
+
+            
+      
+
             <!-- ////////////////////////////////////////////////////////////////CREAR COMPETENCIA ÁREA ///////////////////////////////////////////// -->
             <!--<div v-if="ventana == 'CrearCompetenciaPlanta'">
                 <div class="col-12 col-sm-8 offset-sm-2 col-lg-6 offset-lg-3 col-xxl-4 offset-xxl-4 px-4 shadow-lg mt-3 border border-white rounded-3">

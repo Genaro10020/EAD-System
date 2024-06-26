@@ -1,11 +1,11 @@
 <?php
 include("conexionGhoner.php");
 
-    function consultarCausas($grafica,$equipo,$anio,$mes){
+    function consultarCausas($grafica,$id_equipo,$anio,$mes){
         global $conexion;
         $resultado = [];
         $estado = false;
-        $consulta = "SELECT * FROM causas WHERE grafica ='$grafica' AND nombre_ead='$equipo' AND  anio ='$anio' AND  mes ='$mes' ORDER BY id DESC";
+        $consulta = "SELECT * FROM causas WHERE grafica ='$grafica' AND id_equipo='$id_equipo' AND  anio ='$anio' AND  mes ='$mes' ORDER BY id DESC";
         $query = $conexion->query($consulta);
         if($query){
             $estado=true;
@@ -16,16 +16,16 @@ include("conexionGhoner.php");
             }
         }
 
-        return array($estado,$resultado,$grafica,$equipo,$anio,$mes);
+        return array($estado,$resultado,$grafica,$id_equipo,$anio,$mes);
     }
 
-    function guardarCausa($tabla,$equipo,$responsable,$causa,$anio,$mes,$dia){
+    function guardarCausa($tabla,$id_equipo,$equipo,$responsable,$causa,$anio,$mes,$dia){
         global $conexion;
         $answer = false;
-        $guardar = "INSERT INTO causas (grafica,nombre_ead,responsable,causa,anio,mes,dia) VALUES (?,?,?,?,?,?,?)";
+        $guardar = "INSERT INTO causas (grafica,id_equipo,nombre_ead,responsable,causa,anio,mes,dia) VALUES (?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($guardar);
         if(!$stmt){return $conexion->error;}
-        $stmt->bind_param("ssssiii",$tabla,$equipo,$responsable,$causa,$anio,$mes,$dia);
+        $stmt->bind_param("sisssiii",$tabla,$id_equipo,$equipo,$responsable,$causa,$anio,$mes,$dia);
         if(!$stmt->execute()){return $stmt->error;}
         $answer = true;
         return $answer;
