@@ -48,8 +48,8 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                                         <?php } ?>
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
                             <?php
                                 }
                             ?>
@@ -1156,21 +1156,21 @@ if (isset($_SESSION['nombre'])) {
                   <div class="d-flex justify-content-center pt-3 text-center">
                                 <div>
                                     <span class="mx-2">Equipo: </span>
-                                    <select v-model="equipo_score" @change="consultarSeguimientoAsistencia()">
+                                    <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
                                     <option value="" disabled>Seleccione...</option>
                                     <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                     </select>
                                 </div>
                                 <div>
                                     <span class="mx-2">Año: </span>
-                                    <select v-model="anio_score" @change="consultarSeguimientoAsistencia()">
+                                    <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
                                         <option disabled default selected value="">Seleccione...</option>
                                         <option v-for="anio in anios" :value="anio">{{anio}}</option>
                                     </select>
                                 </div>
                                 <div>
                                     <span class="mx-2">Mes: </span>
-                                    <select v-model="mes_score" @change="consultarSeguimientoAsistencia()">
+                                    <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
                                         <option disabled default selected value="">Seleccione...</option>
                                         <option v-for="mes in meses" :value="mes">{{mes}}</option>
                                     </select>
@@ -1178,7 +1178,7 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                             <div class=" col-12 d-flex justify-content-center mx-auto">
                                 <div class="scroll-w p-3">
-                                        <table style="max-width:1400px; min-width:900px" class="mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                                        <table style="max-width:1400px; min-width:1200px" class="mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                                             <thead>
                                                 <tr>
                                                     <th class="bg-dark"></th>
@@ -1208,6 +1208,12 @@ if (isset($_SESSION['nombre'])) {
                                                         <label v-show="fila==9">%</label>
                                                     </td>
                                                     <td>
+                                                        <label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
+                                                        <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
+                                                        <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
+                                                        <label v-show="fila==3" class="text-primary">{{accidentesSC}}</label>
+                                                        <label v-show="fila==4" class="text-primary">{{actosInsegurosSC}}</label>
+                                                        <label v-show="fila==6" class="text-primary">{{ausentismoSC}}</label>
                                                         <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>
                                                     </td>
                                                     <td></td>
@@ -1230,11 +1236,11 @@ if (isset($_SESSION['nombre'])) {
 
 
             <!--///////////////////////////////////////-->
-            <div v-if="ventana == 'Graficas'">
-                <div class="row d-flex barra-gris justify-content-center">
+            <div v-if="ventana == 'Graficas'" >
+                <div class="row d-flex barra-gris justify-content-center" style="font-size: 0.9em;">
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="input-group my-3">
-                                <span class="input-group-text" style="width:100px">Tabla</span>
+                                <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Tabla</span>
                                 <select class="w-50" v-model="tipoTablas" @change="consultadoValoresGrafica()">
                                     <option value="" disabled>Seleccione...</option>
                                     <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
@@ -1243,7 +1249,7 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="input-group my-3">
-                                <span class="input-group-text" style="width:100px" >Equipo</span>
+                                <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px" >Equipo</span>
                                 <select class="w-50" v-model="equipo_grafica" @change="consultadoValoresGrafica()">
                                     <option value="" disabled>Seleccione...</option>
                                     <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
@@ -1252,7 +1258,7 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="input-group my-3">
-                                    <span class="input-group-text" style="width:100px">Año</span>
+                                    <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Año</span>
                                     <select class="w-50" v-model="anio_grafica" @change="consultadoValoresGrafica()">
                                     <option value="" disabled>Seleccione...</option>
                                         <option v-for="anio in anios" :value="anio">{{anio}}</option>
@@ -1261,7 +1267,7 @@ if (isset($_SESSION['nombre'])) {
                         </div>
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="input-group my-3"> 
-                                    <span class="input-group-text" style="width:100px">Mes</span>    
+                                    <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Mes</span>    
                                     <select class="w-50"  v-model="mes_grafica"  @change="consultadoValoresGrafica()">
                                     <option value="" disabled>Seleccione...</option>
                                         <option v-for="mes in meses" :value="mes">{{mes}}</option>

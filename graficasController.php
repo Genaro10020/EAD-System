@@ -7,15 +7,28 @@ if(isset($_SESSION['nombre'])){
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                if($_GET['grafica'] && $_GET['id_equipo'] && $_GET['anio'] && $_GET['mes']){
-                    $grafica = $_GET['grafica'];
-                    $id_equipo = $_GET['id_equipo'];
-                    $anio = $_GET['anio'];
-                    $mes = $_GET['mes'];
-                    $resultado = consultarDatosGrafica($grafica,$id_equipo,$anio,$mes);
-                }else{
-                    $resultado = "No llego el ID del equipo";
-                }
+                    if($_GET['accion']=='Graficas'){
+                            if($_GET['grafica'] && $_GET['id_equipo'] && $_GET['anio'] && $_GET['mes']){
+                                $grafica = $_GET['grafica'];
+                                $id_equipo = $_GET['id_equipo'];
+                                $anio = $_GET['anio'];
+                                $mes = $_GET['mes'];
+                                $resultado = consultarDatosGrafica($grafica,$id_equipo,$anio,$mes);
+                            }else{
+                                $resultado = "no existen todos los parametros en acción Grafica";
+                            }
+                    }else if($_GET['accion']=='ScoreCard'){
+                            if($_GET['id_equipo'] && $_GET['anio'] && $_GET['mes']){
+                                $id_equipo = $_GET['id_equipo'];
+                                $anio = $_GET['anio'];
+                                $mes = $_GET['mes'];
+                                $resultado = consultarDatosGraficaParaScoreCard($id_equipo,$anio,$mes);
+                            }else{
+                                $resultado = "No llegaron todos los datos acción ScoreCard";
+                            }
+                    }else{
+                            $resultado = "No existe la acción";
+                    }
                 break;
             case 'POST':
                 if(isset($arreglo['accion']) && $arreglo['accion']=="Guadar dato"){

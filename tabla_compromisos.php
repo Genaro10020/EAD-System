@@ -7,13 +7,13 @@
                     <th style="background-color: #002060; color: white;">
                     <button class="btn btn-success btn-boton ms-1 rounded rounded-circle" @click="nueva_causa=true" style="font-size: 0.8em;">+ </button>
                     </th>
-                    <th style="background-color: #002060; color: white;">
+                    <th style="background-color: #002060; color: white; font-size: 0.9em;" >
                     Responsable
                     </th>
-                    <th style="background-color: #002060; color: white;">
+                    <th style="background-color: #002060; color: white; font-size: 0.9em;">
                     Causa
                     </th>
-                    <th style="background-color: #002060; color: white;">Fecha
+                    <th style="background-color: #002060; color: white; font-size: 0.9em;">Fecha
                         <label> DD/MM/AA</label>
                     </th>
                 </tr>

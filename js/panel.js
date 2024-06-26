@@ -228,7 +228,14 @@ const app = {
       columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       asistenciaSC:0,
       mes_score:'',
-      anio_score:''
+      anio_score:'',
+      rechazosSC:0,
+      mermaSC:0,
+      eficienciaSC:0,
+      accidentesSC:0,
+      actosInsegurosSC:0,
+      ausentismoSC:0,
+      cumplimientoSC:0,
     }
   },
   mounted() {
@@ -2397,6 +2404,7 @@ const app = {
       var id_equipo = this.equipo_grafica.split('<->')[0];
         axios.get("graficasController.php",{
           params:{
+            accion:"Graficas",
             grafica:this.tipoTablas,
             id_equipo:id_equipo,
             anio:this.anio_grafica,
@@ -2443,13 +2451,12 @@ const app = {
      }
     },
     insertandoValores(index){
-      var valor = 0;
+      let valor = 0;
       console.log(this.datosGraficaRechazo);
       if(this.tipoTablas=='Rechazos'){
         valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
         this.datosGraficaRechazo[index] = valor;
         this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
-
       }else if(this.tipoTablas=='Merma'){
         valor = parseFloat(document.getElementById('graficaMerma' + index).value);
         this.datosGraficaMerma[index] = valor;
@@ -2476,8 +2483,10 @@ const app = {
         this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
       }
 
-      if(valor==null || valor==undefined || valor==isNaN(valor)){
-        valor = NULL
+      if (valor === null ||valor === undefined || isNaN(valor)) {
+        valor = null;
+      } else {
+        valor = 0;
       }
           var dia = (index+1)
           this.saveDateDay(dia,valor)
@@ -2748,20 +2757,83 @@ const app = {
                   })
         }
     },
+    consultarGraficasParaScoreCard(){
+        if(this.equipo_score!='' && this.anio_score!='' && this.mes_score!=''){
+          let id_equipo = this.equipo_score.split('<->')[0];
+          let mes = this.mes_score;
+              mes_numero = this.mesesNumeros(mes)
+            axios.get("graficasController.php",{
+              params:{
+                accion:"ScoreCard",
+                id_equipo:id_equipo,
+                anio:this.anio_score,
+                mes:mes_numero,
+              }
+            }).then(response =>{
+              if(response.data[0]==true){
+                console.log("Datos Graficas ScoreCard",response.data[1]); 
+
+                let suma1 = 0;//RECHAZOS
+                let datos = response.data[1].filter(elemento => elemento.grafica === "Rechazos").map(elemento => suma1+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.rechazosSC=suma1;
+
+                let suma2 = 0;//MERMA
+                let datos2 = response.data[1].filter(elemento => elemento.grafica === "Merma").map(elemento => suma2+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.mermaSC=suma2;
+
+                let suma3 = 0;//MERMA
+                let datos3 = response.data[1].filter(elemento => elemento.grafica === "Eficiencia").map(elemento => suma3+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.eficienciaSC=suma3;
+
+                let suma4 = 0;//ACCIDENTES
+                let datos4 = response.data[1].filter(elemento => elemento.grafica === "Accidentes").map(elemento => suma4+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.accidentesSC=suma4;
+
+                let suma5 = 0;//ACTOS INSEGUROS
+                let datos5 = response.data[1].filter(elemento => elemento.grafica === "Actos Inseguros").map(elemento => suma5+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.actosInsegurosSC=suma5;
+
+                let suma6 = 0;//AUSENTISMO
+                let datos6 = response.data[1].filter(elemento => elemento.grafica === "Ausentismo").map(elemento => suma6+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.ausentismoSC=suma6;
+
+                let suma7 = 0;//AUSENTISMO
+                let datos7 = response.data[1].filter(elemento => elemento.grafica === "Cumplimiento del proyecto").map(elemento => suma7+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
+                this.cumplimientoSC=suma7;
+                
+                /*rechazosSC:0,
+                  mermaSC:0,
+                  eficienciaSC:0,
+                  accidentesSC:0,
+                  actosInsegurosSC:0,
+                  ausentismoSC:0,
+                  cumplimientoSC:0,
+                   Rechazos Merma Eficiencia Accidentes Actos Inseguros Ausentismo Cumplimiento del proyecto
+                  */
+              }else{
+                console.log("Error en la consulta ScoreCard",response.data)
+              }
+            }).catch(error =>{
+              console.log("Error en axios :-( ",error);
+            });
+        }
+    },
     mesesNumeros(stringMes){
-        if(stringMes=='Enero'){return '01'}
-        if(stringMes=='Febrero'){return '02'}
-        if(stringMes=='Marzo'){return '03'}
-        if(stringMes=='Abril'){return '04'}
-        if(stringMes=='Mayo'){return '05'}
-        if(stringMes=='Junio'){return '06'}
-        if(stringMes=='Julio'){return '07'}
-        if(stringMes=='Agosto'){return '08'}
-        if(stringMes=='Septiembre'){return '09'}
-        if(stringMes=='Octubre'){return '10'}
-        if(stringMes=='Noviembre'){return '11'}
-        if(stringMes=='Diciembre'){return '12'}
-    }
+      if(stringMes=='Enero'){return '01'}
+      if(stringMes=='Febrero'){return '02'}
+      if(stringMes=='Marzo'){return '03'}
+      if(stringMes=='Abril'){return '04'}
+      if(stringMes=='Mayo'){return '05'}
+      if(stringMes=='Junio'){return '06'}
+      if(stringMes=='Julio'){return '07'}
+      if(stringMes=='Agosto'){return '08'}
+      if(stringMes=='Septiembre'){return '09'}
+      if(stringMes=='Octubre'){return '10'}
+      if(stringMes=='Noviembre'){return '11'}
+      if(stringMes=='Diciembre'){return '12'}
+  },
+
+
   }
 };
 
