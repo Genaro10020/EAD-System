@@ -212,6 +212,8 @@ const app = {
       causas:[],
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
+      ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
+      nueva_ponderacion:false,
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -224,7 +226,7 @@ const app = {
       anio_seleccionado: 2023,
       select_plantillas: 'Placas',
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
-      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],
+      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],//filas ScoreCard y Ponderación
       columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       asistenciaSC:0,
       mes_score:'',

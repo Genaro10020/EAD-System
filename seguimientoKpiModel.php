@@ -52,6 +52,7 @@ include("conexionGhoner.php");
     function actualizarDatoKpi($id_equipo,$id_registro,$anio,$mes_cierre_anterior,$mes_cierre,$semana,$dato){
         global $conexion;
         $respuesta = "";
+        $dato = str_replace(',', '', $dato);//elimino las comas double no las acepta
         $actualizar = "UPDATE kpis_proyectos SET anio='$anio', semana='$semana', dato_semanal='$dato' WHERE id='$id_registro'";
         if($conexion->query($actualizar)){
             $respuesta = true;

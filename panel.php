@@ -23,7 +23,6 @@ if (isset($_SESSION['nombre'])) {
                     <div class="dropdown-content">
                             <?php
                                 if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Admin'){
-
                                         if($_SESSION['tipo_usuario']=='Admin' || $_SESSION['tipo_usuario']=='Coordinador'){
                                         ?>
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
@@ -34,7 +33,6 @@ if (isset($_SESSION['nombre'])) {
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
                                     <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
-                                   
                                         <?php
                                         if($_SESSION['tipo_usuario']=='Admin'){
                                         ?>
@@ -46,9 +44,13 @@ if (isset($_SESSION['nombre'])) {
                                     <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                     <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
-                                        <?php } ?>
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                        <?php }
+                                        if($_SESSION['tipo_usuario']=='Admin' || $_SESSION['tipo_usuario']=='Coordinador'){
+                                        ?>
+                                    <a><button class="btn_menu" @click="ventanas('Ponderación')"><b>Ponderación</b></button></a>
+                                        <?php } ?>
                                     <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
                             <?php
                                 }
@@ -154,7 +156,7 @@ if (isset($_SESSION['nombre'])) {
                         </form>
                     </div>
                 </div>
-                <div class="seccion2 col-12   col-lg-8 mt-2">
+                <div class="seccion2 col-12 col-lg-8 mt-2">
                     <div class="scroll">
                         <table class="table table-striped table-bordered border-dark ">
                             <thead class=" border-dark">
@@ -1150,91 +1152,88 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <!--///////////////////////////////////////-->
             </div>
-
-                  <!--////////////////////////////////////////////////////////////////-->
-                  <div v-if="ventana=='ScoreCard'" class="row" style="font-size:0.9em"> <!--bloque SCORECARD-->
-                  <div class="d-flex justify-content-center pt-3 text-center">
-                                <div>
-                                    <span class="mx-2">Equipo: </span>
-                                    <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
-                                    <option value="" disabled>Seleccione...</option>
-                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <span class="mx-2">Año: </span>
-                                    <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
-                                        <option disabled default selected value="">Seleccione...</option>
-                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <span class="mx-2">Mes: </span>
-                                    <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
-                                        <option disabled default selected value="">Seleccione...</option>
-                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class=" col-12 d-flex justify-content-center mx-auto">
-                                <div class="scroll-w p-3">
-                                        <table style="max-width:1400px; min-width:1200px" class="mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+            <div v-if="ventana == 'Ponderación'">
+                <div class="col-12 text-center">
+                    <span class="badge bg-secondary text-bg-primary">Ponderaciones</span>
+                </div>
+                <div class="col-12 text-center">
+                    <button class="btn btn-success btn-boton px-2 py-0 me-2" @click="nueva_ponderacion=true"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
+                </div>
+                                <div v-if="nueva_ponderacion==true" class="scroll-w col-12"><!--scroll-->
+                                    <div class="p-1 mt-2" style="background-color: #f0f8e5;">
+                                        <table class="table table-striped mx-auto w-75 mt-5" style="font-size:0.8em; min-width: 1500px;">
                                             <thead>
-                                                <tr>
-                                                    <th class="bg-dark"></th>
-                                                    <th class="bg-dark"></th>
-                                                    <th scope="row" class="bg-dark text-light">Unidades</th>
-                                                    <th scope="row" class="bg-dark text-light">Valor actual</th>
-                                                    <th scope="row" class="bg-dark text-light">Puntos obtenidos</th>
-                                                    <th scope="row" class="bg-dark text-light">Ponderación</th>
-                                                    <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
+                                                <tr class="table-active text-center">
+                                                    <th style="min-width:200px;"></th>
+                                                    <th style="background: #35832D;" class="text-white shadow">Meta Retadora</th>
+                                                    <th style="background: #5EC271;">Entitlement</th>
+                                                    <th style="background: #66FF33;" class="shadow">Meta Calculada</th>
+                                                    <th class="bg-warning">Línea Base</th>
+                                                    <th class="bg-danger text-white shadow">Reprobatoria</th>
                                                 </tr>
+                                            </thead>
                                             <tbody>
-                                                <tr v-for="(filas,fila) in filasSC">
-                                                    <td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
-                                                    <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
-                                                    <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
-                                                    <th scope="col" class="text-start">{{filas}}</th>
-                                                    <td>
-                                                        <label v-show="fila==0">#</label>
-                                                        <label v-show="fila==1">Kg.</label>
-                                                        <label v-show="fila==2">%</label>
-                                                        <label v-show="fila==3">#</label>
-                                                        <label v-show="fila==4">#</label>
-                                                        <label v-show="fila==5">#</label>
-                                                        <label v-show="fila==6">#</label>
-                                                        <label v-show="fila==7">%</label>
-                                                        <label v-show="fila==8">#</label>
-                                                        <label v-show="fila==9">%</label>
+                                                <tr class="middle-center" v-for="elemento in filasSC">
+                                                    <td class="border">{{elemento}}</td>
+                                                    <td class="border text-center table-active">
+                                                        <div class="input-group" >
+                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
+                                                            <input type="text" aria-label="First name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                        </div>
                                                     </td>
-                                                    <td>
-                                                        <label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
-                                                        <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
-                                                        <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
-                                                        <label v-show="fila==3" class="text-primary">{{accidentesSC}}</label>
-                                                        <label v-show="fila==4" class="text-primary">{{actosInsegurosSC}}</label>
-                                                        <label v-show="fila==6" class="text-primary">{{ausentismoSC}}</label>
-                                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>
+                                                    <td class="border text-center">
+                                                        <div class="input-group" >
+                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
+                                                            <input type="text" aria-label="First name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                        </div>
                                                     </td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
-
-                                                    <td class="border border-1 border-dark border-start-1">
-                                                        TOTAL
+                                                    <td class="border text-center table-active ">
+                                                        <div class="input-group" >
+                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
+                                                            <input type="text" aria-label="First name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <div class="input-group" >
+                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
+                                                            <input type="text" aria-label="First name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center table-active">
+                                                        <div class="input-group" >
+                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
+                                                            <input type="text" aria-label="First name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
+                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                </div>
-                        </div>
-            </div> <!--FIN SCORECARD-->
-            <!--////////////////////////////////////////////////////////////////-->
-
-
+                                        <div class="col-12 text-center mb-3 ">
+                                        <button class="botones-crear rounded-pill mt-2 border-0">Guardar</button>
+                                        </div>
+                                    </div>
+                                </div> <!--Fin scroll-->
+            </div>
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'" >
                 <div class="row d-flex barra-gris justify-content-center" style="font-size: 0.9em;">
@@ -1775,6 +1774,90 @@ if (isset($_SESSION['nombre'])) {
                   
                 </div>
             </div>
+
+            <!--////////////////////////////////////////////////////////////////-->
+            <div v-if="ventana=='ScoreCard'" class="row" style="font-size:0.9em"> <!--bloque SCORECARD-->
+                  <div class="d-flex justify-content-center pt-3 text-center">
+                                <div>
+                                    <span class="mx-2">Equipo: </span>
+                                    <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                                    <option value="" disabled>Seleccione...</option>
+                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span class="mx-2">Año: </span>
+                                    <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <span class="mx-2">Mes: </span>
+                                    <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class=" col-12 d-flex justify-content-center mx-auto">
+                                <div class="scroll-w p-3">
+                                        <table style="max-width:1400px; min-width:1200px" class="mt-3 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th class="bg-dark"></th>
+                                                    <th class="bg-dark"></th>
+                                                    <th scope="row" class="bg-dark text-light">Unidades</th>
+                                                    <th scope="row" class="bg-dark text-light">Valor actual</th>
+                                                    <th scope="row" class="bg-dark text-light">Puntos obtenidos</th>
+                                                    <th scope="row" class="bg-dark text-light">Ponderación</th>
+                                                    <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
+                                                </tr>
+                                            <tbody>
+                                                <tr v-for="(filas,fila) in filasSC">
+                                                    <td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
+                                                    <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
+                                                    <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
+                                                    <th scope="col" class="text-start">{{filas}}</th>
+                                                    <td>
+                                                        <label v-show="fila==0">#</label>
+                                                        <label v-show="fila==1">Kg.</label>
+                                                        <label v-show="fila==2">%</label>
+                                                        <label v-show="fila==3">#</label>
+                                                        <label v-show="fila==4">#</label>
+                                                        <label v-show="fila==5">#</label>
+                                                        <label v-show="fila==6">#</label>
+                                                        <label v-show="fila==7">%</label>
+                                                        <label v-show="fila==8">#</label>
+                                                        <label v-show="fila==9">%</label>
+                                                    </td>
+                                                    <td>
+                                                        <label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
+                                                        <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
+                                                        <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
+                                                        <label v-show="fila==3" class="text-primary">{{accidentesSC}}</label>
+                                                        <label v-show="fila==4" class="text-primary">{{actosInsegurosSC}}</label>
+                                                        <label v-show="fila==6" class="text-primary">{{ausentismoSC}}</label>
+                                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
+
+                                                    <td class="border border-1 border-dark border-start-1">
+                                                        TOTAL
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                </div>
+                        </div>
+            </div> <!--FIN SCORECARD-->
+            <!--////////////////////////////////////////////////////////////////-->
+
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana=='Competencias'">
                 <div class=" row col-12 text-center d-flex justify-content-center mt-2 ">
