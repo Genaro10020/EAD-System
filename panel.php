@@ -49,7 +49,7 @@ if (isset($_SESSION['nombre'])) {
                                         <?php }
                                         if($_SESSION['tipo_usuario']=='Admin' || $_SESSION['tipo_usuario']=='Coordinador'){
                                         ?>
-                                    <a><button class="btn_menu" @click="ventanas('Ponderación')"><b>Ponderación</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarPonderaciones()"><b>Ponderación</b></button></a>
                                         <?php } ?>
                                     <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
                             <?php
@@ -1153,15 +1153,18 @@ if (isset($_SESSION['nombre'])) {
                 <!--///////////////////////////////////////-->
             </div>
             <div v-if="ventana == 'Ponderación'">
-                <div class="col-12 text-center">
-                    <span class="badge bg-secondary text-bg-primary">Ponderaciones</span>
+                <div class="row d-flex barra-gris justify-content-center align-items-center" style="font-size: 0.9em; height:80px;">
+                        <h6 class="text-center pasos mt-2"> Ponderaciones</label></h6>
                 </div>
-                <div class="col-12 text-center">
-                    <button class="btn btn-success btn-boton px-2 py-0 me-2" @click="nueva_ponderacion=true"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
-                </div>
-                                <div v-if="nueva_ponderacion==true" class="scroll-w col-12"><!--scroll-->
-                                    <div class="p-1 mt-2" style="background-color: #f0f8e5;">
-                                        <table class="table table-striped mx-auto w-75 mt-5" style="font-size:0.8em; min-width: 1500px;">
+                    <div class="col-12 text-center">
+                        <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nueva_ponderacion=true"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
+                    </div>
+                                <div v-if="nueva_ponderacion==true" class="row"><!--scroll Nueva Ponderacion-->
+                                    <div class="col-12 p-1 mt-2 scroll-w" style="background-color: #f0f8e5;">
+                                        <div class="text-center mb-3 mt-2" style="min-width: 1500px;">
+                                            <input type="text" class="border border-1 rounded-1 p-1 text-center" v-model="nombre_ponderacion" style="width:300px"/>
+                                        </div>
+                                        <table class="table table-striped mx-auto w-75 mt-2" style="font-size:0.8em; min-width: 1500px;">
                                             <thead>
                                                 <tr class="table-active text-center">
                                                     <th style="min-width:200px;"></th>
@@ -1173,66 +1176,150 @@ if (isset($_SESSION['nombre'])) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr class="middle-center" v-for="elemento in filasSC">
+                                                <tr class="middle-center" v-for="(elemento,index) in filasSC">
                                                     <td class="border">{{elemento}}</td>
                                                     <td class="border text-center table-active">
-                                                        <div class="input-group" >
-                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
-                                                            <input type="text" aria-label="First name" class="form-control">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:</span>
+                                                            <input :id="'DeFila'+index+'Columna0'" type="text" class="form-control p-1 w-15 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'HastaFila'+index+'Columna0'" type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'PuntosFila'+index+'Columna0'" type="text" class="form-control p-1 fw-semibold text-primary">
                                                         </div>
                                                     </td>
                                                     <td class="border text-center">
-                                                        <div class="input-group" >
-                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
-                                                            <input type="text" aria-label="First name" class="form-control">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:</span>
+                                                            <input :id="'DeFila'+index+'Columna1'" type="text"  class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'HastaFila'+index+'Columna1'" type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'PuntosFila'+index+'Columna1'" type="text" class="form-control p-1 fw-semibold text-primary">
                                                         </div>
                                                     </td>
                                                     <td class="border text-center table-active ">
-                                                        <div class="input-group" >
-                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
-                                                            <input type="text" aria-label="First name" class="form-control">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:</span>
+                                                            <input :id="'DeFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'HastaFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'PuntosFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold text-primary">
                                                         </div>
                                                     </td>
                                                     <td class="border text-center">
-                                                        <div class="input-group" >
-                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
-                                                            <input type="text" aria-label="First name" class="form-control">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:</span>
+                                                            <input :id="'DeFila'+index+'Columna3'"type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'HastaFila'+index+'Columna3'"type="text" class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'PuntosFila'+index+'Columna3'" type="text" class="form-control p-1 fw-semibold text-primary">
                                                         </div>
                                                     </td>
                                                     <td class="border text-center table-active">
-                                                        <div class="input-group" >
-                                                            <span class="input-group-text" style="font-size:0.8em">Desde:</span>
-                                                            <input type="text" aria-label="First name" class="form-control">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:</span>
+                                                            <input :id="'DeFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Hasta:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'HastaFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold">
                                                             <span class="input-group-text" style="font-size:0.8em">Ptos:</span>
-                                                            <input type="text" aria-label="Last name" class="form-control">
+                                                            <input :id="'PuntosFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold text-primary">
                                                         </div>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        <div class="col-12 text-center mb-3 ">
-                                        <button class="botones-crear rounded-pill mt-2 border-0">Guardar</button>
+                                        <div class="text-center mx-auto mb-3" style="min-width: 1500px;">
+                                            <button class="botones-crear rounded-pill mt-2 border-0 me-2" @click="guardarPonderacion()">Guardar</button>
+                                            <button class="botones-cancelar rounded-pill mt-2 border-0 ms-2" @click="cancelarPonderacion()">Cancelar</button>
                                         </div>
                                     </div>
-                                </div> <!--Fin scroll-->
+                                </div> <!--Fin scroll Fin Nueva Ponderacion-->
+
+
+                                
+                                <div v-if="ponderaciones.length>0" class="row scroll-w"><!--scroll Consulta Ponderaciones-->
+                                    <!--Ciclo cantidad ponderaciones-->
+                                    <div class="col-12 p-1 mt-2" v-for="(nombrePonderaciones,indexNombrePonderacion) in tablasPonderaciones">
+                                        <div class="text-center mb-3 mt-2" style="min-width: 1500px;">
+                                            <span class="badge bg-primary text-bg-primary">Ponderaciones {{nombrePonderaciones}}</span>
+                                        </div>
+                                        <table class="table table-striped mx-auto w-75 mt-2" style="font-size:0.8em; min-width: 1500px;">
+                                            <thead>
+                                                <tr class="table-active text-center">
+                                                    <th style="min-width:200px;"></th>
+                                                    <th style="background: #35832D;" class="text-white shadow">Meta Retadora</th>
+                                                    <th style="background: #5EC271;">Entitlement</th>
+                                                    <th style="background: #66FF33;" class="shadow">Meta Calculada</th>
+                                                    <th class="bg-warning">Línea Base</th>
+                                                    <th class="bg-danger text-white shadow">Reprobatoria</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="middle-center" v-for="(elemento,index) in filasSC">
+                                                    <td class="border">{{elemento}}</td>
+                                                    <td class="border text-center table-active">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:{{rowIndex * 5 + 0}}</span>
+                                                            <input :id="'DeFila'+index+'Columna0'" type="text" class="form-control p-1 w-15 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:{{rowIndex * 5 + 0}}</span>
+                                                            <input :id="'HastaFila'+index+'Columna0'" type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:{{rowIndex * 5 + 0}}</span>
+                                                            <input :id="'PuntosFila'+index+'Columna0'" type="text" class="form-control p-1 fw-semibold text-primary">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:{{index+1}}</span>
+                                                            <input :id="'DeFila'+index+'Columna1'" type="text"  class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:{{index+1}}</span>
+                                                            <input :id="'HastaFila'+index+'Columna1'" type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:{{index+1}}</span>
+                                                            <input :id="'PuntosFila'+index+'Columna1'" type="text" class="form-control p-1 fw-semibold text-primary">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center table-active ">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De: {{index+2}}</span>
+                                                            <input :id="'DeFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:{{index+2}}</span>
+                                                            <input :id="'HastaFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:{{index+2}}</span>
+                                                            <input :id="'PuntosFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold text-primary">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:{{index+3}}</span>
+                                                            <input :id="'DeFila'+index+'Columna3'"type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:{{index+3}}</span>
+                                                            <input :id="'HastaFila'+index+'Columna3'"type="text" class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:{{index+3}}</span>
+                                                            <input :id="'PuntosFila'+index+'Columna3'" type="text" class="form-control p-1 fw-semibold text-primary">
+                                                        </div>
+                                                    </td>
+                                                    <td class="border text-center table-active">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text" style="font-size:0.8em">De:{{index}}</span>
+                                                            <input :id="'DeFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Hasta:{{index+4}}</span>
+                                                            <input :id="'HastaFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold">
+                                                            <span class="input-group-text" style="font-size:0.8em">Ptos:{{index+4}}</span>
+                                                            <input :id="'PuntosFila'+index+'Columna4'" type="text"  class="form-control p-1 fw-semibold text-primary">
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div> <!--Fin scroll Fin Consulta Ponderaciones-->
+                                <div v-show="ponderaciones.length<=0" class="col-12 text-center">
+                                    <span class="badge bg-secondary text-bg-primary">No existen pondeciones creadas</span>
+                                </div>
+
+
             </div>
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'" >

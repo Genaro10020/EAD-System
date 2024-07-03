@@ -214,6 +214,19 @@ const app = {
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
       nueva_ponderacion:false,
+      nombre_ponderacion:'',
+      newRechazo:false,
+      newMerma:false,
+      newEficiencia:false,
+      newAccidentes:false,
+      newActosInseguros:false,
+      newPB:false,
+      newAusentismo:false,
+      new5s:false,
+      newSugerencias:false,
+      newCumplimiento:false,
+      ponderaciones:[],
+      tablasPonderaciones:[],
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -2819,22 +2832,153 @@ const app = {
               console.log("Error en axios :-( ",error);
             });
         }
+      },
+      mesesNumeros(stringMes){
+        if(stringMes=='Enero'){return '01'}
+        if(stringMes=='Febrero'){return '02'}
+        if(stringMes=='Marzo'){return '03'}
+        if(stringMes=='Abril'){return '04'}
+        if(stringMes=='Mayo'){return '05'}
+        if(stringMes=='Junio'){return '06'}
+        if(stringMes=='Julio'){return '07'}
+        if(stringMes=='Agosto'){return '08'}
+        if(stringMes=='Septiembre'){return '09'}
+        if(stringMes=='Octubre'){return '10'}
+        if(stringMes=='Noviembre'){return '11'}
+        if(stringMes=='Diciembre'){return '12'}
     },
-    mesesNumeros(stringMes){
-      if(stringMes=='Enero'){return '01'}
-      if(stringMes=='Febrero'){return '02'}
-      if(stringMes=='Marzo'){return '03'}
-      if(stringMes=='Abril'){return '04'}
-      if(stringMes=='Mayo'){return '05'}
-      if(stringMes=='Junio'){return '06'}
-      if(stringMes=='Julio'){return '07'}
-      if(stringMes=='Agosto'){return '08'}
-      if(stringMes=='Septiembre'){return '09'}
-      if(stringMes=='Octubre'){return '10'}
-      if(stringMes=='Noviembre'){return '11'}
-      if(stringMes=='Diciembre'){return '12'}
-  },
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////PONDERACION/////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    consultarPonderaciones(){
+      axios.get("ponderacionesController.php",{
+      }).then(response =>{
+        if(response.data[0]==true){
+          this.ponderaciones = response.data[1];
+          console.log("Ponderaciones",this.ponderaciones);
+           
+          //nombre de las ponderaciones
+          this.tablasPonderaciones = Array.from(new Set(this.ponderaciones.map(objeto=>objeto.ponderacion)));
+
+          let nuevoObjeto = {};
+          this.tablasPonderaciones.forEach(ponderacion => {nuevoObjeto[ponderacion] = this.ponderaciones.filter(items => items.ponderacion === ponderacion).map(item => ({
+                    id: item.id,
+                    desde: item.desde,
+                    hasta: item.hasta,
+                    puntos: item.puntos
+              }));
+          });
+          
+          
+          console.log("NUEVO OBJETO", nuevoObjeto, "fin");
+   
+          //let criterios = Array.from(new Set (this.ponderaciones.map(objeto => objeto.criterios)));
+          //Rechazos 3 datos
+            //let arreglo = []
+            /*const rechazosDatos = this.ponderaciones.filter(items=>items.criterio=='Rechazos').map(item => ({
+              id: item.id,
+              desde: item.desde,
+              hasta: item.hasta,
+              puntos: item.puntos
+            }));*/
+
+            //const criterios = new Set(this.ponderaciones.map(item => item.criterio));
+            //console.log('ELEMENTOS',criterios);  
+            //console.log('Recuperando los 3 datos',rechazosDatos);
+        }else{
+          console.log("No se realizó la consulta correctamente: ",response.data)
+        }
+      }).catch(error =>{
+        console.log("Error en axios "+error)
+      })
+    },
+    guardarPonderacion(){
+      if(this.nombre_ponderacion==''){return Swal.fire({
+        title: "Digite un Nombre",
+        text: "Favor de colocar un nombre a la nueva ponderacion",
+        icon: "question"
+      });}
+      let nuevaPonderacion = {}; // Inicializo el Objeto
+          for (let i = 0; i < this.filasSC.length; i++) {//FILAS
+              let elemento = this.filasSC[i];
+              if(!nuevaPonderacion[elemento]){
+                nuevaPonderacion[elemento] = { 
+                  'Meta Retadora': [], 
+                  'Entitlement': [], 
+                  'Meta Calculada': [], 
+                  'Línea Base': [], 
+                  'Reprobatoria': [] 
+                };
+              }
+              for (let j = 0; j <= 4; j++){//COLUMNAS
+                  if(j === 0){
+                    nuevaPonderacion[elemento]['Meta Retadora'].push(
+                        document.getElementById('DeFila'+i+'Columna'+j).value,
+                        document.getElementById('HastaFila'+i+'Columna'+j).value,
+                        document.getElementById('PuntosFila'+i+'Columna'+j).value
+                    );
+                  }
+                  if(j === 1){
+                    nuevaPonderacion[elemento]['Entitlement'].push(
+                        document.getElementById('DeFila'+i+'Columna'+j).value,
+                        document.getElementById('HastaFila'+i+'Columna'+j).value,
+                        document.getElementById('PuntosFila'+i+'Columna'+j).value
+                    );
+                  }
+                  if(j === 2){
+                    nuevaPonderacion[elemento]['Meta Calculada'].push(
+                        document.getElementById('DeFila'+i+'Columna'+j).value,
+                        document.getElementById('HastaFila'+i+'Columna'+j).value,
+                        document.getElementById('PuntosFila'+i+'Columna'+j).value
+                    );
+                  }
+                  if(j === 3){
+                    nuevaPonderacion[elemento]['Línea Base'].push(
+                        document.getElementById('DeFila'+i+'Columna'+j).value,
+                        document.getElementById('HastaFila'+i+'Columna'+j).value,
+                        document.getElementById('PuntosFila'+i+'Columna'+j).value
+                    );
+                  }
+                  if(j === 4){
+                    nuevaPonderacion[elemento]['Reprobatoria'].push(
+                        document.getElementById('DeFila'+i+'Columna'+j).value,
+                        document.getElementById('HastaFila'+i+'Columna'+j).value,
+                        document.getElementById('PuntosFila'+i+'Columna'+j).value
+                    );
+                  }
+              }
+          }
+          //console.log("Nueva Ponderacion", nuevaPonderacion)
+          axios.post("ponderacionesController.php",{
+            nombre_ponderacion:this.nombre_ponderacion,
+            nuevaPonderacion: nuevaPonderacion
+          }).then(response =>{
+              if(response.data===true){
+                this.nueva_ponderacion = false
+                  Swal.fire({
+                    title: "Se guardo con éxito",
+                    text: "Los datos se guardaron con éxito",
+                    icon: "success"
+                  });
+              }else{
+                  Swal.fire({
+                    title: "Error",
+                    text: "No se guardo la ponderacion",
+                    icon: "error"
+                  });
+                  console.log(response.data)
+              }
+          }).catch(error =>{
+            console.log("Error en axios: "+error)
+          })
+    },
+    cancelarPonderacion(){
+      this.nueva_ponderacion=false
+    },
 
   }
 };
