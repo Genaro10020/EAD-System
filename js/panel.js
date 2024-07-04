@@ -227,6 +227,7 @@ const app = {
       newCumplimiento:false,
       ponderaciones:[],
       tablasPonderaciones:[],
+      valoresPon:"",
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -2873,8 +2874,8 @@ const app = {
               }));
           });
           
-          
-          console.log("NUEVO OBJETO", nuevoObjeto, "fin");
+          this.valoresPon = nuevoObjeto;
+          console.log("VALORES POR TABLA",this.valoresPon);
    
           //let criterios = Array.from(new Set (this.ponderaciones.map(objeto => objeto.criterios)));
           //Rechazos 3 datos
