@@ -19,7 +19,6 @@ if (isset($_SESSION['nombre'])) {
         }else{
             $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
         }
-        
         $result = $conexion->query($consulta);
     
         if ($result) {

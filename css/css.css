@@ -366,9 +366,17 @@ input.inpus-number-graficas:focus{
 }
 
 
-
-
- 
+.btn-input{
+    width: 140px;
+    height: 28px;
+    font-size: 14px;
+    color: #000000;
+    background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.2); 
+    cursor: pointer;
+    border: 0px solid #e0e0e0;
+    border-radius: 5px;
+}
   
   /* Estilos para cuando el radio button está seleccionado */
   .opcion-radio:checked + .label-radios {

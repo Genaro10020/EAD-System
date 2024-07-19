@@ -7,17 +7,45 @@ if(isset($_SESSION['nombre'])){
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                   $resultado = consultarPonderacion();
+                    if(isset($_GET['accion']) && $_GET['accion']=='datosPonderacionXID' && isset($_GET['id_ponderacion'])){
+                        $id = $_GET['id_ponderacion'];
+                        $resultado = consultarDatosPonderacion($id);
+                    }else if(isset($_GET['accion']) && $_GET['accion']=='nombrePonderaciones'){
+                        $resultado = consultarTablaPonderaciones();
+                    }else if(isset($_GET['accion']) && $_GET['accion']=='consultarPonderaciones') {
+                        $resultado = consultarPonderacion();
+                    }else{
+                        $resultado = "No se ha seleccionado ninguna acción: ".$_GET['accion'];
+                    }
                 break;
             case 'POST':
-                   $nombre_ponderacion = $arreglo['nombre_ponderacion'];
-                   $nuevaPonderacion = $arreglo['nuevaPonderacion'];
-                   $resultado = guardarNuevaPonderacion($nombre_ponderacion,$nuevaPonderacion);   
+                    $nombre_ponderacion = $arreglo['nombre_ponderacion'];
+                    $nuevaPonderacion = $arreglo['nuevaPonderacion'];
+                    $resultado = guardarNuevaPonderacion($nombre_ponderacion,$nuevaPonderacion);   
                 break;
             case 'PUT':
-                    
+                if (isset($arreglo['nuevo']) && isset($arreglo['id_ponderacion'])) {
+                    $nombre=$arreglo['nuevo'];
+                    $id=$arreglo['id_ponderacion'];
+                    $resultado = actualizarNuevoNombre($nombre,$id);
+                }else if(isset($arreglo['accion']) && $arreglo['accion']=="AsignarPonderacion"){
+                    $id_ead=$arreglo['id_ead'];
+                    $id_ponderacion=$arreglo['id_ponderacion'];
+                    $resultado = actualizarAsignacion($id_ead,$id_ponderacion);
+                }else{
+                    $id= $arreglo['id'];
+                    $valores = $arreglo['valor'];
+                    $columna = $arreglo['columna'];
+                    $resultado = actualizarPonderacion($id,$valores,$columna);
+                }
+                   break;
             case 'DELETE':
-
+                    if(isset($_GET['id'])){
+                        $id = $_GET['id'];
+                        $resultado = eliminarPonderacion($id);
+                    }else{
+                        $resultado = "No existe la variable ID";
+                    }
                 break;
         default:
         $resultado = "Método HTTP no permitido";

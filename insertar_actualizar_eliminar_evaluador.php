@@ -14,8 +14,7 @@ $accion=$arreglo['accion'];
                     $resultado []= $dato;
                 }
         }
-    }
-    else if($accion=="insertar"){
+    }else if($accion=="insertar"){
             $nombre=$arreglo['nombre'];
             $nomina=$arreglo['nomina'];
             $contrasena=$arreglo['contrasena'];
@@ -54,7 +53,6 @@ $accion=$arreglo['accion'];
         }else{
             $resultado = "Error en php query eliminar ". mysqli_error($conexion);
         }
-
     }else{
         $resultado = "No se encontro esa acción";
     }

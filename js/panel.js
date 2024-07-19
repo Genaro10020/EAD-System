@@ -198,7 +198,13 @@ const app = {
       tipoTablas: '',
       clasificaciones: ['ITEM', 'CAUSA', 'CANTIDAD'],
       datosDiasMerma: ["20", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-      sumaTabla: 0,
+      sumaTablaRechazo: 0,
+      sumaTablaMerma: 0,
+      sumaTablaEficiencia: 0,
+      sumaTablaAccidentes: 0,
+      sumaTablaActosInseguros: 0,
+      sumaTablaActosAusentismo: 0,
+
       datosGraficaRechazo: [],
       datosGraficaMerma: [],
       datosGraficaEficiencia: [],
@@ -213,6 +219,8 @@ const app = {
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
+      //filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],//filas ScoreCard y Ponderación
+      filasSC:[],
       nueva_ponderacion:false,
       nombre_ponderacion:'',
       newRechazo:false,
@@ -228,6 +236,12 @@ const app = {
       ponderaciones:[],
       tablasPonderaciones:[],
       valoresPon:"",
+      inputDesactivado: '',
+      inputNewName: '',
+      tablasPonderacionesIDs:[],
+      equipoPonderacion:false,
+      criterios:[],
+      datosTablaPonderacion:[],
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -240,11 +254,11 @@ const app = {
       anio_seleccionado: 2023,
       select_plantillas: 'Placas',
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
-      filasSC: ['Rechazos', 'Merma y desperdicio', 'Eficiencia', 'Accidentes', 'Actos inseguros', 'PB de sangre', 'Ausentismo', '5´s', 'Sugerencias de mejora', 'Cumplimiento de proyecto'],//filas ScoreCard y Ponderación
       columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       asistenciaSC:0,
       mes_score:'',
       anio_score:'',
+      ponderacion_score:'',
       rechazosSC:0,
       mermaSC:0,
       eficienciaSC:0,
@@ -252,6 +266,17 @@ const app = {
       actosInsegurosSC:0,
       ausentismoSC:0,
       cumplimientoSC:0,
+      listaPonderaciones:[],
+      puntosRechazo:0,
+      puntosMerma:0,
+      puntosEficiencia:0,
+      puntosAccidentes:0,
+      puntosActosInseguros:0,
+      puntosAusentismo:0,
+      puntosAsistencia:0,
+      inputPonderacionSC:'',
+      inputValorSC:[],
+      inputPuntoEvaluados:[]
     }
   },
   mounted() {
@@ -1655,6 +1680,9 @@ const app = {
                 title: {
                     display: true,
                     text: this.nombre_indicador,
+                    font: {
+                      size: 20
+                    }
                 },
             },
             tooltips: {
@@ -1666,7 +1694,10 @@ const app = {
                     position: 'bottom', //inferior
                     ticks: {
                         display: true,
-                        beginAtZero: true
+                        beginAtZero: true,
+                        font: {
+                          size: 20
+                        }
                     }
                 },
                 x2: {
@@ -1674,6 +1705,9 @@ const app = {
                   position: 'top',
                   labels: this.datosGrafica.map(value => value +" "+this.tipo_unidad+""),
                   ticks: {
+                    font: {
+                      size: 20
+                    },
                     display: true,
                     beginAtZero: true,
                     color: this.datosGrafica.map((label, index) => {
@@ -2003,6 +2037,7 @@ const app = {
     },
     guardarEvaluador(accion){// insertar y guardar
       var id_evaluador;
+      console.log("accion",accion)
       if(accion=="actualizar"){
         id_evaluador = parseInt(this.ckeckEvaluadores[0]);
       }
@@ -2433,28 +2468,30 @@ const app = {
               response.data[1].forEach(valores => {
                   nuevoArreglo[(valores.dia-1)] = valores.valor;//la resto ya que el arreglo empieza en 0
               });
+
+
               if(this.tipoTablas=='Rechazos'){
                 this.datosGraficaRechazo = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+                this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
               }else if(this.tipoTablas=='Merma'){
                 this.datosGraficaMerma = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+                this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
               }else if(this.tipoTablas=='Eficiencia'){
                 this.datosGraficaEficiencia = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+                this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
               }else if(this.tipoTablas=='Accidentes'){
                 this.datosGraficaAccidentes = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+                this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
               }else if(this.tipoTablas=='Actos Inseguros'){
                 this.datosGraficaActosInseguros = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+                this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
               }else if(this.tipoTablas=='Ausentismo'){
                 this.datosGraficaAusentismo = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
-              }else if(this.tipoTablas=='Cumplimiento del proyecto'){
+                this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+              }/*else if(this.tipoTablas=='Cumplimiento del proyecto'){
                 this.datosGraficaCumplimientoProyecto = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
-              }
+                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+              }*/
               this.tablaGraficas()
               this.consultarCausas()
 
@@ -2472,38 +2509,36 @@ const app = {
       if(this.tipoTablas=='Rechazos'){
         valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
         this.datosGraficaRechazo[index] = valor;
-        this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+        this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
       }else if(this.tipoTablas=='Merma'){
         valor = parseFloat(document.getElementById('graficaMerma' + index).value);
         this.datosGraficaMerma[index] = valor;
-        this.sumaTabla = this.datosGraficaMerma.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+        this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
       }else if(this.tipoTablas=='Eficiencia'){
         valor = parseFloat(document.getElementById('graficaEficiencia' + index).value);
         this.datosGraficaEficiencia[index] = valor;
-        this.sumaTabla = this.datosGraficaEficiencia.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+        this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
       }else if(this.tipoTablas=='Accidentes'){
         valor = parseFloat(document.getElementById('graficaAccidentes' + index).value);
         this.datosGraficaAccidentes[index] = valor;
-        this.sumaTabla = this.datosGraficaAccidentes.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+        this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
       }else if(this.tipoTablas=='Actos Inseguros'){
         valor = parseFloat(document.getElementById('graficaActosInseguros' + index).value);
         this.datosGraficaActosInseguros[index] = valor;
-        this.sumaTabla = this.datosGraficaActosInseguros.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
+        this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
       }else if(this.tipoTablas=='Ausentismo'){
         valor = parseFloat(document.getElementById('graficaAusentismo' + index).value);
         this.datosGraficaAusentismo[index] = valor;
-        this.sumaTabla = this.datosGraficaAusentismo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
-      }else if(this.tipoTablas=='Cumplimiento del proyecto'){
+        this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+      }/*else if(this.tipoTablas=='Cumplimiento del proyecto'){
         valor = parseFloat(document.getElementById('graficaCumplimiento' + index).value);
         this.datosGraficaCumplimientoProyecto[index] = valor;
-        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0);
-      }
-
+        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+      }*/
       if (valor === null ||valor === undefined || isNaN(valor)) {
         valor = null;
-      } else {
-        valor = 0;
       }
+      console.log("Despues de procesar",valor)
           var dia = (index+1)
           this.saveDateDay(dia,valor)
     },
@@ -2754,7 +2789,7 @@ const app = {
                   }).then(response =>{
                     if(response.data[0]==true){
                       let historialAsistencia = [];
-                      console.log("Respuesta de asistencia: ",response.data)
+                      //console.log("Respuesta de asistencia: ",response.data)
                       historialAsistencia = response.data[1].map(objetos=> objetos.porcentaje_asistencia)//tomo todo el historial de asistencias
                       let tamanio = historialAsistencia.length //verifico en tamanio
                       let sum = 0;
@@ -2791,41 +2826,33 @@ const app = {
 
                 let suma1 = 0;//RECHAZOS
                 let datos = response.data[1].filter(elemento => elemento.grafica === "Rechazos").map(elemento => suma1+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.rechazosSC=suma1;
+                this.rechazosSC = typeof suma1 === 'number' && !Number.isInteger(suma1) ? suma1.toFixed(2) : suma1; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
                 let suma2 = 0;//MERMA
                 let datos2 = response.data[1].filter(elemento => elemento.grafica === "Merma").map(elemento => suma2+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.mermaSC=suma2;
+                this.mermaSC = typeof suma2 === 'number' && !Number.isInteger(suma2) ? suma2.toFixed(2) : suma2; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
-                let suma3 = 0;//MERMA
+                let suma3 = 0;//EFICIENCIA
                 let datos3 = response.data[1].filter(elemento => elemento.grafica === "Eficiencia").map(elemento => suma3+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.eficienciaSC=suma3;
+                this.eficienciaSC= typeof suma3 === 'number' && !Number.isInteger(suma3) ? suma3.toFixed(2) : suma3; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
                 let suma4 = 0;//ACCIDENTES
                 let datos4 = response.data[1].filter(elemento => elemento.grafica === "Accidentes").map(elemento => suma4+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.accidentesSC=suma4;
+                this.accidentesSC= typeof suma2 === 'number' && !Number.isInteger(suma4) ? suma4.toFixed(2) : suma4; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
                 let suma5 = 0;//ACTOS INSEGUROS
                 let datos5 = response.data[1].filter(elemento => elemento.grafica === "Actos Inseguros").map(elemento => suma5+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.actosInsegurosSC=suma5;
+                this.actosInsegurosSC= typeof suma5 === 'number' && !Number.isInteger(suma5) ? suma5.toFixed(2) : suma5; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
                 let suma6 = 0;//AUSENTISMO
                 let datos6 = response.data[1].filter(elemento => elemento.grafica === "Ausentismo").map(elemento => suma6+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.ausentismoSC=suma6;
+                this.ausentismoSC= typeof suma6 === 'number' && !Number.isInteger(suma6) ? suma6.toFixed(2) : suma6; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
                 let suma7 = 0;//AUSENTISMO
                 let datos7 = response.data[1].filter(elemento => elemento.grafica === "Cumplimiento del proyecto").map(elemento => suma7+= elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-                this.cumplimientoSC=suma7;
+                this.cumplimientoSC= typeof suma7 === 'number' && !Number.isInteger(suma7) ? suma7.toFixed(2) : suma7; 
                 
-                /*rechazosSC:0,
-                  mermaSC:0,
-                  eficienciaSC:0,
-                  accidentesSC:0,
-                  actosInsegurosSC:0,
-                  ausentismoSC:0,
-                  cumplimientoSC:0,
-                   Rechazos Merma Eficiencia Accidentes Actos Inseguros Ausentismo Cumplimiento del proyecto
-                  */
+                this.consultarDatosPonderacionID()
               }else{
                 console.log("Error en la consulta ScoreCard",response.data)
               }
@@ -2837,7 +2864,7 @@ const app = {
       mesesNumeros(stringMes){
         if(stringMes=='Enero'){return '01'}
         if(stringMes=='Febrero'){return '02'}
-        if(stringMes=='Marzo'){return '03'}
+        if(stringMes=='Marzo'){return '03'} 
         if(stringMes=='Abril'){return '04'}
         if(stringMes=='Mayo'){return '05'}
         if(stringMes=='Junio'){return '06'}
@@ -2848,51 +2875,158 @@ const app = {
         if(stringMes=='Noviembre'){return '11'}
         if(stringMes=='Diciembre'){return '12'}
     },
+    consultarNombrePonderaciones(){
+      axios.get("ponderacionesController.php",{
+        params:{
+          accion:"nombrePonderaciones"
+        }
+      }).then(response =>{
+          if(response.data[0]==true){
+            this.listaPonderaciones = response.data[1];
+          }
+      }).catch(error =>{
+          console.log("Error en axios :-( ",error);
+      })
+    },
+    consultarDatosPonderacionID(){
+      let id_ponderacion = this.equipo_score.split("<->")[4];
+      if(id_ponderacion==''){return Swal.fire({
+            title: "Equipo sin ponderacion",
+            text: "El equipo no cuenta no una ponderacion asignada",
+            icon: "warning"
+          });}
+        axios.get("ponderacionesController.php",{
+          params:{
+            accion:"datosPonderacionXID",
+            id_ponderacion:id_ponderacion
+          }
+        }).then(response =>{
+          if(response.data[0]==true){
+            let datosIDPonderacion = response.data[1]
+            console.log("Ponderacion Equipo",datosIDPonderacion)  
+            let sumaRechazo = this.rechazosSC;
+            let sumaMerma = this.mermaSC;
+            let sumaEficiencia = this.eficienciaSC
+            let sumaAccidentes = this.accidentesSC
+            let sumaActosInseguros = this.actosInsegurosSC
+            let sumaAusentismo = this.ausentismoSC
+            let sumaAsistencia = this.asistenciaSC
+            
+              console.log("Suma Eficiencia: ",sumaEficiencia)
+              console.log("Ponderacion Eficiencia",datosIDPonderacion.filter(items => items.criterio=='Eficiencia'))
+              console.log("Filtrando: ",datosIDPonderacion.filter(items => items.criterio=='Eficiencia' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaEficiencia && items.desde <= sumaEficiencia))
+              console.log("COMPROBANDO EFICIENCIA",datosIDPonderacion.filter(items => items.criterio=='Eficiencia' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaEficiencia && items.desde <= sumaEficiencia).map(itemsEficiencia =>itemsEficiencia.puntos));
+              
+              this.puntosRechazo = datosIDPonderacion.filter(items => items.criterio === 'Rechazos' && items.hasta!=null && items.desde!=null && items.puntos!=null &&  items.hasta >= sumaRechazo && items.desde <= sumaRechazo).map(itemsRechazos => itemsRechazos.puntos)[0];
+              this.puntosMerma = datosIDPonderacion.filter(items => items.criterio=='Merma y desperdicio' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaMerma && items.desde <= sumaMerma).map(itemsMerma =>itemsMerma.puntos)[0];
+              this.puntosEficiencia = datosIDPonderacion.filter(items => items.criterio=='Eficiencia' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaEficiencia && items.desde <= sumaEficiencia).map(itemsEficiencia =>itemsEficiencia.puntos)[0];
+              this.puntosAccidentes = datosIDPonderacion.filter(items => items.criterio=='Accidentes' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaAccidentes && items.desde <= sumaAccidentes).map(itemsAccidentes =>itemsAccidentes.puntos)[0];
+              this.puntosActosInseguros = datosIDPonderacion.filter(items => items.criterio=='Actos inseguros' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaActosInseguros && items.desde <= sumaActosInseguros).map(itemsActos =>itemsActos.puntos)[0];
+              this.puntosAusentismo = datosIDPonderacion.filter(items => items.criterio=='Ausentismo' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaAusentismo && items.desde <= sumaAusentismo).map(itemsAusentismo =>itemsAusentismo.puntos)[0];
+              this.puntosAsistencia = datosIDPonderacion.filter(items => items.criterio=='Cumplimiento de proyecto' && items.hasta!=null && items.desde!=null && items.puntos!=null && items.hasta>= sumaAsistencia && items.desde <= sumaAsistencia).map(itemsAsistencia =>itemsAsistencia.puntos)[0];
 
+          }else{
+            console.log("Error en la consulta ScoreCard",response.data)
+          }
+        }).catch(error =>{
+          console.log("Erro en axios",error)
+        })
+    },
+    activarInput(index){
+      this.inputPonderacionSC = index;
+    },
+    saveInputSC(index){
+      this.inputPonderacionSC = ''
+     //let suma =arreglo.reduce((a,b)=>a+b, 0);
+     
+    },
+    //al salir del input
+    banderaInputSC(){
+      this.inputPonderacionSC = ''
+    },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////PONDERACION/////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    consultarCriterio(){
+      axios.get("criteriosController.php",{
+        params:{
+          accion:'Consultar',
+        }
+      }).then(response=>{
+          if(response.data[0]==true){
+            //this.criterios =response.data[1];//criterios con id
+            this.filasSC =response.data[1];//criterios solo nombres sin id
+            console.log("CRITERIOS",response.data[1])
+          }else{
+            console.log("Error en la consulta Criterios",response.data)
+          }
+      }).catch(error=>{
+          console.log("Error en axios",error)
+      })
+    },
     consultarPonderaciones(){
       axios.get("ponderacionesController.php",{
+        params:{
+          accion:"consultarPonderaciones"
+        }
       }).then(response =>{
         if(response.data[0]==true){
-          this.ponderaciones = response.data[1];
-          console.log("Ponderaciones",this.ponderaciones);
-           
-          //nombre de las ponderaciones
-          this.tablasPonderaciones = Array.from(new Set(this.ponderaciones.map(objeto=>objeto.ponderacion)));
+          this.ponderaciones = response.data[1];//todos los datos de las ponderaciones
+          //Obtenga titulo ponderaciones unicas
+          this.tablasPonderaciones = Object.values(
+            this.ponderaciones.reduce((acc, objeto) => {
+              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion };
+              return acc;
+            }, {})
+          );
 
-          let nuevoObjeto = {};
-          this.tablasPonderaciones.forEach(ponderacion => {nuevoObjeto[ponderacion] = this.ponderaciones.filter(items => items.ponderacion === ponderacion).map(item => ({
-                    id: item.id,
-                    desde: item.desde,
-                    hasta: item.hasta,
-                    puntos: item.puntos
-              }));
-          });
-          
-          this.valoresPon = nuevoObjeto;
-          console.log("VALORES POR TABLA",this.valoresPon);
-   
-          //let criterios = Array.from(new Set (this.ponderaciones.map(objeto => objeto.criterios)));
-          //Rechazos 3 datos
-            //let arreglo = []
-            /*const rechazosDatos = this.ponderaciones.filter(items=>items.criterio=='Rechazos').map(item => ({
+  
+          console.log("Ponderaciones",this.ponderaciones)
+          console.log("tablasPonderaciones", this.tablasPonderaciones);
+
+        ///////////////////// 
+          let nueva = {};
+          this.ponderaciones.forEach((ponderacion) => {
+          const idPonderacion = ponderacion.id_ponderacion;
+          const idCriterio = ponderacion.id_criterios;
+          const criterio = ponderacion.criterio;
+          const desde = ponderacion.desde;
+          const hasta = ponderacion.hasta;
+          const puntos = ponderacion.puntos;
+        
+          if (!nueva[idPonderacion]) {
+            nueva[idPonderacion] = {}
+          }
+          if (!nueva[idPonderacion][criterio]) {
+            nueva[idPonderacion][criterio] = []
+          }
+          nueva[idPonderacion][criterio].push({ desde, hasta, puntos });
+        });
+        console.log("Datos Tablas Ponderacion",nueva)
+        this.datosTablaPonderacion = nueva
+        ///////////
+
+
+          nuevoObjeto = {};
+          this.tablasPonderaciones.reverse().forEach(ponderaciones => {
+             nuevoObjeto[ponderaciones.id_ponderacion]= this.ponderaciones.filter(items => items.id_ponderacion === ponderaciones.id_ponderacion).map(item => ({
               id: item.id,
               desde: item.desde,
               hasta: item.hasta,
               puntos: item.puntos
-            }));*/
+            }));
+          });
 
-            //const criterios = new Set(this.ponderaciones.map(item => item.criterio));
-            //console.log('ELEMENTOS',criterios);  
-            //console.log('Recuperando los 3 datos',rechazosDatos);
+  
+          this.valoresPon = nuevoObjeto;
+          console.log("valoresTablas",this.valoresPon);
         }else{
           console.log("No se realizó la consulta correctamente: ",response.data)
         }
+        
       }).catch(error =>{
         console.log("Error en axios "+error)
       })
@@ -2905,7 +3039,7 @@ const app = {
       });}
       let nuevaPonderacion = {}; // Inicializo el Objeto
           for (let i = 0; i < this.filasSC.length; i++) {//FILAS
-              let elemento = this.filasSC[i];
+              let elemento = this.filasSC[i].id;
               if(!nuevaPonderacion[elemento]){
                 nuevaPonderacion[elemento] = { 
                   'Meta Retadora': [], 
@@ -2953,18 +3087,21 @@ const app = {
                   }
               }
           }
+          console.log("NUEVA PONDERACION",nuevaPonderacion)
           //console.log("Nueva Ponderacion", nuevaPonderacion)
           axios.post("ponderacionesController.php",{
             nombre_ponderacion:this.nombre_ponderacion,
             nuevaPonderacion: nuevaPonderacion
           }).then(response =>{
-              if(response.data===true){
+              if(response.data[0]===true){
+                console.log("Respuesta al guardar",response.data);
                 this.nueva_ponderacion = false
                   Swal.fire({
                     title: "Se guardo con éxito",
                     text: "Los datos se guardaron con éxito",
                     icon: "success"
                   });
+                  this.consultarPonderaciones()
               }else{
                   Swal.fire({
                     title: "Error",
@@ -2980,7 +3117,107 @@ const app = {
     cancelarPonderacion(){
       this.nueva_ponderacion=false
     },
-
+    inputNuevoNombre(nombre){
+      if(this.inputNewName == nombre){
+        this.inputNewName = ''
+      }else{
+        this.inputNewName = nombre
+      }
+    },
+    asignarDesignarPonderacion(id_ead,id_ponderacion,event){
+      if(event.target.checked!=true){id_ponderacion = '';}
+     axios.put("ponderacionesController.php",{
+          accion:"AsignarPonderacion",
+          id_ead:id_ead,
+          id_ponderacion:id_ponderacion,
+      }).then(response=>{
+          if(response.data==true){
+            this.consultarEAD()  
+            //this.consultarPonderaciones()
+          }else{
+              console.log(response.data)
+          }
+      }).catch(error=>{
+        console.log("Error en axios: "+error)
+      })
+    },
+    inputEditar(activar){
+      if(this.inputDesactivado == activar){
+        this.inputDesactivado = ''
+      }else{
+        this.inputDesactivado = activar
+      }
+    },
+    saveDate(id_registro,id_input,columna){
+      let nuevo_valor = document.getElementById(id_input).value;
+      if(nuevo_valor ==''){
+        nuevo_valor = null
+      }else{
+        nuevo_valor = parseFloat(nuevo_valor).toFixed(2)
+      }
+      axios.put("ponderacionesController.php",{
+        id:id_registro,
+        valor:nuevo_valor,
+        columna:columna
+      }).then(response =>{
+        if(response.data==true){
+          this.inputDesactivado = '';
+          this.consultarPonderaciones()
+        }else{
+          console.log("Algo salio mal al guardar "+response.data)
+        }
+      }).catch(error =>{
+        console.log("Error en axios: "+error)
+      })
+    },
+    actualizarNombrePonderacion(index,id_ponderacion){
+      let nuevo_nombre = document.getElementById('inputNombre'+index).value;
+      axios.put("ponderacionesController.php",{
+        nuevo: nuevo_nombre,
+        id_ponderacion:id_ponderacion
+      }).then(response =>{
+        if(response.data==true){
+            this.inputNewName = ''
+            this.consultarPonderaciones()
+        }else{
+          console.log("Algo salio mal en cambiar el nombre"+response.data)
+        }
+      }).catch(error =>{
+        console.log("Error en axios: "+error)
+      })
+    },
+    eliminarPonderacion(id_ponderacion,nombre_ponderacion){
+      Swal.fire({
+        title: "Eliminar Ponderacion?",
+        html: `<label>Esta seguro de eliminar la <b>${nombre_ponderacion}</b>!</label>`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Sí, Eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axios.delete("ponderacionesController.php",{
+            params:{
+              id:id_ponderacion
+            }
+          }).then(response =>{
+            if(response.data==true){
+                Swal.fire({
+                  title: "Eliminada!",
+                  html: `<label>"La ponderacion <b>${nombre_ponderacion}</b> se elimino"</label>`,
+                  icon: "success"
+                });
+                this.consultarPonderaciones()
+            }else{
+                console.log("Algo salio mal ",response.data)
+            }
+          }).catch(error =>{
+            console.log("Error en axios: ",error)
+          });
+        }
+      });
+    }
   }
 };
 

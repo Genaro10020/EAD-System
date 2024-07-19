@@ -62,14 +62,14 @@ include("conexionGhoner.php");
                         $guardar = "UPDATE graficas SET valor=? WHERE id_equipo= ? AND grafica = ? AND anio = ? AND mes = ? AND dia = ?";
                         $stmt = $conexion->prepare($guardar);
                         if(!$stmt){return $conexion->error;}
-                        $stmt->bind_param("iisiii",$valor,$id_equipo,$grafica,$anio,$mes,$dia);
+                        $stmt->bind_param("disiii",$valor,$id_equipo,$grafica,$anio,$mes,$dia);
                         if(!$stmt->execute()){return $stmt->error;}
                         $answer = true;
                     }else{//si no existe el registro Inserta
                         $guardar = "INSERT INTO graficas (planta, area, id_equipo, nombre_ead, grafica, anio, mes, dia, valor) VALUES (?,?,?,?,?,?,?,?,?)";
                         $stmt = $conexion->prepare($guardar);
                         if(!$stmt){return $conexion->error;}
-                        $stmt->bind_param("ssissiiii",$planta,$area,$id_equipo,$nombre_ead,$grafica,$anio,$mes,$dia,$valor);
+                        $stmt->bind_param("ssissiiid",$planta,$area,$id_equipo,$nombre_ead,$grafica,$anio,$mes,$dia,$valor);
                         if(!$stmt->execute()){return $stmt->error;}
                         $answer = true;
                     }
