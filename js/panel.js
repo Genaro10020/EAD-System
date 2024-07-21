@@ -276,7 +276,8 @@ const app = {
       puntosAsistencia: 0,
       inputPonderacionSC: '',
       inputValorSC: [],
-      inputPuntoEvaluados: []
+      inputPuntoEvaluados: [],
+      filasDinamicasSC: []
     }
   },
   mounted() {
@@ -2913,7 +2914,9 @@ const app = {
         if (response.data[0] == true) {
           let datosIDPonderacion = response.data[1]
           console.log("Ponderacion Equipo", datosIDPonderacion)
-          let sumaRechazo = this.rechazosSC;
+          this.filasDinamicasSC = [... new Set(datosIDPonderacion.map(items => items.nombre))];
+          console.log("Filas dinamicas", this.filasDinamicasSC)
+          /*let sumaRechazo = this.rechazosSC;
           let sumaMerma = this.mermaSC;
           let sumaEficiencia = this.eficienciaSC
           let sumaAccidentes = this.accidentesSC
@@ -2932,7 +2935,7 @@ const app = {
           this.puntosAccidentes = datosIDPonderacion.filter(items => items.criterio == 'Accidentes' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAccidentes && items.desde <= sumaAccidentes).map(itemsAccidentes => itemsAccidentes.puntos)[0];
           this.puntosActosInseguros = datosIDPonderacion.filter(items => items.criterio == 'Actos inseguros' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaActosInseguros && items.desde <= sumaActosInseguros).map(itemsActos => itemsActos.puntos)[0];
           this.puntosAusentismo = datosIDPonderacion.filter(items => items.criterio == 'Ausentismo' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAusentismo && items.desde <= sumaAusentismo).map(itemsAusentismo => itemsAusentismo.puntos)[0];
-          this.puntosAsistencia = datosIDPonderacion.filter(items => items.criterio == 'Cumplimiento de proyecto' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAsistencia && items.desde <= sumaAsistencia).map(itemsAsistencia => itemsAsistencia.puntos)[0];
+          this.puntosAsistencia = datosIDPonderacion.filter(items => items.criterio == 'Cumplimiento de proyecto' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAsistencia && items.desde <= sumaAsistencia).map(itemsAsistencia => itemsAsistencia.puntos)[0];*/
 
         } else {
           console.log("Error en la consulta ScoreCard", response.data)

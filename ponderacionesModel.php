@@ -1,170 +1,181 @@
 <?php
-    include("conexionGhoner.php");
+include("conexionGhoner.php");
 
-        function consultarTablaPonderaciones(){
-            global $conexion;
-            $estado = false;
-            $resultado = array(); 
-            $consulta = "SELECT * FROM ponderaciones";
-            $query = $conexion->query($consulta);
-            if($query){
-                $estado = true;
-                while ($datos = $query->fetch_array()){
-                    $resultado[] = $datos; 
-                }
-            }else{
-                $estado = $conexion->error;
-            }
-        
-            return array($estado, $resultado);
+function consultarTablaPonderaciones()
+{
+    global $conexion;
+    $estado = false;
+    $resultado = array();
+    $consulta = "SELECT * FROM ponderaciones";
+    $query = $conexion->query($consulta);
+    if ($query) {
+        $estado = true;
+        while ($datos = $query->fetch_array()) {
+            $resultado[] = $datos;
         }
-        
+    } else {
+        $estado = $conexion->error;
+    }
 
-    function consultarPonderacion(){
-        global $conexion;
-        $datos = [];
-        $estado = false;
-        
-        $consulta = "SELECT ponderaciones.ponderacion,datos_ponderaciones.*,criterios.nombre AS criterio FROM ponderaciones INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios ORDER BY ponderaciones.id DESC";
-        $stmt = $conexion->prepare($consulta);
-        if(!$stmt){
-            return array($conexion->error,$datos);
+    return array($estado, $resultado);
+}
+
+
+function consultarPonderacion()
+{
+    global $conexion;
+    $datos = [];
+    $estado = false;
+
+    $consulta = "SELECT ponderaciones.ponderacion,datos_ponderaciones.*,criterios.nombre AS criterio FROM ponderaciones INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios ORDER BY ponderaciones.id DESC";
+    $stmt = $conexion->prepare($consulta);
+    if (!$stmt) {
+        return array($conexion->error, $datos);
+    }
+    if ($stmt->execute()) {
+        $estado = true;
+        $resultados = $stmt->get_result();
+        while ($fila = $resultados->fetch_array()) {
+            $datos[] = $fila;
         }
-        if($stmt->execute()){
+    } else {
+        $estado = $stmt->error;
+    }
+    $stmt->close();
+    $conexion->close();
+    return array($estado, $datos);
+}
+
+function actualizarAsignacion($id_ead, $id_ponderacion)
+{
+    global $conexion;
+    $actualizar = "UPDATE equipos_ead SET id_ponderacion = ? WHERE id = ?";
+    $stmt = $conexion->prepare($actualizar);
+    if (!$stmt) {
+        return false;
+    }
+    $stmt->bind_param("si", $id_ponderacion, $id_ead);
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return $stmt->error;
+    }
+    $stmt->close();
+}
+
+function consultarDatosPonderacion($id)
+{
+    global $conexion;
+    $estado = false;
+    $resultado = [];
+    $consulta = "SELECT datos_ponderaciones.*,criterios.nombre FROM datos_ponderaciones INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios WHERE datos_ponderaciones.id_ponderacion = ?";
+    $stmt = $conexion->prepare($consulta);
+    $stmt->bind_param("i", $id);
+    if ($stmt) {
+        if ($stmt->execute()) {
             $estado = true;
             $resultados = $stmt->get_result();
-            while ($fila = $resultados->fetch_array()) {
-                $datos[] = $fila;
+            while ($datos = $resultados->fetch_array()) {
+                $resultado[] = $datos;
             }
-        }else{
+        } else {
             $estado = $stmt->error;
         }
         $stmt->close();
         $conexion->close();
-        return array($estado,$datos);
+    } else {
+        $estado = $conexion->error;
     }
+    return array($estado, $resultado);
+}
 
-    function actualizarAsignacion($id_ead,$id_ponderacion){
-        global $conexion;
-        $actualizar = "UPDATE equipos_ead SET id_ponderacion = ? WHERE id = ?";
-        $stmt = $conexion->prepare($actualizar);
-        if(!$stmt){
-            return false;
-        }
-        $stmt->bind_param("si", $id_ponderacion, $id_ead);
-        if($stmt->execute()){
-            return true;
-        }else{
-            return $stmt->error;
-        }
-        $stmt->close();
+function guardarNuevaPonderacion($nombre, $nuevaPonderacion)
+{
+    global $conexion;
+    //$conexion->begin_transaction(); // Iniciar transacción
+    $insertar = "INSERT INTO ponderaciones (ponderacion) VALUES (?);";
+    $stmt = $conexion->prepare($insertar);
+    if (!$stmt) {
+        return array($conexion->error);
     }
-
-    function consultarDatosPonderacion($id){
-            global $conexion;
-            $estado = false;
-            $resultado = [];
-            $consulta = "SELECT * FROM datos_ponderaciones WHERE id_ponderacion = ?";
-            $stmt = $conexion->prepare($consulta);
-            $stmt->bind_param("i",$id);
-            if($stmt){
-                if($stmt->execute()){
-                    $estado = true;
-                    $resultados = $stmt->get_result();
-                    while ($datos = $resultados->fetch_array())
-                        {
-                        $resultado[] = $datos;
-                        }
-                    }else{
-                        $estado = $stmt->error;
-                    }
-                    $stmt->close();
-                    $conexion->close();
-            }else{
-                $estado = $conexion->error;
+    $stmt->bind_param("s", $nombre);
+    if ($stmt->execute()) {
+        $resultado = true;
+        $ultimo_id = $conexion->insert_id;
+        foreach ($nuevaPonderacion as $criterio => $parametros) {
+            foreach ($parametros as $parametro => $valores) {
+                $desde = $valores[0];
+                $hasta = $valores[1];
+                $puntos = $valores[2];
+                if ($desde == '') {
+                    $desde = null;
+                }
+                if ($hasta == '') {
+                    $hasta = null;
+                }
+                if ($puntos == '') {
+                    $puntos = null;
+                }
+                $insertar = "INSERT INTO datos_ponderaciones (id_ponderacion, id_criterios, parametro, desde, hasta, puntos) VALUES (?,?,?,?,?,?);"; //columna criterio por id_criterios
+                $stmt = $conexion->prepare($insertar);
+                $stmt->bind_param("issiii", $ultimo_id, $criterio, $parametro, $desde, $hasta, $puntos);
+                if (!$stmt->execute()) {
+                    $resultado = "No se inserto en datos_poderacion: " . $conexion->error;
+                    // $conexion->rollback(); // Revertir transacción si falla la segunda inserción
+                }
             }
-            return array($estado,$resultado);
-    }
-
-    function guardarNuevaPonderacion($nombre,$nuevaPonderacion){
-        global $conexion;
-        //$conexion->begin_transaction(); // Iniciar transacción
-        $insertar = "INSERT INTO ponderaciones (ponderacion) VALUES (?);";
-        $stmt = $conexion->prepare($insertar);
-        if(!$stmt){
-            return array($conexion->error);
         }
-        $stmt->bind_param("s", $nombre);
+    } else {
+        $resultado = "No se inserto en poderacion: " . $conexion->error;
+    }
+    return array($resultado, $ultimo_id);
+}
+
+function actualizarNuevoNombre($nombre, $id)
+{
+    global $conexion;
+    $actualizar = "UPDATE ponderaciones SET ponderacion = ? WHERE id = ?";
+    $stmt = $conexion->prepare($actualizar);
+    if (!$stmt) {
+        return false;
+    }
+    $stmt->bind_param("si", $nombre, $id);
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return $stmt->error;
+    }
+    $stmt->close();
+}
+
+function actualizarPonderacion($id, $valores, $columna)
+{
+    global $conexion;
+    $estado = false;
+    $update = "UPDATE datos_ponderaciones SET $columna=? WHERE id=?";
+    $stmt = $conexion->prepare($update);
+    $stmt->bind_param("di", $valores, $id);
+    if ($stmt->execute()) {
+        $estado = true;
+    }
+    $stmt->close();
+    return $estado;
+}
+
+function eliminarPonderacion($id)
+{
+    global $conexion;
+    $estado = false;
+    $delete = "DELETE FROM ponderaciones WHERE id=?";
+    $stmt = $conexion->prepare($delete);
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
         if ($stmt->execute()) {
-            $resultado = true;
-            $ultimo_id = $conexion->insert_id;
-                    foreach ($nuevaPonderacion as $criterio => $parametros) {
-                        foreach ($parametros as $parametro => $valores) {
-                            $desde = $valores[0];
-                            $hasta = $valores[1];
-                            $puntos = $valores[2];
-                            if($desde==''){$desde=null;}
-                            if($hasta==''){$hasta=null;}
-                            if($puntos==''){$puntos=null;}                          
-                            $insertar = "INSERT INTO datos_ponderaciones (id_ponderacion, id_criterios, parametro, desde, hasta, puntos) VALUES (?,?,?,?,?,?);";//columna criterio por id_criterios
-                            $stmt = $conexion->prepare($insertar);
-                            $stmt->bind_param("issiii", $ultimo_id, $criterio, $parametro, $desde, $hasta, $puntos);
-                            if (!$stmt->execute()) {
-                                $resultado = "No se inserto en datos_poderacion: ". $conexion->error;
-                               // $conexion->rollback(); // Revertir transacción si falla la segunda inserción
-                            }
-                        }
-                    }
-        }else{
-            $resultado = "No se inserto en poderacion: ". $conexion->error;
+            $estado = true;
         }
-         return array($resultado,$ultimo_id);
-    }
-
-    function actualizarNuevoNombre($nombre,$id){
-        global $conexion;
-        $actualizar = "UPDATE ponderaciones SET ponderacion = ? WHERE id = ?";
-        $stmt = $conexion->prepare($actualizar);
-        if(!$stmt){
-            return false;
-        }
-        $stmt->bind_param("si", $nombre, $id);
-        if($stmt->execute()){
-            return true;
-        }else{
-            return $stmt->error;
-        }
-        $stmt->close();
-    }
-
-    function actualizarPonderacion($id,$valores,$columna){
-        global $conexion;
-        $estado = false;
-        $update = "UPDATE datos_ponderaciones SET $columna=? WHERE id=?";
-        $stmt = $conexion->prepare($update);
-        $stmt->bind_param("di", $valores, $id);
-            if($stmt->execute()){
-                $estado = true;
-            }
         $stmt->close();
         return $estado;
+    } else {
+        $conexion->error;
     }
-
-    function eliminarPonderacion($id){
-        global $conexion;
-        $estado = false;
-        $delete = "DELETE FROM ponderaciones WHERE id=?";
-        $stmt = $conexion->prepare($delete);
-        if($stmt){
-            $stmt->bind_param("i", $id);
-            if($stmt->execute()){
-                $estado = true;
-            }
-            $stmt->close();
-            return $estado;
-        }else{
-            $conexion->error;
-        }
-       
-    }
-?>
+}

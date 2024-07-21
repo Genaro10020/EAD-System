@@ -1937,13 +1937,13 @@ if (isset($_SESSION['nombre'])) {
                                     <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
                                 </tr>
                             <tbody>
-                                <tr v-for="(filas,fila) in filasSC">
+                                <tr v-for="(filas,fila) in filasDinamicasSC">
                                     <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
                                     <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
-                                    <th scope="col" class="text-start">{{filas.nombre}}</th>
+                                    <th scope="col" class="text-start">{{filas}}</th>
                                     <td>
-                                        <label v-show="fila==0">#</label>
+                                        <!--<label v-show="fila==0">#</label>
                                         <label v-show="fila==1">Kg.</label>
                                         <label v-show="fila==2">%</label>
                                         <label v-show="fila==3">#</label>
@@ -1952,41 +1952,40 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-show="fila==6">#</label>
                                         <label v-show="fila==7">%</label>
                                         <label v-show="fila==8">#</label>
-                                        <label v-show="fila==9">%</label>
+                                        <label v-show="fila==9">%</label>-->
                                     </td>
                                     <td>
-                                        <label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
+                                        <!--<label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
                                         <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
                                         <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
                                         <label v-show="fila==3" class="text-primary">{{accidentesSC}}</label>
                                         <label v-show="fila==4" class="text-primary">{{actosInsegurosSC}}</label>
                                         <label v-show="fila==6" class="text-primary">{{ausentismoSC}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>
+                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>-->
                                     </td>
                                     <td>
-                                        <label v-show="fila==0" class="text-primary">{{puntosRechazo}} </label>
+                                        <!--<label v-show="fila==0" class="text-primary">{{puntosRechazo}} </label>
                                         <label v-show="fila==1" class="text-primary">{{puntosMerma}} </label>
                                         <label v-show="fila==2" class="text-primary">{{puntosEficiencia}}</label>
                                         <label v-show="fila==3" class="text-primary">{{puntosAccidentes}}</label>
                                         <label v-show="fila==4" class="text-primary">{{puntosActosInseguros}}</label>
                                         <label v-show="fila==6" class="text-primary">{{puntosAusentismo}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia}}</label>
+                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia}}</label>-->
                                     </td>
                                     <td>
-                                        <!--Genero dinacamente los input segun cantidad de filas que existen-->
-                                        <label v-show="fila==(filasSC.length-1)-((filasSC.length-1)-fila)" class="text-primary"><!-- (filasSC.length-1)-((filasSC.length-1)-fila) Utilizado para dar 0,1,2,..n demanera dinamica-->
-                                            <button v-show="inputPonderacionSC!==(filasSC.length-1)-((filasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
-                                            <input v-show="inputPonderacionSC===(filasSC.length-1)-((filasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
-                                        </label>
+                                        <!--<label v-show="fila==(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" class="text-primary">
+                                            <button v-show="inputPonderacionSC!==(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
+                                            <input v-show="inputPonderacionSC===(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
+                                        </label>-->
                                     </td>
                                     <td>
-                                        <label v-show="fila==0" class="text-primary">{{puntosRechazo * inputValorSC[fila]}} </label>
+                                        <!--<label v-show="fila==0" class="text-primary">{{puntosRechazo * inputValorSC[fila]}} </label>
                                         <label v-show="fila==1" class="text-primary">{{puntosMerma * inputValorSC[fila]}} </label>
                                         <label v-show="fila==2" class="text-primary">{{puntosEficiencia * inputValorSC[fila]}}</label>
                                         <label v-show="fila==3" class="text-primary">{{puntosAccidentes * inputValorSC[fila]}}</label>
                                         <label v-show="fila==4" class="text-primary">{{puntosActosInseguros * inputValorSC[fila]}}</label>
                                         <label v-show="fila==6" class="text-primary">{{puntosAusentismo * inputValorSC[fila]}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia * inputValorSC[fila]}}</label>
+                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia * inputValorSC[fila]}}</label>-->
                                     </td>
                                 </tr>
                                 <tr>
