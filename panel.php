@@ -1208,7 +1208,7 @@ if (isset($_SESSION['nombre'])) {
                                             <input :id="'PuntosFila'+index+'Columna2'" type="text" class="form-control p-1 fw-semibold text-primary">
                                         </div>
                                     </td>
-                                    <td class="border text-center bg-warning" >
+                                    <td class="border text-center bg-warning">
                                         <div class="input-group">
                                             <span class="input-group-text" style="font-size:0.8em">De:</span>
                                             <input :id="'DeFila'+index+'Columna3'" type="text" class="form-control p-1 fw-semibold">
@@ -1238,34 +1238,34 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div> <!--Fin scroll Fin Nueva Ponderacion-->
 
-                
 
-                <div v-if="ponderaciones.length>0" class="row scroll-w" ><!--scroll Consulta Ponderaciones-->
+
+                <div v-if="ponderaciones.length>0" class="row scroll-w"><!--scroll Consulta Ponderaciones-->
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-                    <div  :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'"  class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
-                        <div class="d-flex justify-content-center mb-3" style="font-size:0.8em; min-width: 1500px;" >
+                    <div :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'" class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
+                        <div class="d-flex justify-content-center mb-3" style="font-size:0.8em; min-width: 1500px;">
                             <div class="card border-dark shadow">
                                 <div class="card-header" style="background-color: #7fb3d5">
-                                   
-                                        <div class="d-flex flex-row justify-content-start align-items-center">
-                                            <div><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
-                                            <div><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)"/></div>
-                                            <div><span v-if="inputNewName!==tablaPonderacion.id_ponderacion"  class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
-                                            <div><button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button></div>
-                                        </div>
-                                   
+
+                                    <div class="d-flex flex-row justify-content-start align-items-center">
+                                        <div><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
+                                        <div><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
+                                        <div><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
+                                        <div><button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button></div>
+                                    </div>
+
                                 </div>
                                 <div class="card-body text-dark">
                                     <div class="col-12 d-flex">
-                                            <template v-for="equipo in consultaEAD" >
-                                                    <div class=" border-secondary mb-3 mx-2" style="max-width: 18rem;">
-                                                        <div class="card-header">
-                                                            <input type="checkbox" name="equipo" @click="asignarDesignarPonderacion(equipo[0].id,tablaPonderacion.id_ponderacion,$event)" :checked="equipo[0].id_ponderacion==tablaPonderacion.id_ponderacion"/>
-                                                            <label class=" ms-1 me-2">{{equipo[0].nombre_ead}}</label>
-                                                        </div>
-                                                    </div>
-                                            </template>
+                                        <template v-for="equipo in consultaEAD">
+                                            <div class=" border-secondary mb-3 mx-2" style="max-width: 18rem;">
+                                                <div class="card-header">
+                                                    <input type="checkbox" name="equipo" @click="asignarDesignarPonderacion(equipo[0].id,tablaPonderacion.id_ponderacion,$event)" :checked="equipo[0].id_ponderacion==tablaPonderacion.id_ponderacion" />
+                                                    <label class=" ms-1 me-2">{{equipo[0].nombre_ead}}</label>
+                                                </div>
+                                            </div>
+                                        </template>
                                     </div>
                                     <table class="table table-striped mt-2" style="font-size:0.9em; max-width: 1500px;">
                                         <thead>
@@ -1279,74 +1279,59 @@ if (isset($_SESSION['nombre'])) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                    
-                                            <tr class="middle-center" v-for="(elemento,index) in datosTablaPonderacion[tablaPonderacion.id_ponderacion]">
-                                                <td class="border">{{elemento}}</td>
-                                               <!-- <td class="border text-center table-active">
+
+                                            <tr class="middle-center" v-for="(valoresPon,criterio,index) in datosTablaPonderacion[tablaPonderacion.id_ponderacion]">
+                                                <td class="border">{{criterio}}</td>
+                                                <td class="border text-center table-active">
                                                     <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 0)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].desde" type="text" class="form-control p-1 w-15 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'DeFila'+index+'Columna0','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 0">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 0)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'HastaFila'+index+'Columna0','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 0">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 0)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'PuntosFila'+index+'Columna0','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 0">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+(index * 5 + 0))">De:</span>
+                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna0'" :value="valoresPon[0].desde" type="text" class="form-control p-1 w-15 fw-semibold" @keyup.enter="saveDate(valoresPon[0].id,indexTablaPonderacion+'DeFila'+index+'Columna0','desde')" :disabled="inputDesactivado!==indexTablaPonderacion+'de'+(index * 5 + 0)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+(index * 5 + 0))">Hasta:</span>
+                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna0'" :value="valoresPon[0].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[0].id,indexTablaPonderacion+'HastaFila'+index+'Columna0','hasta')" :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+(index * 5 + 0)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+(index * 5 + 0))">Pts:</span>
+                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna0'" :value="valoresPon[0].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[0].id,indexTablaPonderacion+'PuntosFila'+index+'Columna0','puntos')" :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+(index * 5 + 0)">
                                                     </div>
                                                 </td>
                                                 <td class="border text-center">
                                                     <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 1)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].desde"  type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'DeFila'+index+'Columna1','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 1">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 1)" >Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'HastaFila'+index+'Columna1','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 1">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 1)" >Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'PuntosFila'+index+'Columna1','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 1">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+(index * 5 + 1))">De:</span>
+                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna1'" :value="valoresPon[1].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[1].id,indexTablaPonderacion+'DeFila'+index+'Columna1','desde')" :disabled="inputDesactivado!==indexTablaPonderacion+'de'+(index * 5 + 1)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+(index * 5 + 1))">Hasta:</span>
+                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna1'" :value="valoresPon[1].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[1].id,indexTablaPonderacion+'HastaFila'+index+'Columna1','hasta')" :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+(index * 5 + 1)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+(index * 5 + 1))">Pts:</span>
+                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna1'" :value="valoresPon[1].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[1].id,indexTablaPonderacion+'PuntosFila'+index+'Columna1','puntos')" :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+(index * 5 + 1)">
                                                     </div>
                                                 </td>
                                                 <td class="border text-center table-active ">
                                                     <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 2)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'DeFila'+index+'Columna2','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 2">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 2)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'HastaFila'+index+'Columna2','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 2">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 2)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'PuntosFila'+index+'Columna2','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 2">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+(index * 5 + 2))">De:</span>
+                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna2'" :value="valoresPon[2].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[2].id,indexTablaPonderacion+'DeFila'+index+'Columna2','desde')" :disabled="inputDesactivado!==indexTablaPonderacion+'de'+(index * 5 + 2)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+(index * 5 + 2))">Hasta:</span>
+                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna2'" :value="valoresPon[2].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[2].id,indexTablaPonderacion+'HastaFila'+index+'Columna2','hasta')" :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+(index * 5 + 2)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+(index * 5 + 2))">Pts:</span>
+                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna2'" :value="valoresPon[2].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[2].id,indexTablaPonderacion+'PuntosFila'+index+'Columna2','puntos')" :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+(index * 5 + 2)">
                                                     </div>
                                                 </td>
                                                 <td class="border text-center">
                                                     <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 3)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'DeFila'+index+'Columna3','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 3">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 3)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'HastaFila'+index+'Columna3','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 3">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 3)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'PuntosFila'+index+'Columna3','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 3">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+(index * 5 + 3))">De:</span>
+                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna3'" :value="valoresPon[3].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[3].id,indexTablaPonderacion+'DeFila'+index+'Columna3','desde')" :disabled="inputDesactivado!==indexTablaPonderacion+'de'+(index * 5 + 3)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+(index * 5 + 3))">Hasta:</span>
+                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna3'" :value="valoresPon[3].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[3].id,indexTablaPonderacion+'HastaFila'+index+'Columna3','hasta')" :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+(index * 5 + 3)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+(index * 5 + 3))">Pts:</span>
+                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna3'" :value="valoresPon[3].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[3].id,indexTablaPonderacion+'PuntosFila'+index+'Columna3','puntos')" :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+(index * 5 + 3)">
                                                     </div>
                                                 </td>
                                                 <td class="border text-center table-active">
                                                     <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 4)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'DeFila'+index+'Columna4','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 4">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 4)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'HastaFila'+index+'Columna4','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 4">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 4)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'PuntosFila'+index+'Columna4','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 4">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+(index * 5 + 4))">De:</span>
+                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna4'" :value="valoresPon[4].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[4].id,indexTablaPonderacion+'DeFila'+index+'Columna4','desde')" :disabled="inputDesactivado!==indexTablaPonderacion+'de'+(index * 5 + 4)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+(index * 5 + 4))">Hasta:</span>
+                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna4'" :value="valoresPon[4].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[4].id,indexTablaPonderacion+'HastaFila'+index+'Columna4','hasta')" :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+(index * 5 + 4)">
+                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+(index * 5 + 4))">Pts:</span>
+                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna4'" :value="valoresPon[4].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[4].id,indexTablaPonderacion+'PuntosFila'+index+'Columna4','puntos')" :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+(index * 5 + 4)">
                                                     </div>
-                                                </td>-->
+                                                </td>
                                             </tr>
 
                                         </tbody>
@@ -1357,119 +1342,6 @@ if (isset($_SESSION['nombre'])) {
                     </div>
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
-
-                    <!--Ciclo cantidad ponderaciones-->
-                    <!--<div  :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'"  class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
-                        <div class="d-flex justify-content-center mb-3" style="font-size:0.8em; min-width: 1500px;" >
-                            <div class="card border-dark shadow">
-                                <div class="card-header" style="background-color: #7fb3d5">
-                                   
-                                        <div class="d-flex flex-row justify-content-start align-items-center">
-                                            <div><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
-                                            <div><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)"/></div>
-                                            <div><span v-if="inputNewName!==tablaPonderacion.id_ponderacion"  class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}}</span></div>
-                                            <div><button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button></div>
-                                        </div>
-                                   
-                                </div>
-                                <div class="card-body text-dark">
-                                    <div class="col-12 d-flex">
-                                            <template v-for="equipo in consultaEAD" >
-                                                    <div class=" border-secondary mb-3 mx-2" style="max-width: 18rem;">
-                                                        <div class="card-header">
-                                                            <input type="checkbox" name="equipo" @click="asignarDesignarPonderacion(equipo[0].id,tablaPonderacion.id_ponderacion,$event)" :checked="equipo[0].id_ponderacion==tablaPonderacion.id_ponderacion"/>
-                                                            <label class=" ms-1 me-2">{{equipo[0].nombre_ead}}</label>
-                                                        </div>
-                                                    </div>
-                                            </template>
-                                    </div>
-                                    <table class="table table-striped mt-2" style="font-size:0.9em; max-width: 1500px;">
-                                        <thead>
-                                            <tr class="table-active text-center">
-                                                <th style="min-width:200px;">Criterios</th>
-                                                <th style="background: #35832D;" class="text-white shadow">Meta Retadora</th>
-                                                <th style="background: #5EC271;">Entitlement</th>
-                                                <th style="background: #66FF33;" class="shadow">Meta Calculada</th>
-                                                <th class="bg-warning">Línea Base</th>
-                                                <th class="bg-danger text-white shadow">Reprobatoria</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr class="middle-center" v-for="(elemento,index) in filasSC">
-                                                <td class="border">{{elemento.nombre}}</td>
-                                                <td class="border text-center table-active">
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 0)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].desde" type="text" class="form-control p-1 w-15 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'DeFila'+index+'Columna0','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 0">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 0)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'HastaFila'+index+'Columna0','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 0">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 0)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna0'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 0].id,indexTablaPonderacion+'PuntosFila'+index+'Columna0','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 0">
-                                                    </div>
-                                                </td>
-                                                <td class="border text-center">
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 1)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].desde"  type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'DeFila'+index+'Columna1','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 1">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 1)" >Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'HastaFila'+index+'Columna1','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 1">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 1)" >Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna1'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 1].id,indexTablaPonderacion+'PuntosFila'+index+'Columna1','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 1">
-                                                    </div>
-                                                </td>
-                                                <td class="border text-center table-active ">
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 2)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'DeFila'+index+'Columna2','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 2">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 2)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'HastaFila'+index+'Columna2','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 2">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 2)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna2'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 2].id,indexTablaPonderacion+'PuntosFila'+index+'Columna2','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 2">
-                                                    </div>
-                                                </td>
-                                                <td class="border text-center">
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 3)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'DeFila'+index+'Columna3','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 3">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 3)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'HastaFila'+index+'Columna3','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 3">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 3)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna3'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 3].id,indexTablaPonderacion+'PuntosFila'+index+'Columna3','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 3">
-                                                    </div>
-                                                </td>
-                                                <td class="border text-center table-active">
-                                                    <div class="input-group">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'de'+index * 5 + 4)">De:</span>
-                                                        <input :id="indexTablaPonderacion+'DeFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].desde" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'DeFila'+index+'Columna4','desde')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'de'+index * 5 + 4">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'hasta'+index * 5 + 4)">Hasta:</span>
-                                                        <input :id="indexTablaPonderacion+'HastaFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].hasta" type="text" class="form-control p-1 fw-semibold" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'HastaFila'+index+'Columna4','hasta')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'hasta'+index * 5 + 4">
-                                                        <span class="input-group-text" style="font-size:0.8em; cursor:pointer" @click="inputEditar(indexTablaPonderacion+'puntos'+index * 5 + 4)">Pts:</span>
-                                                        <input :id="indexTablaPonderacion+'PuntosFila'+index+'Columna4'" :value="valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].puntos" type="text" class="form-control p-1 fw-semibold text-primary" @keyup.enter="saveDate(valoresPon[tablaPonderacion.id_ponderacion][index * 5 + 4].id,indexTablaPonderacion+'PuntosFila'+index+'Columna4','puntos')" 
-                                                        :disabled="inputDesactivado!==indexTablaPonderacion+'puntos'+index * 5 + 4">
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>-->
-
                 </div> <!--Fin scroll Fin Consulta Ponderaciones-->
                 <div v-show="ponderaciones.length<=0" class="col-12 text-center">
                     <span class="badge bg-secondary text-bg-primary">No existen pondeciones creadas</span>
@@ -2049,14 +1921,14 @@ if (isset($_SESSION['nombre'])) {
                     </div>-->
                 </div>
                 <div class="col-12  d-flex justify-content-center mt-2">
-                    <span v-show="equipo_score.split('<->')[4]==''" class="badge rounded-pill bg-warning text-dark">Equipo sin ponderacion asignada</span>                  
+                    <span v-show="equipo_score.split('<->')[4]==''" class="badge rounded-pill bg-warning text-dark">Equipo sin ponderacion asignada</span>
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
-                                    <th class="bg-dark"></th>
+                                    <!--<th class="bg-dark"></th>-->
                                     <th class="bg-dark"></th>
                                     <th scope="row" class="bg-dark text-light">Unidades</th>
                                     <th scope="row" class="bg-dark text-light">Valor actual</th>
@@ -2066,9 +1938,9 @@ if (isset($_SESSION['nombre'])) {
                                 </tr>
                             <tbody>
                                 <tr v-for="(filas,fila) in filasSC">
-                                    <td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
+                                    <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
-                                    <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>
+                                    <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
                                     <th scope="col" class="text-start">{{filas.nombre}}</th>
                                     <td>
                                         <label v-show="fila==0">#</label>
@@ -2101,11 +1973,11 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-show="fila==9" class="text-primary">{{puntosAsistencia}}</label>
                                     </td>
                                     <td>
-                                            <!--Genero dinacamente los input segun cantidad de filas que existen-->
-                                            <label v-show="fila==(filasSC.length-1)-((filasSC.length-1)-fila)" class="text-primary"><!-- (filasSC.length-1)-((filasSC.length-1)-fila) Utilizado para dar 0,1,2,..n demanera dinamica-->
-                                                <button v-show="inputPonderacionSC!==(filasSC.length-1)-((filasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
-                                                <input v-show="inputPonderacionSC===(filasSC.length-1)-((filasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text"/>
-                                            </label>
+                                        <!--Genero dinacamente los input segun cantidad de filas que existen-->
+                                        <label v-show="fila==(filasSC.length-1)-((filasSC.length-1)-fila)" class="text-primary"><!-- (filasSC.length-1)-((filasSC.length-1)-fila) Utilizado para dar 0,1,2,..n demanera dinamica-->
+                                            <button v-show="inputPonderacionSC!==(filasSC.length-1)-((filasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
+                                            <input v-show="inputPonderacionSC===(filasSC.length-1)-((filasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
+                                        </label>
                                     </td>
                                     <td>
                                         <label v-show="fila==0" class="text-primary">{{puntosRechazo * inputValorSC[fila]}} </label>
@@ -2118,7 +1990,7 @@ if (isset($_SESSION['nombre'])) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-end-0 border-top-0 border-white" colspan="6"></td>
+                                    <td class="border border-end-0 border-top-0 border-white" colspan="5"></td>
                                     <td class="border border-1 border-dark border-start-1">
                                         TOTAL
                                     </td>
