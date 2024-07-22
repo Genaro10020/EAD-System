@@ -45,11 +45,12 @@ if (isset($_SESSION['nombre'])) {
                                 <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                 <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                                 <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-                                <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                
                             <?php }
                             if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                             ?>
-                                <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
+                            <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
+                            <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
                             <?php } ?>
                             <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
                         <?php
@@ -1352,19 +1353,19 @@ if (isset($_SESSION['nombre'])) {
                 <div class="row d-flex barra-gris justify-content-center" style="font-size: 0.9em;">
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="input-group my-3">
-                            <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Tabla</span>
-                            <select class="w-50" v-model="tipoTablas" @change="consultadoValoresGrafica()">
+                            <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
+                            <select class="w-50" v-model="equipo_grafica" @change="consultadoValoresGrafica(),consultarCriterios()">
                                 <option value="" disabled>Seleccione...</option>
-                                <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
+                                <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="input-group my-3">
-                            <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
-                            <select class="w-50" v-model="equipo_grafica" @change="consultadoValoresGrafica()">
+                            <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Tabla</span>
+                            <select class="w-50" v-model="tipoTablas" @change="consultadoValoresGrafica()">
                                 <option value="" disabled>Seleccione...</option>
-                                <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
                             </select>
                         </div>
                     </div>

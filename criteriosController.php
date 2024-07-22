@@ -9,6 +9,11 @@ if(isset($_SESSION['nombre'])){
             case 'GET':
                     if(isset($_GET['accion']) && $_GET['accion'] =='Consultar'){
                         $resultado = consultarCriterios();
+                    }else if(isset($_GET['accion']) && $_GET['accion'] =='consultarCriterios'){
+                        $id_equipo = $_GET['id_equipo'];
+                        $resultado = consultarCriteriosPonderacion($id_equipo);
+                    }else{
+                        $resultado = "No se ha seleccionado una acción válida";
                     }
                 break;
             case 'POST':
