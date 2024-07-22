@@ -2060,7 +2060,8 @@ if (isset($_SESSION['nombre'])) {
                                     <th>Área</th>
                                     <th>Nombre EAD</th>
                                     <th>Proyecto</th>
-                                    <th>Evaluador</th>
+                                    <th>Mi comentario</th>
+                                    <th>Evaluar</th>
                                     <th>Calificación Final</th>
                                 </tr>
                             </thead>
@@ -2071,8 +2072,9 @@ if (isset($_SESSION['nombre'])) {
                                     <td>{{equipoEvaluador.area}}</td>
                                     <td>{{equipoEvaluador.nombre_ead}}</td>
                                     <td>{{equipoEvaluador.proyecto}}</td>
+                                    <td class="text-start"> {{equipoEvaluador.comentario}}</td>
                                     <td>
-                                        <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0" class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Reevaluar</button>
+                                        <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0" class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro,equipoEvaluador.comentario)">Reevaluar</button>
 
                                         <button v-else class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Evaluar</button>
                                     </td>
@@ -2165,11 +2167,16 @@ if (isset($_SESSION['nombre'])) {
                             </div>
                             <div class="modal-footer justify-content-evelyn align-items-center">
                                 <div class="d-flex col-12 justify-content-center">
-                                    <div class="col-7 text-end">
-                                        <button v-if="examenFinalizado=='Finalizado'" type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
-                                        <button v-else type="button" class="btn btn-secondary" @click="contestarEvaluacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
+                                    <div class="d-flex col-8 col-lg-7 text-end">
+                                        <div class="w-50 my-auto">
+                                            <input type="text" class="form-control border border-info ms-lg-5" v-model="comentario" placeholder="Comentario (Opcional)"/>
+                                        </div>
+                                        <div class="w-50">
+                                            <button v-if="examenFinalizado=='Finalizado'" type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
+                                            <button v-else type="button" class="btn btn-secondary" @click="contestarEvaluacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
+                                        </div>
                                     </div>
-                                    <div class="col-5 text-end">
+                                    <div class="d-flex col-2 col-lg-5 justify-content-end">
                                         <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal" style="font-size: 1em;">Cerrar</button>
                                     </div>
                                 </div>

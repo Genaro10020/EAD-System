@@ -60,12 +60,12 @@ include("conexionGhoner.php");
         return array($estado);
     }
 
-    function actualizarCalifacionEAD($id_calificacion,$calificacionEAD){
+    function actualizarCalifacionEAD($id_calificacion,$calificacionEAD,$comentario){
         global $conexion;
         $estado = false;
-        $update = "UPDATE calificacion SET calificacion=? WHERE id=?";
+        $update = "UPDATE calificacion SET calificacion=?,comentario=? WHERE id=?";
         $stmt = $conexion->prepare($update);
-        $stmt->bind_param("di", $calificacionEAD, $id_calificacion);
+        $stmt->bind_param("dsi", $calificacionEAD,$comentario, $id_calificacion);
         if($stmt->execute()){
             $estado = true;
         }else{

@@ -28,7 +28,8 @@ if(isset($_SESSION['nombre'])){
                 if(isset($arreglo['id_calificacion']) && isset($arreglo['calificacionEAD'])){
                     $id_calificacion=$arreglo['id_calificacion'];
                     $calificacionEAD= $arreglo['calificacionEAD'];
-                    $resultado = actualizarCalifacionEAD($id_calificacion,$calificacionEAD);
+                    $comentario= $arreglo['comentario'];
+                    $resultado = actualizarCalifacionEAD($id_calificacion,$calificacionEAD,$comentario);
                 }else{
                     $resultado = "No existen las variables de calificacion";
                 }

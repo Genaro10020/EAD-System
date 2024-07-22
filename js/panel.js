@@ -179,6 +179,7 @@ const app = {
       mensaje: '',
       examenFinalizado: '',
       etapas: '',
+      comentario:'',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: '',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -2253,9 +2254,10 @@ const app = {
       this.myModal.show();
       this.tituloModal = nombre_equipo;
     },
-    IDCalifiacion(id_calificacion, id_ead_foro) {//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
+    IDCalifiacion(id_calificacion, id_ead_foro,comentario) {//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
       this.id_calificacion = id_calificacion;
       this.id_ead_foro = id_ead_foro;
+      this.comentario = comentario
     },
     consultarPreguntasEvaluador(id_ead_foro) {
       axios.get("evaluacionPreguntasController.php", {
@@ -2343,6 +2345,7 @@ const app = {
       axios.put("evaluacionPreguntasController.php", {
         id_calificacion: this.id_calificacion,
         calificacionEAD: this.calificacionEAD,
+        comentario:this.comentario
       }).then(response => {
         //console.log('ENVIANDO CALIFICACION',response.data)
         if (response.data[0] == true) {
