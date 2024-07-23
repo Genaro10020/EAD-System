@@ -45,12 +45,12 @@ if (isset($_SESSION['nombre'])) {
                                 <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                 <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
                                 <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-                                
+
                             <?php }
                             if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                             ?>
-                            <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
-                            <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
                             <?php } ?>
                             <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
                         <?php
@@ -1363,9 +1363,9 @@ if (isset($_SESSION['nombre'])) {
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="input-group my-3">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Tabla</span>
-                            <select class="w-50" v-model="tipoTablas" @change="consultadoValoresGrafica()">
+                            <select class="w-50" v-model="idCriterioGrafica" @change="consultadoValoresGrafica()">
                                 <option value="" disabled>Seleccione...</option>
-                                <option v-for="tabla in tipoTabla" :value="tabla">{{ tabla }}</option>
+                                <option v-for="grafica in criterioGrafica" :value="grafica.id">{{ grafica.nombre }}</option>
                             </select>
                         </div>
                     </div>
@@ -1389,503 +1389,74 @@ if (isset($_SESSION['nombre'])) {
                     </div>
                 </div>
 
-                <!--/////////////////////////////////////////////////////////////////GRAFICA RECHAZOS -->
-                <div v-if="tipoTablas == 'Rechazos'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
+                <!--/////////////////////////////////////////////////////////////////GRAFICA -->
+                <div class="row d-flex">
+                    <div class="col-12">
+                        <div class="scroll-w col-12"><!--dias-->
+                            <table class="text-center mx-auto my-2">
+                                <thead class="sticky-top">
+                                    <tr>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Suma
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Rechazos
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaRechazo'+index" :value="datosGraficaRechazo[index]" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaRechazo}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr class="tabla-encabezado">
-                                            <th class=" text-center  border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de rechazos</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center  border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center  border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                            Día
+                                        </th>
+                                        <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
+                                            {{i}}
                                         </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
+                                        <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                            Suma
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                            Rechazos
+                                        </th>
+                                        <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
+                                            <input :id="'grafica'+index" :value="datosGrafica[index]" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
+                                        </td>
+                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                            {{sumaTabla}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
-                </div>
-                <!--/////////////////////////////////////////////////VENTANA DE MERMA////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Merma'" class="row">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
+                    <div class="col-12 ">
+                        <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
+                            <table class="text-center table table-bordered">
+                                <thead>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Merma
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaMerma'+index" :value="datosGraficaMerma[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaMerma}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                </thead>
+                                <tbody>
+                                    <tr class="tabla-encabezado">
+                                        <th class=" text-center  border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica </th>
+                                    </tr>
+                                    <tr>
+                                        <th class=" text-center  border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta</th>
+                                    </tr>
+                                    <tr>
+                                        <th class=" text-center  border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
+                                    </tr>
+                                    <td class="border border-dark">
+                                        <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
+                                            <canvas id="myChart" class="w-100"></canvas>
+                                        </div>
+                                    </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Grafica de Merma</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: 93Kg. promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
+                        <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
+                            <!--Tabla compromisos-->
+                            <?php include("tabla_compromisos.php") ?>
+                            <!---->
                         </div>
                     </div>
-                </div>
-                <!--/////////////////////////////////////////////////GRAFICA EFICIENCIA////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Eficiencia'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Eficiencia
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaEficiencia'+index" :value="datosGraficaEficiencia[index]" @change="insertandoValores(index)" class=" inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaEficiencia}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de Eficiencia</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/////////////////////////////////////////////////GRAFICA ACCIDENTES ////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Accidentes'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Accidentes
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaAccidentes'+index" :value="datosGraficaAccidentes[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaAccidentes}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de Accidentes</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/////////////////////////////////////////////////GRAFICA ACTOS INSEGUROS////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Actos Inseguros'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Rechazos
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaActosInseguros'+index" :value="datosGraficaActosInseguros[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaActosInseguros}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de rechazos</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/////////////////////////////////////////////////VENTANA DE AUSENTISMO ////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Ausentismo'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Rechazos
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaAusentismo'+index" :value="datosGraficaAusentismo[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTablaActosAusentismo}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica de ausentismo</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--/////////////////////////////////////////////////GRAFICA CUMPLIMIENTO DE PROYECTO ////////////////////////////////////////////////////////////////////-->
-                <div v-if="tipoTablas == 'Cumplimiento del proyecto'">
-                    <div class="row d-flex">
-                        <div class="col-12">
-                            <div class="scroll-w col-12"><!--dias-->
-                                <table class="text-center mx-auto my-2">
-                                    <thead class="sticky-top">
-                                        <tr>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Día
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
-                                                {{i}}
-                                            </td>
-                                            <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Promedio
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                                Rechazos
-                                            </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'graficaCumplimiento'+index" :value="datosGraficaCumplimientoProyecto[index]" @change="insertandoValores(index)" class="inpus-number-graficas text-center" type="number">
-                                            </td>
-                                            <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
-                                                {{sumaTabla}}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="col-12 ">
-                            <div class="d-flex col-12 col-lg-10 col-xl-8 mx-auto bg-warning text-center" style="height:55vh">
-                                <table class="text-center table table-bordered">
-                                    <thead>
-
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #002060; color: white; font-size: 14px;">Gráfica Cumplimiento de Proyecto</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #B7DEE8; font-size: 12px;">Meta: #Kg promedio diario</th>
-                                        </tr>
-                                        <tr>
-                                            <th class=" text-center encabezadoGraficas border border-dark" style="background-color: #DDD9C4; font-size: 12px;">NOMBRE DE EQUIPO EAD</th>
-                                        </tr>
-                                        <td class="border border-dark">
-                                            <div id="divCanvas" class="d-flex col-12 col-lg-10 col-xl-8 mx-auto">
-                                                <canvas id="myChart" class="w-100"></canvas>
-                                            </div>
-                                        </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="scroll2 col-12 col-lg-10 col-xl-8  mx-auto">
-                                <!--Tabla compromisos-->
-                                <?php include("tabla_compromisos.php") ?>
-                                <!---->
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -2170,7 +1741,7 @@ if (isset($_SESSION['nombre'])) {
                                 <div class="d-flex col-12 justify-content-center">
                                     <div class="d-flex col-8 col-lg-7 text-end">
                                         <div class="w-50 my-auto">
-                                            <input type="text" class="form-control border border-info ms-lg-5" v-model="comentario" placeholder="Comentario (Opcional)"/>
+                                            <input type="text" class="form-control border border-info ms-lg-5" v-model="comentario" placeholder="Comentario (Opcional)" />
                                         </div>
                                         <div class="w-50">
                                             <button v-if="examenFinalizado=='Finalizado'" type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>

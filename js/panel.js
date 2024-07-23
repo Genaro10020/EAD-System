@@ -179,7 +179,7 @@ const app = {
       mensaje: '',
       examenFinalizado: '',
       etapas: '',
-      comentario:'',
+      comentario: '',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: '',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -195,10 +195,13 @@ const app = {
       numeroTablasAccidentes: [5, 4, 3, 2, 1, 'DIA'],
       numeroTablasActosInseguros: [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 'DIA'],
       numeroTablasProyectos: [100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0, 'DIA'],
-      tipoTabla: ['Rechazos', 'Merma', 'Eficiencia', 'Accidentes', 'Actos Inseguros', 'Ausentismo', 'Cumplimiento del proyecto'],
-      tipoTablas: '',
+      criterioGrafica: [],
+      idCriterioGrafica: '',
       clasificaciones: ['ITEM', 'CAUSA', 'CANTIDAD'],
       datosDiasMerma: ["20", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+      sumaTabla: 0,
+
+
       sumaTablaRechazo: 0,
       sumaTablaMerma: 0,
       sumaTablaEficiencia: 0,
@@ -206,7 +209,7 @@ const app = {
       sumaTablaActosInseguros: 0,
       sumaTablaActosAusentismo: 0,
 
-      datosGraficaRechazo: [],
+      datosGrafica: [],
       datosGraficaMerma: [],
       datosGraficaEficiencia: [],
       datosGraficaAccidentes: [],
@@ -2254,7 +2257,7 @@ const app = {
       this.myModal.show();
       this.tituloModal = nombre_equipo;
     },
-    IDCalifiacion(id_calificacion, id_ead_foro,comentario) {//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
+    IDCalifiacion(id_calificacion, id_ead_foro, comentario) {//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
       this.id_calificacion = id_calificacion;
       this.id_ead_foro = id_ead_foro;
       this.comentario = comentario
@@ -2345,7 +2348,7 @@ const app = {
       axios.put("evaluacionPreguntasController.php", {
         id_calificacion: this.id_calificacion,
         calificacionEAD: this.calificacionEAD,
-        comentario:this.comentario
+        comentario: this.comentario
       }).then(response => {
         //console.log('ENVIANDO CALIFICACION',response.data)
         if (response.data[0] == true) {
@@ -2368,17 +2371,22 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    consultarCriterios(){
+    consultarCriterios() {
       console.log()
       axios.get("criteriosController.php", {
         params: {
-          accion:'consultarCriterios',
+          accion: 'consultarCriterios',
           id_equipo: this.equipo_grafica.split('<->')[0]
         }
-      }).then(response=>{
-        console.log("SOLO GRAFICAS",response.data)
+      }).then(response => {
+        if (response.data[0] == true) {
+          this.criterioGrafica = response.data[1];
+        } else {
+          console.log("Error al consultar" + response.data)
+        }
+        console.log("criterios grafica", response.data)
       }).catch(error => {
-        console.log("Error en axios.php"+error)
+        console.log("Error en axios.php" + error)
       })
     },
     diasDelMesAnio() {
@@ -2407,23 +2415,15 @@ const app = {
     tablaGraficas() {
       setTimeout(() => {
         var datos = [];
-        console.log("RECHAZOS", this.datosGraficaRechazo.length)
-        if (this.tipoTablas == 'Rechazos') {
-          datos = this.datosGraficaRechazo
-        } else if (this.tipoTablas == 'Merma') {
-          datos = this.datosGraficaMerma
-        } else if (this.tipoTablas == 'Eficiencia') {
-          datos = this.datosGraficaEficiencia
-        } else if (this.tipoTablas == 'Accidentes') {
-          datos = this.datosGraficaAccidentes
-        } else if (this.tipoTablas == 'Actos Inseguros') {
-          datos = this.datosGraficaActosInseguros
-        } else if (this.tipoTablas == 'Ausentismo') {
-          datos = this.datosGraficaAusentismo
-        } else if (this.tipoTablas == 'Cumplimiento del proyecto') {
-          datos = this.datosGraficaCumplimientoProyecto
+        console.log("Tamanio Grafica", this.datosGrafica.length, "Criterios Grafica")
+        const selectedItem = this.criterioGrafica.find(item => item.id === this.idCriterioGrafica);
+        let nombreCriterio = ""
+        if (selectedItem) {
+          nombreCriterio = selectedItem.nombre;
         }
-        console.log("Tabla: ", this.tipoTablas, "datos: ", datos)
+
+        datos = this.datosGraficas
+
         const ctx = document.getElementById('myChart');
         if (!ctx) {
           console.error("No se pudo obtener la referencia al elemento canvas.");
@@ -2441,7 +2441,7 @@ const app = {
           data: {
             labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
             datasets: [{
-              label: this.tipoTablas,
+              label: nombreCriterio,
               data: datos,
               borderWidth: 1
             }]
@@ -2460,7 +2460,7 @@ const app = {
       }, 200)
     },
     consultadoValoresGrafica() {
-      if (this.tipoTablas && this.equipo_grafica && this.anio_grafica && this.mes_grafica) {
+      if (this.idCriterioGrafica && this.equipo_grafica && this.anio_grafica && this.mes_grafica) {
         var mes;
         if (this.mes_grafica == 'Enero') { mes = 1 }
         if (this.mes_grafica == 'Febrero') { mes = 2 }
@@ -2480,44 +2480,47 @@ const app = {
         axios.get("graficasController.php", {
           params: {
             accion: "Graficas",
-            grafica: this.tipoTablas,
+            grafica: this.idCriterioGrafica,
             id_equipo: id_equipo,
             anio: this.anio_grafica,
             mes: mes
           }
         }).then(response => {
-          //console.log("consulta grafica",response.data)
+          console.log("consulta grafica", response.data)
           if (response.data[0] == true) {
             const nuevoArreglo = [];
             response.data[1].forEach(valores => {
               nuevoArreglo[(valores.dia - 1)] = valores.valor;//la resto ya que el arreglo empieza en 0
             });
+            this.datosGrafica = nuevoArreglo
+            this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
 
+            /* if (this.idCriterioGrafica == 'Rechazos') {
+               this.datosGraficaRechazo = nuevoArreglo
+               this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             } else if (this.idCriterioGrafica == 'Merma') {
+               this.datosGraficaMerma = nuevoArreglo
+               this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             } else if (this.idCriterioGrafica == 'Eficiencia') {
+               this.datosGraficaEficiencia = nuevoArreglo
+               this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             } else if (this.idCriterioGrafica == 'Accidentes') {
+               this.datosGraficaAccidentes = nuevoArreglo
+               this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             } else if (this.idCriterioGrafica == 'Actos Inseguros') {
+               this.datosGraficaActosInseguros = nuevoArreglo
+               this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             } else if (this.idCriterioGrafica == 'Ausentismo') {
+               this.datosGraficaAusentismo = nuevoArreglo
+               this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+             }/*else if(this.idCriterioGrafica=='Cumplimiento del proyecto'){
+                 this.datosGraficaCumplimientoProyecto = nuevoArreglo
+                 this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+               }*/
 
-            if (this.tipoTablas == 'Rechazos') {
-              this.datosGraficaRechazo = nuevoArreglo
-              this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            } else if (this.tipoTablas == 'Merma') {
-              this.datosGraficaMerma = nuevoArreglo
-              this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            } else if (this.tipoTablas == 'Eficiencia') {
-              this.datosGraficaEficiencia = nuevoArreglo
-              this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            } else if (this.tipoTablas == 'Accidentes') {
-              this.datosGraficaAccidentes = nuevoArreglo
-              this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            } else if (this.tipoTablas == 'Actos Inseguros') {
-              this.datosGraficaActosInseguros = nuevoArreglo
-              this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            } else if (this.tipoTablas == 'Ausentismo') {
-              this.datosGraficaAusentismo = nuevoArreglo
-              this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-            }/*else if(this.tipoTablas=='Cumplimiento del proyecto'){
-                this.datosGraficaCumplimientoProyecto = nuevoArreglo
-                this.sumaTabla = this.datosGraficaRechazo.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
-              }*/
+            //PENDIENTE AL LLAMANDO  
             this.tablaGraficas()
-            this.consultarCausas()
+            //this.consultarCausas()
 
           } else {
             console.log("Algo salio mal al consultar los datos de la grafica")
@@ -2529,36 +2532,41 @@ const app = {
     },
     insertandoValores(index) {
       let valor = 0;
-      console.log(this.datosGraficaRechazo);
-      if (this.tipoTablas == 'Rechazos') {
-        valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
-        this.datosGraficaRechazo[index] = valor;
-        this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      } else if (this.tipoTablas == 'Merma') {
-        valor = parseFloat(document.getElementById('graficaMerma' + index).value);
-        this.datosGraficaMerma[index] = valor;
-        this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      } else if (this.tipoTablas == 'Eficiencia') {
-        valor = parseFloat(document.getElementById('graficaEficiencia' + index).value);
-        this.datosGraficaEficiencia[index] = valor;
-        this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      } else if (this.tipoTablas == 'Accidentes') {
-        valor = parseFloat(document.getElementById('graficaAccidentes' + index).value);
-        this.datosGraficaAccidentes[index] = valor;
-        this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      } else if (this.tipoTablas == 'Actos Inseguros') {
-        valor = parseFloat(document.getElementById('graficaActosInseguros' + index).value);
-        this.datosGraficaActosInseguros[index] = valor;
-        this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      } else if (this.tipoTablas == 'Ausentismo') {
-        valor = parseFloat(document.getElementById('graficaAusentismo' + index).value);
-        this.datosGraficaAusentismo[index] = valor;
-        this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-      }/*else if(this.tipoTablas=='Cumplimiento del proyecto'){
-        valor = parseFloat(document.getElementById('graficaCumplimiento' + index).value);
-        this.datosGraficaCumplimientoProyecto[index] = valor;
-        this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
-      }*/
+
+      valor = parseFloat(document.getElementById('grafica' + index).value);
+      this.datosGrafica[index] = valor;
+      this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+
+      /* console.log(this.datosGraficaRechazo);
+       if (this.idCriterioGrafica == 'Rechazos') {
+         valor = parseFloat(document.getElementById('graficaRechazo' + index).value);
+         this.datosGraficaRechazo[index] = valor;
+         this.sumaTablaRechazo = this.datosGraficaRechazo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       } else if (this.idCriterioGrafica == 'Merma') {
+         valor = parseFloat(document.getElementById('graficaMerma' + index).value);
+         this.datosGraficaMerma[index] = valor;
+         this.sumaTablaMerma = this.datosGraficaMerma.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       } else if (this.idCriterioGrafica == 'Eficiencia') {
+         valor = parseFloat(document.getElementById('graficaEficiencia' + index).value);
+         this.datosGraficaEficiencia[index] = valor;
+         this.sumaTablaEficiencia = this.datosGraficaEficiencia.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       } else if (this.idCriterioGrafica == 'Accidentes') {
+         valor = parseFloat(document.getElementById('graficaAccidentes' + index).value);
+         this.datosGraficaAccidentes[index] = valor;
+         this.sumaTablaAccidentes = this.datosGraficaAccidentes.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       } else if (this.idCriterioGrafica == 'Actos Inseguros') {
+         valor = parseFloat(document.getElementById('graficaActosInseguros' + index).value);
+         this.datosGraficaActosInseguros[index] = valor;
+         this.sumaTablaActosInseguros = this.datosGraficaActosInseguros.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       } else if (this.idCriterioGrafica == 'Ausentismo') {
+         valor = parseFloat(document.getElementById('graficaAusentismo' + index).value);
+         this.datosGraficaAusentismo[index] = valor;
+         this.sumaTablaActosAusentismo = this.datosGraficaAusentismo.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+       }else if(this.idCriterioGrafica=='Cumplimiento del proyecto'){
+         valor = parseFloat(document.getElementById('graficaCumplimiento' + index).value);
+         this.datosGraficaCumplimientoProyecto[index] = valor;
+         this.sumaTabla = this.datosGraficaCumplimientoProyecto.reduce((total, valor) =>{ if (isNaN(valor) || valor === null) {return total + 0;} else {return total + valor;} }, 0).toFixed(2);
+       }*/
       if (valor === null || valor === undefined || isNaN(valor)) {
         valor = null;
       }
@@ -2586,14 +2594,14 @@ const app = {
       var planta = this.equipo_grafica.split('<->')[2];
       var area = this.equipo_grafica.split('<->')[3];
 
-      //console.log('Verificando variables','Planta: '+planta,'Area: '+area,'ID equipo: '+id_equipo,'Nombre EAD: '+nombre_ead,'tipoTabla: '+this.tipoTablas,'Anio Grafica: '+this.anio_grafica,'Mes:'+mes,'Dia:'+dia,+'Valor:'+valor)
+      //console.log('Verificando variables','Planta: '+planta,'Area: '+area,'ID equipo: '+id_equipo,'Nombre EAD: '+nombre_ead,'tipoTabla: '+this.idCriterioGrafica,'Anio Grafica: '+this.anio_grafica,'Mes:'+mes,'Dia:'+dia,+'Valor:'+valor)
       axios.post("graficasController.php", {
         accion: 'Guadar dato',
         planta: planta,
         area: area,
         id_equipo: id_equipo,
         nombre_ead: nombre_ead,
-        grafica: this.tipoTablas,
+        grafica: this.idCriterioGrafica,
         anio: this.anio_grafica,
         mes: mes,
         dia: dia,
@@ -2635,7 +2643,7 @@ const app = {
 
       axios.get("causasController.php", {
         params: {
-          grafica: this.tipoTablas,
+          grafica: this.idCriterioGrafica,
           id_equipo: this.equipo_grafica.split('<->')[0],
           anio: this.anio_grafica,
           mes: mes,
@@ -2653,7 +2661,7 @@ const app = {
       })
     },
     guardarCausa() {
-      if (this.tipoTablas == '') {
+      if (this.idCriterioGrafica == '') {
         return Swal.fire({
           text: "No a seleccionado tipo de tabla/grafica",
           icon: "warning"
@@ -2705,7 +2713,7 @@ const app = {
       if (this.mes_grafica == 'Diciembre') { mes = 12 }
 
       axios.post("causasController.php", {
-        tabla: this.tipoTablas,
+        tabla: this.idCriterioGrafica,
         id_equipo: this.equipo_grafica.split('<->')[0],
         equipo: this.equipo_grafica.split('<->')[1],
         responsable: this.responsable_causa,
@@ -2744,7 +2752,7 @@ const app = {
         id: id,
         responsable: this.responsable_causa,
         causa: this.causa,
-        tabla: this.tipoTablas,
+        tabla: this.idCriterioGrafica,
         dia: this.dia_grafica,
       }).then(response => {
         if (response.data == true) {
