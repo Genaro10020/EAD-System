@@ -635,13 +635,13 @@ button {
 
 .divLineaMenu {
     background: rgb(227, 42, 42);
-    background: linear-gradient(0deg, rgba(227, 42, 42, 1) 0%, rgba(121, 9, 9, 1) 35%, rgba(255, 255, 255, 1) 39%);
+    background: linear-gradient(0deg, rgba(227, 42, 42, 1) 0%, rgba(121, 9, 9, 1) 100%, rgba(255, 255, 255, 1) 100%);
 
 }
 
 .dropdown {
     /*background: rgb(227,42,42)*/
-    background: linear-gradient(41deg, rgba(121, 9, 9, 1) 10%, rgb(182, 33, 33) 68%, rgba(121, 9, 9, 1) 80%, rgba(255, 255, 255, 1) 81%);
+    background: linear-gradient(45deg, rgba(121, 9, 9, 1) 10%, rgb(182, 33, 33) 68%, rgba(121, 9, 9, 1) 70%, rgba(255, 255, 255, 1) 70%);
     /* Degradado de izquierda a derecha */
     position: relative;
     display: inline-block;

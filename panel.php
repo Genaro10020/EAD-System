@@ -13,55 +13,59 @@ if (isset($_SESSION['nombre'])) {
         <header>
             <div id="header-app"></div>
         </header>
-
         <div id="app" class="col-12" style="min-height: 80vh;">
-            <div class="  d-flex text-center">
-                <div class="col-1 dropdown" style="width:150px;  z-index: 2000; ">
-                    <p class="dropbtn text-white" style="max-height:10px;">
-                        <i class="bi bi-list">Menú</i>
-                    </p>
-                    <div class="dropdown-content">
-                        <?php
-                        if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
-                            if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
-                        ?>
-                                <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                                <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
-                            <?php } ?>
-                            <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                            <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                            <a><i class="bi bi-people-fill"></i>Gestión</a>
-                            <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
-                            <?php
-                            if ($_SESSION['tipo_usuario'] == 'Admin') {
-                            ?>
-                                <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
-                                <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
-                                <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                                <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
-                                <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
-                                <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
-                                <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
-                                <a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>
-                                <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
+            <div class="row d-flex text-center">
+                <?php
+                if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
+                ?>
+                        <div class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                            <p class="dropbtn text-white" style="max-height:10px;">
+                                <i class="bi bi-list me-5">Menú</i>
+                            </p>
+                            <div class="dropdown-content">
+                                <?php
+                                if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
+                                    if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                                ?>
+                                        <a><i class="bi bi-gear-fill">Configuracion</i></a>
+                                        <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                    <?php } ?>
+                                    <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
+                                    <?php
+                                    if ($_SESSION['tipo_usuario'] == 'Admin') {
+                                    ?>
+                                        <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
+                                        <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
+                                        <a><i class="bi bi-trophy-fill"> Competencias</i></a>
+                                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
+                                        <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
+                                        <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
+                                        <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
+                                        <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
+                                        <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
 
-                            <?php }
-                            if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
-                            ?>
-                                <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
-                            <?php } ?>
-                            <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
-                        <?php
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="row  divLineaMenu w-100 d-flex text-center align-items-end text-light" style="font-size:14px">
-                    <div class="col-6 col-lg-4">
-                        <label class="text-center" style="font-size: 0.7em"> ventana: {{ventana}}</label>
-
+                                    <?php }
+                                    if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                                    ?>
+                                        <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                    <?php } ?>
+                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
+                                <?php
+                                }
+                                ?>
+                            </div>
+                        </div>
+                <?php
+                } 
+                ?>
+                <div class="row container-fluid divLineaMenu d-flex text-center align-items-end text-light" style="font-size:14px; ">
+                    <div class="offset-2 col-4 offset-lg-2 col-lg-2">
+                        <label class="text-center" style="font-size: 0.7em"> Ventana: {{ventana}}</label>
                     </div>
                     <div class="col-6 col-lg-8 text-end">
                         <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>

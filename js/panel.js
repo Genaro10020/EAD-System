@@ -2414,15 +2414,13 @@ const app = {
     },
     tablaGraficas() {
       setTimeout(() => {
-        var datos = [];
-        console.log("Tamanio Grafica", this.datosGrafica.length, "Criterios Grafica")
+
+        console.log("Tamanio Grafica", this.datosGrafica.length)
         const selectedItem = this.criterioGrafica.find(item => item.id === this.idCriterioGrafica);
         let nombreCriterio = ""
         if (selectedItem) {
           nombreCriterio = selectedItem.nombre;
         }
-
-        datos = this.datosGraficas
 
         const ctx = document.getElementById('myChart');
         if (!ctx) {
@@ -2442,7 +2440,7 @@ const app = {
             labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
             datasets: [{
               label: nombreCriterio,
-              data: datos,
+              data: this.datosGrafica,
               borderWidth: 1
             }]
           },
@@ -2856,7 +2854,7 @@ const app = {
           if (response.data[0] == true) {
             console.log("Datos Graficas ScoreCard", response.data[1]);
 
-            let suma1 = 0;//RECHAZOS
+            /*let suma1 = 0;//RECHAZOS
             let datos = response.data[1].filter(elemento => elemento.grafica === "Rechazos").map(elemento => suma1 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
             this.rechazosSC = typeof suma1 === 'number' && !Number.isInteger(suma1) ? suma1.toFixed(2) : suma1; //verifico que que sea un numero y que no sea entero para colocarle el fixed
 
@@ -2882,7 +2880,7 @@ const app = {
 
             let suma7 = 0;//AUSENTISMO
             let datos7 = response.data[1].filter(elemento => elemento.grafica === "Cumplimiento del proyecto").map(elemento => suma7 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.cumplimientoSC = typeof suma7 === 'number' && !Number.isInteger(suma7) ? suma7.toFixed(2) : suma7;
+            this.cumplimientoSC = typeof suma7 === 'number' && !Number.isInteger(suma7) ? suma7.toFixed(2) : suma7;*/
 
             this.consultarDatosPonderacionID()
           } else {
