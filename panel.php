@@ -1518,7 +1518,7 @@ if (isset($_SESSION['nombre'])) {
                                     <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
                                     <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
-                                    <th scope="col" class="text-start"> {{criterio.nombre}}</th>
+                                    <th scope="col" class="text-start">{{criterio.id_criterios}} {{criterio.nombre}}</th>
                                     <!--<td>
                                        <label v-show="fila==0">#</label>
                                         <label v-show="fila==1">Kg.</label>
@@ -1535,31 +1535,24 @@ if (isset($_SESSION['nombre'])) {
                                         <template v-for="sumas in sumasDinamicasSC">
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
+                                        <input v-show="criterio.tipo=='Input'"></input>
                                         <label v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
-                                        <!--<label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
-                                        <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
-                                        <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
-                                        <label v-show="fila==3" class="text-primary">{{accidentesSC}}</label>
-                                        <label v-show="fila==4" class="text-primary">{{actosInsegurosSC}}</label>
-                                        <label v-show="fila==6" class="text-primary">{{ausentismoSC}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{asistenciaSC}}</label>-->
                                     </td>
                                     <td>
-                                        <!--<label v-show="fila==0" class="text-primary">{{puntosRechazo}} </label>
-                                        <label v-show="fila==1" class="text-primary">{{puntosMerma}} </label>
-                                        <label v-show="fila==2" class="text-primary">{{puntosEficiencia}}</label>
-                                        <label v-show="fila==3" class="text-primary">{{puntosAccidentes}}</label>
-                                        <label v-show="fila==4" class="text-primary">{{puntosActosInseguros}}</label>
-                                        <label v-show="fila==6" class="text-primary">{{puntosAusentismo}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia}}</label>-->
+                                        <template v-for="puntos in puntosCriterios">
+                                            <label v-show="puntos.id_criterios==criterio.id_criterios"> {{puntos.puntos}}</label>
+                                        </template>
                                     </td>
                                     <td>
-                                        <!--<label v-show="fila==(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" class="text-primary">
-                                            <button v-show="inputPonderacionSC!==(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
-                                            <input v-show="inputPonderacionSC===(filasDinamicasSC.length-1)-((filasDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
-                                        </label>-->
+                                        <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
+                                            <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
+                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
+                                        </label>
                                     </td>
                                     <td>
+                                        <template v-for="puntos in puntosCriterios">
+                                            <label v-show="puntos.id_criterios==criterio.id_criterios">{{multiplicar(puntos.puntos,fila)}}</label><!--{{ puntos.puntos && !isNaN(puntos.puntos) && inputValorSC[fila] && !isNaN(inputValorSC[fila]) ? puntos.puntos * inputValorSC[fila] : '' }}-->
+                                        </template>
                                         <!--<label v-show="fila==0" class="text-primary">{{puntosRechazo * inputValorSC[fila]}} </label>
                                         <label v-show="fila==1" class="text-primary">{{puntosMerma * inputValorSC[fila]}} </label>
                                         <label v-show="fila==2" class="text-primary">{{puntosEficiencia * inputValorSC[fila]}}</label>
@@ -1572,7 +1565,7 @@ if (isset($_SESSION['nombre'])) {
                                 <tr>
                                     <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
                                     <td class="border border-1 border-dark border-start-1">
-                                        TOTAL
+                                        <!--{{isNaN(totalSC) ? "TOTAL" : totalSC}}-->
                                     </td>
                                 </tr>
                             </tbody>

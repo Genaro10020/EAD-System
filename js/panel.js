@@ -280,7 +280,10 @@ const app = {
       inputPonderacionSC: '',
       inputValorSC: [],
       inputPuntoEvaluados: [],
-      criteriosDinamicasSC: []
+      criteriosDinamicasSC: [],
+      puntosCriterios:[],
+      puntosEvaluacion:[],
+      totalSC:''
     }
   },
   mounted() {
@@ -2863,7 +2866,8 @@ const app = {
               return acc;
             }, []);
 
-            console.log("RESULTADO SUMA", this.sumasDinamicasSC)
+            console.log("Sumas ScoreCard", this.sumasDinamicasSC)
+          
 
             //this.sumasDinamicasSC
 
@@ -2949,29 +2953,39 @@ const app = {
         if (response.data[0] == true) {
           let datosIDPonderacion = response.data[1]
           console.log("Ponderacion Equipo", datosIDPonderacion)
-          //tomo los criterios con el id evitando duplicados
-          this.criteriosDinamicasSC = [...new Map(datosIDPonderacion.map(item => [item.nombre, item.id_criterios])).entries()].map(([nombre, id_criterios]) => ({ nombre, id_criterios }));
-          console.log("Criterios dinamicas", this.criteriosDinamicasSC)
-          /*let sumaRechazo = this.rechazosSC;
-          let sumaMerma = this.mermaSC;
-          let sumaEficiencia = this.eficienciaSC
-          let sumaAccidentes = this.accidentesSC
-          let sumaActosInseguros = this.actosInsegurosSC
-          let sumaAusentismo = this.ausentismoSC
-          let sumaAsistencia = this.asistenciaSC
+          
+          this.criteriosDinamicasSC = Object.values(datosIDPonderacion.reduce((acc, item) => {
+            if (!acc[item.nombre]) {
+              acc[item.nombre] = {
+                nombre: item.nombre,
+                id_criterios: item.id_criterios,
+                tipo: item.tipo
+              };
+            }
+            return acc;
+          }, {}));
+          
+          let puntos = [];
+          let puntosFiltrados = [];
+          
 
-          console.log("Suma Eficiencia: ", sumaEficiencia)
-          console.log("Ponderacion Eficiencia", datosIDPonderacion.filter(items => items.criterio == 'Eficiencia'))
-          console.log("Filtrando: ", datosIDPonderacion.filter(items => items.criterio == 'Eficiencia' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaEficiencia && items.desde <= sumaEficiencia))
-          console.log("COMPROBANDO EFICIENCIA", datosIDPonderacion.filter(items => items.criterio == 'Eficiencia' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaEficiencia && items.desde <= sumaEficiencia).map(itemsEficiencia => itemsEficiencia.puntos));
-
-          this.puntosRechazo = datosIDPonderacion.filter(items => items.criterio === 'Rechazos' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaRechazo && items.desde <= sumaRechazo).map(itemsRechazos => itemsRechazos.puntos)[0];
-          this.puntosMerma = datosIDPonderacion.filter(items => items.criterio == 'Merma y desperdicio' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaMerma && items.desde <= sumaMerma).map(itemsMerma => itemsMerma.puntos)[0];
-          this.puntosEficiencia = datosIDPonderacion.filter(items => items.criterio == 'Eficiencia' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaEficiencia && items.desde <= sumaEficiencia).map(itemsEficiencia => itemsEficiencia.puntos)[0];
-          this.puntosAccidentes = datosIDPonderacion.filter(items => items.criterio == 'Accidentes' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAccidentes && items.desde <= sumaAccidentes).map(itemsAccidentes => itemsAccidentes.puntos)[0];
-          this.puntosActosInseguros = datosIDPonderacion.filter(items => items.criterio == 'Actos inseguros' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaActosInseguros && items.desde <= sumaActosInseguros).map(itemsActos => itemsActos.puntos)[0];
-          this.puntosAusentismo = datosIDPonderacion.filter(items => items.criterio == 'Ausentismo' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAusentismo && items.desde <= sumaAusentismo).map(itemsAusentismo => itemsAusentismo.puntos)[0];
-          this.puntosAsistencia = datosIDPonderacion.filter(items => items.criterio == 'Cumplimiento de proyecto' && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= sumaAsistencia && items.desde <= sumaAsistencia).map(itemsAsistencia => itemsAsistencia.puntos)[0];*/
+          this.sumasDinamicasSC.forEach(element => {
+             puntosFiltrados = datosIDPonderacion.filter(items =>
+              items.id_criterios == element.id_criterios
+              && items.hasta != null 
+              && items.desde != null 
+              && items.puntos != null 
+              && items.hasta >= element.suma
+              && items.desde <= element.suma
+            );
+            let punto = puntosFiltrados.map(item => item.puntos)[0];
+          
+            puntos.push({
+              id_criterios: element.id_criterios,
+              puntos: punto}); 
+          });
+          this.puntosCriterios = puntos
+          console.log("puntos",this.puntosCriterios); // arreglo de puntos correspondientes
 
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
@@ -2986,7 +3000,12 @@ const app = {
     saveInputSC(index) {
       this.inputPonderacionSC = ''
       //let suma =arreglo.reduce((a,b)=>a+b, 0);
-
+    },
+    multiplicar(puntos,index){
+      const resultado = this.inputValorSC[index] * puntos;//multiplico puntos obtenidos x calificacion
+      this.puntosEvaluacion[index]=this.inputValorSC[index] * puntos; //guardo la multiplicacion
+      this.totalSC = this.puntosEvaluacion.reduce((a,b)=>a+b,0);
+      return isNaN(resultado) ? '' : resultado; //si es NAN no imprimas nada de lo contrario imprime
     },
     //al salir del input
     banderaInputSC() {
