@@ -200,8 +200,7 @@ const app = {
       clasificaciones: ['ITEM', 'CAUSA', 'CANTIDAD'],
       datosDiasMerma: ["20", 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
       sumaTabla: 0,
-
-
+      sumasDinamicasSC: [],
       sumaTablaRechazo: 0,
       sumaTablaMerma: 0,
       sumaTablaEficiencia: 0,
@@ -281,7 +280,7 @@ const app = {
       inputPonderacionSC: '',
       inputValorSC: [],
       inputPuntoEvaluados: [],
-      filasDinamicasSC: []
+      criteriosDinamicasSC: []
     }
   },
   mounted() {
@@ -2853,6 +2852,20 @@ const app = {
         }).then(response => {
           if (response.data[0] == true) {
             console.log("Datos Graficas ScoreCard", response.data[1]);
+            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
+              const index = current.id_criterios;
+              const existingItem = acc.find(item => item.id_criterios === index);
+              if (existingItem) {
+                existingItem.suma = (existingItem.suma + current.valor).toFixed(2);
+              } else {
+                acc.push({ id_criterios: index, suma: current.valor });
+              }
+              return acc;
+            }, []);
+
+            console.log("RESULTADO SUMA", this.sumasDinamicasSC)
+
+            //this.sumasDinamicasSC
 
             /*let suma1 = 0;//RECHAZOS
             let datos = response.data[1].filter(elemento => elemento.grafica === "Rechazos").map(elemento => suma1 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
@@ -2936,8 +2949,9 @@ const app = {
         if (response.data[0] == true) {
           let datosIDPonderacion = response.data[1]
           console.log("Ponderacion Equipo", datosIDPonderacion)
-          this.filasDinamicasSC = [... new Set(datosIDPonderacion.map(items => items.nombre))];
-          console.log("Filas dinamicas", this.filasDinamicasSC)
+          //tomo los criterios con el id evitando duplicados
+          this.criteriosDinamicasSC = [...new Map(datosIDPonderacion.map(item => [item.nombre, item.id_criterios])).entries()].map(([nombre, id_criterios]) => ({ nombre, id_criterios }));
+          console.log("Criterios dinamicas", this.criteriosDinamicasSC)
           /*let sumaRechazo = this.rechazosSC;
           let sumaMerma = this.mermaSC;
           let sumaEficiencia = this.eficienciaSC

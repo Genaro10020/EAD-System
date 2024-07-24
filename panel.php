@@ -18,50 +18,50 @@ if (isset($_SESSION['nombre'])) {
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                 ?>
-                        <div class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
-                            <p class="dropbtn text-white" style="max-height:10px;">
-                                <i class="bi bi-list me-5">Menú</i>
-                            </p>
-                            <div class="dropdown-content">
+                    <div class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                        <p class="dropbtn text-white" style="max-height:10px;">
+                            <i class="bi bi-list me-5">Menú</i>
+                        </p>
+                        <div class="dropdown-content">
+                            <?php
+                            if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
+                                if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                            ?>
+                                    <a><i class="bi bi-gear-fill">Configuracion</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                <?php } ?>
+                                <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
+                                <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
                                 <?php
-                                if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
-                                    if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                                if ($_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
-                                        <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                                        <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
-                                        <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
-                                    <?php } ?>
-                                    <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
-                                    <?php
-                                    if ($_SESSION['tipo_usuario'] == 'Admin') {
-                                    ?>
-                                        <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
-                                        <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
-                                        <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
-                                        <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
-                                        <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
-                                        <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
-                                        <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
-                                        <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
+                                    <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
+                                    <a><i class="bi bi-trophy-fill"> Competencias</i></a>
+                                    <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
+                                    <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
+                                    <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
+                                    <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
+                                    <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
+                                    <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
 
-                                    <?php }
-                                    if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
-                                    ?>
-                                        <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
-                                        <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
-                                    <?php } ?>
-                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
-                                <?php
-                                }
+                                <?php }
+                                if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                                 ?>
-                            </div>
+                                    <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                <?php } ?>
+                                <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
+                            <?php
+                            }
+                            ?>
                         </div>
+                    </div>
                 <?php
-                } 
+                }
                 ?>
                 <div class="row container-fluid divLineaMenu d-flex text-center align-items-end text-light" style="font-size:14px; ">
                     <div class="offset-2 col-4 offset-lg-2 col-lg-2">
@@ -1501,25 +1501,26 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
+
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
                                     <!--<th class="bg-dark"></th>-->
                                     <th class="bg-dark"></th>
-                                    <th scope="row" class="bg-dark text-light">Unidades</th>
+                                    <!--<th scope="row" class="bg-dark text-light">Unidades</th>-->
                                     <th scope="row" class="bg-dark text-light">Valor actual</th>
                                     <th scope="row" class="bg-dark text-light">Puntos obtenidos</th>
                                     <th scope="row" class="bg-dark text-light">Ponderación</th>
                                     <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
                                 </tr>
                             <tbody>
-                                <tr v-for="(filas,fila) in filasDinamicasSC">
+                                <tr v-for="(criterio,fila) in criteriosDinamicasSC">
                                     <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
                                     <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
-                                    <th scope="col" class="text-start">{{filas}}</th>
-                                    <td>
-                                        <!--<label v-show="fila==0">#</label>
+                                    <th scope="col" class="text-start"> {{criterio.nombre}}</th>
+                                    <!--<td>
+                                       <label v-show="fila==0">#</label>
                                         <label v-show="fila==1">Kg.</label>
                                         <label v-show="fila==2">%</label>
                                         <label v-show="fila==3">#</label>
@@ -1528,9 +1529,13 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-show="fila==6">#</label>
                                         <label v-show="fila==7">%</label>
                                         <label v-show="fila==8">#</label>
-                                        <label v-show="fila==9">%</label>-->
-                                    </td>
+                                        <label v-show="fila==9">%</label>
+                                    </td>-->
                                     <td>
+                                        <template v-for="sumas in sumasDinamicasSC">
+                                            <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
+                                        </template>
+                                        <label v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
                                         <!--<label v-show="fila==0" class="text-primary">{{rechazosSC}}</label>
                                         <label v-show="fila==1" class="text-primary">{{mermaSC}}</label>
                                         <label v-show="fila==2" class="text-primary">{{eficienciaSC}}</label>
@@ -1565,7 +1570,7 @@ if (isset($_SESSION['nombre'])) {
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td class="border border-end-0 border-top-0 border-white" colspan="5"></td>
+                                    <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
                                     <td class="border border-1 border-dark border-start-1">
                                         TOTAL
                                     </td>
