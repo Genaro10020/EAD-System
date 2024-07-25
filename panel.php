@@ -1535,13 +1535,16 @@ if (isset($_SESSION['nombre'])) {
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
                                         <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios)"></input>
-                                        <label v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
+                                        <label  v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
                                     </td>
-                                    <td>
+                                    <td><!---->
                                         <template v-for="puntos in puntosCriterios">
                                             <label v-if="puntos.id_criterios==criterio.id_criterios && !isNaN(puntos.puntos)"> {{puntos.puntos}}</label>
+                                            <label v-if="puntos.id_criterios==criterio.id_criterios && typeof puntos.puntos === 'undefined'"> <span class="badge alert-warning text-bg-dark">Sin rango en ponderación</span></label>
                                         </template>
                                         {{puntosObtenidos[criterio.id_criterios]}}
+                                        <label v-if="puntosObtenidos[criterio.id_criterios]"> {{puntosObtenidos[criterio.id_criterios]}}</label>
+                                        <span v-else class="badge alert-warning text-bg-dark">Sin rango en ponderación</span>
                                     </td>
                                     <td>
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
@@ -1636,7 +1639,7 @@ if (isset($_SESSION['nombre'])) {
                                     <td>{{equipoEvaluador.planta}}</td>
                                     <td>{{equipoEvaluador.area}}</td>
                                     <td>{{equipoEvaluador.nombre_ead}}</td>
-                                    <td>{{equipoEvaluador.proyecto}}</td>
+                                    <td class="text-start">{{equipoEvaluador.proyecto}}</td>
                                     <td class="text-start"> {{equipoEvaluador.comentario}}</td>
                                     <td>
                                         <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0" class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro,equipoEvaluador.comentario)">Reevaluar</button>
