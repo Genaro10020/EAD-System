@@ -245,6 +245,9 @@ const app = {
       equipoPonderacion: false,
       criterios: [],
       datosTablaPonderacion: [],
+      inputValorActual: [],
+      puntosObtenidosInput: [],
+      puntosObtenidos: [],
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -281,9 +284,9 @@ const app = {
       inputValorSC: [],
       inputPuntoEvaluados: [],
       criteriosDinamicasSC: [],
-      puntosCriterios:[],
-      puntosEvaluacion:[],
-      totalSC:''
+      puntosCriterios: [],
+      puntosEvaluacion: [],
+      totalSC: ''
     }
   },
   mounted() {
@@ -2867,37 +2870,6 @@ const app = {
             }, []);
 
             console.log("Sumas ScoreCard", this.sumasDinamicasSC)
-          
-
-            //this.sumasDinamicasSC
-
-            /*let suma1 = 0;//RECHAZOS
-            let datos = response.data[1].filter(elemento => elemento.grafica === "Rechazos").map(elemento => suma1 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.rechazosSC = typeof suma1 === 'number' && !Number.isInteger(suma1) ? suma1.toFixed(2) : suma1; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma2 = 0;//MERMA
-            let datos2 = response.data[1].filter(elemento => elemento.grafica === "Merma").map(elemento => suma2 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.mermaSC = typeof suma2 === 'number' && !Number.isInteger(suma2) ? suma2.toFixed(2) : suma2; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma3 = 0;//EFICIENCIA
-            let datos3 = response.data[1].filter(elemento => elemento.grafica === "Eficiencia").map(elemento => suma3 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.eficienciaSC = typeof suma3 === 'number' && !Number.isInteger(suma3) ? suma3.toFixed(2) : suma3; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma4 = 0;//ACCIDENTES
-            let datos4 = response.data[1].filter(elemento => elemento.grafica === "Accidentes").map(elemento => suma4 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.accidentesSC = typeof suma2 === 'number' && !Number.isInteger(suma4) ? suma4.toFixed(2) : suma4; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma5 = 0;//ACTOS INSEGUROS
-            let datos5 = response.data[1].filter(elemento => elemento.grafica === "Actos Inseguros").map(elemento => suma5 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.actosInsegurosSC = typeof suma5 === 'number' && !Number.isInteger(suma5) ? suma5.toFixed(2) : suma5; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma6 = 0;//AUSENTISMO
-            let datos6 = response.data[1].filter(elemento => elemento.grafica === "Ausentismo").map(elemento => suma6 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.ausentismoSC = typeof suma6 === 'number' && !Number.isInteger(suma6) ? suma6.toFixed(2) : suma6; //verifico que que sea un numero y que no sea entero para colocarle el fixed
-
-            let suma7 = 0;//AUSENTISMO
-            let datos7 = response.data[1].filter(elemento => elemento.grafica === "Cumplimiento del proyecto").map(elemento => suma7 += elemento.valor);//primero filtro y despues busco la columna y despues sumo.
-            this.cumplimientoSC = typeof suma7 === 'number' && !Number.isInteger(suma7) ? suma7.toFixed(2) : suma7;*/
 
             this.consultarDatosPonderacionID()
           } else {
@@ -2951,10 +2923,10 @@ const app = {
         }
       }).then(response => {
         if (response.data[0] == true) {
-          let datosIDPonderacion = response.data[1]
-          console.log("Ponderacion Equipo", datosIDPonderacion)
-          
-          this.criteriosDinamicasSC = Object.values(datosIDPonderacion.reduce((acc, item) => {
+          this.datosIDPonderacion = response.data[1]
+          console.log("Ponderacion Equipo", this.datosIDPonderacion)
+
+          this.criteriosDinamicasSC = Object.values(this.datosIDPonderacion.reduce((acc, item) => {
             if (!acc[item.nombre]) {
               acc[item.nombre] = {
                 nombre: item.nombre,
@@ -2964,28 +2936,28 @@ const app = {
             }
             return acc;
           }, {}));
-          
+
           let puntos = [];
           let puntosFiltrados = [];
-          
 
           this.sumasDinamicasSC.forEach(element => {
-             puntosFiltrados = datosIDPonderacion.filter(items =>
+            puntosFiltrados = this.datosIDPonderacion.filter(items =>
               items.id_criterios == element.id_criterios
-              && items.hasta != null 
-              && items.desde != null 
-              && items.puntos != null 
+              && items.hasta != null
+              && items.desde != null
+              && items.puntos != null
               && items.hasta >= element.suma
               && items.desde <= element.suma
             );
             let punto = puntosFiltrados.map(item => item.puntos)[0];
-          
+
             puntos.push({
               id_criterios: element.id_criterios,
-              puntos: punto}); 
+              puntos: punto
+            });
           });
           this.puntosCriterios = puntos
-          console.log("puntos",this.puntosCriterios); // arreglo de puntos correspondientes
+          console.log("puntos", this.puntosCriterios); // arreglo de puntos correspondientes
 
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
@@ -2994,17 +2966,34 @@ const app = {
         console.log("Erro en axios", error)
       })
     },
+    saveInputDinamico(id_criterios) {
+      let valor = this.inputValorActual[id_criterios]
+      //obtengo el puntaje desde ponderacion
+      if (!this.puntosObtenidos[id_criterios]) {
+        this.puntosObtenidos[id_criterios] = []
+      }
+      this.puntosObtenidos[id_criterios] = this.datosIDPonderacion.filter(items => items.id_criterios == id_criterios && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0]
+      console.log("valor: ", valor, "puntosInput:", this.puntosObtenidos)
+    },
     activarInput(index) {
       this.inputPonderacionSC = index;
     },
-    saveInputSC(index) {
+    saveInputSC(id_criterios, index) {
       this.inputPonderacionSC = ''
+      if (this.puntosObtenidos[id_criterios]) {//si existe input dinamico un valor multiplicar si no continuar 
+        this.puntosEvaluacion[index] = this.inputValorSC[id_criterios] * this.puntosObtenidos[id_criterios];
+      } else {
+        this.puntosEvaluacion[index] = this.inputValorSC[id_criterios] * this.puntosCriterios.filter(items => items.id_criterios == id_criterios).map(items => items.puntos)
+      }
+
+      this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + b, 0)//suma de todos los puntos
+
       //let suma =arreglo.reduce((a,b)=>a+b, 0);
     },
-    multiplicar(puntos,index){
+    multiplicar(puntos, index) {
       const resultado = this.inputValorSC[index] * puntos;//multiplico puntos obtenidos x calificacion
-      this.puntosEvaluacion[index]=this.inputValorSC[index] * puntos; //guardo la multiplicacion
-      this.totalSC = this.puntosEvaluacion.reduce((a,b)=>a+b,0);
+      this.puntosEvaluacion[index] = this.inputValorSC[index] * puntos; //guardo la multiplicacion
+      //this.totalSC = this.puntosEvaluacion.reduce((a,b)=>a+b,0);
       return isNaN(resultado) ? '' : resultado; //si es NAN no imprimas nada de lo contrario imprime
     },
     //al salir del input

@@ -1501,7 +1501,6 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
-
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
@@ -1518,7 +1517,7 @@ if (isset($_SESSION['nombre'])) {
                                     <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
                                     <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
-                                    <th scope="col" class="text-start">{{criterio.id_criterios}} {{criterio.nombre}}</th>
+                                    <th scope="col" class="text-start">{{criterio.nombre}}</th>
                                     <!--<td>
                                        <label v-show="fila==0">#</label>
                                         <label v-show="fila==1">Kg.</label>
@@ -1535,37 +1534,29 @@ if (isset($_SESSION['nombre'])) {
                                         <template v-for="sumas in sumasDinamicasSC">
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
-                                        <input v-show="criterio.tipo=='Input'"></input>
+                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios)"></input>
                                         <label v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
                                     </td>
                                     <td>
                                         <template v-for="puntos in puntosCriterios">
-                                            <label v-show="puntos.id_criterios==criterio.id_criterios"> {{puntos.puntos}}</label>
+                                            <label v-if="puntos.id_criterios==criterio.id_criterios && !isNaN(puntos.puntos)"> {{puntos.puntos}}</label>
                                         </template>
+                                        {{puntosObtenidos[criterio.id_criterios]}}
                                     </td>
                                     <td>
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
-                                            <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[fila]}}</button>
-                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(fila)" @blur="saveInputSC(fila)" v-model="inputValorSC[fila]" class="form-control text-center" type="text" />
+                                            <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[criterio.id_criterios]}}</button>
+                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(criterio.id_criterios,fila)" v-model="inputValorSC[criterio.id_criterios]" class="form-control text-center" type="text" /> <!-- @blur="saveInputSC(criterio.id_criterios)"-->
                                         </label>
                                     </td>
                                     <td>
-                                        <template v-for="puntos in puntosCriterios">
-                                            <label v-show="puntos.id_criterios==criterio.id_criterios">{{multiplicar(puntos.puntos,fila)}}</label><!--{{ puntos.puntos && !isNaN(puntos.puntos) && inputValorSC[fila] && !isNaN(inputValorSC[fila]) ? puntos.puntos * inputValorSC[fila] : '' }}-->
-                                        </template>
-                                        <!--<label v-show="fila==0" class="text-primary">{{puntosRechazo * inputValorSC[fila]}} </label>
-                                        <label v-show="fila==1" class="text-primary">{{puntosMerma * inputValorSC[fila]}} </label>
-                                        <label v-show="fila==2" class="text-primary">{{puntosEficiencia * inputValorSC[fila]}}</label>
-                                        <label v-show="fila==3" class="text-primary">{{puntosAccidentes * inputValorSC[fila]}}</label>
-                                        <label v-show="fila==4" class="text-primary">{{puntosActosInseguros * inputValorSC[fila]}}</label>
-                                        <label v-show="fila==6" class="text-primary">{{puntosAusentismo * inputValorSC[fila]}}</label>
-                                        <label v-show="fila==9" class="text-primary">{{puntosAsistencia * inputValorSC[fila]}}</label>-->
+                                        {{puntosEvaluacion[fila]}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
                                     <td class="border border-1 border-dark border-start-1">
-                                        <!--{{isNaN(totalSC) ? "TOTAL" : totalSC}}-->
+                                        {{isNaN(totalSC) || totalSC==0  ? "TOTAL" : totalSC}}
                                     </td>
                                 </tr>
                             </tbody>
