@@ -1501,6 +1501,8 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
+                    {{puntosObtenidos}}
+                    {{inputValorActual}}
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
@@ -1530,21 +1532,21 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-show="fila==8">#</label>
                                         <label v-show="fila==9">%</label>
                                     </td>-->
-                                    <td>
+                                    <td><!--Columna Valor Actual-->
                                         <template v-for="sumas in sumasDinamicasSC">
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
                                         <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios)"></input>
                                         <label  v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
                                     </td>
-                                    <td><!---->
+                                    <td><!--Columna Puntos Obtenidos-->
                                         <template v-for="puntos in puntosCriterios">
                                             <label v-if="puntos.id_criterios==criterio.id_criterios && !isNaN(puntos.puntos)"> {{puntos.puntos}}</label>
-                                            <label v-if="puntos.id_criterios==criterio.id_criterios && typeof puntos.puntos === 'undefined'"> <span class="badge alert-warning text-bg-dark">Sin rango en ponderación</span></label>
+                                            <label v-if="puntos.id_criterios==criterio.id_criterios && typeof puntos.puntos === 'undefined'"> <span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
                                         </template>
-                                        {{puntosObtenidos[criterio.id_criterios]}}
-                                        <label v-if="puntosObtenidos[criterio.id_criterios]"> {{puntosObtenidos[criterio.id_criterios]}}</label>
-                                        <span v-else class="badge alert-warning text-bg-dark">Sin rango en ponderación</span>
+                                        <!--Puntos en input dinamicos-->
+                                        <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]==null && inputValorActual[criterio.id_criterios]!=null"><span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
+                                        <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]!=null">{{puntosObtenidos[criterio.id_criterios]}}</label>
                                     </td>
                                     <td>
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">

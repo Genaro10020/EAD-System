@@ -2858,16 +2858,21 @@ const app = {
         }).then(response => {
           if (response.data[0] == true) {
             console.log("Datos Graficas ScoreCard", response.data[1]);
-            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
-              const index = current.id_criterios;
-              const existingItem = acc.find(item => item.id_criterios === index);
-              if (existingItem) {
-                existingItem.suma = (existingItem.suma + current.valor).toFixed(2);
-              } else {
-                acc.push({ id_criterios: index, suma: current.valor });
+
+          this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
+          const index = current.id_criterios;
+          const existingItem = acc.find(item => item.id_criterios === index);
+          if (existingItem) {
+            console.log('existingItem.suma:', existingItem.suma, 'current.valor:', current.valor);
+              if (current.valor !== null) {
+                const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
+                existingItem.suma = suma.toFixed(2);
               }
-              return acc;
-            }, []);
+          } else {
+            acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
+          }
+          return acc;
+        }, []);
 
             console.log("Sumas ScoreCard", this.sumasDinamicasSC)
 
