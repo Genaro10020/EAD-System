@@ -1469,7 +1469,7 @@ if (isset($_SESSION['nombre'])) {
                 <div class="d-flex justify-content-center pt-3 text-center">
                     <div>
                         <span class="mx-2">Equipo: </span>
-                        <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                        <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard(), resetearValores()">
                             <option value="" disabled>Seleccione...</option>
                             <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion">{{equipos[0].nombre_ead}}</option>
                         </select>
@@ -1501,8 +1501,10 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
+                    {{puntosCriterios}}<br><!--Puntos Obtenidos-->
                     {{puntosObtenidos}}
                     {{inputValorActual}}
+                    {{inputColumnaPonderacion}}<!--Inpust Ponderacion-->
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
@@ -1536,7 +1538,7 @@ if (isset($_SESSION['nombre'])) {
                                         <template v-for="sumas in sumasDinamicasSC">
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
-                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios)"></input>
+                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios,fila)"></input>
                                         <label  v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
                                     </td>
                                     <td><!--Columna Puntos Obtenidos-->
@@ -1548,13 +1550,13 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]==null && inputValorActual[criterio.id_criterios]!=null"><span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
                                         <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]!=null">{{puntosObtenidos[criterio.id_criterios]}}</label>
                                     </td>
-                                    <td>
+                                    <td><!--Columna Ponderacion-->
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
-                                            <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputValorSC[criterio.id_criterios]}}</button>
-                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(criterio.id_criterios,fila)" v-model="inputValorSC[criterio.id_criterios]" class="form-control text-center" type="text" /> <!-- @blur="saveInputSC(criterio.id_criterios)"-->
+                                            <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>
+                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(criterio.id_criterios,fila)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class="form-control text-center" type="text" /> <!-- @blur="saveInputSC(criterio.id_criterios)"-->
                                         </label>
                                     </td>
-                                    <td>
+                                    <td><!--Puntos Evaluados-->
                                         {{puntosEvaluacion[fila]}}
                                     </td>
                                 </tr>
