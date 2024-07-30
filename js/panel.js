@@ -262,6 +262,7 @@ const app = {
       plantillas: ['Placas', 'Formación', 'Etiquetado', 'Ensamble'],
       columnasSC: ['Unidades', 'Valor actual', 'Puntos obtenidos', 'Ponderación', 'Puntos evaluados'],
       asistenciaSC: 0,
+      asistenciaPuntosCumplimiento: '',
       mes_score: '',
       anio_score: '',
       ponderacion_score: '',
@@ -2859,20 +2860,20 @@ const app = {
           if (response.data[0] == true) {
             console.log("Datos Graficas ScoreCard", response.data[1]);
 
-          this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
-          const index = current.id_criterios;
-          const existingItem = acc.find(item => item.id_criterios === index);
-          if (existingItem) {
-            console.log('existingItem.suma:', existingItem.suma, 'current.valor:', current.valor);
-              if (current.valor !== null) {
-                const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
-                existingItem.suma = suma.toFixed(2);
+            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
+              const index = current.id_criterios;
+              const existingItem = acc.find(item => item.id_criterios === index);
+              if (existingItem) {
+                console.log('existingItem.suma:', existingItem.suma, 'current.valor:', current.valor);
+                if (current.valor !== null) {
+                  const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
+                  existingItem.suma = suma.toFixed(2);
+                }
+              } else {
+                acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
               }
-          } else {
-            acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
-          }
-          return acc;
-        }, []);
+              return acc;
+            }, []);
 
             console.log("Sumas ScoreCard", this.sumasDinamicasSC)
 
@@ -2961,13 +2962,26 @@ const app = {
             });
           });
           this.puntosCriterios = puntos
-          console.log("puntos", this.puntosCriterios); // arreglo de puntos correspondientes
+          console.log("Puntos", this.puntosCriterios); // arreglo de puntos correspondientes
 
+          let cumplimiento_proyecto = this.asistenciaSC
+          let obteniendoPuntos = this.datosIDPonderacion.filter(items => items.id_criterios == 10 && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= cumplimiento_proyecto && items.desde <= cumplimiento_proyecto); // 10 es id de cumplimiento de proyecto
+          let puntosCumplimiento = obteniendoPuntos.map(item => item.puntos)[0];
+          this.asistenciaPuntosCumplimiento = puntosCumplimiento
+
+          //busco la ponderacion segun el valor del input
+          this.criteriosDinamicasSC.forEach((elementos, index) => {
+            if (this.inputValorActual[elementos.id_criterios]) {
+              this.saveInputDinamico(elementos.id_criterios, index)
+            } else if (elementos.id_criterios == 10) {//Cumplimiento del proyecto es 10
+              this.saveInputDinamico(elementos.id_criterios, index)
+            };
+          });
           //La realizo para que cuado actualicen la ponderacion realice la multiplicacion Puntos Obtenidos * Ponderacion
-          
-          this.puntosCriterios.forEach((elementos,index) =>{
-            if(this.inputColumnaPonderacion[elementos.id_criterios]){
-              if(!this.puntosEvaluacion[index]){
+
+          this.puntosCriterios.forEach((elementos, index) => {
+            if (this.inputColumnaPonderacion[elementos.id_criterios]) {
+              if (!this.puntosEvaluacion[index]) {
                 this.puntosEvaluacion[index] = null
               }
               this.puntosEvaluacion[index] = elementos.puntos * this.inputColumnaPonderacion[elementos.id_criterios];
@@ -2980,31 +2994,39 @@ const app = {
         console.log("Erro en axios", error)
       })
     },
-    saveInputDinamico(id_criterios,index) {
+    saveInputDinamico(id_criterios, index) {
       let valor = this.inputValorActual[id_criterios]
       //obtengo el puntaje desde ponderacion
       if (!this.puntosObtenidos[id_criterios]) {
         this.puntosObtenidos[id_criterios] = []
       }
       //si el input es vacio colocar null de lo contrario multiplicar si cumple con la condicion filter
-      if(valor==''){
+      if (valor == '') {
         this.puntosObtenidos[id_criterios] = null
-      }else{
+      } else {
         this.puntosObtenidos[id_criterios] = this.datosIDPonderacion.filter(items => items.id_criterios == id_criterios && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0]
-        console.log("valor: ", valor, "puntosInput:", this.puntosObtenidos)
+        //console.log("valor: ", valor, "puntosInput:", this.puntosObtenidos)
       }
-      this.saveInputSC(id_criterios,index)//para que se ejecute la multiplicacion en la fila
+      this.saveInputSC(id_criterios, index)//para que se ejecute la multiplicacion en la fila
     },
     activarInput(index) {
       this.inputPonderacionSC = index;
     },
     saveInputSC(id_criterios, index) {
       this.inputPonderacionSC = ''
-      if (this.puntosObtenidos[id_criterios]) {//si existe input dinamico un valor multiplicar si no continuar 
+
+      if (id_criterios === 10) {//cumplimiento del proyecto
+        if (this.inputColumnaPonderacion[id_criterios]) {//si numero en numero multiplicar 
+          this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.asistenciaPuntosCumplimiento
+        } else {//de lo contrario colocarlo null
+          this.puntosEvaluacion[index] = null
+        }
+      } else if (this.puntosObtenidos[id_criterios]) {//si existe input dinamico un valor multiplicar si no continuar 
         this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosObtenidos[id_criterios];
       } else {
         this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosCriterios.filter(items => items.id_criterios == id_criterios).map(items => items.puntos)
       }
+
       this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + b, 0)//suma de todos los puntos
       //let suma =arreglo.reduce((a,b)=>a+b, 0);
     },
@@ -3012,18 +3034,18 @@ const app = {
     banderaInputSC() {
       this.inputPonderacionSC = ''
     },
-    resetearValores(){
-    //Valor Actual Reseteo Inputs Dinamicos de columna 
-    this.sumasDinamicasSC = []
-    this.inputValorActual = []
+    resetearValores() {
+      //Valor Actual Reseteo Inputs Dinamicos de columna 
+      this.sumasDinamicasSC = []
+      this.inputValorActual = []
       //Puntos Obtenidos Reseteando Columna 
-    this.puntosObtenidos = []
-    //Ponderacion Reseteando Inputs 
-    this.inputColumnaPonderacion = []
-    //puntosEvaluacion Reseteando columna 
-    this.puntosEvaluacion = []
-    //Reseteando dato TOTAL
-    this.totalSC = ""
+      this.puntosObtenidos = []
+      //Ponderacion Reseteando Inputs 
+      this.inputColumnaPonderacion = []
+      //puntosEvaluacion Reseteando columna 
+      this.puntosEvaluacion = []
+      //Reseteando dato TOTAL
+      this.totalSC = ""
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

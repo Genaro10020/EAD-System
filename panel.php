@@ -1501,10 +1501,7 @@ if (isset($_SESSION['nombre'])) {
                 </div>
                 <div class=" col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w p-3">
-                    {{puntosCriterios}}<br><!--Puntos Obtenidos-->
-                    {{puntosObtenidos}}
-                    {{inputValorActual}}
-                    {{inputColumnaPonderacion}}<!--Inpust Ponderacion-->
+                        {{puntosEvaluacion}}
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
@@ -1539,7 +1536,7 @@ if (isset($_SESSION['nombre'])) {
                                             <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
                                         </template>
                                         <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios,fila)"></input>
-                                        <label  v-show="criterio.nombre=='Cumplimiento de proyecto'">{{asistenciaSC}}</label>
+                                        <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                     </td>
                                     <td><!--Columna Puntos Obtenidos-->
                                         <template v-for="puntos in puntosCriterios">
@@ -1549,6 +1546,8 @@ if (isset($_SESSION['nombre'])) {
                                         <!--Puntos en input dinamicos-->
                                         <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]==null && inputValorActual[criterio.id_criterios]!=null"><span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
                                         <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]!=null">{{puntosObtenidos[criterio.id_criterios]}}</label>
+                                        <!--Puntos Cumplimiento-->
+                                        <label v-if="criterio.id_criterios==10">{{asistenciaPuntosCumplimiento}}</label>
                                     </td>
                                     <td><!--Columna Ponderacion-->
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
