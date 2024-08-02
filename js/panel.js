@@ -287,7 +287,9 @@ const app = {
       criteriosDinamicasSC: [],
       puntosCriterios: [],
       puntosEvaluacion: [],
-      totalSC: ''
+      totalSC: '',
+      nombrePonderacionAsignada:'',
+      scoreCardCompletado:''
     }
   },
   mounted() {
@@ -2844,48 +2846,7 @@ const app = {
         })
       }
     },
-    consultarGraficasParaScoreCard() {
-      if (this.equipo_score != '' && this.anio_score != '' && this.mes_score != '') {
-        let id_equipo = this.equipo_score.split('<->')[0];
-        let mes = this.mes_score;
-        mes_numero = this.mesesNumeros(mes)
-        axios.get("graficasController.php", {
-          params: {
-            accion: "ScoreCard",
-            id_equipo: id_equipo,
-            anio: this.anio_score,
-            mes: mes_numero,
-          }
-        }).then(response => {
-          if (response.data[0] == true) {
-            console.log("Datos Graficas ScoreCard", response.data[1]);
 
-            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
-              const index = current.id_criterios;
-              const existingItem = acc.find(item => item.id_criterios === index);
-              if (existingItem) {
-                console.log('existingItem.suma:', existingItem.suma, 'current.valor:', current.valor);
-                if (current.valor !== null) {
-                  const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
-                  existingItem.suma = suma.toFixed(2);
-                }
-              } else {
-                acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
-              }
-              return acc;
-            }, []);
-
-            console.log("Sumas ScoreCard", this.sumasDinamicasSC)
-
-            this.consultarDatosPonderacionID()
-          } else {
-            console.log("Error en la consulta ScoreCard", response.data)
-          }
-        }).catch(error => {
-          console.log("Error en axios :-( ", error);
-        });
-      }
-    },
     mesesNumeros(stringMes) {
       if (stringMes == 'Enero') { return '01' }
       if (stringMes == 'Febrero') { return '02' }
@@ -2913,6 +2874,117 @@ const app = {
         console.log("Error en axios :-( ", error);
       })
     },
+    consultarScoreCard(){
+      if (this.equipo_score != '' && this.anio_score != '' && this.mes_score != '') {
+          let id_equipo = this.equipo_score.split('<->')[0]
+          let id_ponderacion = this.equipo_score.split("<->")[4]
+          let anio = this.anio_score
+          let mes = this.mes_score;
+          let mes_numero = this.mesesNumeros(mes)
+
+            axios.get("scoreCardController.php", {
+              params: {
+                id_equipo:id_equipo,
+                id_ponderacion: id_ponderacion,
+                anio:anio,
+                mes:mes_numero
+              }
+            }).then(response => {
+                if(response.data[0]===true){
+                    //Valor Actual sumas y input dinamicos
+                    this.sumasDinamicasSC = []
+                    this.inputValorActual = []
+                    //Puntos Obtenidos Reseteando Columna 
+                    this.puntosObtenidos = []
+                    //Ponderacion Reseteando Inputs 
+                    this.inputColumnaPonderacion = []
+                    //puntosEvaluacion Reseteando columna 
+                    this.puntosEvaluacion = []
+                    //Reseteando dato TOTAL
+                    this.totalSC = ""
+                    console.log("")
+                    //Tomo los datos existentes guardados
+                    response.data[1].forEach(elemento=>{
+                      this.inputValorActual[elemento.id_criterio] = elemento.input_valor_actual
+                      this.inputColumnaPonderacion[elemento.id_criterio] = elemento.input_ponderacion
+                    })
+                    this.consultarGraficasParaScoreCard()
+
+                }else{
+                  console.log("sin éxito consulta ScoreCard,response.data")
+                }
+            }).catch(error=>{
+              console.log("Error en el axios", error)
+            });
+        }
+    },
+    guardarDatoScoreCard(id_criterio){
+      let id_equipo = this.equipo_score.split('<->')[0]
+      let id_ponderacion = this.equipo_score.split("<->")[4]
+      let input_valor_actual = this.inputValorActual[id_criterio] ?? "";
+      let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
+      let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
+      let anio = this.anio_score
+      let mes = this.mes_score;
+      let mes_numero = this.mesesNumeros(mes)
+      axios.post("scorecardController.php", {
+          id_equipo: id_equipo,
+          id_ponderacion: id_ponderacion,
+          id_criterio:id_criterio,
+          input_valor_actual:input_valor_actual,
+          puntos_obtenidos:puntos_obtenidos,
+          input_ponderacion:input_ponderacion,
+          anio:anio,
+          mes:mes_numero
+      }).then(response => {
+        console.log("guardado ScoreCard",response.data)
+
+      }).catch(error=>{
+        console.log("Error en el axios", error)
+      })
+
+    },
+    consultarGraficasParaScoreCard() {
+      if (this.equipo_score != '' && this.anio_score != '' && this.mes_score != '') {
+        let id_equipo = this.equipo_score.split('<->')[0];
+        let mes = this.mes_score;
+        mes_numero = this.mesesNumeros(mes)
+        axios.get("graficasController.php", {
+          params: {
+            accion: "ScoreCard",
+            id_equipo: id_equipo,
+            anio: this.anio_score,
+            mes: mes_numero,
+          }
+        }).then(response => {
+          if (response.data[0] == true) {
+            console.log("Datos Graficas ScoreCard", response.data[1]);
+
+            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
+              const index = current.id_criterios;
+              const existingItem = acc.find(item => item.id_criterios === index);
+              if (existingItem) {
+                if (current.valor !== null) {
+                  const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
+                  existingItem.suma = suma.toFixed(2);
+                }
+              } else {
+                acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
+              }
+              return acc;
+            }, []);
+
+            console.log("Sumas ScoreCard", this.sumasDinamicasSC)
+
+            this.consultarDatosPonderacionID()
+          } else {
+            console.log("Error en la consulta ScoreCard", response.data)
+          }
+        }).catch(error => {
+          console.log("Error en axios :-( ", error);
+        });
+      }
+    },
     consultarDatosPonderacionID() {
       let id_ponderacion = this.equipo_score.split("<->")[4];
       if (id_ponderacion == '') {
@@ -2931,7 +3003,7 @@ const app = {
         if (response.data[0] == true) {
           this.datosIDPonderacion = response.data[1]
           console.log("Ponderacion Equipo", this.datosIDPonderacion)
-
+          this.nombrePonderacionAsignada = this.datosIDPonderacion[0] && this.datosIDPonderacion[0].nombre_ponderacion ? this.datosIDPonderacion[0].nombre_ponderacion : "";
           this.criteriosDinamicasSC = Object.values(this.datosIDPonderacion.reduce((acc, item) => {
             if (!acc[item.nombre]) {
               acc[item.nombre] = {
@@ -2943,49 +3015,73 @@ const app = {
             return acc;
           }, {}));
 
+          console.log("Criterios Dinamicos",this.criteriosDinamicasSC)
+
+
+          //Puntos de criterios grafica
           let puntos = [];
           let puntosFiltrados = [];
-
           this.sumasDinamicasSC.forEach(element => {
-            puntosFiltrados = this.datosIDPonderacion.filter(items =>
-              items.id_criterios == element.id_criterios
-              && items.hasta != null
-              && items.desde != null
-              && items.puntos != null
-              && items.hasta >= element.suma
-              && items.desde <= element.suma
-            );
+            puntosFiltrados = this.datosIDPonderacion.filter(items =>items.id_criterios == element.id_criterios && items.hasta != null&& items.desde != null&& items.puntos != null&& items.hasta >= element.suma && items.desde <= element.suma);
             let punto = puntosFiltrados.map(item => item.puntos)[0];
             puntos.push({
               id_criterios: element.id_criterios,
               puntos: punto
             });
           });
+        
+
+          //solo input dinamicos
+          let puntosInput = []
+          let inputDinamicos = this.criteriosDinamicasSC.filter(item => item.tipo=='Input').map(datos=> datos.id_criterios)
+          inputDinamicos.forEach(id_criterio=>{
+            if(this.inputValorActual[id_criterio]!==''){
+              let valor =this.inputValorActual[id_criterio]
+              puntosInput.push({
+                id_criterios: id_criterio,
+                puntos: this.datosIDPonderacion.filter(items => items.id_criterios == id_criterio && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0]})
+              //console.log("aaaresultado",this.datosIDPonderacion.filter(items => items.id_criterios == id_criterio && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0])
+            }
+          })
+         let union = puntosInput.concat(puntos);
+         console.log("union",union);
+          this.puntosObtenidos = puntosInput
           this.puntosCriterios = puntos
-          console.log("Puntos", this.puntosCriterios); // arreglo de puntos correspondientes
+          
+
+          //INPUT DINAMICOS SANCANDO PUNTOS OBTENIDOS DESDE PONDERACION
+          let inputsValorActual = this.inputValorActual;
+          inputsValorActual.forEach((valor,id_criterios) => {
+            //console.log("datos e index",valor,id_criterios);
+            //this.puntosObtenidos[id_criterios] = this.datosIDPonderacion.filter(items => items.id_criterios == id_criterios && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0]
+              /*if(this.inputValorActual[id_criterios]!='' && this.puntosObtenidos[id_criterios]>=0 && this.inputColumnaPonderacion[id_criterios] && this.inputColumnaPonderacion[id_criterios]!= ""){
+                this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosObtenidos[id_criterios];
+              }else{
+                this.puntosEvaluacion[index] = null
+              }*/
+          });
+
+          
+          
 
           let cumplimiento_proyecto = this.asistenciaSC
           let obteniendoPuntos = this.datosIDPonderacion.filter(items => items.id_criterios == 10 && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= cumplimiento_proyecto && items.desde <= cumplimiento_proyecto); // 10 es id de cumplimiento de proyecto
           let puntosCumplimiento = obteniendoPuntos.map(item => item.puntos)[0];
           this.asistenciaPuntosCumplimiento = puntosCumplimiento
 
-          //busco la ponderacion segun el valor del input
-          this.criteriosDinamicasSC.forEach((elementos, index) => {
-            if (this.inputValorActual[elementos.id_criterios]) {
-              this.saveInputDinamico(elementos.id_criterios, index)
-            } else if (elementos.id_criterios == 10) {//Cumplimiento del proyecto es 10
-              this.saveInputDinamico(elementos.id_criterios, index)
-            };
-          });
+          
           //La realizo para que cuado actualicen la ponderacion realice la multiplicacion Puntos Obtenidos * Ponderacion
-
-          this.puntosCriterios.forEach((elementos, index) => {
-            if (this.inputColumnaPonderacion[elementos.id_criterios]) {
+          //criteriosDinamicasSC
+          this.criteriosDinamicasSC.forEach((elementos, index) => {
+            console.log(elementos.id_criterios)
+            /*if (this.inputColumnaPonderacion[elementos.id_criterios]) {
               if (!this.puntosEvaluacion[index]) {
                 this.puntosEvaluacion[index] = null
               }
-              this.puntosEvaluacion[index] = elementos.puntos * this.inputColumnaPonderacion[elementos.id_criterios];
-            };
+              if(elementos.puntos!=''){
+                this.puntosEvaluacion[index] = elementos.puntos * this.inputColumnaPonderacion[elementos.id_criterios];
+              }
+            };*/
           });
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
@@ -3009,44 +3105,63 @@ const app = {
       }
       this.saveInputSC(id_criterios, index)//para que se ejecute la multiplicacion en la fila
     },
-    activarInput(index) {
-      this.inputPonderacionSC = index;
-    },
     saveInputSC(id_criterios, index) {
       this.inputPonderacionSC = ''
-
       if (id_criterios === 10) {//cumplimiento del proyecto
-        if (this.inputColumnaPonderacion[id_criterios]) {//si numero en numero multiplicar 
+        console.log("10")
+        if (this.inputColumnaPonderacion[id_criterios] && !isNaN(this.asistenciaPuntosCumplimiento)) {//si numero en numero multiplicar 
+          console.log("A")
           this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.asistenciaPuntosCumplimiento
         } else {//de lo contrario colocarlo null
           this.puntosEvaluacion[index] = null
         }
-      } else if (this.puntosObtenidos[id_criterios]) {//si existe input dinamico un valor multiplicar si no continuar 
-        this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosObtenidos[id_criterios];
-      } else {
-        this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosCriterios.filter(items => items.id_criterios == id_criterios).map(items => items.puntos)
+      } else if (this.puntosObtenidos[id_criterios]!='') {//si existe input dinamico un valor multiplicar si no continuar 
+        console.log("B")
+          if(this.inputValorActual[id_criterios]!='' && this.puntosObtenidos[id_criterios]>=0 && this.inputColumnaPonderacion[id_criterios]>=0 && this.inputColumnaPonderacion[id_criterios]!= ""){
+            this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosObtenidos[id_criterios];
+            console.log("Multipleque")
+          }else{
+            this.puntosEvaluacion[index] = null
+          }
+      } else {//si existe input dinamico un valor multiplicar si no continuar 
+        //HAY QUE VALIDAR PRIMERO SI NO EXISTEN PUNTOS OBTENIDOS
+          if(this.inputColumnaPonderacion[id_criterios] && this.inputColumnaPonderacion[id_criterios]!= "" && !isNaN(this.puntosCriterios.filter(items => items.id_criterios == id_criterios).map(items => items.puntos) && !isNaN(this.puntosCriterios.filter(items => items.id_criterios == id_criterios).map(items => items.puntos).length>0))){
+            if(typeof(this.puntosCriterios.filter(items => items.id_criterios == id_criterios && items.puntos != '').map(items => items.puntos)[0])==='number'){//si esta indefinado el puntaje no multiplicara
+              console.log("C");
+              this.puntosEvaluacion[index] = this.inputColumnaPonderacion[id_criterios] * this.puntosCriterios.filter(items => items.id_criterios == id_criterios && items.puntos != '').map(items => items.puntos)
+            }else{
+                if(this.inputValorActual[id_criterios]!='' && this.puntosObtenidos[id_criterios]>=0 && this.inputColumnaPonderacion[id_criterios] && this.inputColumnaPonderacion[id_criterios]!= ""){
+                  console.log("D");
+                  this.puntosEvaluacion[index] = this.puntosObtenidos[id_criterios] * this.inputColumnaPonderacion[id_criterios]  ;
+                }else{
+                  this.puntosEvaluacion[index] = null
+                }
+            }
+          }else{
+            this.puntosEvaluacion[index] = null
+          }
       }
+      this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + (b ?? 0), 0);
 
-      this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + b, 0)//suma de todos los puntos
+      let existevacio = this.puntosEvaluacion.some(element => element==null);//Si existe un null en todo el arreglo devolvera true
+      console.log(existevacio)
+
+     this.scoreCardCompletado = !this.puntosEvaluacion.some(element => element == null)
+
+      //No inputs dinamicos 
       //let suma =arreglo.reduce((a,b)=>a+b, 0);
+    },
+    //inputActivar
+    activarInput(index) {
+      this.inputPonderacionSC = index;
     },
     //al salir del input
     banderaInputSC() {
       this.inputPonderacionSC = ''
     },
-    resetearValores() {
-      //Valor Actual Reseteo Inputs Dinamicos de columna 
-      this.sumasDinamicasSC = []
-      this.inputValorActual = []
-      //Puntos Obtenidos Reseteando Columna 
-      this.puntosObtenidos = []
-      //Ponderacion Reseteando Inputs 
-      this.inputColumnaPonderacion = []
-      //puntosEvaluacion Reseteando columna 
-      this.puntosEvaluacion = []
-      //Reseteando dato TOTAL
-      this.totalSC = ""
-    },
+   
+     
+   
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////PONDERACION/////////////////////////////////////////////////////////////////

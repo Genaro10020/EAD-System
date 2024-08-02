@@ -20,7 +20,7 @@ if(isset($_SESSION['nombre'])){
 
                 break;
             case 'DELETE':
-
+                
                 break;
         default:
             $val = "Método HTTP no permitido";

@@ -625,6 +625,26 @@ button {
     padding: 5px;
 }
 
+
+.columna-color-criterios{
+    background: linear-gradient(0deg, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 100%);
+}
+.columna-color-una{
+    background: linear-gradient(0deg, rgb(228, 240, 248) 0%, rgb( 228, 240, 248 ) 0%, rgb( 228, 240, 248 ) 100%);
+}
+.columna-color-dos{
+    background: linear-gradient(0deg, rgb(213, 232, 245) 0%, rgb(213, 232, 245) 0%, rgb(213, 232, 245) 100%);
+}
+.columna-color-tres{
+    background: linear-gradient(0deg, rgb(209, 231, 245) 0%, rgb(209, 231, 245) 0%, rgb( 209, 231, 245 ) 100%);
+}
+.columna-color-cuatro{
+    background: linear-gradient(0deg, rgb(224, 245, 207) 0%, rgb( 224, 245, 207) 0%, rgb( 224, 245, 207 ) 100%);
+}
+.columna-color-total{
+    background: linear-gradient(0deg, rgb(230, 241, 219) 0%, rgb( 224, 245, 207) 0%, rgb( 224, 245, 207 ) 100%);
+}
+
 /*////////////////////// MENU PRINCIPAL */
 .dropbtn {
     color: #000000;

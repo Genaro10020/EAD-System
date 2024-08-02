@@ -68,7 +68,7 @@ function consultarDatosPonderacion($id)
     global $conexion;
     $estado = false;
     $resultado = [];
-    $consulta = "SELECT datos_ponderaciones.*,criterios.nombre,criterios.tipo FROM datos_ponderaciones INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios WHERE datos_ponderaciones.id_ponderacion = ?";
+    $consulta = "SELECT datos_ponderaciones.*,criterios.nombre,criterios.tipo, ponderaciones.ponderacion AS nombre_ponderacion FROM datos_ponderaciones INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios JOIN ponderaciones ON datos_ponderaciones.id_ponderacion = ponderaciones.id WHERE datos_ponderaciones.id_ponderacion = ?";
     $stmt = $conexion->prepare($consulta);
     $stmt->bind_param("i", $id);
     if ($stmt) {

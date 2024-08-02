@@ -1,5 +1,5 @@
 <?php session_start();
-if (isset($_SESSION['nombre'])) {
+if ($_SESSION['nombre'] && $_SESSION['tipo_acceso'] && $_SESSION['tipo_usuario']) {
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -54,7 +54,7 @@ if (isset($_SESSION['nombre'])) {
                                     <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
                                 <?php } ?>
-                                <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarCriterio(),consultarSeguimientoAsistencia(),consultarGraficasParaScoreCard()"><b>Scorecard</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
                             <?php
                             }
                             ?>
@@ -65,7 +65,7 @@ if (isset($_SESSION['nombre'])) {
                 ?>
                 <div class="row container-fluid divLineaMenu d-flex text-center align-items-end text-light" style="font-size:14px; ">
                     <div class="offset-2 col-4 offset-lg-2 col-lg-2">
-                        <label class="text-center" style="font-size: 0.7em"> Ventana: {{ventana}}</label>
+                        <label class="text-center" style="font-size: 0.7em"> Ventana: {{ventana}} </label>
                     </div>
                     <div class="col-6 col-lg-8 text-end">
                         <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>
@@ -1245,7 +1245,7 @@ if (isset($_SESSION['nombre'])) {
 
 
 
-                <div v-if="ponderaciones.length>0" class="row scroll-w"><!--scroll Consulta Ponderaciones-->
+                <div v-if="ponderaciones.length>0" class="row scroll"><!--scroll Consulta Ponderaciones-->
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                     <div :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'" class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
@@ -1469,28 +1469,28 @@ if (isset($_SESSION['nombre'])) {
                 <div class="d-flex justify-content-center pt-3 text-center">
                     <div>
                         <span class="mx-2">Equipo: </span>
-                        <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard(), resetearValores()">
+                        <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
                             <option value="" disabled>Seleccione...</option>
                             <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion">{{equipos[0].nombre_ead}}</option>
                         </select>
                     </div>
                     <div>
                         <span class="mx-2">Año: </span>
-                        <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                        <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
                             <option disabled default selected value="">Seleccione...</option>
                             <option v-for="anio in anios" :value="anio">{{anio}}</option>
                         </select>
                     </div>
                     <div>
                         <span class="mx-2">Mes: </span>
-                        <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                        <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
                             <option disabled default selected value="">Seleccione...</option>
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
                     <!--<div>
                         <span class="mx-2">Ponderacion: </span>
-                        <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarGraficasParaScoreCard()">
+                        <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
                             <option disabled default selected value="">Seleccione...</option>
                             <option v-for="ponderacion in listaPonderaciones" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
                         </select>
@@ -1499,10 +1499,15 @@ if (isset($_SESSION['nombre'])) {
                 <div class="col-12  d-flex justify-content-center mt-2">
                     <span v-show="equipo_score.split('<->')[4]==''" class="badge rounded-pill bg-warning text-dark">Equipo sin ponderacion asignada</span>
                 </div>
-                <div class=" col-12 d-flex justify-content-center mx-auto">
-                    <div class="scroll-w p-3">
-                        {{puntosEvaluacion}}
-                        <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered mx-2 mb-5 table  table-bordered border-dark text-center">
+                <div class="col-12 d-flex justify-content-center mx-auto">
+                    <div class="scroll-w">
+                        <div v-if="equipo_score != '' && anio_score != '' && mes_score != ''" class="col-12 d-flex justify-content-center" style="min-width:1200px">
+                           <label v-if="nombrePonderacionAsignada!=''" style="font-size:0.8em"> Ponderacion: <span  class="badge bg-success"> {{ nombrePonderacionAsignada }}</span></label>
+                            <span v-else class="badge bg-danger">Sin Ponderacion Asignada</span>
+                        </div>
+                        InputsDinamicos{{inputValorActual}}
+                        Puntos Obtenidos{{puntosObtenidos}}
+                        <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered  mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
                                     <!--<th class="bg-dark"></th>-->
@@ -1514,11 +1519,11 @@ if (isset($_SESSION['nombre'])) {
                                     <th scope="row" class="bg-dark text-light">Puntos evaluados</th>
                                 </tr>
                             <tbody>
-                                <tr v-for="(criterio,fila) in criteriosDinamicasSC">
+                                <tr v-for="(criterio,fila) in criteriosDinamicasSC"  >
                                     <!--<td v-show="fila===0" rowspan="3" class="text-center align-middle" style="background:#e9ecef; font-size:0.8em; max-width:45px;"> <label class="rotando" style="min-width:200px;height:10px">Valor y Sustentable</label></td>
                                     <td v-show="fila==3" rowspan="4" class="text-center align-middle" style=" background:#e9ecef;font-size:0.8em; max-width:45px;"> <label class="rotando " style="min-width:200px;height:10px"> Social</label></td>
                                     <td v-show="fila==7" rowspan="3" class="text-center align-middle" style="background:#e9ecef;font-size:0.8em; max-width:45px;"><label class="rotando" style="min-width:200px; height:10px">Mejora Continua</label></td>-->
-                                    <th scope="col" class="text-start">{{criterio.nombre}}</th>
+                                    <th scope="col" class="text-start" :class="puntosEvaluacion[fila] ||  puntosEvaluacion[fila]===0 ? 'columna-color-criterios':''">{{criterio.nombre}}</th>
                                     <!--<td>
                                        <label v-show="fila==0">#</label>
                                         <label v-show="fila==1">Kg.</label>
@@ -1531,37 +1536,41 @@ if (isset($_SESSION['nombre'])) {
                                         <label v-show="fila==8">#</label>
                                         <label v-show="fila==9">%</label>
                                     </td>-->
-                                    <td><!--Columna Valor Actual-->
+                                    <!--Columna Valor Actual-->
+                                    <td class="middle-center" :class="puntosEvaluacion[fila] || puntosEvaluacion[fila]===0 ? 'columna-color-una':''">
                                         <template v-for="sumas in sumasDinamicasSC">
-                                            <label v-show="sumas.id_criterios==criterio.id_criterios"> {{sumas.suma}}</label>
+                                            <div v-show="sumas.id_criterios==criterio.id_criterios" >{{sumas.suma}}</div>
                                         </template>
-                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="saveInputDinamico(criterio.id_criterios,fila)"></input>
+                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup="saveInputDinamico(criterio.id_criterios,fila),guardarDatoScoreCard(criterio.id_criterios)"></input>
                                         <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                     </td>
-                                    <td><!--Columna Puntos Obtenidos-->
+                                    <!--Columna Puntos Obtenidos-->
+                                    <td :class="puntosEvaluacion[fila] ||  puntosEvaluacion[fila]===0 ? 'columna-color-una':''">
                                         <template v-for="puntos in puntosCriterios">
-                                            <label v-if="puntos.id_criterios==criterio.id_criterios && !isNaN(puntos.puntos)"> {{puntos.puntos}}</label>
+                                            <div v-if="puntos.id_criterios==criterio.id_criterios && !isNaN(puntos.puntos)">{{puntos.puntos}}</div>
                                             <label v-if="puntos.id_criterios==criterio.id_criterios && typeof puntos.puntos === 'undefined'"> <span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
                                         </template>
                                         <!--Puntos en input dinamicos-->
-                                        <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]==null && inputValorActual[criterio.id_criterios]!=null"><span class="badge alert-warning text-bg-warning">Sin rango en ponderación</span></label>
-                                        <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]!=null">{{puntosObtenidos[criterio.id_criterios]}}</label>
-                                        <!--Puntos Cumplimiento-->
-                                        <label v-if="criterio.id_criterios==10">{{asistenciaPuntosCumplimiento}}</label>
+                                        <label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]==null && criterio.id_criterios!=10 && inputValorActual[criterio.id_criterios]!=''">
+                                            <span class="badge bg-warning text-bg-warning">Sin rango en ponderación</span>
+                                        </label>
+                                        <!--<label v-if="puntosObtenidos.hasOwnProperty(criterio.id_criterios) && puntosObtenidos[criterio.id_criterios]!=null">{{puntosObtenidos[criterio.id_criterios]}}</label>-->
+                                        <div v-if="criterio.id_criterios==10" >{{asistenciaPuntosCumplimiento}}</div>
                                     </td>
-                                    <td><!--Columna Ponderacion-->
+                                    <!--Columna Ponderacion-->
+                                    <td :class="puntosEvaluacion[fila] ||  puntosEvaluacion[fila]===0 ? 'columna-color-una':''">
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
                                             <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>
-                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(criterio.id_criterios,fila)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class="form-control text-center" type="text" /> <!-- @blur="saveInputSC(criterio.id_criterios)"-->
+                                            <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="saveInputSC(criterio.id_criterios,fila),guardarDatoScoreCard(criterio.id_criterios)" @blur="saveInputSC(criterio.id_criterios,fila),guardarDatoScoreCard(criterio.id_criterios)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class="form-control text-center"  type="text" />
                                         </label>
                                     </td>
-                                    <td><!--Puntos Evaluados-->
+                                    <td :class="puntosEvaluacion[fila] ||  puntosEvaluacion[fila]===0 ? 'columna-color-cuatro':''"><!--Puntos Evaluados-->
                                         {{puntosEvaluacion[fila]}}
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="border border-end-0 border-top-0 border-white" colspan="4"></td>
-                                    <td class="border border-1 border-dark border-start-1">
+                                    <td :class="{ 'fw-bold text-primary': scoreCardCompletado && puntosEvaluacion.length>0}">
                                         {{isNaN(totalSC) || totalSC==0  ? "TOTAL" : totalSC}}
                                     </td>
                                 </tr>
@@ -1760,6 +1769,7 @@ if (isset($_SESSION['nombre'])) {
 
             <!--/////////////////////////////////CREAR COMPETENCIA PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'Crear Competencia'">
+            
                 <div class="col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2  offset-xl-2 col-xl-8  col-xxl-6 offset-xxl-3 px-4 shadow-lg mt-3 border border-white rounded-3 mx-auto" style="max-width: 700px;">
                     <div class="col-12">
                         <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
