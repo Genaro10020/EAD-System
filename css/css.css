@@ -22,6 +22,10 @@
     font-family: 'Roboto', sans-serif;
 }
 
+[v-cloak] {
+    display: none;
+}
+
 a {
     text-decoration: none;
     color: rgb(224, 224, 224);
@@ -39,9 +43,9 @@ a:hover {
     font-size: 18px;
 }
 
-.barra-gris{
-    background: rgb(224,224,224);
-    background: linear-gradient(180deg, rgba(224,224,224,1) 5%, rgba(252,252,252,1) 11%, rgba(255,255,255,1) 89%, rgba(207,207,207,1) 98%); 
+.barra-gris {
+    background: rgb(224, 224, 224);
+    background: linear-gradient(180deg, rgba(224, 224, 224, 1) 5%, rgba(252, 252, 252, 1) 11%, rgba(255, 255, 255, 1) 89%, rgba(207, 207, 207, 1) 98%);
 }
 
 .formulario {
@@ -75,12 +79,25 @@ table,
 .btn-actualizar,
 .btn-eliminar,
 .btn-guardar,
-.btn-cerrar-foro{
+.btn-cerrar-foro {
     font-size: 0.9em;
 }
 
-.btn-actualizar, .btn-cerrar-foro, .btn-eliminar,.btn-boton{transition: transform 0.1s linear}
-.btn-cerrar-foro:hover, .btn-actualizar:hover, .btn-eliminar:hover,.btn-boton:hover{transform: scale(1.2)}/*120%*/
+.btn-actualizar,
+.btn-cerrar-foro,
+.btn-eliminar,
+.btn-boton {
+    transition: transform 0.1s linear
+}
+
+.btn-cerrar-foro:hover,
+.btn-actualizar:hover,
+.btn-eliminar:hover,
+.btn-boton:hover {
+    transform: scale(1.2)
+}
+
+/*120%*/
 
 /*.update-btn {
     background-color: #007bff;
@@ -146,12 +163,17 @@ table,
 .tarjeta {
     font-size: 13px;
     width: 350px;
-    height: auto; /* Altura automática según el contenido */
-    border-radius: 10px; /* Borde redondeado */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
-    background-color: #f7d5d5; /* Color de fondo */
-    padding: 10px; /* Espaciado interno */
-    color: #666666; 
+    height: auto;
+    /* Altura automática según el contenido */
+    border-radius: 10px;
+    /* Borde redondeado */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra */
+    background-color: #f7d5d5;
+    /* Color de fondo */
+    padding: 10px;
+    /* Espaciado interno */
+    color: #666666;
 }
 
 .tarjeta .container {
@@ -161,61 +183,75 @@ table,
 .tarjeta_kpis {
     font-size: 13px;
     width: 600px;
-    height: auto; /* Altura automática según el contenido */
-    border-radius: 10px; /* Borde redondeado */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Sombra */
-    background-color: #f7d5d5; /* Color de fondo */
-    padding: 10px; /* Espaciado interno */
-    color: #666666; 
+    height: auto;
+    /* Altura automática según el contenido */
+    border-radius: 10px;
+    /* Borde redondeado */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra */
+    background-color: #f7d5d5;
+    /* Color de fondo */
+    padding: 10px;
+    /* Espaciado interno */
+    color: #666666;
 }
 
 .tarjeta_kpis .container {
     padding: 5px 5px 5px 10px;
 }
 
-.color-actualizar{
-   background: #fff3cd;
+.color-actualizar {
+    background: #fff3cd;
 }
 
 .letrasCard {
     font-weight: bold;
     font-size: 12px;
-    color: #333333; /* Color del texto */
+    color: #333333;
+    /* Color del texto */
 }
 
 ul {
-    margin-top: 10px; /* Espaciado superior de la lista */
-    padding-left: 20px; /* Sangría izquierda de la lista */
+    margin-top: 10px;
+    /* Espaciado superior de la lista */
+    padding-left: 20px;
+    /* Sangría izquierda de la lista */
 }
 
 .tarjeta .container ul li {
-    list-style-type: none; /* Quita viñetas de la lista */
+    list-style-type: none;
+    /* Quita viñetas de la lista */
     font-size: 12px;
     /* Color del texto de la lista */
 }
 
 
-input[type=number]::-webkit-inner-spin-button,/*Elimina los botones de incrementar y decrementar*/
+input[type=number]::-webkit-inner-spin-button,
+/*Elimina los botones de incrementar y decrementar*/
 input[type=number]::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+    -webkit-appearance: none;
+    margin: 0;
+}
 
 input[type=number] {
-        -moz-appearance: textfield; /* Firefox */
-        height: 20px; width: 60px; font-size: 13px; background-color: #B7DEE8; 
-    }
+    -moz-appearance: textfield;
+    /* Firefox */
+    height: 20px;
+    width: 60px;
+    font-size: 13px;
+    background-color: #B7DEE8;
+}
 
-input.inpus-number-graficas:focus{
+input.inpus-number-graficas:focus {
     background-color: #a4f18f;
 }
 
-.listaIntegrantes{
+.listaIntegrantes {
     font-weight: normal;
 }
 
-.listaIntegrantes:hover{
-    color:#e28a18;
+.listaIntegrantes:hover {
+    color: #e28a18;
     cursor: pointer;
     font-weight: bold;
 }
@@ -276,21 +312,21 @@ input.inpus-number-graficas:focus{
     border-radius: 50%;
     outline: none;
     cursor: pointer;
-  }
-  
-  .opcion-radio:checked {
-    background-color: #57b340;
-  }
+}
 
-  .label-radios {
+.opcion-radio:checked {
+    background-color: #57b340;
+}
+
+.label-radios {
     display: inline-block;
     font-size: 1em;
     color: #333;
     margin-right: 10px;
     cursor: pointer;
-  }
+}
 
-  .btn-up {
+.btn-up {
     height: 30px;
     width: 30px;
     font-family: Roboto, sans-serif;
@@ -366,24 +402,26 @@ input.inpus-number-graficas:focus{
 }
 
 
-.btn-input{
+.btn-input {
     width: 140px;
     height: 28px;
     font-size: 14px;
     color: #000000;
     background: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
-    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.2); 
+    box-shadow: inset 0px 0px 1px rgba(0, 0, 0, 0.2);
     cursor: pointer;
     border: 0px solid #e0e0e0;
     border-radius: 5px;
 }
-  
-  /* Estilos para cuando el radio button está seleccionado */
-  .opcion-radio:checked + .label-radios {
+
+/* Estilos para cuando el radio button está seleccionado */
+.opcion-radio:checked+.label-radios {
     font-weight: bold;
-    color: #1b5013; /* Cambia el color cuando está seleccionado */
-  }
-.scroll-w{
+    color: #1b5013;
+    /* Cambia el color cuando está seleccionado */
+}
+
+.scroll-w {
     overflow: auto;
 }
 
@@ -405,7 +443,7 @@ input.inpus-number-graficas:focus{
     /* Establece la altura máxima del div con scroll */
 }
 
-.scroll5{
+.scroll5 {
     overflow: auto;
     height: 40vh;
     /* Establece la altura máxima del div con scroll */
@@ -462,7 +500,7 @@ button {
 }
 
 
-.btn-circle-nuevo{
+.btn-circle-nuevo {
     background-color: #4c895b;
     color: white;
     font-size: 0.8em;
@@ -471,11 +509,11 @@ button {
     box-shadow: 1px 1px 2px #151515;
 }
 
-.btn-circle-nuevo:hover{
+.btn-circle-nuevo:hover {
     box-shadow: 2px 2px 5px #151515;
 }
 
-.btn-circle-agregar{
+.btn-circle-agregar {
     background-color: #4c895b;
     color: white;
     font-size: 0.9em;
@@ -483,7 +521,7 @@ button {
     transition: all 0.3s;
 }
 
-.btn-circle-agregar:hover{
+.btn-circle-agregar:hover {
     background-color: #2e693d;
     color: white;
     font-size: 0.9em;
@@ -491,7 +529,7 @@ button {
     border: none;
 }
 
-.btn-circle-actualizar{
+.btn-circle-actualizar {
     background-color: #ffc423;
     color: white;
     font-size: 0.9em;
@@ -499,7 +537,7 @@ button {
     transition: all 0.3s;
 }
 
-.btn-circle-actualizar:hover{
+.btn-circle-actualizar:hover {
     background-color: #ce9e19;
     color: white;
     font-size: 0.9em;
@@ -507,7 +545,7 @@ button {
     border: none;
 }
 
-.btn-circle-eliminar{
+.btn-circle-eliminar {
     background-color: #b75252;
     color: white;
     font-size: 0.9em;
@@ -515,7 +553,7 @@ button {
     transition: all 0.3s;
 }
 
-.btn-circle-eliminar:hover{
+.btn-circle-eliminar:hover {
     background-color: #a23838;
     color: white;
     font-size: 0.9em;
@@ -541,6 +579,7 @@ button {
     box-shadow: 1px 1px 2px #151515;
     border: none;
 }
+
 .botones-actualizar {
     width: 130px;
     background-color: #ffc423;
@@ -568,7 +607,7 @@ button {
     transition: all 0.3s;
 }
 
-.seccion_actulizar{
+.seccion_actulizar {
     background-color: #f5e381;
     border-radius: 10px;
     padding: 5px;
@@ -594,23 +633,23 @@ button {
     background-color: #f68383
 }
 
-.btn-pdca{
-        background: radial-gradient(circle, rgba(255,255,255,1) 44%, rgba(112,255,0,1) 46%, rgba(59,135,0,1) 81%); 
-        -webkit-border-radius: 50;
-        -moz-border-radius: 50;
-        border-radius: 50px;
-        -webkit-box-shadow: 0px 0px 4px #050505;
-        -moz-box-shadow: 0px 0px 4px #050505;
-        box-shadow: 0px 0px 4px #050505;
-        font-family: Arial;
-        color: #000000;
-        font-size: 10px;
-        padding: 10px 15px 10px 18px;
-        border: solid #202324 2px;
-        text-decoration: none;
+.btn-pdca {
+    background: radial-gradient(circle, rgba(255, 255, 255, 1) 44%, rgba(112, 255, 0, 1) 46%, rgba(59, 135, 0, 1) 81%);
+    -webkit-border-radius: 50;
+    -moz-border-radius: 50;
+    border-radius: 50px;
+    -webkit-box-shadow: 0px 0px 4px #050505;
+    -moz-box-shadow: 0px 0px 4px #050505;
+    box-shadow: 0px 0px 4px #050505;
+    font-family: Arial;
+    color: #000000;
+    font-size: 10px;
+    padding: 10px 15px 10px 18px;
+    border: solid #202324 2px;
+    text-decoration: none;
 }
 
-.pasos{
+.pasos {
     font-family: "Orelega One", serif;
 }
 
@@ -626,23 +665,28 @@ button {
 }
 
 
-.columna-color-criterios{
+.columna-color-criterios {
     background: linear-gradient(0deg, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 100%);
 }
-.columna-color-una{
-    background: linear-gradient(0deg, rgb(228, 240, 248) 0%, rgb( 228, 240, 248 ) 0%, rgb( 228, 240, 248 ) 100%);
+
+.columna-color-una {
+    background: linear-gradient(0deg, rgb(228, 240, 248) 0%, rgb(228, 240, 248) 0%, rgb(228, 240, 248) 100%);
 }
-.columna-color-dos{
+
+.columna-color-dos {
     background: linear-gradient(0deg, rgb(213, 232, 245) 0%, rgb(213, 232, 245) 0%, rgb(213, 232, 245) 100%);
 }
-.columna-color-tres{
-    background: linear-gradient(0deg, rgb(209, 231, 245) 0%, rgb(209, 231, 245) 0%, rgb( 209, 231, 245 ) 100%);
+
+.columna-color-tres {
+    background: linear-gradient(0deg, rgb(209, 231, 245) 0%, rgb(209, 231, 245) 0%, rgb(209, 231, 245) 100%);
 }
-.columna-color-cuatro{
-    background: linear-gradient(0deg, rgb(224, 245, 207) 0%, rgb( 224, 245, 207) 0%, rgb( 224, 245, 207 ) 100%);
+
+.columna-color-cuatro {
+    background: linear-gradient(0deg, rgb(224, 245, 207) 0%, rgb(224, 245, 207) 0%, rgb(224, 245, 207) 100%);
 }
-.columna-color-total{
-    background: linear-gradient(0deg, rgb(230, 241, 219) 0%, rgb( 224, 245, 207) 0%, rgb( 224, 245, 207 ) 100%);
+
+.columna-color-total {
+    background: linear-gradient(0deg, rgb(155, 209, 168) 0%, rgb(155, 209, 168) 0%, rgb(155, 209, 168) 100%);
 }
 
 /*////////////////////// MENU PRINCIPAL */
@@ -706,13 +750,13 @@ button {
 .icono-mas {
     font-size: 1em;
     cursor: pointer;
-    transition: font-size 0.5s, color 0.5s; 
-  }
-  
-  .icono-mas:hover {
+    transition: font-size 0.5s, color 0.5s;
+}
+
+.icono-mas:hover {
     font-size: 1.2em;
     color: green;
-  }
+}
 
 .imagenEngrane {
     background-image: url(../img/equipos.png);
@@ -723,7 +767,7 @@ button {
     border-radius: 100%;
 }
 
-.seccion2{
+.seccion2 {
     font-size: 0.9em;
 }
 
@@ -747,7 +791,7 @@ button {
         font-size: 0.7em;
     }
 
-    .btn-boton{
+    .btn-boton {
         font-size: 0.7em;
         box-shadow: 1px 3px 2px #545454;
     }
@@ -784,7 +828,7 @@ button {
     }
 }
 
-.formulario{
+.formulario {
     font-size: 0.9em;
 }
 
