@@ -164,6 +164,7 @@ const app = {
       id_foro: '',
       responsable_compromiso: '',
       compromiso_status: 0,
+      foroGlobal:'false',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador: [],
       etapas_preguntas: '',
@@ -1967,6 +1968,37 @@ const app = {
         })
       }
     },
+    consultarEADxPlanta() {
+      console.log("foroGlobal",this.foroGlobal);
+      console.log("planta",this.select_planta_foro)
+      if (this.foroGlobal === "true"){
+        axios.get("competenciasController.php", {
+          params: {
+            accion: 'EADSxPlanta',
+            planta: this.select_planta_foro
+          }
+        }).then(response => {
+          if(response.data[1]===true){
+            this.EADFiltrado=response.data[0];
+          }else{
+            console.log("Algo salio mal al consultar")
+          }
+        }).catch(error => {
+          console.log("Error en axios: " + error)
+        })
+      }
+    },
+    resetearVariablesForo(){
+      this.select_planta_foro=''
+      this.select_area_foro=''
+      this.areasEADs = ''
+      this.fecha_foro = ''
+      this.EADFiltrado = []
+      this.ckeckEADForo = []
+      this.ckeckEvaluadores = []
+      
+      
+    },
     modalEvaluadores(accion) {
       this.accion_evaluador = accion
       if (accion == 'Crear') {
@@ -2069,18 +2101,31 @@ const app = {
       }
     },
     crearForo() {
-      if (!this.nombre_foro) { return alert("Agregue el nombre al foro") }
-      if (!this.select_planta_foro) { return alert("Seleccione Planta") }
-      if (!this.select_area_foro) { return alert("Seleccione Área") }
-      if (!this.fecha_foro) { return alert("Seleccione una Fecha") }
-      if (this.ckeckEADForo.length <= 0) { return alert("Seleccione los EAD's") }
-      if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
+      let planta = "";
+      let area = "";
 
+      if(this.foroGlobal!='true'){//si no es 'true'
+        if (!this.nombre_foro) { return alert("Agregue el nombre al foro") }
+        if (!this.select_planta_foro) { return alert("Seleccione Planta") }
+        if (!this.select_area_foro) { return alert("Seleccione Área") }   
+        if (!this.fecha_foro) { return alert("Seleccione una Fecha") }  
+        if (this.ckeckEADForo.length <= 0) { return alert("Seleccione los EAD's") }
+        if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
+        planta = this.select_planta_foro
+        area = this.select_area_foro
+      }else{
+        if (!this.nombre_foro) { return alert("Agregue el nombre al foro") }
+        if (this.ckeckEADForo.length <= 0) { return alert("Seleccione los EAD's") }
+        if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
+        if(!this.fecha_foro) { return alert("Seleccione una Fecha") }
+        if(this.select_planta_foro ==""){ planta = "Multiplanta"}
+        area = "Multiárea"
+      }
       axios.post("competenciasController.php", {
         accion: "CrearForo",
         nombre_foro: this.nombre_foro,
-        planta: this.select_planta_foro,
-        area: this.select_area_foro,
+        planta: planta,
+        area: area,
         fecha: this.fecha_foro,
         ids_ead: this.ckeckEADForo,
         evaluadores: this.ckeckEvaluadores
@@ -2100,6 +2145,7 @@ const app = {
           this.ckeckEADForo = [];
           this.ckeckEvaluadores = [];
           this.EADFiltrado = [];
+          this.foroGlobal='false'
           alert("Foro guardado correctamente.");
           this.consultarForos()
         }
@@ -2112,6 +2158,8 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById('modal_foros_detalles'));
       this.myModal.show();
       this.tituloModal = nombre;
+      console.log("Datos, Modal",this.myModal)
+      
     },
     consultarDetallesForo(id) {
       this.id_foro = id;

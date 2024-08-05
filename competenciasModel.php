@@ -134,6 +134,23 @@ include("conexionGhoner.php");
             return array ($resultado,$estado);
     }
 
+    function consultarEADSxPlanta($planta){
+        global $conexion;
+        $resultado = [];
+        $estado = false;
+            $consulta = "SELECT * FROM equipos_ead WHERE planta LIKE '%$planta%' ORDER BY id DESC";
+            $query = $conexion->query($consulta);
+            if($query){
+                while ($datos=mysqli_fetch_array($query)){
+                    $resultado [] = $datos;
+                }
+                    $estado  = true;
+            }else{
+                    $estado  = false;
+            }
+            return array ($resultado,$estado);
+    }
+
     function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores){
         global $conexion;
         $estado = [];

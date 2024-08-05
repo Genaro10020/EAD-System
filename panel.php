@@ -19,7 +19,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                 ?>
-                    <div class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                    <div  class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
                         <p class="dropbtn text-white" style="max-height:10px;">
                             <i class="bi bi-list me-5">Menú</i>
                         </p>
@@ -42,13 +42,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Crear Competencia</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Foros</b></button></a>
                                     <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
-
                                 <?php }
                                 if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                                 ?>
@@ -1690,11 +1689,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <label class="modal-title">Evaluación: {{tituloModal}}</label>
+                                <label class="modal-title">Evaluación: {{tituloModal}} <span class="text-primary ms-2"><b>{{mensaje}}</b></span></label>
+                                
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="d-flex justify-content-center text-end text-primary"><b>{{mensaje}}</b></div>
+                                
                                 <div v-for="(preguntas,etapas,bloques) in preguntas_evaluar"><!--No estoy necesitando la variable preguntas solo etapas y bloques es index un simple numero--->
                                     <table class="table">
                                         <thead>
@@ -1785,9 +1785,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!--Fin modal-->
             </div>
 
-            <!--/////////////////////////////////CREAR COMPETENCIA PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
+            <!--/////////////////////////////////FOROS////////////////////////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana == 'Crear Competencia'">
-
                 <div class="col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2  offset-xl-2 col-xl-8  col-xxl-6 offset-xxl-3 px-4 shadow-lg mt-3 border border-white rounded-3 mx-auto" style="max-width: 700px;">
                     <div class="col-12">
                         <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
@@ -1799,7 +1798,23 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </div>
                     </div>
                     <div class="col-12">
-                        <div class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                    <div class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
+                            <div class="input-group" style="padding:2px 2px;">
+                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Foro Global: </span>
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio1" v-model="foroGlobal" autocomplete="off" value="true"  style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="resetearVariablesForo(),consultarEADxPlanta()"/>
+                                    <label class="btn btn-light border border-1 border-danger" for="btnradio1" style="font-size: 0.8em">Si</label>
+                                    <input type="radio" class="btn-check" name="btnradio" id="btnradio2" v-model="foroGlobal" value="false" autocomplete="off"  style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="resetearVariablesForo()"/>
+                                    <label class="btn btn-light me-2 border border-1 border-danger rounded-end" for="btnradio2" style="font-size: 0.8em">No</label>
+                                    <span v-if="foroGlobal=='true'" class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
+                                    <select v-if="foroGlobal=='true'" class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="consultarEADxPlanta()">
+                                        <option value="" selected>Multiplanta</option>
+                                        <option v-for="planta in plantasEADs">{{planta}}
+                                    </select>
+                                    <span v-if="foroGlobal=='true'" class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
+                                    <input v-if="foroGlobal=='true'" type="date" class="form-control select" v-model="fecha_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);"/>
+                            </div>
+                        </div>
+                        <div  v-if="foroGlobal=='false'" class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                             <div class="input-group" style="padding:2px 2px;">
                                 <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
                                 <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxArea()">

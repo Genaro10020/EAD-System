@@ -11,6 +11,10 @@ if(isset($_SESSION['nombre'])){
                             if(isset($_GET['accion']) && $_GET['accion']=='Consultar'){
                                     $resultado = consultarForos();
                             }
+                            if(isset($_GET['accion']) && $_GET['accion']=='EADSxPlanta'){
+                                    $planta = $_GET['planta'];
+                                    $resultado = consultarEADSxPlanta($planta);
+                            }
                             if(isset($_GET['accion']) && $_GET['accion']=='Filtrar'){
                             $planta= $_GET['planta']; 
                             $area= $_GET['area'];
