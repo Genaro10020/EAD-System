@@ -1,5 +1,5 @@
 <?php session_start();
-if ($_SESSION['nombre'] && $_SESSION['tipo_acceso'] && $_SESSION['tipo_usuario']) {
+if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -8,12 +8,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso'] && $_SESSION['tipo_usuario']
         <?php include('head.php'); ?>
     </head>
 
-    <body class="container-fluid">
+    <body class="container-fluid" >
 
         <header>
             <div id="header-app"></div>
         </header>
-        <div id="app" class="col-12" style="min-height: 80vh;">
+        <div id="app" class="col-12" style="min-height: 80vh;" v-cloak>
+            <img v-if="loading==true" src="img/loading.gif">
             <div class="row d-flex text-center">
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
@@ -97,7 +98,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso'] && $_SESSION['tipo_usuario']
                                     <button class="btn_menu"  @click="ventanas('CompetenciaPlanta')" ><b>Competencia de planta</b></button>
                                 </div> -->
             </div>
-            <div v-if="ventana=='Usuarios'" class="row"> <!--bloque USUARIO-->
+            <div v-if="ventana=='Usuarios'" class="row" > <!--bloque USUARIO-->
 
                 <div class="seccion1 col-12  col-lg-4 mt-2">
 

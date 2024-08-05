@@ -7,6 +7,7 @@ const app = {
       tipo_usuario: '',
       ventana: 'Usuarios',
       accion: 'insertar',
+      loading:true,
       accion_departamento: '',
       titulo_formulario_usuarios: 'ALTA USUARIOS',
       texto_btn_submit: "Aceptar",
@@ -299,9 +300,10 @@ const app = {
   methods: {
     /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
     ventanaSegunTipoUsuario() {
+      document.getElementById('app').style="display:none;"
       axios.post("datos_user.php", {
       }).then(response => {
-        console.log("Dato usr", response.data[0])
+        document.getElementById('app').style="display:block;"
         this.tipo_usuario = response.data[0]
         if (response.data[0] == "Evaluador") {
           this.ventanas('Evaluar');
@@ -317,6 +319,8 @@ const app = {
         }
       }).catch(error => {
         console.log('Error en  axios tipoUser ' + error);
+      }).finally(() => {
+        this.loading = false;
       })
     },
     /*/////////////////////////////////////////////////////////////////////////////////USUARIOS*/
