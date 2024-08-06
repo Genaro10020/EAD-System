@@ -2,6 +2,7 @@ var arreglo = [];
 const app = {
   data() {
     return {
+      verMenu:'Si',
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
       var_actualizarEAD: false,
       tipo_usuario: '',
@@ -1980,6 +1981,7 @@ const app = {
         }).then(response => {
           if(response.data[1]===true){
             this.EADFiltrado=response.data[0];
+            this.ckeckEADForo = [];
           }else{
             console.log("Algo salio mal al consultar")
           }
@@ -1996,8 +1998,6 @@ const app = {
       this.EADFiltrado = []
       this.ckeckEADForo = []
       this.ckeckEvaluadores = []
-      
-      
     },
     modalEvaluadores(accion) {
       this.accion_evaluador = accion
@@ -2119,6 +2119,7 @@ const app = {
         if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
         if(!this.fecha_foro) { return alert("Seleccione una Fecha") }
         if(this.select_planta_foro ==""){ planta = "Multiplanta"}
+        planta = this.select_planta_foro
         area = "Multiárea"
       }
       axios.post("competenciasController.php", {
@@ -2159,6 +2160,7 @@ const app = {
       this.myModal.show();
       this.tituloModal = nombre;
       console.log("Datos, Modal",this.myModal)
+      this.verMenu = 'No'
       
     },
     consultarDetallesForo(id) {

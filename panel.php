@@ -19,7 +19,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                 ?>
-                    <div  class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                    <div v-show="verMenu=='Si'" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
                         <p class="dropbtn text-white" style="max-height:10px;">
                             <i class="bi bi-list me-5">Menú</i>
                         </p>
@@ -1685,7 +1685,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                 <!-- FIN DE COMPETENCIA PLANTA -->
                 <!--Modal Preguntas Evaluacion-->
-                <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em;">
+                <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em;" data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -1694,7 +1694,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                
                                 <div v-for="(preguntas,etapas,bloques) in preguntas_evaluar"><!--No estoy necesitando la variable preguntas solo etapas y bloques es index un simple numero--->
                                     <table class="table">
                                         <thead>
@@ -1992,12 +1991,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <!--FinModalDeDepartamento-->
 
                             <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
-                            <div id="modal_foros_detalles" class="modal" id="exampleModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered modal-fullscreen  p-5">
+                            <div id="modal_foros_detalles" class="modal" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
+                                <div  class="modal-dialog modal-dialog-centered modal-fullscreen  p-5">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="verMenu = 'Si'"></button>
                                         </div>
                                         <div class="modal-body" style="font-size: 1em;">
                                             <div class="scroll6">
@@ -2062,7 +2061,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="verMenu = 'Si'">Salir</button>
                                         </div>
                                     </div>
                                 </div>
