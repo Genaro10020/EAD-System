@@ -7,6 +7,7 @@ include("conexionGhoner.php");
         $resultado = [];
         $sumas = [];
         $completo=[];
+        $completoxEtapa=[];
         $estado = false;
         $finalizo = "";
          $consulta = "SELECT * FROM preguntas_evaluador WHERE id_evaluador='$id_evaluador' AND id_ead_foro='$id_ead_foro'";
@@ -28,8 +29,16 @@ include("conexionGhoner.php");
                     
                     if($fila['valor']==Null){
                         $completo[] = "No";    
+                        if(!isset($completoxEtapa[$etapa])){
+                            $completoxEtapa[$etapa] = [];
+                        }
+                        $completoxEtapa[$etapa][] = "No";
                     }else{
                         $completo[] = "Si"; 
+                        if(!isset($completoxEtapa[$etapa])){
+                            $completoxEtapa[$etapa] = [];
+                        }
+                        $completoxEtapa[$etapa][] = "Si";
                     }
                 }
             }
@@ -42,7 +51,7 @@ include("conexionGhoner.php");
         }
 
 
-        return array($estado, $resultado,$sumas,$completo,$finalizo);
+        return array($estado, $resultado,$sumas,$completo,$finalizo,$completoxEtapa);
     }
 
     function actualizarValor($id_pregunta,$id_evaluador,$id_ead_foro,$valor){

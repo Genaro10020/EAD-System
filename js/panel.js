@@ -183,6 +183,7 @@ const app = {
       examenFinalizado: '',
       etapas: '',
       comentario: '',
+      contestado:[],
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: '',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -296,10 +297,17 @@ const app = {
     }
   },
   mounted() {
-    this.consultarUsuarios()
-    this.ventanaSegunTipoUsuario()//tomo datos de session
+      this.consultarUsuarios()
+      this.ventanaSegunTipoUsuario()//tomo datos de session
+      window.addEventListener('popstate', () => {
+        window.history.forward();
+        this.cerrarModalHistorial()
+     });
   },
   methods: {
+    cerrarModalHistorial() {
+          this.myModal.hide();
+    },
     /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
     ventanaSegunTipoUsuario() {
       document.getElementById('app').style="display:none;"
@@ -2186,7 +2194,7 @@ const app = {
                   suma += element;
                 }
                 //console.log(suma)
-                this.promedioCalificaciones = parseFloat((suma.toFixed(2)) / this.eadsForo.length).toFixed(2);
+                this.promedioCalificaciones = parseFloat((suma.toFixed(3)) / this.eadsForo.length).toFixed(3);
                 this.editar_nombre_proyecto = ''; //la reseteo despues de la consulta para que el nombre se refleje sin un pequeño salto, si la borras no perjudica en el funcionanmiento
               } else {
                 console.log("error en la consulta de calificacion por evaluador" + response.data[4]);
@@ -2273,8 +2281,12 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById('modalEvaluacion'));
       this.myModal.show();
       this.tituloModal = nombre_equipo;
+      // Agrega la modal al historial de navegacion
+      // Create a new state object when the modal is opened
+      window.history.pushState({ modalAbierta: true }, '', '');
+      console.log("Estado", window.history.state.modalAbierta); // Log the state object
     },
-    IDCalifiacion(id_calificacion, id_ead_foro, comentario) {//varible que utilizare para insertar la calificacion en tabla calificacion con el ID 
+    IDCalifiacion(id_calificacion, id_ead_foro, comentario) {//variable que utilizare para insertar la calificacion en tabla calificacion con el ID 
       this.id_calificacion = id_calificacion;
       this.id_ead_foro = id_ead_foro;
       this.comentario = comentario
@@ -2291,6 +2303,7 @@ const app = {
           this.preguntas_evaluar = response.data[1];
           this.datosEvaluar = response.data[2];
           this.examenFinalizado = response.data[4];
+          this.contestado = response.data[5];
 
           let sumaPuntosMaximos = 0;
           let sumaPuntosReales = 0;
@@ -2369,7 +2382,11 @@ const app = {
       }).then(response => {
         //console.log('ENVIANDO CALIFICACION',response.data)
         if (response.data[0] == true) {
-          alert("La Calificación fue Guardada Correctamente!");
+          Swal.fire({
+            title: "Calificado!",
+            text: "La calificación se guardo correctamente!",
+            icon: "success"
+          });
           this.myModal.hide();
           this.consultarCompetenciaIDevaluador();
         } else {
@@ -2380,7 +2397,23 @@ const app = {
       })
     },
     contestarEvaluacion() {
-      alert("Favor de contestar todas las preguntas")
+      let data = this.contestado
+
+      Object.keys(data).forEach(key => {
+        data[key].forEach((answer, index) => {
+          if (answer === "No") {
+            data[key][index] = "Sin Contestar";
+          }
+        });
+      });
+
+      this.contestado = data
+      console.log(this.contestado)
+      Swal.fire({
+        title: "Evaluación incompleta!",
+        text: "Faltan puntos por evaluador!",
+        icon: "warning"
+      });
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3451,6 +3484,6 @@ const app = {
 
 
 const App = Vue.createApp(app);
-
 App.mount("#app");
+
 

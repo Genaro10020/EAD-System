@@ -561,6 +561,23 @@ button {
     border: none;
 }
 
+.btn-salir {
+    background-color: #b75252;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 0px #151515;
+    transition: all 0.3s;
+}
+
+.btn-salir:hover {
+    background-color: #a23838;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+
 
 
 .botones-crear {
@@ -603,7 +620,6 @@ button {
     color: black;
     font-size: 0.9em;
     box-shadow: 1px 2px 5px #151515;
-
     transition: all 0.3s;
 }
 

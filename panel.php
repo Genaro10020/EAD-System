@@ -28,9 +28,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
                                 if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                             ?>
-                                    <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                <a><i class="bi bi-gear-fill">Configuracion</i></a>
+                                <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
                                 <?php } ?>
                                 <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                 <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
@@ -63,12 +63,19 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <?php
                 }
                 ?>
-                <div class="row container-fluid divLineaMenu d-flex text-center align-items-end text-light" style="font-size:14px; ">
-                    <div class="offset-2 col-4 offset-lg-2 col-lg-2">
+                <div class="row container-fluid divLineaMenu d-flex text-center align-items-center text-light" style="font-size:14px; min-height:30px ">
+                    <div class="offset-2 col-4 offset-lg-2 col-lg-2 d-flex justify-content-center align-items-center">
                         <label class="text-center" style="font-size: 0.7em"> Ventana: {{ventana}} </label>
                     </div>
-                    <div class="col-6 col-lg-8 text-end">
-                        <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>
+                    <div class="col-6 col-lg-8">
+                        <div class="row">
+                            <div class="col-6">
+                                <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>
+                            </div>
+                            <div class="col-6">
+                                <a href="index.php"><button class="btn btn-danger btn-salir  rounded-pill border-0 mt-0 py-0"><i class="bi bi-door-closed"></i> Salir</button></a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!---->
@@ -544,8 +551,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <!--Fin Modal Alta-->
-
-
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
@@ -1649,7 +1654,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             <div v-if="ventana == 'Evaluar'">
                 <div class="scroll">
                     <div class="col-12 d-flex justify-content-center">
-                        <table class="table table-bordered mt-5">
+                        <table class="table table-bordered table-striped mt-5">
                             <thead class="thead-dark bg-secondary">
                                 <tr class="table-active text-center">
                                     <th>Orden</th>
@@ -1690,8 +1695,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <label class="modal-title">Evaluación: {{tituloModal}} <span class="text-primary ms-2"><b>{{mensaje}}</b></span></label>
-                                
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cerrarModalHistorial()"></button>
                             </div>
                             <div class="modal-body">
                                 <div v-for="(preguntas,etapas,bloques) in preguntas_evaluar"><!--No estoy necesitando la variable preguntas solo etapas y bloques es index un simple numero--->
@@ -1699,14 +1703,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <thead>
                                             <tr>
                                                 <th class="bg-dark text-light" colspan="2" scope="col">{{bloques+1}} - {{etapas}}</th>
-                                                <th scope="col">{{preguntas_evaluar[etapas][0].peso}}% <label style="font-size:1.2em"> </label></th>
+                                                <th scope="col">
+                                                        <label class="w-25" style="display: inline-block">{{preguntas_evaluar[etapas][0].peso}}%</label>
+                                                        <label class="w-75" style="font-size:0.8em; display: inline-block" v-show="!contestado[etapas].includes('No') && !contestado[etapas].includes('Sin Contestar')"><span class="badge bg-primary mx-auto"><b>Completada</b></span></label>
+                                                        <label class="w-75" style="font-size:0.8em; display: inline-block" v-show="contestado[etapas].includes('Sin Contestar')"><span class="badge bg-danger mx-auto"><b>Sin completar</b></span></label>
+                                                </th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(pregunta,index) in preguntas_evaluar[etapas]"><!--Aqui tomo las preguntas-->
                                                 <th scope="row">{{bloques+1}}.{{index+1}}</th>
                                                 <td style="min-width: 58%;">{{pregunta.pregunta}}</td>
-                                                <td style="min-width: 42%;" class="text-center">
+                                                <td style="min-width: 42%;" class="text-center" :style="{ background: contestado[etapas][index] === 'Si' ? '' : contestado[etapas][index] === 'Sin Contestar'  ? '#ffeeed' : ''}">
                                                     <input type="radio" class="opcion-radio" :value="0" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
                                                     <label class="label-radios ms-1">0</label>
                                                     <input type="radio" class="opcion-radio" :value="1" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
@@ -1774,7 +1782,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         </div>
                                     </div>
                                     <div class="d-flex col-2 col-lg-5 justify-content-end">
-                                        <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal" style="font-size: 1em;">Cerrar</button>
+                                        <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal" style="font-size: 1em;" @click="cerrarModalHistorial()">Cerrar</button>
                                     </div>
                                 </div>
                             </div>
@@ -2040,7 +2048,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                             </td>
                                                             <td>
                                                                 <label>
-                                                                    <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(2)}}</b>
+                                                                    <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(3)}}</b>
                                                                 </label>
                                                             </td>
                                                         </tr>
@@ -2193,5 +2201,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
 <?php
 } else {
+    session_destroy();
     header("Location:index.php");
 } ?>
