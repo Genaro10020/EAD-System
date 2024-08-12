@@ -1691,7 +1691,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!-- FIN DE COMPETENCIA PLANTA -->
                 <!--Modal Preguntas Evaluacion-->
                 <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em;" data-bs-keyboard="false">
-                    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-lg-down modal-xl">
+                    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-xl-down modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <label class="modal-title">Evaluación: {{tituloModal}} <span class="text-primary ms-2"><b>{{mensaje}}</b></span></label>
@@ -1712,9 +1712,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         </thead>
                                         <tbody>
                                             <tr v-for="(pregunta,index) in preguntas_evaluar[etapas]"><!--Aqui tomo las preguntas-->
-                                                <th scope="row">{{bloques+1}}.{{index+1}}</th>
-                                                <td style="min-width: 58%;">{{pregunta.pregunta}}</td>
-                                                <td style="min-width: 42%;" class="text-center" :style="{ background: contestado[etapas][index] === 'Si' ? '' : contestado[etapas][index] === 'Sin Contestar'  ? '#ffeeed' : ''}">
+                                                <th tyle="width: 5%;" scope="row">{{bloques+1}}.{{index+1}}</th>
+                                                <td tyle="width: 60%">{{pregunta.pregunta}}</td>
+                                                <td style="width: 30%;" class="text-center" :style="{ background: contestado[etapas][index] === 'Si' ? '' : contestado[etapas][index] === 'Sin Contestar'  ? '#ffeeed' : ''}">
                                                     <input type="radio" class="opcion-radio" :value="0" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
                                                     <label class="label-radios ms-1">0</label>
                                                     <input type="radio" class="opcion-radio" :value="1" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
@@ -1728,7 +1728,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <input type="radio" class="opcion-radio" :value="5" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 5" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,5)">
                                                     <label class="label-radios ms-1">5</label>
                                                 </td>
-                                                <td>
+                                                <td style="width: 5%;">
                                                     <i v-if="pregunta.valor!=null" class="text-success bi bi-check2"></i>
                                                 </td>
                                             </tr>
