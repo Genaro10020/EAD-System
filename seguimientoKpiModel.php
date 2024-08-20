@@ -5,7 +5,7 @@ include("conexionGhoner.php");
        global $conexion;
        $resultado = [];
        $estado = false;
-       $sql = "SELECT * FROM kpis_proyectos WHERE id_equipo=? AND proyecto_cerrado=''";
+       $sql = "SELECT * FROM kpis_proyectos WHERE id_equipo=? AND proyecto_cerrado !='Si'";
        $stmt=$conexion->prepare($sql);
        if(!$stmt){ return array(false,"Error en la preparacion".$conexion->error);}
        $stmt->bind_param("i",$id_equipo);
@@ -30,7 +30,7 @@ include("conexionGhoner.php");
         if(!$stmt->execute()){return "Error en la ejecucion:".$stmt->error;}
         if($mes_cierre!=''){//Si se cerro el mes hay que actualizar
             $vacio = '';
-            $sql = "UPDATE kpis_proyectos SET mes_cierre=? WHERE id_equipo=? AND mes_cierre=?";
+            $sql = "UPDATE kpis_proyectos SET mes_cierre=? WHERE id_equipo=? AND mes_cierre=? AND proyecto_cerrado !='Si'";
             $stmt = $conexion->prepare($sql);
             if(!$stmt){ return "Error en la preparacion:".$conexion->error;}
             $stmt->bind_param("sis",$mes_cierre,$id_equipo,$vacio);
@@ -53,7 +53,7 @@ include("conexionGhoner.php");
         global $conexion;
         $respuesta = "";
         $dato = str_replace(',', '', $dato);//elimino las comas double no las acepta
-        $actualizar = "UPDATE kpis_proyectos SET anio='$anio', semana='$semana', dato_semanal='$dato' WHERE id='$id_registro'";
+        $actualizar = "UPDATE kpis_proyectos SET anio='$anio', semana='$semana', dato_semanal='$dato' WHERE id='$id_registro' AND proyecto_cerrado !='Si'";
         if($conexion->query($actualizar)){
             $respuesta = true;
         }else{
@@ -61,7 +61,7 @@ include("conexionGhoner.php");
         }
 
         if($mes_cierre_anterior!=$mes_cierre){
-            $actualizar_mes = "UPDATE kpis_proyectos SET mes_cierre='$mes_cierre' WHERE proyecto_cerrado ='' AND id_equipo = '$id_equipo' AND mes_cierre = '$mes_cierre_anterior'";  
+            $actualizar_mes = "UPDATE kpis_proyectos SET mes_cierre='$mes_cierre' WHERE proyecto_cerrado ='' AND id_equipo = '$id_equipo' AND mes_cierre = '$mes_cierre_anterior' AND proyecto_cerrado !='Si'";  
             if($conexion->query($actualizar_mes)){
                 $respuesta = true;
             }else{

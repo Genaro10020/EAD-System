@@ -593,7 +593,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!--Tarjeta Integrantes-->
                 <div class="row">
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
-                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
+                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
                             <h6 class="text-center pasos">1. Asistencia</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Equipo </label>
@@ -626,7 +626,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                     <!--Tarjeta Fases-->
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
-                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session}">
+                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
                             <h6 class="text-center pasos">2. Etapa y fases</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Etapa </label>
@@ -658,12 +658,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!--tabla seguimiento session-->
                     <div class="col-12 col-xl-6">
                         <h6 class="text-center pasos mt-2"> Historial asistencia, etapas y fases.</h6>
-                        <div class="progress " style="height: 15px;"><!--Porcentaje Total-->
-                            <div class="text-bg-secondary rounded-start ps-2 d-flex align-items-center" style="font-size:0.7em"><span>Avance Proyecto:</span></div>
+                        <div class="progress " style="height: 20px;"><!--Porcentaje Total-->
+                            <div class="text-bg-secondary rounded-start ps-2 d-flex align-items-center" style="font-size:0.7em; width: 100px;"><span>Avance Proyecto:</span></div>
                             <div class="progress-bar" role="progressbar" :style="'width:'+porcetajeTotal()+'!important;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" v-cloak><label style="font-size:10px">{{porcetajeTotal()}}</label></div>
                         </div>
                         <div class="scroll5">
-                            <table class="table table-bordered mt-2" style="font-size:0.7em">
+                            <table class="table table-bordered mt-2" :class="{'table-success': seguimiento_completado>=100}" style="font-size:0.7em">
                                 <thead class="table-active">
                                     <tr class="text-center">
                                         <th scope="col">#</th>
@@ -676,7 +676,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </thead>
                                 <tbody>
                                     <tr class="align-middle" v-for="(seguimiento,index) in seguimiento_session" :key="index" :class="{'table-warning': index_session_actualizar==index && actualizar_session}">
-                                        <th scope="row" class="text-center">{{index+1}}</th>
+                                        <th scope="row" class="text-center" >{{index+1}}</th>
                                         <td>{{cambiarformato(seguimiento.fecha)}}</td>
                                         <td>{{tomandoEtapa(seguimiento.etapa)}}</td>
                                         <td>
@@ -706,9 +706,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <div v-if="!agregar_compromiso && !actualizar_compromiso" class="text-center">
-                    <button v-if="actualizar_session" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Actualizar')"><i class="bi bi-floppy"></i></i> Actualizar</button>
+                    <span v-if="seguimiento_completado>=100 && !actualizar_session" class="badge bg-warning text-dark" style="font-size: 0.6em">Listo para cerrarse, no olvide cargar la presentación.</span><br>
+                    <button v-if="seguimiento_completado>=100 && !actualizar_session" class="botones-finalizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="cerrarProyecto()"><i class="bi bi-floppy me-2"></i></i>Cerrar proyecto</button>
+                    <button v-else-if="actualizar_session" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Actualizar')"><i class="bi bi-floppy"></i></i> Actualizar</button>
                     <button v-else class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Guardar')"><i class="bi bi-floppy-fill"></i> Guardar</button>
-
                 </div>
                 <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
 

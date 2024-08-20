@@ -41,7 +41,10 @@ if(isset($_SESSION['nombre'])){
                 
                 break;
             case 'PUT':
-    
+                    if(isset($arreglo['id_equipo']) && isset($arreglo['accion']) && $arreglo['accion']=='cerrarProyecto' ){
+                        $id_equipo =$arreglo['id_equipo'];
+                        $resultado = cerrarProyecto($id_equipo);
+                    }
                 break;
             case 'DELETE':
                     if(isset($_GET['id_session'])){

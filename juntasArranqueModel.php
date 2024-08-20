@@ -5,7 +5,8 @@ include("conexionGhoner.php");
         $resultado = [];
         $estado = false;
         global $conexion; 
-        $consulta = "SELECT * FROM juntas_arranque WHERE id_equipo = '$id_equipo' ORDER BY id DESC";
+        $cerrado = "Si";
+        $consulta = "SELECT * FROM juntas_arranque WHERE id_equipo = '$id_equipo' AND proyecto_cerrado IS NULL ORDER BY id DESC";
         $respuesta = $conexion->query($consulta);
         if($respuesta){
             $estado = true;

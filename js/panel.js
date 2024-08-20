@@ -134,6 +134,7 @@ const app = {
       actualizar_datoKPI: false,
       idUpdateDatoKPI: '',
       justasArranque: [],
+      seguimiento_completado:0,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1085,6 +1086,7 @@ const app = {
     },
     porcetajeTotal() {
       var porcentaje = ((this.llevaP + this.llevaD + this.llevaC + this.llevaA) / 4).toFixed(2)
+      this.seguimiento_completado = porcentaje;
       return porcentaje > 0 ? porcentaje + '%' : '0%';
     },
     tomarDiaActual() {
@@ -1912,6 +1914,36 @@ const app = {
       }).catch(error => {
         console.log("Error en axios " + error);
       })
+    },
+    cerrarProyecto(){
+      Swal.fire({
+        title: "Limpiar y guardar datos?",
+        html: "<label>¡Se limpiarán y guardarán los datos, de esta manera podrá iniciar a registrar datos de un nuevo proyecto! <br> - Cargue la presenteción (Puede tardar hasta 7 minutos en subirse por el peso)</label>",
+        icon: "info",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, guardar y limpiar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            axios.put("gestionSesionesController.php",{
+              accion: 'cerrarProyecto',
+              id_equipo: this.select_session_equipo.split('<->')[0],
+            }).then(response => {
+              if(response.data[0]==true && response.data[1]==true && response.data[2]==true && response.data[3]==true){
+                this.consultarEADXID()
+                this.consultarSeguimientoSession()
+                this.consultarCompromisos()
+              }else{
+                Swal.fire("Algo salio mal al guardar y limpiar!");
+              }
+            })
+          Swal.fire({
+            title: "Se limpio correctamente!",
+            text: "Ya puede iniciar a registrar los datos del nuevo proyecto",
+            icon: "success"
+          });
+        }});
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

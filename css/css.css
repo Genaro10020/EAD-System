@@ -590,11 +590,32 @@ button {
 }
 
 .botones-crear:hover {
-    background-color: #4c895b;
+    background-color: #c4e9c5;
     color: white;
     font-size: 0.9em;
     box-shadow: 1px 1px 2px #151515;
     border: none;
+}
+
+.botones-finalizar {
+    width: 180px;
+    background-color: #359e3d;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+    transition: all 0.3s;
+}
+
+.botones-finalizar:hover {
+    background-color: #298431;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
+.color-completado{
+    background-color:#d1e7dd;
 }
 
 .botones-actualizar {

@@ -5,7 +5,7 @@ include("conexionGhoner.php");
                 global $conexion;
                 $resultado = [];
                 $estado = false;
-                $consulta = "SELECT * FROM gestion_sesiones WHERE id_equipo=?";
+                $consulta = "SELECT * FROM gestion_sesiones WHERE id_equipo=? AND proyecto_cerrado!='Si'";
                     $stmt = $conexion->prepare($consulta);
                     if(!$stmt){
                         $estado = "Error al preparar ".$conexion->error;
@@ -58,8 +58,60 @@ include("conexionGhoner.php");
                     }
     }
 
-    function actualizar(){
-        
+    function cerrarProyecto($id_equipo){
+        $fecha = date('Y-m-d');
+        global $conexion;
+        $cerrado = "Si";
+        $respuesta =[];
+        $actualizar = "UPDATE gestion_sesiones SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+        $stmt = $conexion->prepare($actualizar);
+        if (!$stmt){
+            return $conexion->error;
+        }else{
+            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+            if($stmt->execute()){
+                $respuesta[0] = true; 
+                        $actualizar = "UPDATE kpis_proyectos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                        $stmt = $conexion->prepare($actualizar);
+                        if (!$stmt){
+                            return $conexion->error;
+                        }else{
+                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                            if($stmt->execute()){
+                                $respuesta[1] = true; 
+                                        $actualizar = "UPDATE compromisos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                                        $stmt = $conexion->prepare($actualizar);
+                                        if (!$stmt){
+                                            return $conexion->error;
+                                        }else{
+                                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                                            if($stmt->execute()){
+                                                $respuesta[2] = true; 
+                                                        $actualizar = "UPDATE juntas_arranque SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                                                        $stmt = $conexion->prepare($actualizar);
+                                                        if (!$stmt){
+                                                            return $conexion->error;
+                                                        }else{
+                                                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                                                            if($stmt->execute()){
+                                                                $respuesta[3] = true; 
+                                                            }else{
+                                                                return $stmt->error;
+                                                            }
+                                                        }
+                                            }else{
+                                                return $stmt->error;
+                                            }
+                                        }
+                            }else{
+                                return $stmt->error;
+                            }
+                        }
+            }else{
+                return $stmt->error;
+            }
+        }
+        return $respuesta;
     }
 
     function eliminarSession($id_session){
