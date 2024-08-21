@@ -21,6 +21,10 @@ include("conexionGhoner.php");
 
     function insertar($id_equipo,$nombre,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre){
         (int)$id_equipo;
+        $linea_base = str_replace(',', '', $linea_base);//elimino las comas double no las acepta
+        $entitlement = str_replace(',', '', $entitlement);//elimino las comas double no las acepta
+        $meta_calculada = str_replace(',', '', $meta_calculada);//elimino las comas double no las acepta
+        $meta_retadora = str_replace(',', '', $meta_retadora);//elimino las comas double no las acepta
         $dato_semanal = str_replace(',', '', $dato_semanal);//elimino las comas double no las acepta
         global $conexion;
         $insertar = "INSERT INTO kpis_proyectos (id_equipo,nombre_indicador,unidad, linea_base, entitlement, meta_calculada, meta_retadora, anio, semana, dato_semanal,mes_cierre) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
@@ -41,6 +45,7 @@ include("conexionGhoner.php");
 
     function actualizarBaseKpi($id_equipo,$actualizar_columna,$nuevo_dato){
         global $conexion;
+        $nuevo_dato = str_replace(',', '', $nuevo_dato);//elimino las comas double no las acepta
         $actualizar = "UPDATE kpis_proyectos SET $actualizar_columna='$nuevo_dato' WHERE id_equipo = $id_equipo AND proyecto_cerrado !='Si'";//Solo actualizara donde ID EQUIPO que no este cerrado.
         if($conexion->query($actualizar)){
             return true;

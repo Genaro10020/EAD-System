@@ -1677,7 +1677,7 @@ const app = {
             },
           },
           tooltips: {
-            enabled: true
+            enabled: true,
           },
           scales: {
             x: {
@@ -1720,7 +1720,7 @@ const app = {
                 display: false
               }
             }
-          }
+          },
         }
       });
 
