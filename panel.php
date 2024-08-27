@@ -52,7 +52,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                                 ?>
                                     <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD()"><b>Graficas</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
                                 <?php } ?>
                                 <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
                             <?php
@@ -922,7 +922,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </a>
                                                 </div>
                                                 <!--Mostrar Power Point -->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1)=='pptx'" class="col-12 text-center">
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='pptx'"  class="col-12 text-center">
                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
                                                     <a :href="archivos" :download="nombre_de_descarga">
                                                         <img src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
@@ -1268,17 +1268,17 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                                 </div>
                                 <div class="card-body text-dark">
-                                    <div class="col-12 d-flex">
+                                    <div class="col-12 d-flex justify-content-center flex-wrap offset-col-12">
                                         <template v-for="equipo in consultaEAD">
-                                            <div class=" border-secondary mb-3 mx-2" style="max-width: 18rem;">
+                                            <div class="col-2 border-secondary mb-3 mx-2">
                                                 <div class="card-header">
                                                     <input type="checkbox" name="equipo" @click="asignarDesignarPonderacion(equipo[0].id,tablaPonderacion.id_ponderacion,$event)" :checked="equipo[0].id_ponderacion==tablaPonderacion.id_ponderacion" />
-                                                    <label class=" ms-1 me-2">{{equipo[0].nombre_ead}}</label>
+                                                    <label class="ms-1 me-2">{{equipo[0].nombre_ead}}</label>
                                                 </div>
                                             </div>
                                         </template>
-                                    </div>
-                                    <table class="table table-striped mt-2" style="font-size:0.9em; max-width: 1500px;">
+                                        </div>
+                                    <table class="table table-striped mt-2 mx-auto" style="font-size:0.9em; max-width: 1500px;">
                                         <thead>
                                             <tr class="table-active text-center">
                                                 <th style="min-width:200px;">Criterios</th>
@@ -1364,19 +1364,20 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="input-group my-3">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
-                            <select class="w-50" v-model="equipo_grafica" @change="consultadoValoresGrafica(),consultarCriterios()">
+                            <select class="w-50" v-model="equipo_grafica" @change="consultarCriterios(),consultadoValoresGrafica()">
                                 <option value="" disabled>Seleccione...</option>
                                 <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
-                        <div class="input-group my-3">
+                        <div class="input-group my-3 ">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Tabla</span>
-                            <select class="w-50" v-model="idCriterioGrafica" @change="consultadoValoresGrafica()">
+                            <select v-if="equipo_grafica=='' || criterioGrafica.length>0" class="w-50" v-model="idCriterioGrafica" @change="consultadoValoresGrafica()">
                                 <option value="" disabled>Seleccione...</option>
                                 <option v-for="grafica in criterioGrafica" :value="grafica.id">{{ grafica.nombre }}</option>
                             </select>
+                            <span v-if="criterioGrafica.length<=0 && equipo_grafica!=''" class="w-50 badge bg-danger my-auto pt-1 pb-1" style="white-space: normal;">Sin ponderación asignada, seleccione ponderación en Menú Ponderación</span>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
@@ -1400,7 +1401,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
 
                 <!--/////////////////////////////////////////////////////////////////GRAFICA -->
-                <div class="row d-flex">
+                <div class="row d-flex" v-if="idCriterioGrafica!='' && equipo_grafica!='' && anio_grafica!='' && mes_grafica!='' && criterioGrafica.length>0">
                     <div class="col-12">
                         <div class="scroll-w col-12"><!--dias-->
                             <table class="text-center mx-auto my-2">

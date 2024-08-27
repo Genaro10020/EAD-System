@@ -2454,22 +2454,24 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     consultarCriterios() {
-      console.log()
-      axios.get("criteriosController.php", {
-        params: {
-          accion: 'consultarCriterios',
-          id_equipo: this.equipo_grafica.split('<->')[0]
-        }
-      }).then(response => {
-        if (response.data[0] == true) {
-          this.criterioGrafica = response.data[1];
-        } else {
-          console.log("Error al consultar" + response.data)
-        }
-        console.log("criterios grafica", response.data)
-      }).catch(error => {
-        console.log("Error en axios.php" + error)
-      })
+      this.idCriterioGrafica = ''
+      if(this.equipo_grafica){
+        axios.get("criteriosController.php", {
+          params: {
+            accion: 'consultarCriterios',
+            id_equipo: this.equipo_grafica.split('<->')[0]
+          }
+        }).then(response => {
+          if (response.data[0] == true) {
+            this.criterioGrafica = response.data[1];
+          } else {
+            console.log("Error al consultar" + response.data)
+          }
+          console.log("criterios grafica", response.data)
+        }).catch(error => {
+          console.log("Error en axios.php" + error)
+        })
+      }
     },
     diasDelMesAnio() {
       var anio
@@ -2540,7 +2542,13 @@ const app = {
       }, 200)
     },
     consultadoValoresGrafica() {
-      if (this.idCriterioGrafica && this.equipo_grafica && this.anio_grafica && this.mes_grafica) {
+      if (this.idCriterioGrafica!='' && this.equipo_grafica!='' && this.anio_grafica!='' && this.mes_grafica!='') {
+        
+        console.log("EQUIPO",this.equipo_grafica!='')
+        console.log("CRITERIOS",this.idCriterioGrafica!='')
+        console.log("ANIO",this.anio_grafica!='')
+        console.log("MES",this.mes_grafica!='')
+
         var mes;
         if (this.mes_grafica == 'Enero') { mes = 1 }
         if (this.mes_grafica == 'Febrero') { mes = 2 }
@@ -3003,7 +3011,7 @@ const app = {
       let anio = this.anio_score
       let mes = this.mes_score;
       let mes_numero = this.mesesNumeros(mes)
-      axios.post("scorecardController.php", {
+      axios.post("scoreCardController.php", {
         id_equipo: id_equipo,
         id_ponderacion: id_ponderacion,
         id_criterio: id_criterio,
