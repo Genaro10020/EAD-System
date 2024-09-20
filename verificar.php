@@ -35,12 +35,28 @@ $contrasena = $arreglo['contrasena'];
                                     $resultado = "Autorizado";
                                 }
                             }else{
-                                $resultado = "Verifique";
+                                include("conexionBDSugerencias.php");
+                                $consultarEvaluador = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE numero_nomina='$usuario' AND password='$contrasena' AND id_grafica_acceso!=''";
+                                $query3=$conexion->query($consultarEvaluador);
+                                if($query3){
+                                        if (mysqli_num_rows($query3) > 0) {
+                                            while($row = mysqli_fetch_array($query3)){
+                                                $_SESSION['id']=$row['id'];
+                                                $_SESSION['nombre']=$row['colaborador'];
+                                                $_SESSION['nomina']=$row['numero_nomina'];
+                                                $_SESSION['tipo_acceso']="Colaborador";
+                                                $resultado = "Autorizado";
+                                            }
+                                        }else{
+                                            $resultado = "Verifique";
+                                        }   
+                                }else{
+                                    $resultado = "Error ".$conexion->error;
+                                }
                             }   
                     }else{
                         $resultado = "Error ".$conexion->error;
                     }
-                           
                 }
 echo json_encode($resultado);
 ?>

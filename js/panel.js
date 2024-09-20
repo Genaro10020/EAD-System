@@ -55,6 +55,9 @@ const app = {
       buscar_colaborador: '',
       ocultar_mostar_estrella: 'none',
       lider_anterior: '',
+      equipoAsignarTabla:[],
+      criterioAsignar:[],
+      seleccionarAcceso:[],
       ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       myModal: '',
       login: false,
@@ -325,8 +328,13 @@ const app = {
           this.consultarAvanceEtapas()
           this.tomarDiaActual()
           this.consultarCantidadFaseXEtapas()
-        } else {
-          //si no es ninguno anterior es Admin
+        }else if (response.data[0] == "Colaborador"){
+          this.ventanas('Graficas');
+          this.consultarEADColaborador()
+          this.consultarCriterios()
+          
+        }else {
+          //Admin
         }
       }).catch(error => {
         console.log('Error en  axios tipoUser ' + error);
@@ -494,6 +502,7 @@ const app = {
       this.myModal.show()
     },
     cerrarModal() {
+      this.verMenu="Si"
       this.myModal.hide()
     },
     nuevoDepartamento() {
@@ -690,6 +699,20 @@ const app = {
         alert("Axios CrearEAD :-(" + error)
       })
     },
+    modalAsignarTabla(id_equipo){
+      this.verMenu="No";
+      this.myModal = new bootstrap.Modal(document.getElementById("modal_asignar_tabla"));
+      this.myModal.show();
+      this.equipoAsignarTabla = this.integrantesEAD[id_equipo];
+      this.equipoAsignarTabla.map((elemento,index)=>{
+        if (elemento.id_grafica_acceso === null || elemento.id_grafica_acceso === "") {
+          this.seleccionarAcceso[index] = "";
+        } else {
+          this.seleccionarAcceso[index] = elemento.id_grafica_acceso;
+        }
+      })
+      this.consultarCriteriosParaAsignarColaborador(id_equipo);
+    },
     datosParaEditarEAD(id_equipo, index) {
       var estrellas = document.querySelectorAll('[id^=estrella]');
       for (var i = 0; i < estrellas.length; i++) {
@@ -773,6 +796,40 @@ const app = {
 
       document.getElementById('estrella' + index).style = "display:block;color:#e28a18";
       this.select_lider_equipo = this.checkIntegrantes[index]
+    },
+    asignarAccesoGrafica(id_integrante,index){
+      let id_criterio = this.seleccionarAcceso[index]
+      axios.put("colaboradorController.php",{
+        id_criterio:id_criterio,
+        id_integrante:id_integrante
+      }).then(response=>{
+          if(response.data==true){
+              this.consultarEAD()
+          }else{
+              alert("No se pudo asignar el acceso")
+          }
+      }).catch(error=>{
+          console.log("Error en axios :-("+error)
+      })
+    },
+    colaboradorDesmarcado(event,id_integrante){
+      if(this.var_actualizarEAD==true){
+          if (!event.target.checked) {
+            axios.put("colaboradorController.php",{
+              id_criterio:"",
+              id_integrante:id_integrante
+            }).then(response=>{
+                if(response.data==true){
+                    this.consultarEAD()
+                }else{
+                    alert("No se pudo asignar el acceso")
+                }
+            }).catch(error=>{
+                console.log("Error en axios :-("+error)
+            })
+        }
+      }
+       
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2473,6 +2530,24 @@ const app = {
         })
       }
     },
+    consultarCriteriosParaAsignarColaborador(id_equipo) {
+      this.idCriterioGrafica = ''
+        axios.get("criteriosController.php", {
+          params: {
+            accion: 'consultarCriterios',
+            id_equipo: id_equipo
+          }
+        }).then(response => {
+          if (response.data[0] == true) {
+              this.criterioAsignar = response.data[1];
+          }else {
+              console.log("Error al consultar" + response.data)
+          }
+        }).catch(error => {
+          console.log("Error en axios.php" + error)
+        })
+    },
+
     diasDelMesAnio() {
       var anio
       var mes
@@ -3236,6 +3311,35 @@ const app = {
     //al salir del input
     banderaInputSC() {
       this.inputPonderacionSC = ''
+    },
+
+    consultarEADColaborador() {
+      axios.post("crud_ead.php", {
+        accion: 'consultarEADColaborador'
+      }).then(response => {
+        //console.log("Consulta EAD",response.data)
+        if (response.data[0][0] == true) {
+          //this.consultaEAD =response.data[1]
+          var numeros = Object.keys(response.data[1]).map(Number); //tomando los indices del objeto
+          const comparar = (a, b) => b - a;// b es mayo que a positivo contrario negativo y si son iguales el resultado es 0
+          const ordenando = numeros.sort(comparar) //metodo que me pemite hacer la comparacion de dos variables sort
+          //console.log('Ordenando', ordenando); // [1, 2, 3, 4, 5]
+          const nuevoOrden = ordenando.map(num => response.data[1][num.toString()]);
+          //console.log('Nuevo Orden', nuevoOrden); // [1, 2, 3, 4, 5]
+          this.consultaEAD = nuevoOrden;
+
+          if (response.data[0][1] == true) {
+            this.integrantesEAD = response.data[3]
+            //console.log("Integrantes EAD",this.integrantesEAD)
+          } else {
+            console.log("no se logro consultar los Integrantes EAD")
+          }
+        }
+      }).catch(error => {
+        console.log("Error en la consulta :-( " + error)
+      }).finally(() => {
+
+      })
     },
 
 

@@ -21,7 +21,11 @@ if(isset($_SESSION['nombre'])){
                    }
                 break;
             case 'PUT':
-                
+                    if(isset($arreglo['id_criterio']) && isset($arreglo['id_integrante'])){
+                        $id_criterio = $arreglo['id_criterio'];
+                        $id_integrante = $arreglo['id_integrante'];
+                        $resultado = asignarAccesoTabla($id_criterio,$id_integrante);
+                    }
                 break;
             case 'DELETE':
 

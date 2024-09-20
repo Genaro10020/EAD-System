@@ -22,8 +22,22 @@ include("conexionBDSugerencias.php");
         return $respuesta;
     }
 
-    function actualizar(){
-      
+    function asignarAccesoTabla($id_criterio,$id_integrante){
+        global $conexion;
+            if($id_criterio==="" || $id_integrante===NULL){
+                $id_criterio = NULL;
+            }
+        $update = "UPDATE usuarios_colocaboradores_sugerencias SET id_grafica_acceso = ? WHERE id=?";
+        $stmt = $conexion->prepare($update);
+        if(!$stmt){
+            return $conexion->error;
+        }
+        $stmt->bind_param("ii", $id_criterio, $id_integrante);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return $stmt->error;
+        }
     }
 
     function eliminar(){

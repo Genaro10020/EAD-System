@@ -475,7 +475,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                     <div class="scroll w-100">
                         <div class="form-check" v-for="colaborador in colaboradores" style="font-size:0.7em;">
-                            <input class="form-check-input" type="checkbox" :value="colaborador.id+'<->'+colaborador.colaborador" v-model="checkIntegrantes" @change="seleccionadosIntegrantes()" id="flexCheckDefault">
+                            <input class="form-check-input" type="checkbox" :value="colaborador.id+'<->'+colaborador.colaborador" v-model="checkIntegrantes" @change="seleccionadosIntegrantes(), colaboradorDesmarcado($event,colaborador.id)" id="flexCheckDefault">
                             <label class="form-check-label" for="flexCheckDefault">
                                 {{colaborador.colaborador}} ({{colaborador.numero_nomina}})
                             </label>
@@ -502,6 +502,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </div>
                                 <div class="d-flex justify-content-center">
                                     <div>
+                                        <button class="btn btn-primary btn-boton px-2 py-0 ms-3" @click="modalAsignarTabla(equipos[0].id)">
+                                            <i class="bi bi-table"></i> Asignar Acceso
+                                        </button>
+                                    </div>
+                                    <div>
                                         <button class="btn btn-warning btn-boton px-2 py-0 ms-3" @click="datosParaEditarEAD(equipos[0].id,index)">
                                             <i class="bi bi-pencil"></i> Actualizar
                                         </button>
@@ -516,6 +521,49 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </div>
                     </div>
                 </div>
+
+               <!--Asignar Tabla a colaborador-->
+                <div id="modal_asignar_tabla" class="modal" data-bs-keyboard="false" data-bs-backdrop="static"  tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="mx-auto">Asignar Tabla</h6>
+                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
+                            </div>
+                            <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
+
+                                        <div class="tarjeta2 my-2" v-if="equipoAsignarTabla.length>0">
+                                           
+                                            <div class="container text-center">
+                                                <ul class="text-start">
+                                                        <li v-for="(integrante, posicion) in equipoAsignarTabla" style="margin-bottom: 50px; font-size: 12px;">
+                                                            <div class="col-12 d-flex">
+                                                                <div class="col-6">
+                                                                    {{ posicion+1 }}.- {{ integrante.colaborador }} 
+                                                                </div>
+                                                                <div class="col-6" v-if="criterioAsignar.length>0"> 
+                                                                    <select class="form-select me-5" style="font-size:0.9em"  v-model="seleccionarAcceso[posicion]" @change="asignarAccesoGrafica(integrante.id,posicion)">
+                                                                        <option value="">Sin Acceso</option>
+                                                                        <option v-for="criterio in criterioAsignar" :value="criterio.id" >{{criterio.nombre}}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-6" v-else>
+                                                                        <span class="badge bg-warning text-dark" >Asigne una ponderación al equipo. </span>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary py-1" @click="cerrarModal()">Salir</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin Modal Alta-->
+
 
                 <!--Modal Alta-->
                 <div id="modal_alta_colaborador" class="modal" tabindex="-1" role="dialog">

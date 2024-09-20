@@ -93,9 +93,48 @@ if (isset($_SESSION['nombre'])) {
         }else{
             $validaciones[0] = false;
         }
-           
+    break;
+    break;
+    case 'consutarEADColaborador':
+       /* $id_colaborador=$_SESSION['id'];
+       
+        $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
+        $result = $conexion->query($consulta);
+        if($result){
+            
+        }
+        $validaciones[0]
         
+       $id_ead=$arreglo['id_ead'];
+        $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
+        $result = $conexion->query($consulta);
+        if($result){
+            $validaciones[0] = true;
+                if($fila= $result->num_rows>0){
+                    $fila = $result->fetch_assoc();
+                    $integrantesIDs = json_decode($fila['integrantes'],true);
+                        include("conexionBDSugerencias.php");
+                            if (!empty($integrantesIDs) && is_array($integrantesIDs)) {
+                                foreach ($integrantesIDs as $idIntegrante){
+                                    $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
+                                    $resultIntegrantes = $conexion->query($consultaIntegrantes);
+                                    if($resultIntegrantes){
+                                        $validaciones[1] = true;
+                                        if ($resultIntegrantes->num_rows > 0) {
+                                            while ($datos = $resultIntegrantes->fetch_assoc()) {
+                                                $integrantes[] = $datos; // Agregar datos al array usando $idEAD como clave
+                                            }
+                                        }
+                                    }else{
+                                        $validaciones[1] = false;
+                                    }
+                                }
+                            }
+                }
 
+        }else{
+            $validaciones[0] = false;
+        }*/
     break;
     case 'consultarPlantasEADs':
           //$PlantasAreasEADs['areas'][] = $row['area'];
