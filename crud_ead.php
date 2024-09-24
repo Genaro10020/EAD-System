@@ -95,46 +95,28 @@ if (isset($_SESSION['nombre'])) {
         }
     break;
     break;
-    case 'consutarEADColaborador':
-       /* $id_colaborador=$_SESSION['id'];
-       
-        $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
-        $result = $conexion->query($consulta);
-        if($result){
-            
-        }
-        $validaciones[0]
-        
-       $id_ead=$arreglo['id_ead'];
-        $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
-        $result = $conexion->query($consulta);
-        if($result){
-            $validaciones[0] = true;
-                if($fila= $result->num_rows>0){
-                    $fila = $result->fetch_assoc();
-                    $integrantesIDs = json_decode($fila['integrantes'],true);
-                        include("conexionBDSugerencias.php");
-                            if (!empty($integrantesIDs) && is_array($integrantesIDs)) {
-                                foreach ($integrantesIDs as $idIntegrante){
-                                    $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
-                                    $resultIntegrantes = $conexion->query($consultaIntegrantes);
-                                    if($resultIntegrantes){
-                                        $validaciones[1] = true;
-                                        if ($resultIntegrantes->num_rows > 0) {
-                                            while ($datos = $resultIntegrantes->fetch_assoc()) {
-                                                $integrantes[] = $datos; // Agregar datos al array usando $idEAD como clave
-                                            }
-                                        }
-                                    }else{
-                                        $validaciones[1] = false;
-                                    }
-                                }
+    case 'consultarEADColaborador':
+        $id_equipo=$_SESSION['id_equipo'];
+        $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
+        $stmt = $conexion->prepare($consulta);
+        if(!$stmt){
+                $validaciones = $conexion->error;
+            }else{
+            $stmt->bind_param("i", $id_equipo);
+            if($stmt->execute()){
+                $validaciones = true;
+                    $result = $stmt->get_result();
+                    if($result){
+                            if($fila= $result->num_rows>0){
+                                $equipos[] = $result->fetch_assoc();
                             }
-                }
-
-        }else{
-            $validaciones[0] = false;
-        }*/
+                    }
+            }else{
+                $validaciones = $stmt->error;
+            }
+        }
+        $stmt->close();
+        $result->close();
     break;
     case 'consultarPlantasEADs':
           //$PlantasAreasEADs['areas'][] = $row['area'];

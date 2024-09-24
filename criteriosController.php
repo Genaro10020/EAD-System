@@ -12,6 +12,10 @@ if(isset($_SESSION['nombre'])){
                     }else if(isset($_GET['accion']) && $_GET['accion'] =='consultarCriterios'){
                         $id_equipo = $_GET['id_equipo'];
                         $resultado = consultarCriteriosPonderacion($id_equipo);
+                    }else if(isset($_GET['accion']) && $_GET['accion'] =='consultarCriterioColaborador'){
+                        $id_equipo = $_GET['id_equipo'];
+                        $id_criterio = $_SESSION['id_tabla'];
+                        $resultado = consultarCriteriosColaborador($id_equipo,$id_criterio);
                     }else{
                         $resultado = "No se ha seleccionado una acción válida";
                     }

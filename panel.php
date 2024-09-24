@@ -531,9 +531,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
                             </div>
                             <div class="row modal-body  text-start text-sm-center d-flex justify-content-around">
-
                                         <div class="tarjeta2 my-2" v-if="equipoAsignarTabla.length>0">
-                                           
                                             <div class="container text-center">
                                                 <ul class="text-start">
                                                         <li v-for="(integrante, posicion) in equipoAsignarTabla" style="margin-bottom: 50px; font-size: 12px;">
@@ -563,7 +561,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <!--Fin Modal Alta-->
-
 
                 <!--Modal Alta-->
                 <div id="modal_alta_colaborador" class="modal" tabindex="-1" role="dialog">

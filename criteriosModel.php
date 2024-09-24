@@ -53,6 +53,33 @@ function consultarCriteriosPonderacion($id_equipo)
     return array($estado, $resultado);
 }
 
+function consultarCriteriosColaborador($id_equipo,$id_criterio)
+{
+    global $conexion;
+    $resultado = [];
+    $estado = false;
+    $consulta = "SELECT DISTINCT criterios.id,criterios.nombre FROM equipos_ead JOIN ponderaciones ON equipos_ead.id_ponderacion = ponderaciones.id JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios WHERE equipos_ead.id=? AND criterios.tipo='Gráfica' AND criterios.id = ? ";
+    $stmt = $conexion->prepare($consulta);
+    if (!$stmt) {
+        $estado = "Error al preparar " . $conexion->error;
+        return array($estado, $resultado);
+    }
+    $stmt->bind_param('ii', $id_equipo,$id_criterio);
+    if (!$stmt->execute()) {
+        $estado = "Error en la ejecución de la sentencia SQL:" . $stmt->error;
+        return array($estado, $resultado);
+    }
+    $estado = true;
+    $datos = $stmt->get_result();
+    while ($fila = $datos->fetch_array()) {
+        $resultado[] = $fila;
+    }
+
+    $stmt->close();
+    $conexion->close();
+    return array($estado, $resultado);
+}
+
 function insertar()
 {
 }

@@ -21,10 +21,25 @@ if(isset($_SESSION['nombre'])){
                    }
                 break;
             case 'PUT':
-                    if(isset($arreglo['id_criterio']) && isset($arreglo['id_integrante'])){
-                        $id_criterio = $arreglo['id_criterio'];
-                        $id_integrante = $arreglo['id_integrante'];
-                        $resultado = asignarAccesoTabla($id_criterio,$id_integrante);
+                    if(isset($arreglo['accion']) && $arreglo['accion']=="Asignar Acceso"){
+                        if(isset($arreglo['id_criterio']) && isset($arreglo['id_integrante']) && isset($arreglo['id_ead'])){
+                            $id_ead = $arreglo['id_ead'];
+                            $id_criterio = $arreglo['id_criterio'];
+                            $id_integrante = $arreglo['id_integrante'];
+                            $resultado = asignarAccesoTabla($id_ead,$id_criterio,$id_integrante);
+                        }else{
+                            $resultado = "No llegaron las variables en Asignar Acceso";
+                        }
+                    }else if(isset($arreglo['accion'])&&  $arreglo['accion']=="Desmarcar Acceso"){
+                        if(isset($arreglo['id_integrante']) && isset($arreglo['id_ead'])){
+                            $id_integrante = $arreglo['id_integrante'];
+                            $id_ead = $arreglo['id_ead'];
+                            $resultado = desmarcarAccesoTabla($id_integrante, $id_ead);
+                        }else{
+                            $resultado = "No llegaron las variables para descarmar acceso".$arreglo['id_integrante'].$arreglo['id_ead'];
+                        }
+                    }else{
+                        $resultado = "Acción no renocida";
                     }
                 break;
             case 'DELETE':

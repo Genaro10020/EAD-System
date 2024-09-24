@@ -45,6 +45,8 @@ $contrasena = $arreglo['contrasena'];
                                                 $_SESSION['nombre']=$row['colaborador'];
                                                 $_SESSION['nomina']=$row['numero_nomina'];
                                                 $_SESSION['tipo_acceso']="Colaborador";
+                                                $_SESSION['id_equipo']=$row['equipo_ead_grafica'];
+                                                $_SESSION['id_tabla']=$row['id_grafica_acceso'];
                                                 $resultado = "Autorizado";
                                             }
                                         }else{
