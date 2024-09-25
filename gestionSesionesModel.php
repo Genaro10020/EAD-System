@@ -59,40 +59,41 @@ include("conexionGhoner.php");
     }
 
     function cerrarProyecto($id_equipo){
-        $fecha = date('Y-m-d');
+        $fecha = date('Y-m-d H:i:s');
         global $conexion;
         $cerrado = "Si";
         $respuesta =[];
-        $actualizar = "UPDATE gestion_sesiones SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+        $proyecto_cerrado ="";
+        $actualizar = "UPDATE gestion_sesiones SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ? AND proyecto_cerrado= ? AND fecha_cierre IS NULL";
         $stmt = $conexion->prepare($actualizar);
         if (!$stmt){
             return $conexion->error;
         }else{
-            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+            $stmt->bind_param("ssis",$cerrado,$fecha,$id_equipo,$proyecto_cerrado);
             if($stmt->execute()){
                 $respuesta[0] = true; 
-                        $actualizar = "UPDATE kpis_proyectos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                        $actualizar = "UPDATE kpis_proyectos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ? AND proyecto_cerrado= ? AND fecha_cierre IS NULL";
                         $stmt = $conexion->prepare($actualizar);
                         if (!$stmt){
                             return $conexion->error;
                         }else{
-                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                            $stmt->bind_param("ssis",$cerrado,$fecha,$id_equipo,$proyecto_cerrado);
                             if($stmt->execute()){
                                 $respuesta[1] = true; 
-                                        $actualizar = "UPDATE compromisos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                                        $actualizar = "UPDATE compromisos SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ? AND proyecto_cerrado= ? AND fecha_cierre IS NULL";
                                         $stmt = $conexion->prepare($actualizar);
                                         if (!$stmt){
                                             return $conexion->error;
                                         }else{
-                                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                                            $stmt->bind_param("ssis",$cerrado,$fecha,$id_equipo,$proyecto_cerrado);
                                             if($stmt->execute()){
                                                 $respuesta[2] = true; 
-                                                        $actualizar = "UPDATE juntas_arranque SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ?";
+                                                        $actualizar = "UPDATE juntas_arranque SET proyecto_cerrado = ?, fecha_cierre = ? WHERE id_equipo = ? AND proyecto_cerrado= ? AND fecha_cierre IS NULL ";
                                                         $stmt = $conexion->prepare($actualizar);
                                                         if (!$stmt){
                                                             return $conexion->error;
                                                         }else{
-                                                            $stmt->bind_param("ssi",$cerrado,$fecha,$id_equipo);
+                                                            $stmt->bind_param("ssis",$cerrado,$fecha,$id_equipo,$proyecto_cerrado);
                                                             if($stmt->execute()){
                                                                 $respuesta[3] = true; 
                                                             }else{

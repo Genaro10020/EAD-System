@@ -1993,6 +1993,7 @@ const app = {
               accion: 'cerrarProyecto',
               id_equipo: this.select_session_equipo.split('<->')[0],
             }).then(response => {
+              console.log("Respuesta Cerrar Proyecto",response);
               if(response.data[0]==true && response.data[1]==true && response.data[2]==true && response.data[3]==true){
                 this.consultarEADXID()
                 this.consultarSeguimientoSession()

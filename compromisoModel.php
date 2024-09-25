@@ -7,7 +7,7 @@ include("conexionGhoner.php");
         $estado2 = false;
         $resultado = [];
         $vueltas=0;
-        $consulta = "SELECT * FROM compromisos WHERE id_equipo = ? AND proyecto_cerrado IS NULL";//consulto los compromisos
+        $consulta = "SELECT * FROM compromisos WHERE id_equipo = ? AND proyecto_cerrado=''";//consulto los compromisos
         if ($stmt = $conexion->prepare($consulta)) {
             $stmt->bind_param("i",$id_equipo);
             if ($stmt->execute()) {
