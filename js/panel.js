@@ -1670,12 +1670,20 @@ const app = {
       this.semanas_anio = Math.ceil((daysInYear - day + 4) / 7);
     },
     convertirDecimal(variable) {
-      var valor = this[variable].replace(/[^0-9.]/g, '');
+      console.log("llego: ",variable);
+      var valor = this[variable];
+      if (typeof valor === 'string') {
+        valor = valor.replace(/[^0-9.]/g, '');
+      } else {
+        valor = valor.toString();
+      }
+      console.log("remplazo: ",valor);
       valor = this.formatoNumero(valor)
+      console.log("despues del formato: ",valor);
       this[variable] = valor;
     },
     formatoNumero(value) {// ejemplo de formato 1,300.00
-      const options2 = { style: 'decimal', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 };
+      const options2 = { style: 'decimal', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4};//si no existe nada despues del decinal .00 y si existe maximo 4 ejemplo .1753
       const numberFormat2 = new Intl.NumberFormat('en-US', options2);
       // Obtener el valor actual del campo y eliminar caracteres no deseados
       const formattedValue = numberFormat2.format(value);
@@ -1800,17 +1808,17 @@ const app = {
             //datos para la grafica
             this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador
             this.tipo_unidad = this.seguimientoKPIs[0].unidad
-            this.datoGrafica_LineaBase = parseFloat(this.seguimientoKPIs[0].linea_base).toFixed(2);
-            this.datoGrafica_Entitlement = parseFloat(this.seguimientoKPIs[0].entitlement).toFixed(2);
-            this.datoGrafica_MetaCalculada = parseFloat(this.seguimientoKPIs[0].meta_calculada).toFixed(2);
-            this.datoGrafica_MetaRetadora = parseFloat(this.seguimientoKPIs[0].meta_retadora).toFixed(2);
+            this.datoGrafica_LineaBase = this.seguimientoKPIs[0].linea_base;
+            this.datoGrafica_Entitlement = this.seguimientoKPIs[0].entitlement;
+            this.datoGrafica_MetaCalculada = this.seguimientoKPIs[0].meta_calculada;
+            this.datoGrafica_MetaRetadora = this.seguimientoKPIs[0].meta_retadora;
             this.datoGrafica_semana = this.seguimientoKPIs[0].semana
             //this.datoGrafica_dato= this.seguimientoKPIs[0].dato_semanal
             //datos para el formulario
-            this.linea_base = parseFloat(this.seguimientoKPIs[0].linea_base).toFixed(2);
-            this.entitlement = parseFloat(this.seguimientoKPIs[0].entitlement).toFixed(2);
-            this.meta_calculada = parseFloat(this.seguimientoKPIs[0].meta_calculada).toFixed(2);
-            this.meta_retadora = parseFloat(this.seguimientoKPIs[0].meta_retadora).toFixed(2);
+            this.linea_base = this.seguimientoKPIs[0].linea_base;
+            this.entitlement = this.seguimientoKPIs[0].entitlement;
+            this.meta_calculada = this.seguimientoKPIs[0].meta_calculada;
+            this.meta_retadora = this.seguimientoKPIs[0].meta_retadora;
             var meses_semanas = [];
             var datos_meses_semanas = [];
             var datosKPIS = this.seguimientoKPIs
@@ -1819,11 +1827,11 @@ const app = {
               if (datosKPIS[i].mes_cierre !== '') {
                 if (i === datosKPIS.length - 1 || datosKPIS[i].mes_cierre !== datosKPIS[i + 1].mes_cierre) {
                   meses_semanas.push('Mes ' + datosKPIS[i].mes_cierre);
-                  datos_meses_semanas.push(parseFloat(datosKPIS[i].dato_semanal).toFixed(2));
+                  datos_meses_semanas.push(datosKPIS[i].dato_semanal);
                 }
               } else {
                 meses_semanas.push('Semana ' + datosKPIS[i].semana);
-                datos_meses_semanas.push(parseFloat(datosKPIS[i].dato_semanal).toFixed(2));
+                datos_meses_semanas.push(datosKPIS[i].dato_semanal);
               }
             }
             console.log(meses_semanas)
@@ -1881,7 +1889,7 @@ const app = {
           this.meta_retadora = ''
           this.dato_semanal = ''
           this.mes_cierre = ''
-          this.myModal.hide();
+          //this.myModal.hide();
           this.consultarSeguimientoKPI()
           this.checkMes = false
         } else {
