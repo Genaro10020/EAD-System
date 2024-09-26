@@ -59,7 +59,10 @@ if(isset($_SESSION['nombre'])){
                 //$resultado = 
                 break;
             case 'DELETE':
-
+                    if(isset($_GET['id_dato'])){
+                        $id_dato = $_GET['id_dato'];
+                        $resultado = eliminarDatoKpi($id_dato);
+                    }
                 break;
         default:
         $resultado = "Método HTTP no permitido";

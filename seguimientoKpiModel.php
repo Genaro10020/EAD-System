@@ -77,7 +77,13 @@ include("conexionGhoner.php");
         return array($respuesta);
     }
 
-    function eliminar(){
-       
+    function eliminarDatoKpi($id_dato){
+        global $conexion;
+        $eliminar = "DELETE FROM kpis_proyectos WHERE id = ?";
+        $stmt = $conexion->prepare($eliminar);
+        if(!$stmt){ return "Error en la preparacion:".$conexion->error;}
+        $stmt->bind_param("i",$id_dato);
+        if(!$stmt->execute()){return "Error en la ejecucion:".$stmt->error;}
+        return true;
     }
 ?>

@@ -652,6 +652,23 @@ button {
     border: none;
 }
 
+.botones-eliminar {
+    width: 130px;
+    background-color: #aa1717;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 2px 5px #151515;
+    transition: all 0.3s;
+}
+
+.botones-eliminar:hover {
+    background-color: #aa1717;
+    color: white;
+    font-size: 0.9em;
+    box-shadow: 1px 1px 2px #151515;
+    border: none;
+}
+
 .botones-cancelar {
     width: 130px;
     background-color: #dbdbdb;

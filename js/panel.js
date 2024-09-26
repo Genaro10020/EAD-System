@@ -1965,6 +1965,25 @@ const app = {
         console.log("Error en axios ", error)
       })
     },
+    eliminarDatoKPI(id,semana,dato){
+      if(!confirm("¿Desea eliminar el registro semana "+semana+" con dato "+dato+"?")){return true}
+      axios.delete("seguimientoKpiController.php", {
+       params:{
+        id_dato:id
+       }
+      }).then(response => {
+        console.log(response.data)
+        if(response.data==true){
+            this.consultarSeguimientoKPI()
+            this.cancelarDatosKPI()//reseteo variables
+        }else{
+            alert("Algo salio mal al eliminar el registro");
+        }
+      }).catch(error => {
+          console.log("Error en axios", error)
+      })
+      
+    },
     consultarJuntasArranque() {
       axios.get("juntasArranqueController.php", {
         params: {
