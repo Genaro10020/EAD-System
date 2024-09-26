@@ -1719,21 +1719,20 @@ const app = {
           datasets: [{
             label: '',
             data: this.datosGrafica,
-            backgroundColor: [
-              'rgba(231, 7, 7, 0.9)',
-              'rgba(255, 249, 51, 0.9)',
-              'rgba(168, 238, 69, 0.9)',
-              'rgba(34, 145, 66, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-              'rgba(0, 0, 0, 0.9)',
-            ],
+            backgroundColor: this.datosGrafica.map((label, index) => {
+                  switch (index) {
+                    case 0:
+                      return 'red';
+                    case 1:
+                      return '#d8aa0a';
+                    case 2:
+                      return '#6bb92e';
+                    case 3:
+                      return 'green';
+                    default:
+                      return 'black';
+                  }
+                }),
             borderWidth: 1,
           }]
         },
