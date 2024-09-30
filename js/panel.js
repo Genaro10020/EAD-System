@@ -1764,7 +1764,7 @@ const app = {
             x2: {
               display: true,
               position: 'top',
-              labels: this.datosGrafica.map(value => value + " " + this.tipo_unidad + ""),
+              labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
               ticks: {
                 font: {
                   size: 20
@@ -1811,13 +1811,13 @@ const app = {
             this.datoGrafica_Entitlement = this.seguimientoKPIs[0].entitlement;
             this.datoGrafica_MetaCalculada = this.seguimientoKPIs[0].meta_calculada;
             this.datoGrafica_MetaRetadora = this.seguimientoKPIs[0].meta_retadora;
-            this.datoGrafica_semana = this.seguimientoKPIs[0].semana
+            this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
             //this.datoGrafica_dato= this.seguimientoKPIs[0].dato_semanal
             //datos para el formulario
-            this.linea_base = this.seguimientoKPIs[0].linea_base;
-            this.entitlement = this.seguimientoKPIs[0].entitlement;
-            this.meta_calculada = this.seguimientoKPIs[0].meta_calculada;
-            this.meta_retadora = this.seguimientoKPIs[0].meta_retadora;
+            this.linea_base = this.formatoNumero(this.seguimientoKPIs[0].linea_base);
+            this.entitlement = this.formatoNumero(this.seguimientoKPIs[0].entitlement);
+            this.meta_calculada = this.formatoNumero(this.seguimientoKPIs[0].meta_calculada);
+            this.meta_retadora = this.formatoNumero(this.seguimientoKPIs[0].meta_retadora);
             var meses_semanas = [];
             var datos_meses_semanas = [];
             var datosKPIS = this.seguimientoKPIs
@@ -1830,9 +1830,11 @@ const app = {
                 }
               } else {
                 meses_semanas.push('Semana ' + datosKPIS[i].semana);
+               
                 datos_meses_semanas.push(datosKPIS[i].dato_semanal);
               }
             }
+
             console.log(meses_semanas)
             console.log(datos_meses_semanas)
             this.leyedasGafica = ['Línea Base', 'Entitlement', 'Meta Calculada', 'Meta Retadora'].concat(meses_semanas);//concatenando leyendass

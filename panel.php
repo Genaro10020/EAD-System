@@ -1120,7 +1120,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <td class="text-center">{{seguimientokpi.anio}}</td>
                                                     <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
                                                     <td class="text-center">{{seguimientokpi.semana}}</td>
-                                                    <td>{{seguimientokpi.dato_semanal}}</td>
+                                                    <td>{{formatoNumero(seguimientokpi.dato_semanal)}}</td>
                                                     <td class="text-center">
                                                         <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar me-5" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
                                                         <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-danger botones-eliminar me-5" v-if="actualizar_kpi==false" @click="eliminarDatoKPI(seguimientokpi.id,seguimientokpi.semana,parseFloat(seguimientokpi.dato_semanal).toFixed(2))">Eliminar</button>
