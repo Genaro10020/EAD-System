@@ -1711,6 +1711,8 @@ const app = {
       if (existingChart) {
         existingChart.destroy();
       }
+      var datosGraficaLength = this.datosGrafica.length; //tamanio
+      var datosGraficaElementos = this.datosGrafica; //arreglo de datos
 
       new Chart(canvas, {
         type: 'bar',
@@ -1719,18 +1721,31 @@ const app = {
           datasets: [{
             label: '',
             data: this.datosGrafica,
-            backgroundColor: this.datosGrafica.map((label, index) => {
-                  switch (index) {
-                    case 0:
-                      return 'red';
-                    case 1:
-                      return '#d8aa0a';
-                    case 2:
-                      return '#6bb92e';
-                    case 3:
-                      return 'green';
-                    default:
-                      return 'black';
+            backgroundColor: this.datosGrafica.map((valor, index) => {
+                 if(index==0){
+                    return 'red';
+                 }
+                 if(index==1){
+                    return '#d8aa0a';
+                 }
+                 if(index==2){
+                    return '#6bb92e';
+                 }
+                 if(index==3){
+                    return 'green';
+                 }
+                 if(index>=4){
+                      color = 'black';
+                        if(valor>this.datosGrafica[1] && valor<=this.datosGrafica[0]){
+                          color = '#d8aa0a';
+                        }else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
+                          color = '#6bb92e';
+                        }else if(valor<=this.datosGrafica[3]){
+                          color = 'green';
+                        }else if(valor>this.datosGrafica[0]){
+                          color = 'red';
+                        } 
+                      return color;
                   }
                 }),
             borderWidth: 1,
@@ -1750,20 +1765,9 @@ const app = {
             enabled: true,
           },
           scales: {
-            x: {
-              display: true,
-              position: 'bottom', //inferior
-              ticks: {
-                display: true,
-                beginAtZero: true,
-                font: {
-                  size: 20
-                }
-              }
-            },
             x2: {
-              display: true,
-              position: 'top',
+              display: false,
+              //position: ,
               labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
               ticks: {
                 font: {
@@ -1789,9 +1793,39 @@ const app = {
               grid: {
                 display: false
               }
-            }
+            },
+            x: {
+              display: true,
+              position: 'bottom', //inferior
+              ticks: {
+                display: true,
+                beginAtZero: true,
+                font: {
+                  size: 20
+                },
+              }
+            },
           },
-        }
+          animation: {
+
+            duration: 0,
+      
+          },
+          
+        },
+        plugins: [{
+          afterDatasetsDraw: (chart) => {
+            datosGraficaElementos.forEach((data, index) => {
+              chart.ctx.fillStyle = 'black';
+              chart.ctx.font = '25px Arial';
+              chart.ctx.textAlign = 'center';
+              chart.ctx.textBaseline = 'top';
+              chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+            });
+          }
+        
+        }]
+
       });
 
     },
