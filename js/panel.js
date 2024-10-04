@@ -1820,7 +1820,7 @@ const app = {
               chart.ctx.font = '25px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+              chart.ctx.fillText(this.formatoNumero(data)+ " " + this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
             });
           }
         
