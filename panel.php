@@ -897,10 +897,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <h6 class="text-center pasos mt-2"> Gráfica KPI <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
                     </div>
                     <div class="offset-4 col-4">
-                        <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button>
+                        <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
+                        <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
                     </div>
                     <div class="col-4">
-                        <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button>
+                        <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button> 
                     </div>
                     <canvas style="width:100%" id="canvaKPI"></canvas>
                 </div>
@@ -1019,6 +1020,20 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('nombre_indicador')"><i class="bi bi-arrow-up-circle"></i></button>
                                                         <button class="btn-save" v-if="actualizar_kpi=='nombre_indicador'" @click="updateKpi()"><i class="bi bi-floppy"></i></button>
                                                         <button class="btn-cancelar" v-if="actualizar_kpi=='nombre_indicador'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group mb-3" style="min-width:270px">
+                                                    
+                                                        <label class="input-group-text w-25" style="font-size:0.8em">Tipo Gráfica</label>
+                                                        <select class="form-select" v-model="tGrafica" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='tipo'">
+                                                            <option value="" selected disabled>Seleccione..</option>
+                                                            <option value="Decremento">Decremento (Por debajo de la Meta Retadora)</option>
+                                                            <option value="Incremento">Incremento (Por encima de la Meta Retadora)</option>
+                                                        </select>
+                                                    <div>
+                                                        <button class="btn-up" title="Actualizar" v-if="seguimientoKPIs.length>0 && actualizar_kpi==false" @click="updateBanderaKpi('tipo')"><i class="bi bi-arrow-up-circle"></i></button>
+                                                        <button class="btn-save" v-if="actualizar_kpi=='tipo'" @click="updateKpi()"><i class="bi bi-floppy"></i></button>
+                                                        <button class="btn-cancelar" v-if="actualizar_kpi=='tipo'" @click="cancelarKpi()"><i class="bi bi-x-circle"></i></button>
                                                     </div>
                                                 </div>
                                                 <div class="input-group mb-3" style="min-width:270px">

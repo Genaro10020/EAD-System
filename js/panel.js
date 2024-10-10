@@ -228,6 +228,7 @@ const app = {
       causa: '',
       dia_grafica: 1,
       causas: [],
+      tGrafica:'',
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
@@ -1723,28 +1724,56 @@ const app = {
             data: this.datosGrafica,
             backgroundColor: this.datosGrafica.map((valor, index) => {
                  if(index==0){
-                    return 'red';
+                    return 'red';//Línea Base
                  }
                  if(index==1){
-                    return '#d8aa0a';
+                    return '#d8aa0a';//Entitlement
                  }
                  if(index==2){
-                    return '#6bb92e';
+                    return '#6bb92e';//Meta Calculada
                  }
                  if(index==3){
-                    return 'green';
+                    return 'green';//Meta Retadora
                  }
                  if(index>=4){
-                      color = 'black';
-                        if(valor>this.datosGrafica[1] && valor<=this.datosGrafica[0]){
-                          color = '#d8aa0a';
-                        }else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
-                          color = '#6bb92e';
-                        }else if(valor<=this.datosGrafica[3]){
-                          color = 'green';
-                        }else if(valor>this.datosGrafica[0]){
+                    let  color = 'black';
+                   
+                      if(this.tGrafica=="Incremento"){
+                          if(valor>=this.datosGrafica[3]){
+                            color = 'green';
+                          }else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[3]){
+                            color = '#d8aa0a';
+                          }else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[3]){
+                            color = '#6bb92e';
+                          }else if(valor<this.datosGrafica[3]){
+                            color = 'red';
+                          }
+                      }else{
+                        if(valor<=this.datosGrafica[3]){
+                        color = 'green';
+                        }else if(valor>=this.datosGrafica[0] || valor>this.datosGrafica[1] && valor>this.datosGrafica[2] && valor>this.datosGrafica[3] ){
                           color = 'red';
-                        } 
+                          console.log("condicion 1")
+                        }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
+                            color = '#6bb92e';
+                            console.log("condicion 1")
+                          }*/else if(valor<=this.datosGrafica[1] && valor>this.datosGrafica[3]){
+                            color = '#d8aa0a';
+                            console.log("condicion 2")
+                          }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
+                            color = '#d8aa0a';
+                            console.log("condicion 3")
+                          }*/else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
+                            color = '#6bb92e';
+                            console.log("condicion 3")
+                          }else if(valor>this.datosGrafica[2] && valor<=this.datosGrafica[2]){
+                            color = '#6bb92e';
+                            console.log("condicion 4")
+                          }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
+                            color = '#6bb92e';
+                            console.log("condicion 7")
+                          }*/
+                      }
                       return color;
                   }
                 }),
@@ -1817,7 +1846,7 @@ const app = {
           afterDatasetsDraw: (chart) => {
             datosGraficaElementos.forEach((data, index) => {
               chart.ctx.fillStyle = 'black';
-              chart.ctx.font = '25px Arial';
+              chart.ctx.font = '20px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
               chart.ctx.fillText(this.formatoNumero(data)+ " " + this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
@@ -1840,6 +1869,7 @@ const app = {
           if (this.seguimientoKPIs.length > 0) {
             //datos para la grafica
             this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador
+            this.tGrafica = this.seguimientoKPIs[0].tipo
             this.tipo_unidad = this.seguimientoKPIs[0].unidad
             this.datoGrafica_LineaBase = this.seguimientoKPIs[0].linea_base;
             this.datoGrafica_Entitlement = this.seguimientoKPIs[0].entitlement;
@@ -1876,6 +1906,7 @@ const app = {
             this.graficaKPI('canvaKPI')
           } else {
             this.nombre_indicador = ''
+            this.tGrafica = ''
             this.tipo_unidad = ''
             this.linea_base = ''
             this.entitlement = ''
@@ -1907,6 +1938,7 @@ const app = {
       axios.post("seguimientoKpiController.php", {
         id_equipo: this.select_session_equipo.split('<->')[0],
         nombre_indicador: this.nombre_indicador,
+        tGrafica: this.tGrafica,
         unidad: this.tipo_unidad,
         linea_base: this.linea_base,
         entitlement: this.entitlement,
@@ -1968,6 +2000,7 @@ const app = {
     updateKpi() {
       var new_valor = ''
       if (this.actualizar_kpi == 'nombre_indicador') { if (this.nombre_indicador == '') { return "Coloque el nombre del indicador" } else { new_valor = this.nombre_indicador } }
+      if (this.actualizar_kpi == 'tipo') { if (this.tGrafica == '') { return "Coloque el nombre del indicador" } else { new_valor = this.tGrafica } }
       if (this.actualizar_kpi == 'unidad') { if (this.tipo_unidad == '') { return "Coloque una unidad" } else { new_valor = this.tipo_unidad } }
       if (this.actualizar_kpi == 'linea_base') { if (this.linea_base == '') { return "Coloque un valor en línea base" } else { new_valor = this.linea_base } }
       if (this.actualizar_kpi == 'entitlement') { if (this.entitlement == '') { return "Coloque un valor en entitlement" } else { new_valor = this.entitlement } }

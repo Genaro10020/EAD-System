@@ -15,9 +15,10 @@ if(isset($_SESSION['nombre'])){
                 }
                 break;
             case 'POST':
-                    if(isset($arreglo['id_equipo']) && isset($arreglo['unidad']) && isset($arreglo['nombre_indicador']) && isset($arreglo['linea_base']) && isset($arreglo['entitlement']) && isset($arreglo['meta_calculada']) && isset($arreglo['meta_retadora']) && isset($arreglo['anio_kpi']) && isset($arreglo['semana_kpi']) && isset($arreglo['dato_semanal']) && isset($arreglo['mes_cierre'])){
+                    if(isset($arreglo['id_equipo']) && isset($arreglo['unidad']) && isset($arreglo['tGrafica']) && isset($arreglo['nombre_indicador']) && isset($arreglo['linea_base']) && isset($arreglo['entitlement']) && isset($arreglo['meta_calculada']) && isset($arreglo['meta_retadora']) && isset($arreglo['anio_kpi']) && isset($arreglo['semana_kpi']) && isset($arreglo['dato_semanal']) && isset($arreglo['mes_cierre'])){
                         $id_equipo=$arreglo['id_equipo'];
                         $unidad=$arreglo['unidad'];
+                        $tipo_grafica=$arreglo['tGrafica'];
                         $nombre=$arreglo['nombre_indicador'];
                         $linea_base=$arreglo['linea_base'];
                         $entitlement=$arreglo['entitlement'];
@@ -27,7 +28,7 @@ if(isset($_SESSION['nombre'])){
                         $mes_cierre=$arreglo['mes_cierre'];
                         $semana_kpi=$arreglo['semana_kpi'];
                         $dato_semanal=$arreglo['dato_semanal'];
-                        $resultado = insertar($id_equipo,$nombre,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre);
+                        $resultado = insertar($id_equipo,$nombre,$tipo_grafica,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre);
                     }else{
                         $resultado = "No llegaron las variables para guardar";
                     }

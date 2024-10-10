@@ -19,7 +19,7 @@ include("conexionGhoner.php");
        return array($estado,$resultado);
     }
 
-    function insertar($id_equipo,$nombre,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre){
+    function insertar($id_equipo,$nombre,$tipo_grafica,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre){
         (int)$id_equipo;
         $linea_base = str_replace(',', '', $linea_base);//elimino las comas double no las acepta
         $entitlement = str_replace(',', '', $entitlement);//elimino las comas double no las acepta
@@ -27,10 +27,10 @@ include("conexionGhoner.php");
         $meta_retadora = str_replace(',', '', $meta_retadora);//elimino las comas double no las acepta
         $dato_semanal = str_replace(',', '', $dato_semanal);//elimino las comas double no las acepta
         global $conexion;
-        $insertar = "INSERT INTO kpis_proyectos (id_equipo,nombre_indicador,unidad, linea_base, entitlement, meta_calculada, meta_retadora, anio, semana, dato_semanal,mes_cierre) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+        $insertar = "INSERT INTO kpis_proyectos (id_equipo,nombre_indicador,unidad, linea_base, entitlement, meta_calculada, meta_retadora, anio, semana, dato_semanal,mes_cierre,tipo) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($insertar);
         if(!$stmt){ return "Error en la preparacion:".$conexion->error;}
-        $stmt->bind_param("issddddiids", $id_equipo,$nombre,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre);
+        $stmt->bind_param("issddddiidss", $id_equipo,$nombre,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre,$tipo_grafica);
         if(!$stmt->execute()){return "Error en la ejecucion:".$stmt->error;}
         if($mes_cierre!=''){//Si se cerro el mes hay que actualizar
             $vacio = '';
