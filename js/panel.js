@@ -1757,16 +1757,16 @@ const app = {
                         }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
                             color = '#6bb92e';
                             console.log("condicion 1")
-                          }*/else if(valor<=this.datosGrafica[1] && valor>this.datosGrafica[3]){
+                          }*/else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
+                            color = '#6bb92e';
+                            console.log("condicion 3")
+                          }else if(valor<=this.datosGrafica[1] && valor>this.datosGrafica[3]){
                             color = '#d8aa0a';
                             console.log("condicion 2")
                           }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
                             color = '#d8aa0a';
                             console.log("condicion 3")
-                          }*/else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
-                            color = '#6bb92e';
-                            console.log("condicion 3")
-                          }else if(valor>this.datosGrafica[2] && valor<=this.datosGrafica[2]){
+                          }*/else if(valor>this.datosGrafica[2] && valor<=this.datosGrafica[2]){
                             color = '#6bb92e';
                             console.log("condicion 4")
                           }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
