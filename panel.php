@@ -1485,7 +1485,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </tr>
                                     <tr>
                                         <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
-                                            Rechazos
+                                            {{nombreDelCriterio}}
                                         </th>
                                         <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
                                             <input :id="'grafica'+index" :value="datosGrafica[index]" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
@@ -1604,7 +1604,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </td>-->
                                     <!--Columna Valor Actual-->
                                     <td class="middle-center" :class="puntosEvaluacion[criterio.id_criterios] || puntosEvaluacion[criterio.id_criterios]===0 ? 'columna-color-una':''">
-                                        <label v-if="criterio.tipo!='Input' && sumasDinamicasSC.some(elemento=>elemento.id_criterios==criterio.id_criterios)">
+                                        <label v-if="criterio.tipo!='Input' && sumasDinamicasSC.some(elemento=>elemento.id_criterios==criterio.id_criterios && elemento.suma!='NaN')">
                                             {{sumasDinamicasSC.filter(elemento=>elemento.id_criterios==criterio.id_criterios).map(elemento=>elemento.suma)[0]}}
                                         </label>
                                         <label v-else-if="criterio.tipo!='Input' && criterio.id_criterios!=10 ">

@@ -229,6 +229,7 @@ const app = {
       dia_grafica: 1,
       causas: [],
       tGrafica:'',
+      nombreDelCriterio:'',
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
@@ -2681,6 +2682,18 @@ const app = {
         let nombreCriterio = ""
         if (selectedItem) {
           nombreCriterio = selectedItem.nombre;
+          this.nombreDelCriterio = nombreCriterio
+          if(nombreCriterio=="Eficiencia"){
+            console.log("ES EFICIENCIA")
+            suma = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0);
+
+            
+            let elementos = this.datosGrafica.filter((element) => {//elimino los datos nulos, para tomar el valor de los datos no vacios
+              return element !== '' && element !== null && element !== undefined;
+            });
+
+            this.sumaTabla = (suma/elementos.length).toFixed(2);
+          }
         }
 
         const ctx = document.getElementById('myChart');
@@ -2694,6 +2707,7 @@ const app = {
         if (existingChart) {
           existingChart.destroy();
         }
+        
 
         new Chart(ctx, {
           type: 'line',
@@ -2720,11 +2734,6 @@ const app = {
     },
     consultadoValoresGrafica() {
       if (this.idCriterioGrafica!='' && this.equipo_grafica!='' && this.anio_grafica!='' && this.mes_grafica!='') {
-        
-        console.log("EQUIPO",this.equipo_grafica!='')
-        console.log("CRITERIOS",this.idCriterioGrafica!='')
-        console.log("ANIO",this.anio_grafica!='')
-        console.log("MES",this.mes_grafica!='')
 
         var mes;
         if (this.mes_grafica == 'Enero') { mes = 1 }
@@ -2759,6 +2768,8 @@ const app = {
             });
             this.datosGrafica = nuevoArreglo
             this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+              
+
 
             /* if (this.idCriterioGrafica == 'Rechazos') {
                this.datosGraficaRechazo = nuevoArreglo
@@ -3224,6 +3235,7 @@ const app = {
             this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
               const index = current.id_criterios;
               const existingItem = acc.find(item => item.id_criterios === index);
+              
               if (existingItem) {
                 if (current.valor !== null) {
                   const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
@@ -3234,8 +3246,17 @@ const app = {
               }
               return acc;
             }, []);
-
             console.log("Sumas ScoreCard", this.sumasDinamicasSC)
+            let cantidad_dias = response.data[1].filter(elemento=>elemento.id_criterios===3 && elemento.valor!==null).length//taminio de elementos con id 3 que es "Eficiencia"
+            // Encontrar id_criterio 3 que es "Eficiencia"
+            const sumaEficiencia =  this.sumasDinamicasSC.find(item => item.id_criterios === 3);
+            //tomo el index
+            let index = this.sumasDinamicasSC.findIndex(item => item.id_criterios === 3);
+            // Calcular el resultado de suma / cantidad_dias
+            let resultado = cantidad_dias > 0 ? sumaEficiencia.suma / cantidad_dias : 0; // Evitar división por cero
+            if (index!=-1) {
+              this.sumasDinamicasSC[index].suma = resultado.toFixed(2);
+            }
 
             this.consultarDatosPonderacionID()
           } else {
