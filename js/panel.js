@@ -3568,6 +3568,15 @@ const app = {
         console.log("Error en axios " + error)
       })
     },
+
+    quitarCriterioNuevaPonderacion(posicion){
+     this.filasSC.splice(posicion, 1);//(posicion,cantidad)
+    },
+    refrescarPonderaciones(){
+      this.consultarCriterio()
+      //this.consultarPonderaciones()
+      //this.consultarEAD()
+    },
     guardarPonderacion() {
       if (this.nombre_ponderacion == '') {
         return Swal.fire({

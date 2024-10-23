@@ -1239,17 +1239,22 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <table class="table table-striped mx-auto w-75 mt-2" style="font-size:0.8em; min-width: 1500px;">
                             <thead>
                                 <tr class="table-active text-center">
-                                    <th style="min-width:200px;">Criterios</th>
-                                    <th>Meta Retadora</th>
-                                    <th>Entitlement</th>
-                                    <th>Meta Calculada</th>
-                                    <th>Línea Base</th>
-                                    <th>Reprobatoria</th>
+                                    <th style="min-width:200px;"> 
+                                        <button class="ms-1 btn px-1 py-0" style="background: #35832D;color:white;" @click="refrescarPonderaciones()" title="Mostrar todos los criterios">
+                                        <i class="bi bi-arrow-clockwise"></i>
+                                        </button>  Criterios</th>
+                                        <th>Meta Retadora</th>
+                                        <th>Entitlement</th>
+                                        <th>Meta Calculada</th>
+                                        <th>Línea Base</th>
+                                        <th>Reprobatoria</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr class="middle-center" v-for="(elemento,index) in filasSC">
-                                    <td class="border">{{elemento.nombre}}</td>
+                                    <td class="border">
+                                        <button class="ms-1 btn px-1 py-0" style="background: rgb(176, 70, 47);" @click="quitarCriterioNuevaPonderacion(index)"><i class="bi bi-trash3-fill text-light"></i></button>  {{elemento.nombre}}
+                                    </td>
                                     <td class="border text-center" style="background: #35832D;">
                                         <div class="input-group">
                                             <span class="input-group-text" style="font-size:0.8em">De:</span>
