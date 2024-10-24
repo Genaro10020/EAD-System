@@ -1229,7 +1229,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <h6 class="text-center pasos mt-2"> Ponderaciones</label></h6>
                 </div>
                 <div class="col-12 text-center">
-                    <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nueva_ponderacion=true"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
+                    <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="refrescarNuevaPonderaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
                 </div>
                 <div v-if="nueva_ponderacion==true" class="row"><!--scroll Nueva Ponderacion-->
                     <div class="col-12 p-1 mt-2 scroll-w shadow" style="background-color: #f0f8e5;">
@@ -1239,8 +1239,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <table class="table table-striped mx-auto w-75 mt-2" style="font-size:0.8em; min-width: 1500px;">
                             <thead>
                                 <tr class="table-active text-center">
-                                    <th style="min-width:200px;"> 
-                                        <button class="ms-1 btn px-1 py-0" style="background: #35832D;color:white;" @click="refrescarPonderaciones()" title="Mostrar todos los criterios">
+                                    <th style="min-width:200px;">
+                                        <button class="ms-1 btn px-1 py-0" style="background: #35832D;color:white;" title="Agregar nuevo criterio" @click="modalNuevoCriterio()"><i class="bi bi-plus"></i></button>
+                                        <button class="ms-1 btn px-1 py-0" style="background: #35832D;color:white;" @click="consultarCriterio()" title="Mostrar todos los criterios">
                                         <i class="bi bi-arrow-clockwise"></i>
                                         </button>  Criterios</th>
                                         <th>Meta Retadora</th>
@@ -1253,7 +1254,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <tbody>
                                 <tr class="middle-center" v-for="(elemento,index) in filasSC">
                                     <td class="border">
-                                        <button class="ms-1 btn px-1 py-0" style="background: rgb(176, 70, 47);" @click="quitarCriterioNuevaPonderacion(index)"><i class="bi bi-trash3-fill text-light"></i></button>  {{elemento.nombre}}
+                                        <button class="ms-1 btn px-1 py-0" style="background: rgb(176, 70, 47);" @click="quitarCriterioNuevaPonderacion(index)" title="Quitar este criterio de mi nueva ponderación"><i class="bi bi-trash3-fill text-light"></i></button>  {{elemento.nombre}}
                                     </td>
                                     <td class="border text-center" style="background: #35832D;">
                                         <div class="input-group">
@@ -1417,12 +1418,44 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                         </div>
                     </div>
-
+                    
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                 </div> <!--Fin scroll Fin Consulta Ponderaciones-->
                 <div v-show="ponderaciones.length<=0" class="col-12 text-center">
                     <span class="badge bg-secondary text-bg-primary">No existen pondeciones creadas</span>
                 </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="modalNuevoCriterio" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-xl">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title fs-5" id="staticBackdropLabel">Nuevo Criterio</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cerrarModalNuevoCriterio()"></button>
+                            </div>
+                            <div class="modal-body" >
+                                        <div class="input-group mb-3 w-75">
+                                            <span class="input-group-text w-25" style="font-size:0.8em">Nombre</span>
+                                            <input type="text" v-model="nombre_nuevo_criterio" class="form-control" placeholder="Eficiencia">
+                                        </div>
+                                        <div class="input-group mb-3 w-75">
+                                            <span class="input-group-text  w-25" style="font-size:0.8em">Tipo de criterio</span>
+                                            <select class="form-select" v-model="tipo_criterio" style="font-size: 0.7em;">
+                                                <option value="" disabled>Seleccione tipo criterio..</option>
+                                                <option value="Gráfica">Gráfica (Ejemplo: "Rechazos","Merma").</option>
+                                                <option value="Input">Input (Ejemplo: "Plomo en Sangre","Sugerencias").</option>
+                                            </select>
+                                        </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cerrarModalNuevoCriterio()">Cancelar</button>
+                                <button type="button" class="btn btn-primary" @click="guardarNuevoCriterio()">Guardar</button>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                <!--FIN MODAL-->
+                
             </div>
             <!--///////////////////////////////////////-->
             <div v-if="ventana == 'Graficas'">

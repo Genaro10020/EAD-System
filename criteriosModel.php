@@ -80,8 +80,18 @@ function consultarCriteriosColaborador($id_equipo,$id_criterio)
     return array($estado, $resultado);
 }
 
-function insertar()
-{
+function guardarNuevoCriterio($nuevo,$tipo){
+   
+        global $conexion;
+        $answer = false;
+        $guardar = "INSERT INTO criterios (nombre,tipo) VALUES (?,?)";
+        $stmt = $conexion->prepare($guardar);
+        if(!$stmt){return $conexion->error;}
+        $stmt->bind_param("ss",$nuevo,$tipo);
+        if(!$stmt->execute()){return $stmt->error;}
+        $answer = true;
+        return $answer;
+
 }
 
 function actualizarEstatus($id_foro, $nuevoEstatus)

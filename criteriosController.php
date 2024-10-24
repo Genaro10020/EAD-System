@@ -21,7 +21,13 @@ if(isset($_SESSION['nombre'])){
                     }
                 break;
             case 'POST':
-                   
+                if(isset($arreglo['nuevo_criterio']) && isset($arreglo['tipo_criterio'])){
+                    $nuevo = $arreglo['nuevo_criterio'];
+                    $tipo = $arreglo['tipo_criterio'];
+                    $resultado = guardarNuevoCriterio($nuevo,$tipo);
+                }else{
+                    $resultado = "No se llegaron las variables de POST";
+                }
                 break;
             case 'PUT':
                     

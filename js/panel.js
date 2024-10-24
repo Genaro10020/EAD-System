@@ -259,6 +259,8 @@ const app = {
       inputValorActual: [],
       puntosObtenidosInput: [],
       puntosObtenidos: [],
+      tipo_criterio:'Gráfica',
+      nombre_nuevo_criterio:'',
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -3572,10 +3574,44 @@ const app = {
     quitarCriterioNuevaPonderacion(posicion){
      this.filasSC.splice(posicion, 1);//(posicion,cantidad)
     },
-    refrescarPonderaciones(){
+    refrescarNuevaPonderaciones(){
+      this.nueva_ponderacion=true
       this.consultarCriterio()
       //this.consultarPonderaciones()
       //this.consultarEAD()
+    },
+    modalNuevoCriterio(){
+      this.myModal = new bootstrap.Modal(document.getElementById("modalNuevoCriterio"))
+      this.myModal.show()
+      this.verMenu = "No";
+    },
+    cerrarModalNuevoCriterio(){
+      this.verMenu = 'Si'
+    },
+    guardarNuevoCriterio(){
+      console.log(this.nombre_nuevo_criterio)
+      console.log(this.tipo_criterio)
+      if(this.nombre_nuevo_criterio!=''){
+              axios.post("criteriosController.php",{
+                nuevo_criterio:this.nombre_nuevo_criterio,
+                tipo_criterio:this.tipo_criterio
+              }).then(response=>{
+                console.log(response.data)
+                if(response.data==true){
+                    alert("Se inserto el nuevo criterio correctamente")
+                    this.consultarCriterio()
+                    this.myModal.hide()
+                    this.verMenu = 'No'
+                    this.nombre_nuevo_criterio =''
+                }else{
+                    alert("Algo salio mal")
+                }
+              }).catch(error=>{
+                console.log("Error en axios " + error)
+              })
+          }else{
+            alert("Coloque el nombre del criterio")
+          }
     },
     guardarPonderacion() {
       if (this.nombre_ponderacion == '') {
