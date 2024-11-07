@@ -1743,11 +1743,13 @@ const app = {
                    
                       if(this.tGrafica=="Incremento"){
                           if(valor>=this.datosGrafica[3]){
-                            color = 'green';
-                          }else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[3]){
-                            color = '#d8aa0a';
+                            color = 'green';//Meta Retadora
+                          }else if(valor>=this.datosGrafica[2] ){
+                            color = '#6bb92e';//Meta Calculada
                           }else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[3]){
-                            color = '#6bb92e';
+                            color = '#6bb92e';//Meta Calculada
+                          }else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[3]){
+                            color = '#d8aa0a';//Entitlement
                           }else if(valor<this.datosGrafica[3]){
                             color = 'red';
                           }
