@@ -31,7 +31,7 @@ function consultarCriteriosPonderacion($id_equipo)
     global $conexion;
     $resultado = [];
     $estado = false;
-    $consulta = "SELECT DISTINCT criterios.id,criterios.nombre FROM equipos_ead JOIN ponderaciones ON equipos_ead.id_ponderacion = ponderaciones.id JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios WHERE equipos_ead.id=? AND criterios.tipo='Gráfica'";
+    $consulta = "SELECT DISTINCT criterios.id,criterios.nombre,criterios.operacion FROM equipos_ead JOIN ponderaciones ON equipos_ead.id_ponderacion = ponderaciones.id JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios WHERE equipos_ead.id=? AND criterios.tipo='Gráfica'";
     $stmt = $conexion->prepare($consulta);
     if (!$stmt) {
         $estado = "Error al preparar " . $conexion->error;

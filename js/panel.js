@@ -2680,22 +2680,19 @@ const app = {
     },
     tablaGraficas() {
       setTimeout(() => {
-
-        console.log("Tamanio Grafica", this.datosGrafica.length)
+        
         const selectedItem = this.criterioGrafica.find(item => item.id === this.idCriterioGrafica);
         let nombreCriterio = ""
+        let tipoOPeracion = ""
         if (selectedItem) {
-          nombreCriterio = selectedItem.nombre;
+          nombreCriterio = selectedItem.nombre;//Nombre criterio
+          tipoOPeracion = selectedItem.operacion;//Operacion a realizar del criterio
           this.nombreDelCriterio = nombreCriterio
-          if(nombreCriterio=="Eficiencia"){
-            console.log("ES EFICIENCIA")
+          if(tipoOPeracion=="Promedio"){
             suma = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0);
-
-            
             let elementos = this.datosGrafica.filter((element) => {//elimino los datos nulos, para tomar el valor de los datos no vacios
               return element !== '' && element !== null && element !== undefined;
             });
-
             this.sumaTabla = (suma/elementos.length).toFixed(2);
           }
         }
@@ -3236,22 +3233,56 @@ const app = {
           if (response.data[0] == true) {
             console.log("Datos Graficas ScoreCard", response.data[1]);
 
-            this.sumasDinamicasSC = response.data[1].reduce((acc, current) => {
-              const index = current.id_criterios;
-              const existingItem = acc.find(item => item.id_criterios === index);
+            // Inicializa el contador de registros fuera de la función reduce
+            let indexCant = 0; // Cambié a 0 porque ahora queremos contar los elementos antes de hacer la división
+            this.sumasDinamicasSC = response.data[1].reduce((nuevo, origen) => {
+              let id_criterio = origen.id_criterios;
               
+              // Buscar si ya existe un item con el mismo id_criterios
+              let existingItem = nuevo.find(item => item.id_criterios === id_criterio);
+            
+              // Si existe el item, actualizar su suma
               if (existingItem) {
-                if (current.valor !== null) {
-                  const suma = parseFloat(existingItem.suma) + parseFloat(current.valor);
-                  existingItem.suma = suma.toFixed(2);
+                if (origen.valor !== null) {
+                  indexCant++;  // Aumentamos el contador solo cuando el valor no es null
+            
+                  if (existingItem.operacion === "Promedio") {
+                    // Acumulamos la suma sin dividir todavía
+                    existingItem.suma = (parseFloat(existingItem.suma) + parseFloat(origen.valor)).toFixed(2);
+                    existingItem.registros = indexCant; // Actualizamos el contador de registros
+                  } else {
+                    // En caso que no sea Promedio, solo sumamos el valor
+                    existingItem.suma = (parseFloat(existingItem.suma) + parseFloat(origen.valor)).toFixed(2);
+                    existingItem.registros = 1; // Para operaciones no promedio, siempre será 1
+                  }
                 }
               } else {
-                acc.push({ id_criterios: index, suma: parseFloat(current.valor).toFixed(2) });
+                // Si no existe el item, agregarlo y asegurarse de calcular el promedio correctamente
+                if (origen.valor !== null) {
+                  nuevo.push({
+                    id_criterios: id_criterio,
+                    suma: parseFloat(origen.valor).toFixed(2),  // Solo formateo a 2 decimales
+                    operacion: origen.operacion,
+                    registros: 1 // Si es el primer registro para este criterio, inicializamos el contador a 1
+                  });
+                  indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
+                }
               }
-              return acc;
+            
+              return nuevo;
             }, []);
-            console.log("Sumas ScoreCard", this.sumasDinamicasSC)
-            let cantidad_dias = response.data[1].filter(elemento=>elemento.id_criterios===3 && elemento.valor!==null).length//taminio de elementos con id 3 que es "Eficiencia"
+            
+            // Al final, después de haber sumado todos los valores, calculamos el promedio si es necesario
+            this.sumasDinamicasSC.forEach(item => {
+              if (item.operacion === "Promedio" && item.registros > 0) {
+                item.suma = (parseFloat(item.suma) / item.registros).toFixed(2);  // Calculamos el promedio final
+              }
+            });
+            
+            console.log("Sumas ScoreCard", this.sumasDinamicasSC);
+
+            
+            /*let cantidad_dias = response.data[1].filter(elemento=>elemento.id_criterios===3 && elemento.valor!==null).length//taminio de elementos con id 3 que es "Eficiencia"
             // Encontrar id_criterio 3 que es "Eficiencia"
             const sumaEficiencia =  this.sumasDinamicasSC.find(item => item.id_criterios === 3);
             //tomo el index
@@ -3260,7 +3291,7 @@ const app = {
             let resultado = cantidad_dias > 0 ? sumaEficiencia.suma / cantidad_dias : 0; // Evitar división por cero
             if (index!=-1) {
               this.sumasDinamicasSC[index].suma = resultado.toFixed(2);
-            }
+            }*/
 
             this.consultarDatosPonderacionID()
           } else {

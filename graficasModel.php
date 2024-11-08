@@ -31,22 +31,29 @@ function consultarDatosGraficaParaScoreCard($id_equipo, $anio, $mes)
     global $conexion;
     $resultado = [];
     $correcto = false;
-    $seleccion = "SELECT * FROM graficas WHERE id_equipo= ? AND anio = ? AND mes = ?";
+    //$seleccion = "SELECT * FROM graficas WHERE id_equipo= ? AND anio = ? AND mes = ?";
+
+
+    $seleccion = "SELECT criterios.operacion, graficas.*
+    FROM graficas
+    JOIN criterios ON graficas.id_criterios = criterios.id
+    WHERE graficas.id_equipo = ? AND graficas.anio = ? AND graficas.mes = ?";
     $stmt = $conexion->prepare($seleccion);
-    $stmt->bind_param("iii", $id_equipo, $anio, $mes);
     if ($stmt) {
-        if ($stmt->execute()) {
-            $correcto = true;
-            $recuperando = $stmt->get_result();
-            while ($datos = $recuperando->fetch_assoc()) {
-                $resultado[] = $datos;
-            }
+                $stmt->bind_param("iii", $id_equipo, $anio, $mes);
+                   if ($stmt->execute()) {
+                        $correcto = true;
+                        $recuperando = $stmt->get_result();
+                        while ($datos = $recuperando->fetch_assoc()) {
+                            $resultado[] = $datos;
+                        }
+                    } else {
+                        $correcto = $stmt->error;
+                    }
         } else {
-            $correcto = $stmt->error;
+            $correcto = $conexion->error;
         }
-    } else {
-        $correcto = $conexion->error;
-    }
+
     return array($correcto, $resultado);
 }
 
