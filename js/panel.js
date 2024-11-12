@@ -2,13 +2,13 @@ var arreglo = [];
 const app = {
   data() {
     return {
-      verMenu:'Si',
+      verMenu: 'Si',
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
       var_actualizarEAD: false,
       tipo_usuario: '',
       ventana: 'Usuarios',
       accion: 'insertar',
-      loading:true,
+      loading: true,
       accion_departamento: '',
       titulo_formulario_usuarios: 'ALTA USUARIOS',
       texto_btn_submit: "Aceptar",
@@ -55,10 +55,10 @@ const app = {
       buscar_colaborador: '',
       ocultar_mostar_estrella: 'none',
       lider_anterior: '',
-      equipoAsignarTabla:[],
-      criterioAsignar:[],
-      seleccionarAcceso:[],
-      id_equipo_tabla:'',
+      equipoAsignarTabla: [],
+      criterioAsignar: [],
+      seleccionarAcceso: [],
+      id_equipo_tabla: '',
       ////////////////////////////////////////////////////////////////////////////////////*GESTION DE SESSION*/
       myModal: '',
       login: false,
@@ -138,7 +138,7 @@ const app = {
       actualizar_datoKPI: false,
       idUpdateDatoKPI: '',
       justasArranque: [],
-      seguimiento_completado:0,
+      seguimiento_completado: 0,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -170,7 +170,7 @@ const app = {
       id_foro: '',
       responsable_compromiso: '',
       compromiso_status: 0,
-      foroGlobal:'false',
+      foroGlobal: 'false',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador: [],
       etapas_preguntas: '',
@@ -188,7 +188,7 @@ const app = {
       examenFinalizado: '',
       etapas: '',
       comentario: '',
-      contestado:[],
+      contestado: [],
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: '',
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -228,8 +228,8 @@ const app = {
       causa: '',
       dia_grafica: 1,
       causas: [],
-      tGrafica:'',
-      nombreDelCriterio:'',
+      tGrafica: '',
+      nombreDelCriterio: '',
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
@@ -259,8 +259,8 @@ const app = {
       inputValorActual: [],
       puntosObtenidosInput: [],
       puntosObtenidos: [],
-      tipo_criterio:'Gráfica',
-      nombre_nuevo_criterio:'',
+      tipo_criterio: 'Gráfica',
+      nombre_nuevo_criterio: '',
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -306,23 +306,23 @@ const app = {
     }
   },
   mounted() {
-      this.consultarUsuarios()
-      this.ventanaSegunTipoUsuario()//tomo datos de session
-      window.addEventListener('popstate', () => {
-        window.history.forward();
-        this.cerrarModalHistorial()
-     });
+    this.consultarUsuarios()
+    this.ventanaSegunTipoUsuario()//tomo datos de session
+    window.addEventListener('popstate', () => {
+      window.history.forward();
+      this.cerrarModalHistorial()
+    });
   },
   methods: {
     cerrarModalHistorial() {
-          this.myModal.hide();
+      this.myModal.hide();
     },
     /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
     ventanaSegunTipoUsuario() {
-      document.getElementById('app').style="display:none;"
+      document.getElementById('app').style = "display:none;"
       axios.post("datos_user.php", {
       }).then(response => {
-        document.getElementById('app').style="display:block;"
+        document.getElementById('app').style = "display:block;"
         this.tipo_usuario = response.data[0]
         if (response.data[0] == "Evaluador") {
           this.ventanas('Evaluar');
@@ -333,10 +333,10 @@ const app = {
           this.consultarAvanceEtapas()
           this.tomarDiaActual()
           this.consultarCantidadFaseXEtapas()
-        }else if (response.data[0] == "Colaborador"){
+        } else if (response.data[0] == "Colaborador") {
           this.ventanas('Graficas');
           this.consultarEADColaborador()
-        }else {
+        } else {
           //Admin
         }
       }).catch(error => {
@@ -505,7 +505,7 @@ const app = {
       this.myModal.show()
     },
     cerrarModal() {
-      this.verMenu="Si"
+      this.verMenu = "Si"
       this.myModal.hide()
     },
     nuevoDepartamento() {
@@ -702,14 +702,14 @@ const app = {
         alert("Axios CrearEAD :-(" + error)
       })
     },
-    modalAsignarTabla(id_equipo){
-      this.verMenu="No";
+    modalAsignarTabla(id_equipo) {
+      this.verMenu = "No";
       this.myModal = new bootstrap.Modal(document.getElementById("modal_asignar_tabla"));
       this.myModal.show();
       this.equipoAsignarTabla = this.integrantesEAD[id_equipo];
       this.id_equipo_tabla = id_equipo;//asigno
       console.log(this.id_equipo_tabla)
-      this.equipoAsignarTabla.map((elemento,index)=>{
+      this.equipoAsignarTabla.map((elemento, index) => {
         if (elemento.id_grafica_acceso === null || elemento.id_grafica_acceso === "") {
           this.seleccionarAcceso[index] = "";
         } else {
@@ -719,7 +719,7 @@ const app = {
       this.consultarCriteriosParaAsignarColaborador(id_equipo);
     },
     datosParaEditarEAD(id_equipo, index) {
-     
+
       var estrellas = document.querySelectorAll('[id^=estrella]');
       for (var i = 0; i < estrellas.length; i++) {
         estrellas[i].style.display = "none";
@@ -803,41 +803,41 @@ const app = {
       document.getElementById('estrella' + index).style = "display:block;color:#e28a18";
       this.select_lider_equipo = this.checkIntegrantes[index]
     },
-    asignarAccesoGrafica(id_integrante,index){
+    asignarAccesoGrafica(id_integrante, index) {
       let id_criterio = this.seleccionarAcceso[index]
-      axios.put("colaboradorController.php",{
-        accion:"Asignar Acceso",
-        id_ead:this.id_equipo_tabla,
-        id_criterio:id_criterio,
-        id_integrante:id_integrante
-      }).then(response=>{
-          if(response.data==true){
-              this.consultarEAD()
-          }else{
-            console.log(response.data)
-              alert("No se pudo asignar el acceso")
-          }
-      }).catch(error=>{
-          console.log("Error en axios :-("+error)
+      axios.put("colaboradorController.php", {
+        accion: "Asignar Acceso",
+        id_ead: this.id_equipo_tabla,
+        id_criterio: id_criterio,
+        id_integrante: id_integrante
+      }).then(response => {
+        if (response.data == true) {
+          this.consultarEAD()
+        } else {
+          console.log(response.data)
+          alert("No se pudo asignar el acceso")
+        }
+      }).catch(error => {
+        console.log("Error en axios :-(" + error)
       })
     },
-    colaboradorDesmarcado(event,id_integrante){
-      if(this.var_actualizarEAD==true){
-          if (!event.target.checked) {
-            axios.put("colaboradorController.php",{
-              accion:"Desmarcar Acceso",
-              id_ead:this.idEquipo,
-              id_integrante:id_integrante
-            }).then(response=>{
-                if(response.data==true){
-                    this.consultarEAD()
-                }else{
-                    alert("No se logro desvincular del acceso")
-                    console.log(response.data)
-                }
-            }).catch(error=>{
-                console.log("Error en axios :-("+error)
-            })
+    colaboradorDesmarcado(event, id_integrante) {
+      if (this.var_actualizarEAD == true) {
+        if (!event.target.checked) {
+          axios.put("colaboradorController.php", {
+            accion: "Desmarcar Acceso",
+            id_ead: this.idEquipo,
+            id_integrante: id_integrante
+          }).then(response => {
+            if (response.data == true) {
+              this.consultarEAD()
+            } else {
+              alert("No se logro desvincular del acceso")
+              console.log(response.data)
+            }
+          }).catch(error => {
+            console.log("Error en axios :-(" + error)
+          })
         }
       }
     },
@@ -1674,20 +1674,20 @@ const app = {
       this.semanas_anio = Math.ceil((daysInYear - day + 4) / 7);
     },
     convertirDecimal(variable) {
-      console.log("llego: ",variable);
+      console.log("llego: ", variable);
       var valor = this[variable];
       if (typeof valor === 'string') {
         valor = valor.replace(/[^0-9.]/g, '');
       } else {
         valor = valor.toString();
       }
-      console.log("remplazo: ",valor);
+      console.log("remplazo: ", valor);
       valor = this.formatoNumero(valor)
-      console.log("despues del formato: ",valor);
+      console.log("despues del formato: ", valor);
       this[variable] = valor;
     },
     formatoNumero(value) {// ejemplo de formato 1,300.00
-      const options2 = { style: 'decimal', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4};//si no existe nada despues del decinal .00 y si existe maximo 4 ejemplo .1753
+      const options2 = { style: 'decimal', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 4 };//si no existe nada despues del decinal .00 y si existe maximo 4 ejemplo .1753
       const numberFormat2 = new Intl.NumberFormat('en-US', options2);
       // Obtener el valor actual del campo y eliminar caracteres no deseados
       const formattedValue = numberFormat2.format(value);
@@ -1726,62 +1726,62 @@ const app = {
             label: '',
             data: this.datosGrafica,
             backgroundColor: this.datosGrafica.map((valor, index) => {
-                 if(index==0){
-                    return 'red';//Línea Base
-                 }
-                 if(index==1){
-                    return '#d8aa0a';//Entitlement
-                 }
-                 if(index==2){
-                    return '#6bb92e';//Meta Calculada
-                 }
-                 if(index==3){
-                    return 'green';//Meta Retadora
-                 }
-                 if(index>=4){
-                    let  color = 'black';
-                   
-                      if(this.tGrafica=="Incremento"){
-                          if(valor>=this.datosGrafica[3]){
-                            color = 'green';//Meta Retadora
-                          }else if(valor>=this.datosGrafica[2] ){
-                            color = '#6bb92e';//Meta Calculada
-                          }else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[3]){
-                            color = '#6bb92e';//Meta Calculada
-                          }else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[3]){
-                            color = '#d8aa0a';//Entitlement
-                          }else if(valor<this.datosGrafica[3]){
-                            color = 'red';
-                          }
-                      }else{
-                        if(valor<=this.datosGrafica[3]){
-                        color = 'green';
-                        }else if(valor>=this.datosGrafica[0] || valor>this.datosGrafica[1] && valor>this.datosGrafica[2] && valor>this.datosGrafica[3] ){
-                          color = 'red';
-                          console.log("condicion 1")
-                        }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
+              if (index == 0) {
+                return 'red';//Línea Base
+              }
+              if (index == 1) {
+                return '#d8aa0a';//Entitlement
+              }
+              if (index == 2) {
+                return '#6bb92e';//Meta Calculada
+              }
+              if (index == 3) {
+                return 'green';//Meta Retadora
+              }
+              if (index >= 4) {
+                let color = 'black';
+
+                if (this.tGrafica == "Incremento") {
+                  if (valor >= this.datosGrafica[3]) {
+                    color = 'green';//Meta Retadora
+                  } else if (valor >= this.datosGrafica[2]) {
+                    color = '#6bb92e';//Meta Calculada
+                  } else if (valor >= this.datosGrafica[2] && valor < this.datosGrafica[3]) {
+                    color = '#6bb92e';//Meta Calculada
+                  } else if (valor >= this.datosGrafica[1] && valor < this.datosGrafica[3]) {
+                    color = '#d8aa0a';//Entitlement
+                  } else if (valor < this.datosGrafica[3]) {
+                    color = 'red';
+                  }
+                } else {
+                  if (valor <= this.datosGrafica[3]) {
+                    color = 'green';
+                  } else if (valor >= this.datosGrafica[0] || valor > this.datosGrafica[1] && valor > this.datosGrafica[2] && valor > this.datosGrafica[3]) {
+                    color = 'red';
+                    console.log("condicion 1")
+                  }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
                             color = '#6bb92e';
                             console.log("condicion 1")
-                          }*/else if(valor>this.datosGrafica[3] && valor<=this.datosGrafica[2]){
-                            color = '#6bb92e';
-                            console.log("condicion 3")
-                          }else if(valor<=this.datosGrafica[1] && valor>this.datosGrafica[3]){
+                          }*/else if (valor > this.datosGrafica[3] && valor <= this.datosGrafica[2]) {
+                    color = '#6bb92e';
+                    console.log("condicion 3")
+                  } else if (valor <= this.datosGrafica[1] && valor > this.datosGrafica[3]) {
+                    color = '#d8aa0a';
+                    console.log("condicion 2")
+                  }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
                             color = '#d8aa0a';
-                            console.log("condicion 2")
-                          }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
-                            color = '#d8aa0a';
                             console.log("condicion 3")
-                          }*/else if(valor>this.datosGrafica[2] && valor<=this.datosGrafica[2]){
-                            color = '#6bb92e';
-                            console.log("condicion 4")
-                          }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
+                          }*/else if (valor > this.datosGrafica[2] && valor <= this.datosGrafica[2]) {
+                    color = '#6bb92e';
+                    console.log("condicion 4")
+                  }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
                             color = '#6bb92e';
                             console.log("condicion 7")
                           }*/
-                      }
-                      return color;
-                  }
-                }),
+                }
+                return color;
+              }
+            }),
             borderWidth: 1,
           }]
         },
@@ -1843,9 +1843,9 @@ const app = {
           animation: {
 
             duration: 0,
-      
+
           },
-          
+
         },
         plugins: [{
           afterDatasetsDraw: (chart) => {
@@ -1854,10 +1854,10 @@ const app = {
               chart.ctx.font = '20px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data)+ " " + this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+              chart.ctx.fillText(this.formatoNumero(data) + " " + this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
             });
           }
-        
+
         }]
 
       });
@@ -1899,7 +1899,7 @@ const app = {
                 }
               } else {
                 meses_semanas.push('Semana ' + datosKPIS[i].semana);
-               
+
                 datos_meses_semanas.push(datosKPIS[i].dato_semanal);
               }
             }
@@ -2046,24 +2046,24 @@ const app = {
         console.log("Error en axios ", error)
       })
     },
-    eliminarDatoKPI(id,semana,dato){
-      if(!confirm("¿Desea eliminar el registro semana "+semana+" con dato "+dato+"?")){return true}
+    eliminarDatoKPI(id, semana, dato) {
+      if (!confirm("¿Desea eliminar el registro semana " + semana + " con dato " + dato + "?")) { return true }
       axios.delete("seguimientoKpiController.php", {
-       params:{
-        id_dato:id
-       }
+        params: {
+          id_dato: id
+        }
       }).then(response => {
         console.log(response.data)
-        if(response.data==true){
-            this.consultarSeguimientoKPI()
-            this.cancelarDatosKPI()//reseteo variables
-        }else{
-            alert("Algo salio mal al eliminar el registro");
+        if (response.data == true) {
+          this.consultarSeguimientoKPI()
+          this.cancelarDatosKPI()//reseteo variables
+        } else {
+          alert("Algo salio mal al eliminar el registro");
         }
       }).catch(error => {
-          console.log("Error en axios", error)
+        console.log("Error en axios", error)
       })
-      
+
     },
     consultarJuntasArranque() {
       axios.get("juntasArranqueController.php", {
@@ -2078,7 +2078,7 @@ const app = {
         console.log("Error en axios " + error);
       })
     },
-    cerrarProyecto(){
+    cerrarProyecto() {
       Swal.fire({
         title: "Limpiar y guardar datos?",
         html: "<label>¡Se limpiarán y guardarán los datos, de esta manera podrá iniciar a registrar datos de un nuevo proyecto! <br> - Cargue la presenteción (Puede tardar hasta 7 minutos en subirse por el peso)</label>",
@@ -2089,25 +2089,26 @@ const app = {
         confirmButtonText: "Si, guardar y limpiar!"
       }).then((result) => {
         if (result.isConfirmed) {
-            axios.put("gestionSesionesController.php",{
-              accion: 'cerrarProyecto',
-              id_equipo: this.select_session_equipo.split('<->')[0],
-            }).then(response => {
-              console.log("Respuesta Cerrar Proyecto",response);
-              if(response.data[0]==true && response.data[1]==true && response.data[2]==true && response.data[3]==true){
-                this.consultarEADXID()
-                this.consultarSeguimientoSession()
-                this.consultarCompromisos()
-              }else{
-                Swal.fire("Algo salio mal al guardar y limpiar!");
-              }
-            })
+          axios.put("gestionSesionesController.php", {
+            accion: 'cerrarProyecto',
+            id_equipo: this.select_session_equipo.split('<->')[0],
+          }).then(response => {
+            console.log("Respuesta Cerrar Proyecto", response);
+            if (response.data[0] == true && response.data[1] == true && response.data[2] == true && response.data[3] == true) {
+              this.consultarEADXID()
+              this.consultarSeguimientoSession()
+              this.consultarCompromisos()
+            } else {
+              Swal.fire("Algo salio mal al guardar y limpiar!");
+            }
+          })
           Swal.fire({
             title: "Se limpio correctamente!",
             text: "Ya puede iniciar a registrar los datos del nuevo proyecto",
             icon: "success"
           });
-        }});
+        }
+      });
     },
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2174,19 +2175,19 @@ const app = {
       }
     },
     consultarEADxPlanta() {
-      console.log("foroGlobal",this.foroGlobal);
-      console.log("planta",this.select_planta_foro)
-      if (this.foroGlobal === "true"){
+      console.log("foroGlobal", this.foroGlobal);
+      console.log("planta", this.select_planta_foro)
+      if (this.foroGlobal === "true") {
         axios.get("competenciasController.php", {
           params: {
             accion: 'EADSxPlanta',
             planta: this.select_planta_foro
           }
         }).then(response => {
-          if(response.data[1]===true){
-            this.EADFiltrado=response.data[0];
+          if (response.data[1] === true) {
+            this.EADFiltrado = response.data[0];
             this.ckeckEADForo = [];
-          }else{
+          } else {
             console.log("Algo salio mal al consultar")
           }
         }).catch(error => {
@@ -2194,9 +2195,9 @@ const app = {
         })
       }
     },
-    resetearVariablesForo(){
-      this.select_planta_foro=''
-      this.select_area_foro=''
+    resetearVariablesForo() {
+      this.select_planta_foro = ''
+      this.select_area_foro = ''
       this.areasEADs = ''
       this.fecha_foro = ''
       this.EADFiltrado = []
@@ -2308,21 +2309,21 @@ const app = {
       let planta = "";
       let area = "";
 
-      if(this.foroGlobal!='true'){//si no es 'true'
+      if (this.foroGlobal != 'true') {//si no es 'true'
         if (!this.nombre_foro) { return alert("Agregue el nombre al foro") }
         if (!this.select_planta_foro) { return alert("Seleccione Planta") }
-        if (!this.select_area_foro) { return alert("Seleccione Área") }   
-        if (!this.fecha_foro) { return alert("Seleccione una Fecha") }  
+        if (!this.select_area_foro) { return alert("Seleccione Área") }
+        if (!this.fecha_foro) { return alert("Seleccione una Fecha") }
         if (this.ckeckEADForo.length <= 0) { return alert("Seleccione los EAD's") }
         if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
         planta = this.select_planta_foro
         area = this.select_area_foro
-      }else{
+      } else {
         if (!this.nombre_foro) { return alert("Agregue el nombre al foro") }
         if (this.ckeckEADForo.length <= 0) { return alert("Seleccione los EAD's") }
         if (this.ckeckEvaluadores.length <= 0) { return alert("Seleccione Evaluadores") }
-        if(!this.fecha_foro) { return alert("Seleccione una Fecha") }
-        if(this.select_planta_foro ==""){ planta = "Multiplanta"}
+        if (!this.fecha_foro) { return alert("Seleccione una Fecha") }
+        if (this.select_planta_foro == "") { planta = "Multiplanta" }
         planta = this.select_planta_foro
         area = "Multiárea"
       }
@@ -2350,7 +2351,7 @@ const app = {
           this.ckeckEADForo = [];
           this.ckeckEvaluadores = [];
           this.EADFiltrado = [];
-          this.foroGlobal='false'
+          this.foroGlobal = 'false'
           alert("Foro guardado correctamente.");
           this.consultarForos()
         }
@@ -2363,9 +2364,9 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById('modal_foros_detalles'));
       this.myModal.show();
       this.tituloModal = nombre;
-      console.log("Datos, Modal",this.myModal)
+      console.log("Datos, Modal", this.myModal)
       this.verMenu = 'No'
-      
+
     },
     consultarDetallesForo(id) {
       this.id_foro = id;
@@ -2619,7 +2620,7 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     consultarCriterios() {
       this.idCriterioGrafica = ''
-      if(this.equipo_grafica){
+      if (this.equipo_grafica) {
         axios.get("criteriosController.php", {
           params: {
             accion: 'consultarCriterios',
@@ -2639,20 +2640,20 @@ const app = {
     },
     consultarCriteriosParaAsignarColaborador(id_equipo) {
       this.idCriterioGrafica = ''
-        axios.get("criteriosController.php", {
-          params: {
-            accion: 'consultarCriterios',
-            id_equipo: id_equipo
-          }
-        }).then(response => {
-          if (response.data[0] == true) {
-              this.criterioAsignar = response.data[1];
-          }else {
-              console.log("Error al consultar" + response.data)
-          }
-        }).catch(error => {
-          console.log("Error en axios.php" + error)
-        })
+      axios.get("criteriosController.php", {
+        params: {
+          accion: 'consultarCriterios',
+          id_equipo: id_equipo
+        }
+      }).then(response => {
+        if (response.data[0] == true) {
+          this.criterioAsignar = response.data[1];
+        } else {
+          console.log("Error al consultar" + response.data)
+        }
+      }).catch(error => {
+        console.log("Error en axios.php" + error)
+      })
     },
 
     diasDelMesAnio() {
@@ -2680,7 +2681,7 @@ const app = {
     },
     tablaGraficas() {
       setTimeout(() => {
-        
+
         const selectedItem = this.criterioGrafica.find(item => item.id === this.idCriterioGrafica);
         let nombreCriterio = ""
         let tipoOPeracion = ""
@@ -2688,12 +2689,12 @@ const app = {
           nombreCriterio = selectedItem.nombre;//Nombre criterio
           tipoOPeracion = selectedItem.operacion;//Operacion a realizar del criterio
           this.nombreDelCriterio = nombreCriterio
-          if(tipoOPeracion=="Promedio"){
+          if (tipoOPeracion == "Promedio") {
             suma = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0);
             let elementos = this.datosGrafica.filter((element) => {//elimino los datos nulos, para tomar el valor de los datos no vacios
               return element !== '' && element !== null && element !== undefined;
             });
-            this.sumaTabla = (suma/elementos.length).toFixed(2);
+            this.sumaTabla = (suma / elementos.length).toFixed(2);
           }
         }
 
@@ -2708,7 +2709,7 @@ const app = {
         if (existingChart) {
           existingChart.destroy();
         }
-        
+
 
         new Chart(ctx, {
           type: 'line',
@@ -2734,7 +2735,7 @@ const app = {
       }, 200)
     },
     consultadoValoresGrafica() {
-      if (this.idCriterioGrafica!='' && this.equipo_grafica!='' && this.anio_grafica!='' && this.mes_grafica!='') {
+      if (this.idCriterioGrafica != '' && this.equipo_grafica != '' && this.anio_grafica != '' && this.mes_grafica != '') {
 
         var mes;
         if (this.mes_grafica == 'Enero') { mes = 1 }
@@ -2769,7 +2770,7 @@ const app = {
             });
             this.datosGrafica = nuevoArreglo
             this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
-              
+
 
 
             /* if (this.idCriterioGrafica == 'Rechazos') {
@@ -3234,19 +3235,21 @@ const app = {
             console.log("Datos Graficas ScoreCard", response.data[1]);
 
             // Inicializa el contador de registros fuera de la función reduce
-            let indexCant = 0; // Cambié a 0 porque ahora queremos contar los elementos antes de hacer la división
+            let indexCant = 1; // Cambié a 0 porque ahora queremos contar los elementos antes de hacer la división
             this.sumasDinamicasSC = response.data[1].reduce((nuevo, origen) => {
               let id_criterio = origen.id_criterios;
-              
+
               // Buscar si ya existe un item con el mismo id_criterios
               let existingItem = nuevo.find(item => item.id_criterios === id_criterio);
-            
+
               // Si existe el item, actualizar su suma
               if (existingItem) {
                 if (origen.valor !== null) {
-                  indexCant++;  // Aumentamos el contador solo cuando el valor no es null
-            
+                  // Aumentamos el contador solo cuando el valor no es null
+
                   if (existingItem.operacion === "Promedio") {
+                    indexCant++;
+                    //console.log("Sumando", indexCant);
                     // Acumulamos la suma sin dividir todavía
                     existingItem.suma = (parseFloat(existingItem.suma) + parseFloat(origen.valor)).toFixed(2);
                     existingItem.registros = indexCant; // Actualizamos el contador de registros
@@ -3265,23 +3268,24 @@ const app = {
                     operacion: origen.operacion,
                     registros: 1 // Si es el primer registro para este criterio, inicializamos el contador a 1
                   });
-                  indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
+                  // indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
                 }
               }
-            
+
               return nuevo;
             }, []);
-            
+
             // Al final, después de haber sumado todos los valores, calculamos el promedio si es necesario
             this.sumasDinamicasSC.forEach(item => {
               if (item.operacion === "Promedio" && item.registros > 0) {
+                console.log("Suma: ", parseFloat(item.suma), "Registros: ", item.registros)
                 item.suma = (parseFloat(item.suma) / item.registros).toFixed(2);  // Calculamos el promedio final
               }
             });
-            
+
             console.log("Sumas ScoreCard", this.sumasDinamicasSC);
 
-            
+
             /*let cantidad_dias = response.data[1].filter(elemento=>elemento.id_criterios===3 && elemento.valor!==null).length//taminio de elementos con id 3 que es "Eficiencia"
             // Encontrar id_criterio 3 que es "Eficiencia"
             const sumaEficiencia =  this.sumasDinamicasSC.find(item => item.id_criterios === 3);
@@ -3476,14 +3480,14 @@ const app = {
         accion: 'consultarEADColaborador'
       }).then(response => {
         console.log(response.data);
-         if(response.data[0]==true){
+        if (response.data[0] == true) {
           this.consultaEAD[0] = response.data[1];
-          this.equipo_grafica = response.data[1][0].id+'<->'+response.data[1][0].nombre_ead+'<->'+response.data[1][0].planta+'<->'+response.data[1][0].area//asignando valor por defaul al select de equipo seleccionado
+          this.equipo_grafica = response.data[1][0].id + '<->' + response.data[1][0].nombre_ead + '<->' + response.data[1][0].planta + '<->' + response.data[1][0].area//asignando valor por defaul al select de equipo seleccionado
           this.consultarCriterioColaborador()
-         }else{
-          
+        } else {
+
           console.log("No se consulto correctamente el equipo del colaborador")
-         }
+        }
       }).catch(error => {
         console.log("Error en la consulta :-( " + error)
       }).finally(() => {
@@ -3492,7 +3496,7 @@ const app = {
     },
     consultarCriterioColaborador() {
       this.idCriterioGrafica = ''
-      if(this.equipo_grafica){
+      if (this.equipo_grafica) {
         axios.get("criteriosController.php", {
           params: {
             accion: 'consultarCriterioColaborador',
@@ -3604,47 +3608,47 @@ const app = {
       })
     },
 
-    quitarCriterioNuevaPonderacion(posicion){
-     this.filasSC.splice(posicion, 1);//(posicion,cantidad)
+    quitarCriterioNuevaPonderacion(posicion) {
+      this.filasSC.splice(posicion, 1);//(posicion,cantidad)
     },
-    refrescarNuevaPonderaciones(){
-      this.nueva_ponderacion=true
+    refrescarNuevaPonderaciones() {
+      this.nueva_ponderacion = true
       this.consultarCriterio()
       //this.consultarPonderaciones()
       //this.consultarEAD()
     },
-    modalNuevoCriterio(){
+    modalNuevoCriterio() {
       this.myModal = new bootstrap.Modal(document.getElementById("modalNuevoCriterio"))
       this.myModal.show()
       this.verMenu = "No";
     },
-    cerrarModalNuevoCriterio(){
+    cerrarModalNuevoCriterio() {
       this.verMenu = 'Si'
     },
-    guardarNuevoCriterio(){
+    guardarNuevoCriterio() {
       console.log(this.nombre_nuevo_criterio)
       console.log(this.tipo_criterio)
-      if(this.nombre_nuevo_criterio!=''){
-              axios.post("criteriosController.php",{
-                nuevo_criterio:this.nombre_nuevo_criterio,
-                tipo_criterio:this.tipo_criterio
-              }).then(response=>{
-                console.log(response.data)
-                if(response.data==true){
-                    alert("Se inserto el nuevo criterio correctamente")
-                    this.consultarCriterio()
-                    this.myModal.hide()
-                    this.verMenu = 'No'
-                    this.nombre_nuevo_criterio =''
-                }else{
-                    alert("Algo salio mal")
-                }
-              }).catch(error=>{
-                console.log("Error en axios " + error)
-              })
-          }else{
-            alert("Coloque el nombre del criterio")
+      if (this.nombre_nuevo_criterio != '') {
+        axios.post("criteriosController.php", {
+          nuevo_criterio: this.nombre_nuevo_criterio,
+          tipo_criterio: this.tipo_criterio
+        }).then(response => {
+          console.log(response.data)
+          if (response.data == true) {
+            alert("Se inserto el nuevo criterio correctamente")
+            this.consultarCriterio()
+            this.myModal.hide()
+            this.verMenu = 'No'
+            this.nombre_nuevo_criterio = ''
+          } else {
+            alert("Algo salio mal")
           }
+        }).catch(error => {
+          console.log("Error en axios " + error)
+        })
+      } else {
+        alert("Coloque el nombre del criterio")
+      }
     },
     guardarPonderacion() {
       if (this.nombre_ponderacion == '') {
