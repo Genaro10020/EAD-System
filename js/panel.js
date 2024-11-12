@@ -3273,12 +3273,13 @@ const app = {
               }
 
               return nuevo;
+              
             }, []);
 
             // Al final, después de haber sumado todos los valores, calculamos el promedio si es necesario
             this.sumasDinamicasSC.forEach(item => {
               if (item.operacion === "Promedio" && item.registros > 0) {
-                console.log("Suma: ", parseFloat(item.suma), "Registros: ", item.registros)
+                //console.log("Suma: ", parseFloat(item.suma), "Registros: ", item.registros)
                 item.suma = (parseFloat(item.suma) / item.registros).toFixed(2);  // Calculamos el promedio final
               }
             });
