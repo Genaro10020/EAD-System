@@ -49,7 +49,7 @@ include("conexionBDSugerencias.php");
         if(!$stmt){
             return $conexion->error;
         }
-        $stmt->bind_param("iiii", $equipo_ead_grafica,$id_criterio,$id_integrante,$id_ead);
+        $stmt->bind_param("ssii", $equipo_ead_grafica,$id_criterio,$id_integrante,$id_ead);
         if($stmt->execute()){
             return true;
         }else{
