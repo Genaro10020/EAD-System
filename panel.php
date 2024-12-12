@@ -599,7 +599,21 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
+                   
+                              
+                    
                     <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
+                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
+                            ?>
+                                <div class="col-3 me-5">
+                                    <select class="form-select" v-model="seleccion_eds_areas" @change="filtrandoEADsGestion()" style="font-size:0.8em">
+                                        <option value="" selected>Todos los equipos</option>
+                                        <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
+                                    </select>
+                                </div>
+                            <?php
+                            }   
+                        ?>
                         <button class="py-1 me-2" style="font-size:12px" :class="{'btn btn-success': documento_session.length > 0, 'btn btn-primary': documento_session.length <= 0}" @click="modalDocumentoGestionSession()" :disabled="!select_session_equipo.length">
                             <i class="bi bi-folder-plus"></i>
                             Documento ({{documento_session.length}})
@@ -853,7 +867,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <tr class="table-secondary">
                                             <th scope="col" class="text-center">#</th>
                                             <th scope="col" class="text-center">Asistencia</th>
-                                            <th scope="col" class="text-center">Hora Incial</th>
+                                            <th scope="col" class="text-center">Hora Inicial</th>
                                             <th scope="col" class="text-center">Hora Final</th>
                                             <th scope="col" class="text-center">Tiempo</th>
                                             <th scope="col" class="text-center">Fotografía</th>

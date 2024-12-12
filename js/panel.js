@@ -139,6 +139,7 @@ const app = {
       idUpdateDatoKPI: '',
       justasArranque: [],
       seguimiento_completado:0,
+      seleccion_eds_areas:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -302,7 +303,8 @@ const app = {
       puntosEvaluacion: [],
       totalSC: '',
       nombrePonderacionAsignada: '',
-      scoreCardCompletado: ''
+      scoreCardCompletado: '',
+      consultaEADparaFiltrar:[],
     }
   },
   mounted() {
@@ -597,7 +599,7 @@ const app = {
           const nuevoOrden = ordenando.map(num => response.data[1][num.toString()]);
           //console.log('Nuevo Orden', nuevoOrden); // [1, 2, 3, 4, 5]
           this.consultaEAD = nuevoOrden;
-
+          this.consultaEADparaFiltrar = nuevoOrden;
           if (response.data[0][1] == true) {
             this.integrantesEAD = response.data[3]
             //console.log("Integrantes EAD",this.integrantesEAD)
@@ -847,6 +849,28 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    uniqueAreas() {
+      // Usamos Set para eliminar los duplicados
+      const areasYPlantas = [...new Set(this.consultaEADparaFiltrar.flatMap(equipo => equipo[0].area))];
+      // Devolver las áreas y plantas únicas
+      return areasYPlantas;
+    },
+    filtrandoEADsGestion() {
+      this.select_session_equipo = "";
+      let areaSeleccionadaEAD = this.seleccion_eds_areas;
+      // Filtra los equipos que coinciden con el área seleccionada
+      if(areaSeleccionadaEAD==''){
+        this.consultarEAD();
+      }else{
+        let resultado = this.consultaEADparaFiltrar.filter(equipo => equipo[0].area === areaSeleccionadaEAD);
+        // Para ver los resultados en la consola
+      console.log("Resultados filtrados", resultado);
+      // Si necesitas actualizar una lista en el data con los resultados filtrados, puedes hacerlo aquí:
+      this.consultaEAD = resultado;
+      }
+     
+    
+    },
     modalDocumentoGestionSession() {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
