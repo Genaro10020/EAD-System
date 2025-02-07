@@ -1811,11 +1811,18 @@ const app = {
         },
         options: {
           plugins: {
+            legend:{ //legend es para eliminar el boton que oculta y aparece las barras
+              display: false
+            },
             title: {
               display: true,
               text: this.nombre_indicador,
               font: {
                 size: 20
+              },
+              padding: {
+                //top: 20,   
+                bottom: 50
               }
             },
           },
