@@ -302,7 +302,8 @@ const app = {
       puntosEvaluacion: [],
       totalSC: '',
       nombrePonderacionAsignada: '',
-      scoreCardCompletado: ''
+      scoreCardCompletado: '',
+      id_actual:''
     }
   },
   mounted() {
@@ -357,12 +358,13 @@ const app = {
         this.usuarios = response.data.Usuarios
 
         //this.evaluadores = this.usuarios.filter(usuario => usuario.tipo_usuario === "Evaluador")//filtra
-
+        
       }).catch(error => {
         //console.log('Erro :-(' + error)
       })
     },
     ventanas(ventana) {
+      this.selector_area = '';
       this.ventana = ventana
       this.consultarUsuarios()
     },
@@ -382,7 +384,7 @@ const app = {
       this.grafica = grafica
     },
     nuevoActualizarUsuario() {
-      axios.post('insertar_actualizar_eliminar_usuario.php', {
+      axios.put('insertar_actualizar_eliminar_usuario.php', {
         accion: this.accion,
         nombre: this.nombre,
         nomina: this.nomina,
@@ -416,6 +418,46 @@ const app = {
         //console.log('Axios Erro :-(' + error)
       })
     },
+
+    insertarArea(id_actual){ //para las ponderaciones anteriores que no se les insertaba automaticamente el area
+      console.log('mi id es:', id_actual, this.selector_area)
+
+      if(!confirm("¿Está seguro de que esta ponderación le corresponde?. Una vez que la seleccione, solo usted podrá ver esta ponderación.")){
+        this.selector_area = '';
+        return
+      } 
+      axios.put('ponderacionesController.php',{
+        accion: "insertarArea",
+        area: this.selector_area,
+        id: id_actual
+      }).then(response => {
+        if(response.data == true){
+          this.consultarPonderaciones();
+          this.selector_area = '';
+        }else{
+          alert("No se logró insertar el area");
+        }
+      })
+      //console.log('El area es:',this.selector_area)
+    },
+
+
+    /*      if (!confirm("¿Esta seguro que desea eliminar el usuario?")) return
+
+      axios.post("insertar_actualizar_eliminar_usuario.php", {
+        accion: 'eliminar',
+        id: id
+      }).then(response => {
+        //console.log(response.data)
+        if (response.data == true) {
+          this.consultarUsuarios();
+        } else {
+          alert("No se elimino correctamente :-(")
+        }
+      }).catch(error => {
+        alert("Axios error :-(" + error)
+      })*/
+
     eliminarUsuario(id) {
       if (!confirm("¿Esta seguro que desea eliminar el usuario?")) return
 
@@ -3561,7 +3603,7 @@ const app = {
           //Obtenga titulo ponderaciones unicas
           this.tablasPonderaciones = Object.values(
             this.ponderaciones.reduce((acc, objeto) => {
-              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion };
+              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion, area: objeto.area};
               return acc;
             }, {})
           ).reverse();
@@ -3590,9 +3632,9 @@ const app = {
             nueva[idPonderacion][criterio].push({ id, desde, hasta, puntos });
           });
           console.log("Datos Tablas Ponderacion", nueva)
+
           this.datosTablaPonderacion = nueva
           ///////////
-
 
           /*nuevoObjeto = {};
           this.tablasPonderaciones.reverse().forEach(ponderaciones => {
@@ -3604,7 +3646,6 @@ const app = {
             }));
           });
     
-    
           this.valoresPon = nuevoObjeto;
           console.log("valoresTablas", this.valoresPon);*/
         } else {
@@ -3613,6 +3654,19 @@ const app = {
 
       }).catch(error => {
         console.log("Error en axios " + error)
+      })
+    },
+
+    consultarAreas(){
+      this.areas = "";
+      axios.post("crud_ead.php", {
+        accion: 'consultarAreasEADs',
+        planta: this.select_planta_foro,
+      }).then(response => {
+        console.log(response.data);
+        this.areasEADs = response.data[4].areas;
+      }).catch(error => {
+        console.log("Error en axios: " + error)
       })
     },
 
@@ -3743,6 +3797,8 @@ const app = {
         console.log("Error en axios: " + error)
       })
     },
+
+    
     cancelarPonderacion() {
       this.nueva_ponderacion = false
     },

@@ -26,8 +26,15 @@ function consultarPonderacion()
     global $conexion;
     $datos = [];
     $estado = false;
+    $area = $_SESSION['area'];
 
-    $consulta = "SELECT ponderaciones.ponderacion,datos_ponderaciones.*,criterios.nombre AS criterio FROM ponderaciones INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios ORDER BY ponderaciones.id DESC";
+    $consulta = "SELECT ponderaciones.ponderacion,ponderaciones.area,datos_ponderaciones.*,criterios.nombre AS criterio 
+    FROM ponderaciones
+    INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion
+    INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios
+    LEFT JOIN areas ON areas.id = ponderaciones.area
+    WHERE areas.nombre = '$area' OR ponderaciones.area = 0
+    ORDER BY ponderaciones.id DESC";
     $stmt = $conexion->prepare($consulta);
     if (!$stmt) {
         return array($conexion->error, $datos);
@@ -63,6 +70,35 @@ function actualizarAsignacion($id_ead, $id_ponderacion)
     $stmt->close();
 }
 
+function insertarArea($nombre,$id)
+{
+    global $conexion;
+
+    $consulta = "SELECT id FROM areas WHERE nombre = ?";
+    $stmt = $conexion->prepare($consulta);
+    $stmt->bind_param("s", $nombre);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    if ($resultado) {
+        $datos = $resultado->fetch_array();
+        $idArea = $datos['id'];
+    }
+
+    $actualizar = "UPDATE ponderaciones SET area = ? WHERE id = ?";
+    $stmt = $conexion->prepare($actualizar);
+    if (!$stmt) {
+        return false;
+    }
+    $stmt->bind_param("ii", $idArea, $id);
+    if ($stmt->execute()) {
+        return true;
+    } else {
+        return $stmt->error;
+    }
+    $stmt->close();
+}
+
+
 function consultarDatosPonderacion($id)
 {
     global $conexion;
@@ -89,16 +125,41 @@ function consultarDatosPonderacion($id)
     return array($estado, $resultado);
 }
 
-function guardarNuevaPonderacion($nombre, $nuevaPonderacion)
+function consultarArea($area){
+    global $conexion;
+    $consulta = "SELECT id FROM areas
+    WHERE nombre = '$area'";
+    $query = $conexion->query($consulta);
+    if ($query) {
+        while ($datos = $query->fetch_array()) {
+            $area = $datos;
+        }
+    }
+    return $resultado;
+}
+
+function guardarNuevaPonderacion($nombre, $nuevaPonderacion,$area)
 {
     global $conexion;
-    //$conexion->begin_transaction(); // Iniciar transacción
-    $insertar = "INSERT INTO ponderaciones (ponderacion) VALUES (?);";
+    //consultarArea($area);
+
+    $consulta = "SELECT id FROM areas WHERE nombre = ?";
+    $stmt = $conexion->prepare($consulta);
+    $stmt->bind_param("s", $area);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+    if ($resultado) {
+        $datos = $resultado->fetch_array();
+        $idArea = $datos['id'];
+    }
+    //return $idArea;
+
+    $insertar = "INSERT INTO ponderaciones (ponderacion,area) VALUES (?,?);";
     $stmt = $conexion->prepare($insertar);
     if (!$stmt) {
         return array($conexion->error);
     }
-    $stmt->bind_param("s", $nombre);
+    $stmt->bind_param("si", $nombre,$idArea);
     if ($stmt->execute()) {
         $resultado = true;
         $ultimo_id = $conexion->insert_id;
