@@ -21,18 +21,26 @@ if(isset($_SESSION['nombre'])){
             case 'POST':
                     $nombre_ponderacion = $arreglo['nombre_ponderacion'];
                     $nuevaPonderacion = $arreglo['nuevaPonderacion'];
-                    $resultado = guardarNuevaPonderacion($nombre_ponderacion,$nuevaPonderacion);   
+                    $area = $_SESSION['area'];
+                    $resultado = guardarNuevaPonderacion($nombre_ponderacion,$nuevaPonderacion,$area);   
                 break;
             case 'PUT':
                 if (isset($arreglo['nuevo']) && isset($arreglo['id_ponderacion'])) {
                     $nombre=$arreglo['nuevo'];
                     $id=$arreglo['id_ponderacion'];
                     $resultado = actualizarNuevoNombre($nombre,$id);
+
                 }else if(isset($arreglo['accion']) && $arreglo['accion']=="AsignarPonderacion"){
                     $id_ead=$arreglo['id_ead'];
                     $id_ponderacion=$arreglo['id_ponderacion'];
                     $resultado = actualizarAsignacion($id_ead,$id_ponderacion);
-                }else{
+
+                }else if(isset($arreglo['accion']) && $arreglo['accion'] == "insertarArea"){
+                    $nombre = $arreglo['area'];
+                    $id = $arreglo['id'];
+                    $resultado = insertarArea($nombre,$id);
+                    
+                }else {
                     $id= $arreglo['id'];
                     $valores = $arreglo['valor'];
                     $columna = $arreglo['columna'];

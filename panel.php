@@ -1244,6 +1244,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
                 <div class="col-12 text-center">
                     <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="refrescarNuevaPonderaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Ponderación</button>
+
                 </div>
                 <div v-if="nueva_ponderacion==true" class="row"><!--scroll Nueva Ponderacion-->
                     <div class="col-12 p-1 mt-2 scroll-w shadow" style="background-color: #f0f8e5;">
@@ -1330,8 +1331,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div> <!--Fin scroll Fin Nueva Ponderacion-->
 
-
-
                 <div v-if="ponderaciones.length>0" class="row scroll"><!--scroll Consulta Ponderaciones-->
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
@@ -1345,6 +1344,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <div><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
                                         <div><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
                                         <div><button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button></div>
+                                        <div v-if="tablaPonderacion.area == 0" class=" d-flex align-items-start">
+                                                <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class="form-control select ms-3">
+                                                    <option disabled default selected value="">Seleccione Área</option>
+                                                    <option> <?php echo $_SESSION['area'];?> </option>
+                                                </select>
+                                                
+                                                <span class="badge bg-danger mt-2 ms-1">Dar clic y seleccionar su área en caso de que esta ponderación le pertenezca.</span>
+                                        </div>
                                     </div>
 
                                 </div>
@@ -1436,7 +1443,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                 </div> <!--Fin scroll Fin Consulta Ponderaciones-->
                 <div v-show="ponderaciones.length<=0" class="col-12 text-center">
-                    <span class="badge bg-secondary text-bg-primary">No existen pondeciones creadas</span>
+                    <span class="badge bg-secondary text-bg-primary">No existen ponderaciones creadas</span>
                 </div>
 
                 <!-- Modal -->
