@@ -1538,7 +1538,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="height: 20px; width: 40px; font-size: 13px;">
                                             {{i}}
                                         </td>
-                                        <td class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                        <td v-if="idCriterioGrafica == 2" class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                            Promedio
+                                        </td>
+                                        <td v-else class="border border-dark text-white bg-secondary" style="font-size: 13px;">
                                             Suma
                                         </td>
                                     </tr>
@@ -1549,7 +1552,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
                                             <input :id="'grafica'+index" :value="datosGrafica[index]" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
                                         </td>
-                                        <td class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
+                                        <td v-if="idCriterioGrafica == 2" class="border border-dark text-white bg-secondary" style="font-size: 13px;">
+                                            {{promMermayDesperdicio}}
+                                        </td>
+                                        <td v-else class=" border border-dark" style="background-color: #FFFF00; font-size: 13px; height: 20px; width: 60px;">
                                             {{sumaTabla}}
                                         </td>
                                     </tr>
@@ -1663,6 +1669,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </td>-->
                                     <!--Columna Valor Actual-->
                                     <td class="middle-center" :class="puntosEvaluacion[criterio.id_criterios] || puntosEvaluacion[criterio.id_criterios]===0 ? 'columna-color-una':''">
+
                                         <label v-if="criterio.tipo!='Input' && sumasDinamicasSC.some(elemento=>elemento.id_criterios==criterio.id_criterios && elemento.suma!='NaN')">
                                             {{sumasDinamicasSC.filter(elemento=>elemento.id_criterios==criterio.id_criterios).map(elemento=>elemento.suma)[0]}}
                                         </label>

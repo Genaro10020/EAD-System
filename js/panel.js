@@ -305,7 +305,9 @@ const app = {
       nombrePonderacionAsignada: '',
       scoreCardCompletado: '',
       consultaEADparaFiltrar:[],
-      id_actual:''
+      id_actual:'',
+      promMermayDesperdicio:'',
+      tamArregloMermaYDesp: ''
     }
   },
   mounted() {
@@ -2732,7 +2734,7 @@ const app = {
     diasDelMesAnio() {
       var anio
       var mes
-      console.log(this.anio_grafica + '' + this.mes_grafica)
+     // console.log(this.anio_grafica + '' + this.mes_grafica)
       if (this.anio_grafica != '' && this.mes_grafica != '') {
         if (this.mes_grafica == 'Enero') { mes = 1 }
         if (this.mes_grafica == 'Febrero') { mes = 2 }
@@ -2750,8 +2752,11 @@ const app = {
         anio = this.anio_grafica;
         var ultimoDiaMes = new Date(anio, mes, 0);
         return ultimoDiaMes.getDate()
+
+
       }
     },
+
     tablaGraficas() {
       setTimeout(() => {
 
@@ -2807,6 +2812,7 @@ const app = {
         });
       }, 200)
     },
+
     consultadoValoresGrafica() {
       if (this.idCriterioGrafica != '' && this.equipo_grafica != '' && this.anio_grafica != '' && this.mes_grafica != '') {
 
@@ -2823,7 +2829,6 @@ const app = {
         if (this.mes_grafica == 'Octubre') { mes = 10 }
         if (this.mes_grafica == 'Noviembre') { mes = 11 }
         if (this.mes_grafica == 'Diciembre') { mes = 12 }
-
 
         var id_equipo = this.equipo_grafica.split('<->')[0];
         axios.get("graficasController.php", {
@@ -2844,7 +2849,37 @@ const app = {
             this.datosGrafica = nuevoArreglo
             this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
 
+          //  console.log('el tamaño del arreglo es:',this.datosGrafica.length);
+          //  console.log('el id del criterio:',this.idCriterioGrafica);
 
+          if(this.idCriterioGrafica == 2){
+            let suma_vacio = 0;
+            let suma_valores = 0;
+            let cant_pos_llenas = 0;
+            this.tamArregloMermaYDesp = this.datosGrafica.length 
+    
+            for(let i = 0; i < this.datosGrafica.length; i++){
+             if(this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])){
+                suma_vacio ++;
+              
+              }else{
+                suma_valores = this.datosGrafica[i] + suma_valores;
+                cant_pos_llenas ++;
+              }
+            }
+    
+            if(suma_vacio == this.datosGrafica.length || isNaN((suma_valores/cant_pos_llenas).toFixed(2))){
+              this.promMermayDesperdicio = 0;
+              
+            }else{
+              this.promMermayDesperdicio = (suma_valores/cant_pos_llenas).toFixed(2)
+              
+            }
+            //console.log('mi suma es:',suma_vacio);
+            //console.log('mi total es:',this.promMermayDesperdicio);
+          } 
+          
+        //}
 
             /* if (this.idCriterioGrafica == 'Rechazos') {
                this.datosGraficaRechazo = nuevoArreglo
@@ -2881,12 +2916,42 @@ const app = {
         })
       }
     },
+
     insertandoValores(index) {
       let valor = 0;
 
       valor = parseFloat(document.getElementById('grafica' + index).value);
       this.datosGrafica[index] = valor;
       this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
+
+      if(this.idCriterioGrafica == 2){
+        let suma_vacio = 0;
+        let suma_valores = 0;
+        let cant_pos_llenas = 0;
+        this.tamArregloMermaYDesp = this.datosGrafica.length 
+
+        for(let i = 0; i < this.datosGrafica.length; i++){
+         if(this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])){
+            suma_vacio ++;
+          
+          }else{
+            suma_valores = this.datosGrafica[i] + suma_valores;
+            cant_pos_llenas ++;
+          }
+        }
+
+        if(suma_vacio == this.datosGrafica.length || isNaN((suma_valores/cant_pos_llenas).toFixed(2))){
+          this.promMermayDesperdicio = 0;
+          
+        }else{
+          this.promMermayDesperdicio = (suma_valores/cant_pos_llenas).toFixed(2)
+          
+        }
+       console.log('mi suma es:',suma_vacio);
+       console.log('mi total es:',this.promMermayDesperdicio);
+      } 
+
+
 
       /* console.log(this.datosGraficaRechazo);
        if (this.idCriterioGrafica == 'Rechazos') {
