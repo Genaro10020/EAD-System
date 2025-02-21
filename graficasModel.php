@@ -37,7 +37,7 @@ function consultarDatosGraficaParaScoreCard($id_equipo, $anio, $mes)
     $seleccion = "SELECT criterios.operacion, graficas.*
     FROM graficas
     JOIN criterios ON graficas.id_criterios = criterios.id
-    WHERE graficas.id_equipo = ? AND graficas.anio = ? AND graficas.mes = ?";
+    WHERE graficas.id_equipo = ? AND graficas.anio = ? AND graficas.mes = ? ORDER BY criterios.id";
     $stmt = $conexion->prepare($seleccion);
     if ($stmt) {
                 $stmt->bind_param("iii", $id_equipo, $anio, $mes);
