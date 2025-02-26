@@ -307,7 +307,10 @@ const app = {
       consultaEADparaFiltrar:[],
       id_actual:'',
       promMermayDesperdicio:'',
-      tamArregloMermaYDesp: ''
+      tamArregloMermaYDesp: '',
+      totalGuardar:'',
+      enterado: false,
+      variable_id_criterio: '',
     }
   },
   mounted() {
@@ -3322,23 +3325,39 @@ const app = {
             })
             this.consultarGraficasParaScoreCard()
 
+
           } else {
             console.log("sin éxito consulta ScoreCard,response.data")
           }
         }).catch(error => {
           console.log("Error en el axios", error)
         });
+
       }
     },
-    guardarDatoScoreCard(id_criterio) {
+    
+
+    guardarTotal(id_criterio){
+    //  console.log('tenemos:',this.puntosEvaluacion[id_criterios]);
+      //this.datoNuevo = ()
+
+      for(let i = 0; i <= this.puntosEvaluacion[id_criterios]; i++){
+        console.log('tenemos:',this.puntosEvaluacion[i]);
+      }
+
+
       let id_equipo = this.equipo_score.split('<->')[0]
       let id_ponderacion = this.equipo_score.split("<->")[4]
       let input_valor_actual = this.inputValorActual[id_criterio] ?? "";
       let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
       let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
-      let anio = this.anio_score
+      let anio = this.anio_score;
       let mes = this.mes_score;
       let mes_numero = this.mesesNumeros(mes)
+      let total = this.totalGuardar
+
+      console.log('lo que actualmente tengo es:',total)
+
       axios.post("scoreCardController.php", {
         id_equipo: id_equipo,
         id_ponderacion: id_ponderacion,
@@ -3347,15 +3366,58 @@ const app = {
         puntos_obtenidos: puntos_obtenidos,
         input_ponderacion: input_ponderacion,
         anio: anio,
-        mes: mes_numero
+        mes: mes_numero,
+        total: total,
+        accion: 'total'
       }).then(response => {
         console.log("guardado ScoreCard", response.data)
         this.consultarScoreCard()
       }).catch(error => {
         console.log("Error en el axios", error)
       })
-
     },
+
+    guardarDatoScoreCard(id_criterio) {
+      console.log('el valor cambiado es:',this.inputColumnaPonderacion[id_criterio])
+
+      console.log(':d',this.puntosEvaluacion[id_criterio]);
+      console.log('el id criterio es:', id_criterio)
+ 
+      for(let i = 0; i <= this.puntosEvaluacion[id_criterio]; i++){
+         console.log('tenemos:',this.puntosEvaluacion[i]);
+      }
+
+      let id_equipo = this.equipo_score.split('<->')[0]
+      let id_ponderacion = this.equipo_score.split("<->")[4]
+      let input_valor_actual = this.inputValorActual[id_criterio] ?? "";
+      let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
+      let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
+      let anio = this.anio_score;
+      let mes = this.mes_score;
+      let mes_numero = this.mesesNumeros(mes)
+      let total = this.totalGuardar
+
+      console.log('lo que actualmente tengo es:',total)
+
+      axios.post("scoreCardController.php", {
+        id_equipo: id_equipo,
+        id_ponderacion: id_ponderacion,
+        id_criterio: id_criterio,
+        input_valor_actual: input_valor_actual,
+        puntos_obtenidos: puntos_obtenidos,
+        input_ponderacion: input_ponderacion,
+        anio: anio,
+        mes: mes_numero,
+        total: total,
+        accion: 'guardarGeneral'
+      }).then(response => {
+        console.log("guardado ScoreCard", response.data)
+        this.consultarScoreCard()
+      }).catch(error => {
+        console.log("Error en el axios", error)
+      })
+    },
+
     consultarGraficasParaScoreCard() {
       if (this.equipo_score != '' && this.anio_score != '' && this.mes_score != '') {
         let id_equipo = this.equipo_score.split('<->')[0];
@@ -3446,6 +3508,7 @@ const app = {
       }
     },
     consultarDatosPonderacionID() {
+      
       let id_ponderacion = this.equipo_score.split("<->")[4];
       if (id_ponderacion == '') {
         return Swal.fire({
@@ -3534,8 +3597,13 @@ const app = {
             this.puntosEvaluacion[10] = this.asistenciaPuntosCumplimiento * this.inputColumnaPonderacion[10];
           }
 
-
           this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + (b ?? 0), 0);
+
+            this.totalGuardar = this.totalSC;
+            console.log('::::',this.totalGuardar) 
+          /*  if(this.totalGuardar != this.puntosEvaluacion[id_criterio]){
+
+            }   */ 
 
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
@@ -3544,6 +3612,7 @@ const app = {
         console.log("Erro en axios", error)
       })
     },
+
     saveInputDinamico(id_criterios, index) {
       let valor = this.inputValorActual[id_criterios]
       //obtengo el puntaje desde ponderacion
@@ -3557,6 +3626,7 @@ const app = {
         this.puntosObtenidos[id_criterios] = this.datosIDPonderacion.filter(items => items.id_criterios == id_criterios && items.hasta != null && items.desde != null && items.puntos != null && items.hasta >= valor && items.desde <= valor).map(items => items.puntos)[0]
         //console.log("valor: ", valor, "puntosInput:", this.puntosObtenidos)
       }
+
       this.saveInputSC(id_criterios, index)//para que se ejecute la multiplicacion en la fila
     },
     saveInputSC(id_criterios, index) {
@@ -3601,7 +3671,6 @@ const app = {
       console.log(existevacio)
 
       this.scoreCardCompletado = !this.puntosEvaluacion.some(element => element == null)
-
       //No inputs dinamicos 
       //let suma =arreglo.reduce((a,b)=>a+b, 0);
     },

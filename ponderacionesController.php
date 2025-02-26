@@ -13,7 +13,8 @@ if(isset($_SESSION['nombre'])){
                     }else if(isset($_GET['accion']) && $_GET['accion']=='nombrePonderaciones'){
                         $resultado = consultarTablaPonderaciones();
                     }else if(isset($_GET['accion']) && $_GET['accion']=='consultarPonderaciones') {
-                        $resultado = consultarPonderacion();
+                        $area = $_SESSION['area'];
+                        $resultado = consultarPonderacion($area);
                     }else{
                         $resultado = "No se ha seleccionado ninguna acción: ".$_GET['accion'];
                     }

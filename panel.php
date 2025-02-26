@@ -1724,6 +1724,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <td :class="{ 'fw-bold columna-color-criterios': puntosEvaluacion.length>0}">
                                         {{isNaN(totalSC) || totalSC==0  ? "TOTAL" : totalSC}}
                                     </td>
+                                    <!--1904371-->
                                 </tr>
                             </tbody>
                         </table>

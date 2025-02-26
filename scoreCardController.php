@@ -20,15 +20,21 @@ if (isset($_SESSION['nombre'])) {
             break;
         case 'POST':
             if (isset($arreglo['id_equipo']) && isset($arreglo['id_ponderacion']) && isset($arreglo['id_criterio']) && isset($arreglo['input_valor_actual']) && isset($arreglo['puntos_obtenidos']) && isset($arreglo['input_ponderacion']) && isset($arreglo['anio']) && isset($arreglo['mes'])) {
-                $id_equipo = $arreglo['id_equipo'];
-                $id_ponderacion = $arreglo['id_ponderacion'];
-                $id_criterio = $arreglo['id_criterio'];
-                $input_valor_actual = $arreglo['input_valor_actual'];
-                $puntos_obtenidos = $arreglo['puntos_obtenidos'];
-                $input_ponderacion = $arreglo['input_ponderacion'];
-                $anio = $arreglo['anio'];
-                $mes = $arreglo['mes'];
-                $resultado = consultarInsertarActualizar($id_equipo, $id_ponderacion, $id_criterio, $input_valor_actual, $puntos_obtenidos, $input_ponderacion, $anio, $mes);
+                if($arreglo['accion'] == 'total'){
+                    $resultado = actualizarTotal($id_equipo, $id_ponderacion, $total);    
+
+                }else if($arreglo['accion'] == 'guardarGeneral'){
+                    $id_equipo = $arreglo['id_equipo'];
+                    $id_ponderacion = $arreglo['id_ponderacion'];
+                    $id_criterio = $arreglo['id_criterio'];
+                    $input_valor_actual = $arreglo['input_valor_actual'];
+                    $puntos_obtenidos = $arreglo['puntos_obtenidos'];
+                    $input_ponderacion = $arreglo['input_ponderacion'];
+                    $anio = $arreglo['anio'];
+                    $mes = $arreglo['mes'];
+                    $total = $arreglo['total'];
+                    $resultado = consultarInsertarActualizar($id_equipo, $id_ponderacion, $id_criterio, $input_valor_actual, $puntos_obtenidos, $input_ponderacion, $anio, $mes, $total);    
+                }
             } else {
                 $resultado = "No llegaron todas las variables " . "id_equipo: " .
                     $arreglo['id_equipo'] . "id_ponderacion: " . $arreglo['id_ponderacion'] .

@@ -21,19 +21,18 @@ function consultarTablaPonderaciones()
 }
 
 
-function consultarPonderacion()
+function consultarPonderacion($area)
 {
     global $conexion;
     $datos = [];
     $estado = false;
-    $area = $_SESSION['area'];
 
     $consulta = "SELECT ponderaciones.ponderacion,ponderaciones.area,datos_ponderaciones.*,criterios.nombre AS criterio 
     FROM ponderaciones
     INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion
     INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios
     LEFT JOIN areas ON areas.id = ponderaciones.area
-    WHERE areas.nombre = '$area' OR ponderaciones.area = 0
+    WHERE areas.nombre LIKE '%$area%' OR ponderaciones.area = 0
     ORDER BY ponderaciones.id DESC";
     $stmt = $conexion->prepare($consulta);
     if (!$stmt) {
@@ -125,7 +124,7 @@ function consultarDatosPonderacion($id)
     return array($estado, $resultado);
 }
 
-function consultarArea($area){
+/*function consultarArea($area){
     global $conexion;
     $consulta = "SELECT id FROM areas
     WHERE nombre = '$area'";
@@ -136,7 +135,7 @@ function consultarArea($area){
         }
     }
     return $resultado;
-}
+}*/
 
 function guardarNuevaPonderacion($nombre, $nuevaPonderacion,$area)
 {
