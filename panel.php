@@ -55,6 +55,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
                                 <?php } ?>
                                 <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Puntos')"><b>Puntos</b></button></a>
                             <?php
                             }
                             ?>
@@ -1732,6 +1733,147 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
             </div> <!--FIN SCORECARD-->
             <!--////////////////////////////////////////////////////////////////-->
+
+            <!--/// VENTANA PUNTOS ///////////////////////////////////////-->
+            <!--73491-->
+            <div v-if="ventana=='Puntos'" class="row" style="font-size:0.9em"> <!--bloque PUNTOS-->
+                <div class="d-flex justify-content-center pt-3 text-center">
+                    <div>
+                        <span class="mx-2">Área: </span>
+                        <select v-model="select_area" @change="consultarCumplimientoScorecard()">
+                            <option disabled default selected value="">Seleccione</option>
+                            <option v-for="area in areas">
+                                {{area.nombre}}        
+                            </option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="mx-2">Año: </span>
+                        <select v-model="anio_score" @change="consultarCumplimientoScorecard()">
+                            <option disabled default selected value="">Seleccione...</option>
+                            <option v-for="anio in anios" :value="anio">{{anio}}</option>
+                        </select>
+                    </div>
+               <!--     <div>
+                        <span class="mx-2">Mes: </span>
+                        <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
+                            <option disabled default selected value="">Seleccione...</option>
+                            <option v-for="mes in meses" :value="mes">{{mes}}</option>
+                        </select>
+                    </div>-->
+                    <!--<div>
+                        <span class="mx-2">Ponderacion: </span>
+                        <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
+                            <option disabled default selected value="">Seleccione...</option>
+                            <option v-for="ponderacion in listaPonderaciones" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
+                        </select>
+                    </div>-->
+                </div>
+                <div class="col-12 d-flex justify-content-center mx-auto">
+                    <div class="scroll-w">
+
+                        <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered  mb-5 table  table-bordered border-dark text-center">
+                            <thead>
+                                <tr>
+                                    <th class="columna-color-criterios"></th>
+                                    <th scope="row" class="columna-color-criterios">EAD</th>
+                                    <th scope="row" class="columna-color-criterios">Enero</th>
+                                    <th scope="row" class="columna-color-criterios">Febrero</th>
+                                    <th scope="row" class="columna-color-criterios">Marzo</th>
+                                    <th scope="row" class="columna-color-criterios">Abril</th>
+                                    <th scope="row" class="columna-color-criterios">Mayo</th>
+                                    <th scope="row" class="columna-color-criterios">Junio</th>
+                                    <th scope="row" class="columna-color-criterios">Julio</th>
+                                    <th scope="row" class="columna-color-criterios">Agosto</th>
+                                    <th scope="row" class="columna-color-criterios">Septiembre</th>
+                                    <th scope="row" class="columna-color-criterios">Octubre</th>
+                                    <th scope="row" class="columna-color-criterios">Noviembre</th>
+                                    <th scope="row" class="columna-color-criterios">Diciembre</th>
+                                </tr>
+                            <tbody v-cloak>
+                                <tr v-for="(cumplimiento,index) in cumplimiento_scorecard">
+                                    <td scope="col" class="text-start ps-2">
+                                        {{index}}
+                                    </td>
+                                    <!-- nombre del equipo -->
+                                    <td>{{cumplimiento.id_ead}}</td>
+
+                                   <!-- Enero -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '1'">
+                                        {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Febrero -->
+                                     <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '2'">
+                                     {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+                                    
+                                    <!-- Marzo -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '3'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Abril -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '4'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Mayo -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '5'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Junio -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '6'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+                                    
+                                    <!--Julio -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '7'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+                                    <!-- Agosto -->
+                                     <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '8'">
+                                     {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+                                    
+                                    <!-- Septiembre -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '9'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Octubre -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '10'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Noviembre -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '11'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>
+
+                                    <!-- Diciembre -->
+                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '12'">
+                                    {{cumplimiento.puntos}}
+                                    </td>
+                                    <td v-else>  </td>                         
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!--FIN PUNTOS-->
 
             <!--/////////////////////////////////////////////////COMPETENCIA AREA ////////////////////////////////////////////////////////////////////-->
             <div v-if="ventana=='Competencias'">

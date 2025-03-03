@@ -309,8 +309,13 @@ const app = {
       promMermayDesperdicio:'',
       tamArregloMermaYDesp: '',
       totalGuardar:'',
-      enterado: false,
-      variable_id_criterio: '',
+      guardarptsOBT: [],
+      datoNuevo: '',
+      valorB:'',
+      totalG:'',
+      cumplimiento_scorecard:[],
+      anioConsultar:'',
+      areaConsultar:''
     }
   },
   mounted() {
@@ -1932,7 +1937,8 @@ const app = {
               chart.ctx.font = '20px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data) + " " + this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+              chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+              chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
             });
           }
 
@@ -3335,57 +3341,25 @@ const app = {
 
       }
     },
-    
-
-    guardarTotal(id_criterio){
-    //  console.log('tenemos:',this.puntosEvaluacion[id_criterios]);
-      //this.datoNuevo = ()
-
-      for(let i = 0; i <= this.puntosEvaluacion[id_criterios]; i++){
-        console.log('tenemos:',this.puntosEvaluacion[i]);
-      }
-
-
-      let id_equipo = this.equipo_score.split('<->')[0]
-      let id_ponderacion = this.equipo_score.split("<->")[4]
-      let input_valor_actual = this.inputValorActual[id_criterio] ?? "";
-      let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
-      let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
-      let anio = this.anio_score;
-      let mes = this.mes_score;
-      let mes_numero = this.mesesNumeros(mes)
-      let total = this.totalGuardar
-
-      console.log('lo que actualmente tengo es:',total)
-
-      axios.post("scoreCardController.php", {
-        id_equipo: id_equipo,
-        id_ponderacion: id_ponderacion,
-        id_criterio: id_criterio,
-        input_valor_actual: input_valor_actual,
-        puntos_obtenidos: puntos_obtenidos,
-        input_ponderacion: input_ponderacion,
-        anio: anio,
-        mes: mes_numero,
-        total: total,
-        accion: 'total'
-      }).then(response => {
-        console.log("guardado ScoreCard", response.data)
-        this.consultarScoreCard()
-      }).catch(error => {
-        console.log("Error en el axios", error)
-      })
-    },
 
     guardarDatoScoreCard(id_criterio) {
-      console.log('el valor cambiado es:',this.inputColumnaPonderacion[id_criterio])
+      console.log('arreglo de valores obtenidos:',this.guardarptsOBT)
+      console.log('total actual es:',this.totalGuardar)
 
-      console.log(':d',this.puntosEvaluacion[id_criterio]);
-      console.log('el id criterio es:', id_criterio)
- 
-      for(let i = 0; i <= this.puntosEvaluacion[id_criterio]; i++){
-         console.log('tenemos:',this.puntosEvaluacion[i]);
+      for(let i = 0; i < this.guardarptsOBT.length; i++){
+        if(this.guardarptsOBT[i].id_criterios == id_criterio){
+          console.log('valor buscado',this.guardarptsOBT[i].id_criterios)
+          this.valorB = this.guardarptsOBT[i].puntos
+        }
       }
+
+      console.log('tenemos:',this.puntosEvaluacion[id_criterio]);
+
+      this.datoNuevo = this.inputColumnaPonderacion[id_criterio]*this.valorB
+      console.log('el valor obtenido es:',this.datoNuevo)
+
+      this.totalG = this.totalGuardar - this.puntosEvaluacion[id_criterio] + this.datoNuevo;
+      console.log('el total para guardar es:',this.totalG)
 
       let id_equipo = this.equipo_score.split('<->')[0]
       let id_ponderacion = this.equipo_score.split("<->")[4]
@@ -3395,9 +3369,7 @@ const app = {
       let anio = this.anio_score;
       let mes = this.mes_score;
       let mes_numero = this.mesesNumeros(mes)
-      let total = this.totalGuardar
-
-      console.log('lo que actualmente tengo es:',total)
+      let total = this.totalG
 
       axios.post("scoreCardController.php", {
         id_equipo: id_equipo,
@@ -3468,7 +3440,7 @@ const app = {
                     operacion: origen.operacion,
                     registros: 1 // Si es el primer registro para este criterio, inicializamos el contador a 1
                   });
-                  // indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
+                   indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
                 }
               }
 
@@ -3507,6 +3479,55 @@ const app = {
         });
       }
     },
+
+    consultarCumplimientoScorecard(){
+      
+      if(this.select_area){
+        this.areaConsultar = this.select_area;
+      }
+
+      if(this.anio_score){
+        this.anioConsultar = this.anio_score;
+      }
+
+      if(this.areaConsultar || this.anioConsultar){
+        console.log('area:',this.areaConsultar)
+        console.log('año:',this.anioConsultar)
+
+        axios.post("cumplimiento_scorecard_Controller.php", {
+          area: this.areaConsultar,
+          anio: this.anioConsultar,
+          accion: 'consultarCumplimientoScorecard'
+        }).then(response => {
+            if (response.data[0] == true) {
+  
+              this.cumplimiento_scorecard = response.data[1];
+              console.log("puntos", this.cumplimiento_scorecard)
+
+           /*   this.cumplimiento_scorecard.forEach((cumplimiento) => {
+                const id = cumplimiento.id;
+                const idEad = cumplimiento.id_ead;
+                const idArea = cumplimiento.id_area;
+                const anio = cumplimiento.anio;
+                const mes = cumplimiento.mes;
+                const puntos = cumplimiento.puntos;
+
+                console.log('los valores son:',id)
+                console.log('los valores son:',mes)
+                });*/
+            } else {
+              console.log("Error en la consulta de Cumplimiento scorecard", response.data)
+            }
+        }).catch(error => {
+          console.log("Error en el axios", error)
+        })
+      }
+    },
+
+    consultarNombresEquipos(){
+      
+    },
+
     consultarDatosPonderacionID() {
       
       let id_ponderacion = this.equipo_score.split("<->")[4];
@@ -3553,7 +3574,6 @@ const app = {
             });
           });
 
-
           //Puntos Obtenidos Input
           let puntosInput = []
           let inputDinamicos = this.criteriosDinamicasSC.filter(item => item.tipo == 'Input').map(datos => datos.id_criterios)
@@ -3571,6 +3591,8 @@ const app = {
           })
           this.puntosObtenidos = puntosInput
           this.puntosCriterios = puntos
+          this.guardarptsOBT = puntos
+          console.log('puntos criterios:',this.guardarptsOBT)
 
           //Multiplicando Puntos Obtenidos Graficas * Ponderacion  
           puntos.forEach((element) => {
@@ -3598,12 +3620,7 @@ const app = {
           }
 
           this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + (b ?? 0), 0);
-
-            this.totalGuardar = this.totalSC;
-            console.log('::::',this.totalGuardar) 
-          /*  if(this.totalGuardar != this.puntosEvaluacion[id_criterio]){
-
-            }   */ 
+          this.totalGuardar = this.totalSC;
 
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
@@ -3955,7 +3972,6 @@ const app = {
         console.log("Error en axios: " + error)
       })
     },
-
     
     cancelarPonderacion() {
       this.nueva_ponderacion = false

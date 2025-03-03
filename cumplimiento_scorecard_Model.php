@@ -1,27 +1,102 @@
 <?php
 include("conexionGhoner.php");
 
-function consultar($id_equipo, $id_ponderacion, $anio, $mes)
+function consultarCumplimientoScorecard($area,$anio)
 {
     global $conexion;
     $estado = false;
     $resultado = [];
-    $consulta = "SELECT * FROM scorecard WHERE id_equipo=? AND id_ponderacion = ? AND	anio=? AND 	mes=?";
-    $stmt = $conexion->prepare($consulta);
-    $stmt->bind_param("iiii", $id_equipo, $id_ponderacion, $anio, $mes);
-    if ($stmt) {
-        if ($stmt->execute()) {
-            $estado = true;
-            $datos = $stmt->get_result();
-            while ($fila = $datos->fetch_array()) {
-                $resultado[] = $fila;
+
+
+    if($area==null){ //consultamos por año
+        $consulta = "SELECT * FROM cumplimiento_scorecard
+        WHERE anio=?";
+        $stmt = $conexion->prepare($consulta);
+        $stmt->bind_param("i", $anio);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $estado = true;
+                $datos = $stmt->get_result();
+                while ($fila = $datos->fetch_array()) {
+                    $resultado[] = $fila;
+                }
+            } else {
+                $estado = "Error al consultar la base de datos" . $conexion->error;
+            }
+        }
+    }
+    else if($anio == null){ //consultamos por area
+       
+        //consultamos el area
+        $consulta = "SELECT * FROM areas
+        WHERE nombre=?";
+        $stmt = $conexion->prepare($consulta);
+        $stmt->bind_param("s", $area);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $estado = true;
+                $datos = $stmt->get_result();
+                while ($fila = $datos->fetch_array()) {
+                    $id_area = $fila['id'];
+                }
+            } else {
+                $estado = "Error al consultar la base de datos" . $conexion->error;
+            }
+        }
+
+        $consulta = "SELECT * FROM cumplimiento_scorecard
+        WHERE id_area=?";
+        $stmt = $conexion->prepare($consulta);
+        $stmt->bind_param("i", $id_area);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $estado = true;
+                $datos = $stmt->get_result();
+                while ($fila = $datos->fetch_array()) {
+                    $resultado[] = $fila;
+                }
+            } else {
+                $estado = "Error al consultar la base de datos" . $conexion->error;
             }
         } else {
-            $estado = "Error al consultar la base de datos" . $conexion->error;
+            return $conexion->error;
         }
-    } else {
-        return $conexion->error;
+    }else if($anio != null && $area != null){
+        $consulta = "SELECT * FROM areas
+        WHERE nombre=?";
+        $stmt = $conexion->prepare($consulta);
+        $stmt->bind_param("s", $area);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $estado = true;
+                $datos = $stmt->get_result();
+                while ($fila = $datos->fetch_array()) {
+                    $id_area = $fila['id'];
+                }
+            } else {
+                $estado = "Error al consultar la base de datos" . $conexion->error;
+            }
+        }
+
+        $consulta = "SELECT * FROM cumplimiento_scorecard
+        WHERE id_area=? AND anio=?";
+        $stmt = $conexion->prepare($consulta);
+        $stmt->bind_param("ii", $id_area,$anio);
+        if ($stmt) {
+            if ($stmt->execute()) {
+                $estado = true;
+                $datos = $stmt->get_result();
+                while ($fila = $datos->fetch_array()) {
+                    $resultado[] = $fila;
+                }
+            } else {
+                $estado = "Error al consultar la base de datos" . $conexion->error;
+            }
+        } else {
+            return $conexion->error;
+        }
     }
+
     return array($estado, $resultado);
 }
 
@@ -179,51 +254,6 @@ function consultarInsertarActualizar($id_equipo, $id_ponderacion, $id_criterio, 
     //return "llegue al modelo".$id_equipo.$id_ponderacion.$id_criterio.$input_valor_actual.$input_ponderacion.$mes;
 }
 
-function actualizarTotal($total)
-{
-    $consulta = "SELECT * FROM cumplimiento_scorecard 
-    WHERE id_ead=? AND anio=? AND mes=? ";
-    $stmt = $conexion->prepare($consulta);
-    $stmt->bind_param("iii", $id_equipo,$anio,$mes);
-    if ($stmt) {
-        $estado[1] = "Si busque";
-        if ($stmt->execute()) {
-            $respuesta = $stmt->get_result();
-            if ($respuesta->num_rows > 0) {
-                $fila = $respuesta->fetch_assoc();
-                $id = $fila['id'];
-                $actualizar = "UPDATE cumplimiento_scorecard SET puntos=?
-                WHERE id = ?";
-                $stmt = $conexion->prepare($actualizar);
-                if($stmt){
-                    $stmt->bind_param("ii", $total, $id);
-                    if($stmt->execute()) {
-                        $estado[2] = true;
-                    }else{
-                        $estado[2] = $stmt->error;
-                    }
-                }else{
-                    $estado[4] = $conexion->error;
-                }
-            }
-        }
-    }
-}
 
-function actualizarEstatus()
-{
-    /*global $conexion;
-        $estado = false;
-        $update = "UPDATE foros SET estatus=? WHERE id=?";
-        $stmt = $conexion->prepare($update);
-        $stmt->bind_param("si", $nuevoEstatus, $id_foro);
-        if($stmt->execute()){
-            $estado = true;
-        }
-        $stmt->close();
-        return $estado;*/
-}
 
-function eliminar()
-{
-}
+
