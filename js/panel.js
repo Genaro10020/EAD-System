@@ -312,10 +312,13 @@ const app = {
       guardarptsOBT: [],
       datoNuevo: '',
       valorB:'',
-      totalG:'',
       cumplimiento_scorecard:[],
       anioConsultar:'',
-      areaConsultar:''
+      areaConsultar:'',
+      guardoNuevoDato:false,
+      //PUNTAJES POR MES Y ANIO DE BATEO
+      mes_bateo:'',
+      anio_bateo:'',
     }
   },
   mounted() {
@@ -3330,8 +3333,6 @@ const app = {
               this.inputColumnaPonderacion[elemento.id_criterio] = elemento.input_ponderacion
             })
             this.consultarGraficasParaScoreCard()
-
-
           } else {
             console.log("sin éxito consulta ScoreCard,response.data")
           }
@@ -3343,33 +3344,21 @@ const app = {
     },
 
     guardarDatoScoreCard(id_criterio) {
-      console.log('arreglo de valores obtenidos:',this.guardarptsOBT)
-      console.log('total actual es:',this.totalGuardar)
-
-      for(let i = 0; i < this.guardarptsOBT.length; i++){
-        if(this.guardarptsOBT[i].id_criterios == id_criterio){
-          console.log('valor buscado',this.guardarptsOBT[i].id_criterios)
-          this.valorB = this.guardarptsOBT[i].puntos
-        }
-      }
-
-      console.log('tenemos:',this.puntosEvaluacion[id_criterio]);
-
-      this.datoNuevo = this.inputColumnaPonderacion[id_criterio]*this.valorB
-      console.log('el valor obtenido es:',this.datoNuevo)
-
-      this.totalG = this.totalGuardar - this.puntosEvaluacion[id_criterio] + this.datoNuevo;
-      console.log('el total para guardar es:',this.totalG)
-
+      this.guardoNuevoDato = true;// lo utilizo para ejecutar el metodo guardarTotalScoreCard(), despues de ejecutar todos los metodos desencadenados por this.consultarScoreCard()
+      
+      /*let arregloPuntos = this.puntosEvaluacion
+      let total = arregloPuntos.reduce((acumulador, valorActual) => { return acumulador + valorActual; }, 0); 
+      console.log("RESULTADOS A SUMAR",arregloPuntos)
+      console.log("TOTAL PARA GUARDAR:",total);*/
+      let total = 0;
       let id_equipo = this.equipo_score.split('<->')[0]
       let id_ponderacion = this.equipo_score.split("<->")[4]
-      let input_valor_actual = this.inputValorActual[id_criterio] ?? "";
+      let input_valor_actual = this.inputValorActual[id_criterio] ?? "";//si es null o undefined, se asigna una cadena vacía "".
       let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
       let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
       let anio = this.anio_score;
       let mes = this.mes_score;
       let mes_numero = this.mesesNumeros(mes)
-      let total = this.totalG
 
       axios.post("scoreCardController.php", {
         id_equipo: id_equipo,
@@ -3388,6 +3377,31 @@ const app = {
       }).catch(error => {
         console.log("Error en el axios", error)
       })
+    },
+
+
+    guardarTotalScoreCard(){
+      //console.log("TOTAL:",this.totalSC)
+      let mes_numero = this.mesesNumeros(this.mes_score)
+        if(this.guardoNuevoDato===true){
+            axios.post("cumplimiento_scorecard_Controller.php", {
+              accion: 'guardarTotalScoreCard',
+                idEquipo: this.equipo_score.split('<->')[0],
+                anio:this.anio_score,
+                mes:mes_numero,
+                total: this.totalSC,
+            }).then(response => {
+              console.log("Respuesta GuardarTotal",response.data);
+                if (response.data[0] == true) {
+                console.log("Calificación guardada con éxito")
+                } else {
+                  alert("Algo no salio bien al guardar la Calificación")
+                  console.log("Error en la consulta de Cumplimiento scorecard", response.data)
+                }
+            }).catch(error => {
+              console.log("Error en el axios", error)
+            })
+        }
     },
 
     consultarGraficasParaScoreCard() {
@@ -3480,31 +3494,30 @@ const app = {
       }
     },
 
+  
+
     consultarCumplimientoScorecard(){
       
-      if(this.select_area){
-        this.areaConsultar = this.select_area;
-      }
+     
+      if(this.select_area && this.anio_bateo && this.mes_bateo){
+        let mes_numero = parseInt(this.mesesNumeros(this.mes_bateo))
 
-      if(this.anio_score){
-        this.anioConsultar = this.anio_score;
-      }
-
-      if(this.areaConsultar || this.anioConsultar){
-        console.log('area:',this.areaConsultar)
-        console.log('año:',this.anioConsultar)
-
-        axios.post("cumplimiento_scorecard_Controller.php", {
-          area: this.areaConsultar,
-          anio: this.anioConsultar,
-          accion: 'consultarCumplimientoScorecard'
+        console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
+        axios.get("cumplimiento_scorecard_Controller.php", {
+          params:{
+            area: this.select_area,
+            mes: mes_numero,
+            anio: this.anio_bateo,
+            accion: 'consultarCumplimientoScorecard'
+          }
         }).then(response => {
+          console.log("respuesta", response.data)
             if (response.data[0] == true) {
   
               this.cumplimiento_scorecard = response.data[1];
               console.log("puntos", this.cumplimiento_scorecard)
 
-           /*   this.cumplimiento_scorecard.forEach((cumplimiento) => {
+          /*this.cumplimiento_scorecard.forEach((cumplimiento) => {
                 const id = cumplimiento.id;
                 const idEad = cumplimiento.id_ead;
                 const idArea = cumplimiento.id_area;
@@ -3621,7 +3634,7 @@ const app = {
 
           this.totalSC = this.puntosEvaluacion.reduce((a, b) => a + (b ?? 0), 0);
           this.totalGuardar = this.totalSC;
-
+          this.guardarTotalScoreCard();
         } else {
           console.log("Error en la consulta ScoreCard", response.data)
         }
@@ -3629,7 +3642,7 @@ const app = {
         console.log("Erro en axios", error)
       })
     },
-
+  
     saveInputDinamico(id_criterios, index) {
       let valor = this.inputValorActual[id_criterios]
       //obtengo el puntaje desde ponderacion

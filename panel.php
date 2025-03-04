@@ -1742,14 +1742,19 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <span class="mx-2">Área: </span>
                         <select v-model="select_area" @change="consultarCumplimientoScorecard()">
                             <option disabled default selected value="">Seleccione</option>
-                            <option v-for="area in areas">
-                                {{area.nombre}}        
-                            </option>
+                            <option v-for="area in areas" :value="area.id">{{area.nombre}}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="mx-2">Mes: </span>
+                        <select v-model="mes_bateo" @change="consultarCumplimientoScorecard()">
+                            <option disabled default selected value="">Seleccione...</option>
+                            <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
                     <div>
                         <span class="mx-2">Año: </span>
-                        <select v-model="anio_score" @change="consultarCumplimientoScorecard()">
+                        <select v-model="anio_bateo" @change="consultarCumplimientoScorecard()">
                             <option disabled default selected value="">Seleccione...</option>
                             <option v-for="anio in anios" :value="anio">{{anio}}</option>
                         </select>

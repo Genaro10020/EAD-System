@@ -21,8 +21,8 @@ if (isset($_SESSION['nombre'])) {
         case 'POST':
             if (isset($arreglo['id_equipo']) && isset($arreglo['id_ponderacion']) && isset($arreglo['id_criterio']) && isset($arreglo['input_valor_actual']) && isset($arreglo['puntos_obtenidos']) && isset($arreglo['input_ponderacion']) && isset($arreglo['anio']) && isset($arreglo['mes'])) {
                 if($arreglo['accion'] == 'total'){
-                    $resultado = actualizarTotal($id_equipo, $id_ponderacion, $total);    
-
+                    //$resultado = actualizarTotal($id_equipo, $id_ponderacion, $total);    
+                    $resultado = 'llegue a total';
                 }else if($arreglo['accion'] == 'guardarGeneral'){
                     $id_equipo = $arreglo['id_equipo'];
                     $id_ponderacion = $arreglo['id_ponderacion'];
