@@ -1745,10 +1745,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <option v-for="area in areas" :value="area.id">{{area.nombre}}</option>
                         </select>
                     </div>
-                    <div>
+                    <div style="display:none">
                         <span class="mx-2">Mes: </span>
                         <select v-model="mes_bateo" @change="consultarCumplimientoScorecard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option default selected value="">Todos...</option>
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
@@ -1776,11 +1776,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
                 <div class="col-12 d-flex justify-content-center mx-auto">
                     <div class="scroll-w">
-
+                   
                         <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered  mb-5 table  table-bordered border-dark text-center">
                             <thead>
                                 <tr>
-                                    <th class="columna-color-criterios"></th>
+                                    <th scope="row" class="columna-color-criterios">#</th>
                                     <th scope="row" class="columna-color-criterios">EAD</th>
                                     <th scope="row" class="columna-color-criterios">Enero</th>
                                     <th scope="row" class="columna-color-criterios">Febrero</th>
@@ -1795,84 +1795,36 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <th scope="row" class="columna-color-criterios">Noviembre</th>
                                     <th scope="row" class="columna-color-criterios">Diciembre</th>
                                 </tr>
-                            <tbody v-cloak>
-                                <tr v-for="(cumplimiento,index) in cumplimiento_scorecard">
-                                    <td scope="col" class="text-start ps-2">
-                                        {{index}}
-                                    </td>
-                                    <!-- nombre del equipo -->
-                                    <td>{{cumplimiento.id_ead}}</td>
-
-                                   <!-- Enero -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '1'">
-                                        {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Febrero -->
-                                     <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '2'">
-                                     {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-                                    
-                                    <!-- Marzo -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '3'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Abril -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '4'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Mayo -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '5'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Junio -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '6'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-                                    
-                                    <!--Julio -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '7'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-                                    <!-- Agosto -->
-                                     <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '8'">
-                                     {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-                                    
-                                    <!-- Septiembre -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '9'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Octubre -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '10'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Noviembre -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '11'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>
-
-                                    <!-- Diciembre -->
-                                    <td v-if="cumplimiento.anio == anio_score && cumplimiento.mes == '12'">
-                                    {{cumplimiento.puntos}}
-                                    </td>
-                                    <td v-else>  </td>                         
+                            <tbody>
+                            
+                                <tr v-for="(cumplimiento,indexNombre,index) in cumplimiento_scorecard">
+                                    <td>{{index+1}}</td>
+                                    <td class="text-start">{{indexNombre}}</td>
+                                    <td v-for="i in 12" :key="i">
+                                            <span class="badge bg-success w-100" v-if="cumplimiento[i-1] && cumplimiento[i-1].puntos>850 && cumplimiento[i-1].mes===i">{{cumplimiento[i-1].puntos}}</span>
+                                            <label v-if="cumplimiento[i-1] && cumplimiento[i-1].puntos<850  && cumplimiento[i-1].mes===i">{{cumplimiento[i-1].puntos}}</label>
+                                    </td>                       
+                                </tr>
+                                <tr v-if="Object.keys(cumplimiento_scorecard).length > 0">
+                                    <td></td>
+                                    <td></td>
+                                    <td class="text-start" v-for="i in 12" :key="i">
+                                        
+                                    <label v-if="porcentajeArribaDe850[i] !== undefined">
+                                            Ganadores (Mes {{ i }}): <b>{{ equiposConMasDe850[i] }}</b><br>
+                                            % de bateo (Mes {{ i }}):  
+                                            <b>
+                                                <label 
+                                                    :class="{
+                                                        'text-success': porcentajeArribaDe850[i] > 50,
+                                                        'text-danger': porcentajeArribaDe850[i] <= 50
+                                                    }"
+                                                >
+                                                    {{ porcentajeArribaDe850[i] }}
+                                                </label>
+                                            </b>
+                                        </label>
+                                    </td>  
                                 </tr>
                             </tbody>
                         </table>

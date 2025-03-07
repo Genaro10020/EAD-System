@@ -6,18 +6,34 @@ function consultarCumplimientoScorecard($id_area,$mes,$anio)
     global $conexion;
     $estado = false;
     $resultado = [];
-
-        $consulta = "SELECT * FROM cumplimiento_scorecard
-        WHERE id_area=? AND mes=? AND anio=?";
+    $param_mes = "%$mes%";
+    $proyectoPuntos = [];
+        $consulta = "SELECT cumplimiento_scorecard.*,equipos_ead.nombre_ead 
+        FROM cumplimiento_scorecard 
+        INNER JOIN equipos_ead 
+        ON cumplimiento_scorecard.id_ead = equipos_ead.id 
+        WHERE cumplimiento_scorecard.id_area=? 
+        /*LIKE cumplimiento_scorecard.mes=? */
+        AND cumplimiento_scorecard.anio=?";
         $stmt = $conexion->prepare($consulta);
-        $stmt->bind_param("sii", $id_area,$mes,$anio);
+        $stmt->bind_param("si", $id_area,$anio);
         if ($stmt) {
             if ($stmt->execute()) {
                 $estado = true;
                 $datos = $stmt->get_result();
-                while ($fila = $datos->fetch_array()) {
-                    $resultado[] = $fila;
+                while ($fila = $datos->fetch_array(MYSQLI_ASSOC)) { 
+                 
+                    if (!isset($proyectoPuntos[$fila['nombre_ead']])) {
+                        $proyectoPuntos[$fila['nombre_ead']] =[];
+                    }
+                    $proyectoPuntos[$fila['nombre_ead']][] = [
+                        'nombre_equipo' =>$fila['nombre_ead'],
+                        'mes' => $fila['mes'], 
+                        'puntos' => $fila['puntos'] 
+                    ];
                 }
+                // Almacena el resultado final
+                $resultado = $proyectoPuntos; // No es necesario convertir a array indexado
             } else {
                 $estado = "Error al consultar la base de datos" . $conexion->error;
             }

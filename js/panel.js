@@ -319,6 +319,8 @@ const app = {
       //PUNTAJES POR MES Y ANIO DE BATEO
       mes_bateo:'',
       anio_bateo:'',
+      equiposConMasDe850:'',
+      porcentajeArribaDe850:''
     }
   },
   mounted() {
@@ -3499,8 +3501,11 @@ const app = {
     consultarCumplimientoScorecard(){
       
      
-      if(this.select_area && this.anio_bateo && this.mes_bateo){
-        let mes_numero = parseInt(this.mesesNumeros(this.mes_bateo))
+      if(this.select_area && this.anio_bateo){
+        if(this.anio_bateo!==''){
+          mes_numero = parseInt(this.mesesNumeros(this.mes_bateo))
+        }
+       
 
         console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
         axios.get("cumplimiento_scorecard_Controller.php", {
@@ -3513,21 +3518,57 @@ const app = {
         }).then(response => {
           console.log("respuesta", response.data)
             if (response.data[0] == true) {
-  
               this.cumplimiento_scorecard = response.data[1];
               console.log("puntos", this.cumplimiento_scorecard)
 
-          /*this.cumplimiento_scorecard.forEach((cumplimiento) => {
-                const id = cumplimiento.id;
-                const idEad = cumplimiento.id_ead;
-                const idArea = cumplimiento.id_area;
-                const anio = cumplimiento.anio;
-                const mes = cumplimiento.mes;
-                const puntos = cumplimiento.puntos;
+              // Ordenar los datos por mes
+            for (const equipo in this.cumplimiento_scorecard) {
+              this.cumplimiento_scorecard[equipo].sort((a, b) => a.mes - b.mes);
+            }
 
-                console.log('los valores son:',id)
-                console.log('los valores son:',mes)
-                });*/
+              let datos = response.data[1]; // Asignas el objeto de datos
+              // Objetos para almacenar los resultados
+              const equiposPorMes = {}; // Cantidad de equipos por mes
+              const equiposConMasDe850 = {}; // Cantidad de equipos con más de 850 puntos por mes
+              const porcentajeArribaDe850 = {}; // Porcentaje de equipos con más de 850 puntos por mes
+              
+              // Recorrer el objeto
+              for (const equipo in datos) {
+                datos[equipo].forEach((registro) => { 
+                  const mes = registro.mes;
+                  const puntos = registro.puntos;
+              
+                  // Contar equipos por mes
+                  if (!equiposPorMes[mes]) {
+                    equiposPorMes[mes] = 0;
+                  }
+                  equiposPorMes[mes]++;
+              
+                  // Contar equipos con más de 850 puntos por mes
+                  if (puntos > 850) {
+                    if (!equiposConMasDe850[mes]) {
+                      equiposConMasDe850[mes] = 0;
+                    }
+                    equiposConMasDe850[mes]++;
+                  }
+                });
+              }
+              
+             // Calcular el porcentaje de equipos con más de 850 puntos por mes
+          for (const mes in equiposPorMes) {
+            const totalEquipos = equiposPorMes[mes]; // Total de equipos en el mes
+            const equiposArribaDe850 = equiposConMasDe850[mes] || 0; // Equipos con más de 850 puntos (si no hay, es 0)
+            const porcentaje = (equiposArribaDe850 / totalEquipos) * 100; // Fórmula del porcentaje
+
+            porcentajeArribaDe850[mes] = porcentaje.toFixed(2); // Redondear a 2 decimales
+          }
+          this.equiposConMasDe850 = equiposConMasDe850
+          this.porcentajeArribaDe850 = porcentajeArribaDe850
+            // Mostrar resultados
+            console.log("Cantidad de equipos por mes:", equiposPorMes);
+            console.log("Cantidad de equipos con más de 850 puntos por mes:",  this.equiposConMasDe850);
+            console.log("Porcentaje de equipos con más de 850 puntos por mes:",this.porcentajeArribaDe850);
+
             } else {
               console.log("Error en la consulta de Cumplimiento scorecard", response.data)
             }
