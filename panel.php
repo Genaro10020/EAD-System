@@ -1786,7 +1786,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <th scope="row" class="columna-color-criterios">Febrero</th>
                                     <th scope="row" class="columna-color-criterios">Marzo</th>
                                     <th scope="row" class="columna-color-criterios">Abril</th>
-                                    <th scope="row" class="columna-color-criterios">Mayo</th>
+                                    <th scope="row" class="columna-color-criterios">Mayo</th>javascript
+// adicionando logs
+console.log("log de prueba");
                                     <th scope="row" class="columna-color-criterios">Junio</th>
                                     <th scope="row" class="columna-color-criterios">Julio</th>
                                     <th scope="row" class="columna-color-criterios">Agosto</th>
@@ -1801,23 +1803,29 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <td>{{index+1}}</td>
                                     <td class="text-start">{{indexNombre}}</td>
                                     <td v-for="i in 12" :key="i">
-                                            <span class="badge bg-success w-100" v-if="cumplimiento[i-1] && cumplimiento[i-1].puntos>850 && cumplimiento[i-1].mes===i">{{cumplimiento[i-1].puntos}}</span>
-                                            <label v-if="cumplimiento[i-1] && cumplimiento[i-1].puntos<850  && cumplimiento[i-1].mes===i">{{cumplimiento[i-1].puntos}}</label>
-                                    </td>                       
+                                        <span v-if="getPuntosPorMes(cumplimiento, i) > 850" class="badge bg-success w-100">
+                                            {{ getPuntosPorMes(cumplimiento, i) }}
+                                        </span>
+                                        <span v-else>
+                                            {{ getPuntosPorMes(cumplimiento, i) }}
+                                        </span>
+                                    </td>                      
                                 </tr>
                                 <tr v-if="Object.keys(cumplimiento_scorecard).length > 0">
                                     <td></td>
                                     <td></td>
                                     <td class="text-start" v-for="i in 12" :key="i">
-                                        
+                                        <!--<span class="badge bg-success w-100" v-if="cumplimiento[indexNombre][i-1] && cumplimiento[indexNombre][i-1].puntos>850 && cumplimiento[indexNombre][i-1].mes===i">{{cumplimiento[i-1].puntos}}</span>-->
                                     <label v-if="porcentajeArribaDe850[i] !== undefined">
-                                            Ganadores (Mes {{ i }}): <b>{{ equiposConMasDe850[i] }}</b><br>
+                                            Total Equipos: <label v-if="equiposPorMes[i]"><b>{{equiposPorMes[i]}}</b></label><br>
+                                            Ganadores (Mes {{ i }}): <b>{{ equiposConMasDe850[i] ?? 0 }}</b><br>
                                             % de bateo (Mes {{ i }}):  
                                             <b>
                                                 <label 
                                                     :class="{
                                                         'text-success': porcentajeArribaDe850[i] > 50,
-                                                        'text-danger': porcentajeArribaDe850[i] <= 50
+                                                        'text-warning': porcentajeArribaDe850[i] === 50,
+                                                        'text-danger': porcentajeArribaDe850[i] < 50
                                                     }"
                                                 >
                                                     {{ porcentajeArribaDe850[i] }}

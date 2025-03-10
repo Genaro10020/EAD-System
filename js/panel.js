@@ -320,7 +320,8 @@ const app = {
       mes_bateo:'',
       anio_bateo:'',
       equiposConMasDe850:'',
-      porcentajeArribaDe850:''
+      porcentajeArribaDe850:'',
+      equiposPorMes:''
     }
   },
   mounted() {
@@ -3507,7 +3508,7 @@ const app = {
         }
        
 
-        console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
+       // console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
         axios.get("cumplimiento_scorecard_Controller.php", {
           params:{
             area: this.select_area,
@@ -3516,10 +3517,10 @@ const app = {
             accion: 'consultarCumplimientoScorecard'
           }
         }).then(response => {
-          console.log("respuesta", response.data)
+          //console.log("Respuesta Bateo", response.data)
             if (response.data[0] == true) {
               this.cumplimiento_scorecard = response.data[1];
-              console.log("puntos", this.cumplimiento_scorecard)
+              console.log("Bateo Cumplimiento", this.cumplimiento_scorecard)
 
               // Ordenar los datos por mes
             for (const equipo in this.cumplimiento_scorecard) {
@@ -3532,7 +3533,7 @@ const app = {
               const equiposConMasDe850 = {}; // Cantidad de equipos con más de 850 puntos por mes
               const porcentajeArribaDe850 = {}; // Porcentaje de equipos con más de 850 puntos por mes
               
-              // Recorrer el objeto
+              //buscar mes con mes por equipo.
               for (const equipo in datos) {
                 datos[equipo].forEach((registro) => { 
                   const mes = registro.mes;
@@ -3562,10 +3563,11 @@ const app = {
 
             porcentajeArribaDe850[mes] = porcentaje.toFixed(2); // Redondear a 2 decimales
           }
+          this.equiposPorMes = equiposPorMes
           this.equiposConMasDe850 = equiposConMasDe850
           this.porcentajeArribaDe850 = porcentajeArribaDe850
             // Mostrar resultados
-            console.log("Cantidad de equipos por mes:", equiposPorMes);
+            console.log("Cantidad de equipos por mes:",this.equiposPorMes );
             console.log("Cantidad de equipos con más de 850 puntos por mes:",  this.equiposConMasDe850);
             console.log("Porcentaje de equipos con más de 850 puntos por mes:",this.porcentajeArribaDe850);
 
@@ -3576,6 +3578,10 @@ const app = {
           console.log("Error en el axios", error)
         })
       }
+    },
+    getPuntosPorMes(cumplimiento, mes) {
+      const mesData = cumplimiento.find(item => item.mes === mes);
+      return mesData ? mesData.puntos : '';
     },
 
     consultarNombresEquipos(){
