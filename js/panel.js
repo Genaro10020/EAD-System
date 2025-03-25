@@ -262,6 +262,7 @@ const app = {
       puntosObtenidos: [],
       tipo_criterio: 'Gráfica',
       nombre_nuevo_criterio: '',
+      mostrar_ponderacion_id:'',
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -3826,6 +3827,10 @@ const app = {
       }).catch(error => {
         console.log("Error en axios", error)
       })
+    },
+    MostrarOcultarPonderacion(ocultarOmostrar,id_ponderacion){
+      console.log("Quiero: "+ocultarOmostrar+"La ponderación con ID: "+id_ponderacion)
+      this.mostrar_ponderacion_id = id_ponderacion
     },
     consultarPonderaciones() {
       axios.get("ponderacionesController.php", {

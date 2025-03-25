@@ -1336,27 +1336,27 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                     <div :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'" class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
-                        <div class="d-flex justify-content-center mb-3" style="font-size:0.8em; min-width: 1500px;">
+                        <div class= "mx-auto p-2" style="font-size:0.8em; width: 80%; min-width: 1500px; margin: ">
                             <div class="card border-dark shadow">
                                 <div class="card-header" style="background-color: #7fb3d5">
-
-                                    <div class="d-flex flex-row justify-content-start align-items-center">
-                                        <div><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
-                                        <div><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
-                                        <div><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
-                                        <div><button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button></div>
-                                        <div v-if="tablaPonderacion.area == 0" class=" d-flex align-items-start">
-                                                <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class="form-control select ms-3">
+                                <div class="d-flex flex-row align-items-center"><!--AQUI-->
+                                    <div class="col-1 w-auto p-2"><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
+                                    <div class="col-2 w-auto p-2"><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
+                                    <div class="col-2 p-2"><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
+                                    <div class="col-3 w-auto p-2"><button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id!=tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Mostrar',tablaPonderacion.id_ponderacion)">Mostrar</button></div>
+                                    <div    v-if="tablaPonderacion.area == 0">
+                                                <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class=" d-inline form-control select ms-3">
                                                     <option disabled default selected value="">Seleccione Área</option>
                                                     <option> <?php echo $_SESSION['area'];?> </option>
                                                 </select>
-                                                
-                                                <span class="badge bg-danger mt-2 ms-1">Dar clic y seleccionar su área en caso de que esta ponderación le pertenezca.</span>
-                                        </div>
+                                                <span class="d-inline badge bg-danger mt-2 ms-1">Dar clic y seleccionar su área en caso de que esta ponderación le pertenezca.</span>
                                     </div>
-
+                                    <div class= "col text-end">
+                                        <button v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="ms-1 btn px-1 py-0" style="background: #b0462f" @click="eliminarPonderacion(tablaPonderacion.id_ponderacion,tablaPonderacion.ponderacion)"><i class="bi bi-trash3-fill text-light"></i></button>
+                                    </div>
+                                    </div>
                                 </div>
-                                <div class="card-body text-dark">
+                                <div v-if="mostrar_ponderacion_id==tablaPonderacion.id_ponderacion" class="card-body text-dark">
                                     <div class="col-12 d-flex justify-content-center flex-wrap offset-col-12">
                                         <template v-for="equipo in consultaEAD">
                                             <div class="col-2 border-secondary mb-3 mx-2">
@@ -1786,9 +1786,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <th scope="row" class="columna-color-criterios">Febrero</th>
                                     <th scope="row" class="columna-color-criterios">Marzo</th>
                                     <th scope="row" class="columna-color-criterios">Abril</th>
-                                    <th scope="row" class="columna-color-criterios">Mayo</th>javascript
-// adicionando logs
-console.log("log de prueba");
+                                    <th scope="row" class="columna-color-criterios">Mayo</th>
                                     <th scope="row" class="columna-color-criterios">Junio</th>
                                     <th scope="row" class="columna-color-criterios">Julio</th>
                                     <th scope="row" class="columna-color-criterios">Agosto</th>
