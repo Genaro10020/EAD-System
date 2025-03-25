@@ -3830,7 +3830,14 @@ const app = {
     },
     MostrarOcultarPonderacion(ocultarOmostrar,id_ponderacion){
       console.log("Quiero: "+ocultarOmostrar+"La ponderación con ID: "+id_ponderacion)
-      this.mostrar_ponderacion_id = id_ponderacion
+      if(ocultarOmostrar=='Mostrar'){
+        this.mostrar_ponderacion_id = id_ponderacion
+      }
+      if(ocultarOmostrar=='Ocultar'){
+        this.mostrar_ponderacion_id = ""
+      }
+     
+     
     },
     consultarPonderaciones() {
       axios.get("ponderacionesController.php", {
