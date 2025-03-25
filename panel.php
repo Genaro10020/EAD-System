@@ -1336,7 +1336,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                     <div :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'" class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
-                        <div class= "mx-auto p-2" style="font-size:0.8em; width: 80%; min-width: 1500px; margin: ">
+                        <div class= "mx-auto p-2" style="font-size:0.8em; width: 80%; min-width: 1500px;">
                             <div class="card border-dark shadow">
                                 <div class="card-header" style="background-color: #7fb3d5">
                                 <div class="d-flex flex-row align-items-center"><!--AQUI-->
