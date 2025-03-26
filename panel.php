@@ -1345,9 +1345,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <div class="col-2 w-auto p-2"><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
                                     <div class="col-2 p-2"> 
                                         <?php if($_SESSION['tipo_usuario']=='Admin'){ ?>
-                                            <span class="badge bg-primary  text-bold"> ({{tablaPonderacion.nombreArea}}) </span>
+                                            <span class="badge bg-primary  text-bold"> ({{tablaPonderacion.nombreArea}}) </span><br>
                                         <?php } ?>
-                                         <br><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
+                                         <span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
                                     <div class="col-3 w-auto p-2">
                                         <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id!=tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Mostrar',tablaPonderacion.id_ponderacion)">Mostrar</button>
                                         <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id==tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Ocultar',tablaPonderacion.id_ponderacion)">Ocultar</button>
