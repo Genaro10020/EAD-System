@@ -1336,13 +1336,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                     <!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                     <div :class="nueva_ponderacion ? 'opacity-25' : 'opacity-100'" class="col-12 p-1 mt-2" v-for="(tablaPonderacion,indexTablaPonderacion) in tablasPonderaciones">
+                        
                         <div class= "mx-auto p-2" style="font-size:0.8em; width: 80%; min-width: 1500px;">
                             <div class="card border-dark shadow">
                                 <div class="card-header" style="background-color: #7fb3d5">
                                 <div class="d-flex flex-row align-items-center"><!--AQUI-->
                                     <div class="col-1 w-auto p-2"><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
                                     <div class="col-2 w-auto p-2"><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
-                                    <div class="col-2 p-2"><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
+                                    <div class="col-2 p-2"> 
+                                        <?php if($_SESSION['tipo_usuario']=='Admin'){ ?>
+                                            <span class="badge bg-primary  text-bold"> ({{tablaPonderacion.nombreArea}}) </span>
+                                        <?php } ?>
+                                         <br><span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
                                     <div class="col-3 w-auto p-2">
                                         <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id!=tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Mostrar',tablaPonderacion.id_ponderacion)">Mostrar</button>
                                         <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id==tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Ocultar',tablaPonderacion.id_ponderacion)">Ocultar</button>

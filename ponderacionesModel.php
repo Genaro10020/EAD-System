@@ -21,20 +21,34 @@ function consultarTablaPonderaciones()
 }
 
 
-function consultarPonderacion($area)
+function consultarPonderacion($area, $tipo_usuario)
 {
     global $conexion;
     $datos = [];
     $estado = false;
+  
 
-    $consulta = "SELECT ponderaciones.ponderacion,ponderaciones.area,datos_ponderaciones.*,criterios.nombre AS criterio 
-    FROM ponderaciones
-    INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion
-    INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios
-    LEFT JOIN areas ON areas.id = ponderaciones.area
-    WHERE areas.nombre LIKE '%$area%' OR ponderaciones.area = 0
-    ORDER BY ponderaciones.id DESC";
-    $stmt = $conexion->prepare($consulta);
+    if(isset($tipo_usuario) && $tipo_usuario == "Admin"){
+        $consulta = "SELECT ponderaciones.ponderacion,ponderaciones.area,datos_ponderaciones.*,criterios.nombre AS criterio, areas.nombre AS nombreArea
+        FROM ponderaciones
+        INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion
+        INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios
+        LEFT JOIN areas ON areas.id = ponderaciones.area
+        ORDER BY ponderaciones.id DESC";
+         $stmt = $conexion->prepare($consulta);
+    }else{
+        $consulta = "SELECT ponderaciones.ponderacion,ponderaciones.area,datos_ponderaciones.*,criterios.nombre AS criterio, areas.nombre AS nombreArea
+        FROM ponderaciones
+        INNER JOIN datos_ponderaciones ON ponderaciones.id = datos_ponderaciones.id_ponderacion
+        INNER JOIN criterios ON criterios.id = datos_ponderaciones.id_criterios
+        LEFT JOIN areas ON areas.id = ponderaciones.area
+        WHERE areas.nombre LIKE ? OR ponderaciones.area = 0
+        ORDER BY ponderaciones.id DESC";
+         $stmt = $conexion->prepare($consulta);
+         $area = "%".$area."%";  // Agregar comodines solo aquí
+         $stmt->bind_param("s", $area);
+
+    }
     if (!$stmt) {
         return array($conexion->error, $datos);
     }

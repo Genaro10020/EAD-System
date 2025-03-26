@@ -3850,11 +3850,15 @@ const app = {
           //Obtenga titulo ponderaciones unicas
           this.tablasPonderaciones = Object.values(
             this.ponderaciones.reduce((acc, objeto) => {
-              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion, area: objeto.area};
+              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion, area: objeto.area, nombreArea: objeto.nombreArea};
               return acc;
             }, {})
           ).reverse();
 
+          // Ordenamos por area
+          this.tablasPonderaciones = this.tablasPonderaciones.slice().sort((a, b) => {
+            return a.nombreArea.localeCompare(b.nombreArea);
+          });
 
           console.log("Ponderaciones", this.ponderaciones)
           console.log("tablasPonderaciones", this.tablasPonderaciones);
