@@ -1,11 +1,24 @@
 
 <?php
+session_start();
 header("Content-Type: application/json");
 $variables = json_decode(file_get_contents('php://input'), true);
 $respuesta = [];
 //ruta para buacar
-$id=$variables['id_equipo'];
-$ruta = "documentoSession/".$id;
+
+$tipo_archivo=$variables['tipo_archivo'];
+$fecha_ruta=$variables['fecha_ruta'];
+$id_equipo=$variables['id_equipo'];
+
+if($tipo_archivo === 'Presentacion'){
+    $ruta = "documentoSession/".$id_equipo;
+}else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha'){
+    $area = $_SESSION['area'];
+    $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta;
+}
+
+
+
 
 if (is_dir($ruta)){
     // Abre un gestor de directorios para la ruta indicada

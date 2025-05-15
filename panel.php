@@ -36,6 +36,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                 <a><i class="bi bi-people-fill"></i>Gestión</a>
                                 <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
+                                <a><button class= "btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion()"><b>Capacitaciones</b></button></a>
                                 <?php
                                 if ($_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
@@ -621,7 +622,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </button>
                         <div class="input-group mt-1 mb-1" style="width:300px">
                             <label class="input-group-text" id="basic-addon1" style="font-size:0.7em">Fecha</label>
-                            <input v-model="fecha_session" type="date" class="form-control" style="font-size:0.7em" @change="buscarDocumentos()">
+                            <input v-model="fecha_session" type="date" class="form-control" style="font-size:0.7em" @change="buscarDocumentos('Presentacion')">
                         </div>
                     </div>
                     <div class="col-12 col-lg-6 ">
@@ -932,11 +933,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                             <div class="modal-body">
                                 <div class="text-center">
-                                    <form @submit.prevent="uploadFile()">
+                                    <form @submit.prevent="uploadFile('Presentacion')">
                                         Subir Documento
                                         <div class="col-12">
                                             <div class="custom-file mt-2 mb-3">
-                                                <input type="file" id="input_file_seguimiento" @change="varificandoSelecionSeguimiento()" ref="ref_imagen" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                                <input type="file" id="input_file_seguimiento" @change="varificandoSelecionSeguimiento()" ref="ref_imagen_presentacion" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
                                             </div>
                                         </div>
                                         <div class="col-12" v-if="existeImagenSeleccionada && login!=true">
@@ -955,7 +956,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <div class="row">
                                                     <span class="badge bg-secondary">Documento {{index+1}}</span><br>
                                                     <div class="mt-1">
-                                                        <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos)" style="font-size:14px;">Eliminar</button>
+                                                        <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos,'Presentacion')" style="font-size:14px;">Eliminar</button>
                                                     </div>
                                                 </div>
                                                 <!--Mostar los JPG y PNG-->
@@ -1190,6 +1191,220 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
                 <!--Fin Modal GRAFICA KPIS VISTA FULL-->
             </div>
+
+            <div v-if="ventana=='Capacitaciones'">
+                <!--<div class="col-12 text-center">
+                    <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nuevaCapacitaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Capacitación</button>
+                </div>-->
+                <div  class="row">
+                    <div class="col-12">
+                        <div class="scroll5 col-12" style="font-size:0.8em">
+                            <table class="table mt-2 ">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th scope="col" class="text-center"><button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="nuevaCapacitaciones()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nueva Capacitacion</button></th>
+                                        <th scope="col" class="text-center">Fecha de capacitacion</th>
+                                        <th scope="col" class="text-center">Nuevos ingresos</th>
+                                        <th scope="col" class="text-center">Evidencia</th>
+                                        <th scope="col" class="text-center">¿Se impartió? (Si/No)</th>
+                                        <th scope="col" class="text-center">Comentarios</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-show="nueva_capacitacion == true" class="table-success">
+                                        <td class="text-center" style="width: 200px;">
+                                            <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCapacitacion()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                            <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                        </td>
+                                        <td>
+                                            <input v-model="fecha_capacitacion" type="date" class="form-control" />
+                                        </td>
+                                        <td>
+                                            <input v-model="nuevos_ingresos" type="text" class="form-control" />
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(fecha_capacitacion)"> <i class="bi bi-file-earmark-arrow-up"></i> Documento/s</button>
+                                        </td>
+                                        <td>
+                                            <input v-model="capacitacion_impartida" type="text" class="form-control" disabled/>
+                                        </td>
+                                        <td>
+                                            <input v-model="comentarios_capacitacion" type="text" class="form-control" />
+                                        </td>
+                                    </tr>
+                                    <tr v-for= "(capacitacion,index) in capacitaciones " :class="editarCapacitacion === index ? 'table-warning' : ''">
+                                        <td class="text-center">
+                                            <button  v-if="editarCapacitacion===index" @click="cancelarEditar()" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-x-lg"></i> Cancelar </button>
+                                            <button v-if="editarCapacitacion!==index" @click="editCap(index, capacitacion)" class="btn btn-warning btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-pencil-fill"></i> Editar </button>
+                                            <button  v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-floppy-fill"></i> Guardar </button>
+                                            
+                                        </td>
+                                        <td class="text-center">
+                                            <input v-if="editarCapacitacion===index" :id="'capacitacionFecha'+index" :value= "capacitacion.fecha"  type="date" class="form-control w-50 mx-auto"></input>
+                                            <label v-else>{{capacitacion.fecha}}</label>
+                                            
+                                        </td>
+                                        <td class="text-center">
+                                             <input v-if="editarCapacitacion===index" :id="'capacitacionIngreso'+index" :value="capacitacion.ingresos"  type="text" class="form-control w-50 mx-auto"></input>
+                                                <label v-else>{{capacitacion.ingresos}}</label>
+                                           
+                                        </td>
+                                        <td class="text-center">
+                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" :class="cantidadDocumentos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(capacitacion.fecha,index)"> 
+                                                <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantidadDocumentos[index]}})
+                                            </button>
+                                        </td>
+                                        <td class="text-center">
+                                            <label v-if="cantidadDocumentos[index]>0 " class= "text-success">Si</label>
+                                            <label v-if="cantidadDocumentos[index]<=0" class="text-danger">No</label>
+                                        </td>
+                                        <td>
+                                            <input v-if="editarCapacitacion===index" :id="'capacitacionComentario'+index" :value= "capacitacion.comentario"  type="text" class="form-control"></input>
+                                             <label v-else> {{capacitacion.comentario}}</label>
+                                             
+                                        </td>
+                                    </tr>
+                                    <!--<tr v-if="compromisos.length>0" v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
+                                        <th scope="row" style="width: 200px;">{{index+1}}
+                                            <button v-if="!actualizar_compromiso" class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
+                                            <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
+                                            <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                        </th>
+                                        <td>
+                                            <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control" />
+                                            <label v-else> {{commitment.compromiso}}</label>
+                                        </td>
+                                        <td>
+                                            <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
+                                                <option value="" selected disabled>Seleccione responsable</option>
+                                                <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                            </select>
+                                            <label v-else>{{commitment.nombre_responsable}}</label>
+                                        </td>
+                                        <td style="width:200px">
+                                            <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date" class="form-control" />
+                                            <label v-else>{{cambiarformato(commitment.fecha)}}</label>
+                                        </td>
+                                        <td>
+                                            <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
+                                            <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
+                                                <option value="0" selected disabled>0 %</option>
+                                                <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
+                                        </td>
+                                    </tr>
+                                    <tr v-else>
+                                        <td colspan="6" class="text-center" style="background:#FBF7C7">
+                                            Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con compromisos
+                                        </td>
+                                    </tr>-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+<!--//////////////////////////////////////////AGREGAR AQUI MODAL DOCUMENTO////////////////////////////////////////////////////////////////////////-->
+
+
+                <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLabel">Documento/s {{fecha_ruta}}<!--<b>{{select_session_equipo.split('<->')[1]}}</b>--></h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <form @submit.prevent="uploadFile('Capacitacion')">
+                                        Subir Documento
+                                        <div class="col-12">
+                                            <div class="custom-file mt-2 mb-3">
+                                                <input type="file" id="input_file_capacitacion" @change="varificandoSelecionCapacitacion()" ref="ref_imagen_capacitacion" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-12" v-if="existeImagenSeleccionadaCapacitacion && login!=true">
+                                            <button type="submit" name="upload" class="btn btn-primary">Subir Archivos </button>
+                                        </div>
+                                        <div v-if="login==true" class="d-flex justify-content-center">
+                                            <div>
+                                                <img class="mx-auto" style="width:50px;" src="img/loading.gif" /><label>Subiendo...</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mostrando los archivos cargados -->
+                                        <div v-if="documento_capacitacion.length>0">
+                                            <hr>
+                                            <div class="col-12" v-for="(archivos,index) in documento_capacitacion">
+                                                <div class="row">
+                                                    <span class="badge bg-secondary">Documento {{index+1}}</span><br>
+                                                    <div class="mt-1">
+                                                        <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos, 'Capacitacion')" style="font-size:14px;">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                                <!--Mostar los JPG y PNG-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                    <img :src="documento_capacitacion[index]" style="width:50%" class="mb-5"></img>
+                                                </div>
+                                                <!--Mostrar PDF-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='pdf'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                    <iframe :src="documento_capacitacion[index]" style="width:100%;height:500px;" class="mb-5"></iframe>
+                                                </div>
+                                                <!--Mostrar Word-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='doc' || archivos.slice(archivos.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/word.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar Excel-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='xls' || archivos.slice(archivos.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/excel.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar Power Point -->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='pptx'"  class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar .RAR-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/rar.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar .RAR-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/zip.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
                 <div class="row text-center">

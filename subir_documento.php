@@ -9,11 +9,22 @@ if(isset($_FILES['files']['name'])){
 ///////////////////////////header("Content-Type: application/json");
 $cantidad=0;
 $suma=0;
-$id = $_POST['id_equipo'];
+$tipo_archivo = $_POST['tipo_archivo'];
+
+
+if ($tipo_archivo === 'Presentacion') {
+    $id = $_POST['id_equipo'];
+    $ruta = "documentoSession/".$id."/";
+} else if ($tipo_archivo === 'Capacitacion') {
+    $area = $_SESSION['area'];
+    $fecha_ruta = $_POST['fecha_ruta'];
+    $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
+} else {
+    
+}
 // Contar archivos totales
 $countfiles = count($_FILES['files']['name']);
 //$suma=$countfiles + $cantidad;
-$ruta = "documentoSession/".$id."/";
 //verificar si existe directorio de$ruta = "sample/ruta/newfolder";
 if (!file_exists($ruta)) {
     mkdir($ruta, 0777, true);

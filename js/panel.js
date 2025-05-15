@@ -140,6 +140,20 @@ const app = {
       justasArranque: [],
       seguimiento_completado:0,
       seleccion_eds_areas:'',
+      ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
+      nueva_capacitacion: false,
+      fecha_capacitacion: '',
+      nuevos_ingresos: '',
+      evidencia_capacitacion: '',
+      capacitacion_impartida:'',
+      comentarios_capacitacion: '',
+      capacitaciones: '',
+      fecha_ruta: '',
+      documento_capacitacion: [],
+      existeImagenSeleccionadaCapacitacion: false,
+      cantidadDocumentos: [], 
+      editarCapacitacion: false,
+      posicion_canti_doc:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -322,7 +336,9 @@ const app = {
       anio_bateo:'',
       equiposConMasDe850:'',
       porcentajeArribaDe850:'',
-      equiposPorMes:''
+      equiposPorMes:'',
+
+     
     }
   },
   mounted() {
@@ -336,6 +352,38 @@ const app = {
   methods: {
     cerrarModalHistorial() {
       this.myModal.hide();
+    },
+    editCap(index){
+      this.editarCapacitacion = index
+
+    },
+    cancelarEditar(){
+      this.editarCapacitacion = false
+    },
+    guardarEditar(index){
+     let comentario =document.getElementById('capacitacionComentario'+index).value;
+     let fecha =document.getElementById('capacitacionFecha'+index).value;
+     let ingresos =document.getElementById('capacitacionIngreso'+index).value;
+      
+     console.log("comentario",comentario,"fecha",fecha,"ingreso",ingresos)
+      
+      
+      axios.put("capacitacionesController.php", {
+        accion: "Actualizar Capacitacion",
+        comentario: comentario,
+        fecha: fecha,
+        ingresos: ingresos
+      }).then(response => {
+        console.log('Respuesta:', response.data)
+        if (response.data == true) {
+          alert(" Actualizado con Éxito.");
+          this.editarCapacitacion = false;
+        } else {
+          console.log(response.data);
+        }
+      }).catch(error => {
+        console.log("Error en axios:" + error);
+      })
     },
     /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
     ventanaSegunTipoUsuario() {
@@ -930,51 +978,106 @@ const app = {
      
     
     },
+    
     modalDocumentoGestionSession() {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos() {
-      var id = this.select_session_equipo.split('<->')[0];
+    buscarDocumentos(tipo_archivo,fecha_por_capacitacion) {
+        console.log(tipo_archivo)
+      var id_equipo = ''
+      var fecha_ruta =''
+
+      if(tipo_archivo === 'Capacitacion'){
+        fecha_ruta = this.fecha_ruta
+      }else if( tipo_archivo ===  'Presentacion'){
+        id_equipo = this.select_session_equipo.split('<->')[0];
+      }else if(tipo_archivo === 'Por Fecha'){
+        fecha_ruta = fecha_por_capacitacion
+      }else{
+        return "No me llego ese tipo de documento."
+      }
+      
       axios.post("buscar_documentos.php", {
-        id_equipo: id
+        tipo_archivo: tipo_archivo,
+        fecha_ruta: fecha_ruta,
+        id_equipo: id_equipo
       }).then(response => {
-        this.documento_session = response.data
-        if (this.documento_session.length > 0) {
-          console.log(this.documento_session + "Archivos encontrados.")
-          this.random = Math.random()
-        } else {
-          console.log(this.documento_session + "Sin imagen encontrada.")
+        if(tipo_archivo === 'Presentacion'){
+          this.documento_session = response.data
+          if (this.documento_session.length > 0) {
+            console.log(this.documento_session + "Archivos encontrados.")
+            this.random = Math.random()
+          } else {
+            console.log(this.documento_session + "Sin imagen encontrada.")
+          }
+        }else if(tipo_archivo === 'Capacitacion'){
+          this.documento_capacitacion = response.data
+          if (this.documento_capacitacion.length > 0) {
+            console.log(this.documento_capacitacion + "Archivos encontrados.")
+            this.random = Math.random()
+          } else {
+            console.log(this.documento_capacitacion + "Sin imagen encontrada.")
+          }
+          this.cantidadDocumentos[this.posicion_canti_doc] =this.documento_capacitacion.length 
+        }else if(tipo_archivo === 'Por Fecha'){
+
+          this.cantidadDocumentos.push(response.data.length)
+          console.log("Cantidad docs",this.cantidadDocumentos)
+          //console.log(response.data.length) 
+          //return cantidad
         }
+        
       })
         .catch(error => {
           console.log(error);
         });
     },
-    uploadFile() {
+    uploadFile(tipo_archivo) {
       this.login = true
-      var id = this.select_session_equipo.split('<->')[0];
 
       let formData = new FormData();
-      var files = this.$refs.ref_imagen.files;
-      var totalfiles = this.$refs.ref_imagen.files.length;
+
+      if(tipo_archivo === 'Presentacion'){
+        var id = this.select_session_equipo.split('<->')[0];
+        formData.append("id_equipo", id);
+        formData.append("tipo_archivo", tipo_archivo);
+        var files = this.$refs.ref_imagen_presentacion.files;
+        var totalfiles = this.$refs.ref_imagen_presentacion.files.length;
+      }else if (tipo_archivo === 'Capacitacion'){
+        formData.append("tipo_archivo", tipo_archivo);
+        formData.append("fecha_ruta", this.fecha_ruta);
+        var files = this.$refs.ref_imagen_capacitacion.files;
+        var totalfiles = this.$refs.ref_imagen_capacitacion.files.length;
+      }else{
+        return alert("No hay documentos")
+      }
 
       for (var index = 0; index < totalfiles; index++) {
         formData.append("files[]", files[index]);//arreglo de documentos_seguimiento
       }
-      formData.append("id_equipo", id);
+
       axios.post("subir_documento.php", formData,
         {
           headers: { "Content-Type": "multipart/form-data" }
         }).then(response => {
           console.log(response.data);
           if (response.data.length > 0) {
-            this.documento_session = response.data;
-            if (this.documento_session.length > 0) {
-              document.getElementById("input_file_seguimiento").value = ""
-              this.existeImagenSeleccionada = false;
-              this.random = Math.random()
+             Swal.fire({
+              title: "Guardado!!",
+              text: "Archivo guardado con éxito",
+              icon: "success"
+            });
+
+            if(tipo_archivo === 'Presentacion'){
+              this.$refs.ref_imagen_presentacion.value = ''
+                this.buscarDocumentos('Presentacion')
+            }else if(tipo_archivo === 'Capacitacion'){
+                this.$refs.ref_imagen_capacitacion.value = ''
+                this.buscarDocumentos('Capacitacion')
             }
+
+
           } else {
             this.login = false
             alert("Verifique la extension del archivo o Intente nuevamente.")
@@ -987,7 +1090,7 @@ const app = {
           this.login = false
         });
     },
-    eliminarDocumento(ruta) {
+    eliminarDocumento(ruta, tipo_archivo) {
 
       var ruta = ruta;
       var partes = ruta.split("/");
@@ -1005,22 +1108,43 @@ const app = {
         if (result.isConfirmed) {
           axios.post("eliminar_documento.php", {
             ruta_eliminar: ruta
-          }).then(reponse => {
-            console.log(reponse)
-            if (reponse.data == "Archivo Eliminado") {
-              alert("Archivo/Documento Eliminado con Éxito")
-              this.buscarDocumentos()
-            } else if (reponse.data == "No Eliminado") {
-              alert("Algo no salio bien no se logro Eliminar.")
-            } else {
-              alert("Error al eliminar el Documento.")
+          }).then(response => {
+            
+            console.log(response)
+
+            if(tipo_archivo === 'Presentacion'){
+              if (response.data == "Archivo Eliminado") {
+                alert("Archivo/Documento Eliminado con Éxito")
+                this.buscarDocumentos('Presentacion')
+              } else if (response.data == "No Eliminado") {
+                alert("Algo no salio bien no se logro Eliminar.")
+              } else {
+                alert("Error al eliminar el Documento.")
+              }
+            }else if(tipo_archivo === 'Capacitacion'){
+              if (response.data == "Archivo Eliminado") {
+                alert("Archivo/Documento Eliminado con Éxito")
+               //this.consultarCapacitacion();
+                this.buscarDocumentos('Capacitacion')
+              } else if (response.data == "No Eliminado") {
+                alert("Algo no salio bien no se logro Eliminar.")
+              } else {
+                alert("Error al eliminar el Documento.")
+              }
             }
+            
           }).catch(error => {
             console.log("Error :-(" + error)
           })
         }
       });
 
+    },
+    varificandoSelecionCapacitacion() {
+      var imagen_seleccion = document.getElementById('input_file_capacitacion').value;
+      if (imagen_seleccion != null) {
+        this.existeImagenSeleccionadaCapacitacion = true;
+      }
     },
     varificandoSelecionSeguimiento() {
       var imagen_seleccion = document.getElementById('input_file_seguimiento').value;
@@ -1248,7 +1372,7 @@ const app = {
       this.fecha_session = fechaFormateada;
 
       if (this.select_session_equipo != '') {
-        this.buscarDocumentos()
+        this.buscarDocumentos('Presentacion')
       }
 
       setTimeout(() => {
@@ -2201,6 +2325,111 @@ const app = {
         }
       });
     },
+//////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
+    modalDocumentoCapacitacion(fecha,index) {
+      
+      if(fecha == ''){
+        alert('Favor de seleccionar una fecha antes de subir su documento.')
+      }else{
+        this.posicion_canti_doc = index  
+        this.fecha_ruta = fecha
+        this.myModal = new bootstrap.Modal(document.getElementById("modal"));
+        this.myModal.show();
+        this.buscarDocumentos('Capacitacion')
+      }
+    },
+    nuevaCapacitaciones(){
+      this.nueva_capacitacion = true;
+      this.fecha_capacitacion = ''
+      this.nuevos_ingresos = ''
+      this.evidencia_capacitacion = ''
+      this.capacitacion_impartida = ''
+      this.comentarios_capacitacion = ''
+
+      /*this.agregar_compromiso = true;
+      this.compromiso = ''
+      this.fecha_compromiso = ''
+      this.responsable_compromiso = ''
+      this.input_actualizar = '',
+        this.actualizar_compromiso = false*/
+
+    },
+
+    guardarCapacitacion(accion,index,id){
+      if(accion=='Actualizar'){
+        console.log("Estoy actualizando")
+          this.nuevos_ingresos =document.getElementById('capacitacionIngreso'+index).value;
+          this.fecha_capacitacion = document.getElementById('capacitacionFecha'+index).value;
+          this.comentarios_capacitacion =document.getElementById('capacitacionComentario'+index).value;
+      }
+      if (this.nuevos_ingresos == '' || this.fecha_capacitacion == '' || this.comentarios_capacitacion == '') { return alert("Todos los campos de compromiso son requeridos.") }
+      axios.post("capacitacionesController.php", {
+        id:id,
+        accion:accion,
+        nuevos_ingresos: this.nuevos_ingresos,
+        fecha_capacitacion: this.fecha_capacitacion,
+        comentarios_capacitacion: this.comentarios_capacitacion
+      }).then(response => {
+        if (response.data == true) {
+          Swal.fire({
+              title: "Guardado!!",
+              text: "Capacitación Guardada con Éxito.",
+              icon: "success"
+            });
+            this.comentarios_capacitacion = '';  // Limpiar campo comentarios
+            this.nuevos_ingresos = '';           // Limpiar campo ingresos
+            this.fecha_capacitacion = '';        // Limpiar campo fecha
+            this.consultarCapacitacion();
+            this.nueva_capacitacion = false
+            this.editarCapacitacion = false
+        } else {
+          console.log(response.data);
+        }
+      }).catch(error => {
+        console.log("Error en axios:" + error);
+      })
+    },
+
+    consultarCapacitacion(){
+      //this.nuevos_ingresos = ''
+      //this.fecha_capacitacion = ''
+      axios.get('capacitacionesController.php', {
+        params: {
+          accion: 'Consultar'
+        }
+      }).then(response => {
+        console.log('Capacitaciones', response.data)
+        if (response.data[0] == true) {
+          this.capacitaciones = response.data[1];
+
+           for (let index = 0; index < this.capacitaciones.length; index++) {
+            this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha)//busco la cantidad de archivos que contiene cada capacitacion.
+           } 
+          
+        } else {
+          console.log("Error en la consulta" + response.data);
+        }
+      }).catch(error=>{
+          console.log("Error :-( en axios: "+error)
+      })
+
+    },
+    
+    cancelarCapacitacion(){
+      this.nueva_capacitacion = false
+
+    },
+
+    /*actualizarCompromiso()
+    cancelarActualizarCompromiso()
+    actualizandoCompromiso()
+    eliminarCompromiso(*/
+    
+    
+
+
+
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////CREAR COMPETENCIAS/////////////////////////////////////////////////////////////////
