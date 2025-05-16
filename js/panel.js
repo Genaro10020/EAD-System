@@ -154,6 +154,7 @@ const app = {
       cantidadDocumentos: [], 
       editarCapacitacion: false,
       posicion_canti_doc:'',
+      cantNewDoc: 0,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1020,12 +1021,18 @@ const app = {
             console.log(this.documento_capacitacion + "Sin imagen encontrada.")
           }
           this.cantidadDocumentos[this.posicion_canti_doc] =this.documento_capacitacion.length 
-        }else if(tipo_archivo === 'Por Fecha'){
+          
+         if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
+              this.cantNewDoc=this.documento_capacitacion.length
+          }
 
-          this.cantidadDocumentos.push(response.data.length)
-          console.log("Cantidad docs",this.cantidadDocumentos)
-          //console.log(response.data.length) 
-          //return cantidad
+        }else if(tipo_archivo === 'Por Fecha'){
+           if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
+              this.cantNewDoc=response.data.length
+          }else{
+            this.cantidadDocumentos.push(response.data.length)
+            console.log("Cantidad docs",this.cantidadDocumentos)
+          }
         }
         
       })
@@ -2345,6 +2352,7 @@ const app = {
       this.evidencia_capacitacion = ''
       this.capacitacion_impartida = ''
       this.comentarios_capacitacion = ''
+      this.cantNewDoc= 0
 
       /*this.agregar_compromiso = true;
       this.compromiso = ''
@@ -2401,7 +2409,7 @@ const app = {
         console.log('Capacitaciones', response.data)
         if (response.data[0] == true) {
           this.capacitaciones = response.data[1];
-
+          this.cantidadDocumentos = []
            for (let index = 0; index < this.capacitaciones.length; index++) {
             this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha)//busco la cantidad de archivos que contiene cada capacitacion.
            } 

@@ -1198,7 +1198,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>-->
                 <div  class="row">
                     <div class="col-12">
-                        <div class="scroll5 col-12" style="font-size:0.8em">
+                        <div class="scroll6 col-12" style="font-size:0.8em">
                             <table class="table mt-2 ">
                                 <thead>
                                     <tr class="table-secondary">
@@ -1217,13 +1217,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
                                         </td>
                                         <td>
-                                            <input v-model="fecha_capacitacion" type="date" class="form-control" />
+                                            <input v-model="fecha_capacitacion" type="date" class="form-control" @change="buscarDocumentos('Por Fecha',fecha_capacitacion)" />
                                         </td>
                                         <td>
                                             <input v-model="nuevos_ingresos" type="text" class="form-control" />
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(fecha_capacitacion)"> <i class="bi bi-file-earmark-arrow-up"></i> Documento/s</button>
+                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(fecha_capacitacion)" :class="cantNewDoc>0 ? 'bg-success': ''"> <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantNewDoc}})</button>
                                         </td>
                                         <td>
                                             <input v-model="capacitacion_impartida" type="text" class="form-control" disabled/>
