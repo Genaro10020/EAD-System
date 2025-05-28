@@ -140,6 +140,13 @@ const app = {
       justasArranque: [],
       seguimiento_completado:0,
       seleccion_eds_areas:'',
+      pilar_estrategico: [],
+      objetivosYpilares: [],
+      pilarSeleccionado: [],
+      objetivoSeleccionado: [],
+      objetivosEncontrados: [],
+      isPilarChecked: false,
+      banderaObjetivoGuardado: false,
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
       fecha_capacitacion: '',
@@ -957,6 +964,119 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    consultarPilares() {
+      axios.get("pilaresEstrategicosController.php", {
+        params: {
+          accion: "Consultar",
+        }
+      }).then(response => {
+        console.log("Respuesta consulta Pilares var: ",response.data )
+        /*console.log("RESCANDO TODO DE PILARES",response.data.map(items=>({
+        pilarID: items.pilarID,
+        pilarNombre:  items.pilarNombre})))*/
+        this.objetivosYpilares = response.data 
+
+        const pilaresUnicos = [];
+        const idsVistos = new Set();
+
+        this.objetivosYpilares.forEach(item => {
+          if (!idsVistos.has(item.pilarID)) {
+            idsVistos.add(item.pilarID);
+            pilaresUnicos.push({
+              pilarID: item.pilarID,
+              pilarNombre: item.pilarNombre
+            });
+          }
+        });
+
+        this.pilar_estrategico = pilaresUnicos;
+        console.log("Pilares no repetidos: ", this.pilar_estrategico)
+        this.buscarObjetivosDePilarGuardados()
+        //this.pilar_estrategico = response.data;
+        //console.log('Respuesta consulta Pilares var: ', this.pilar_estrategico)
+      }).catch(error => {
+        console.log("Error en axios :-(" + error);
+      })
+
+    },
+    buscarObjetivosDePilarGuardados(){
+      let p_cliente =  this.pilarSeleccionado[0]
+      let p_excelenciaOperativa = this.pilarSeleccionado[1]
+      let p_capitalHumano = this.pilarSeleccionado[2]
+      let p_investigacionYdesarrollo = this.pilarSeleccionado[3]
+
+      //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
+      this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
+      console.log("ENCONTRADOS DESDE CONSULTA: ",this.objetivosEncontrados)
+    },
+    buscarObjetivosDePilar(event,pilarID){
+
+
+    if (event.target.checked) {
+            console.log('Seleccionado');
+          } else {
+            console.log('Deseleccionado');
+            console.log(pilarID) 
+            let objetivosSeleccionados = this.objetivoSeleccionado
+            let buscarParaEliminar=this.objetivosYpilares.filter(items => items.pilarID == pilarID).map(item => item.objetivoID)
+
+            for (let index = 0; index < buscarParaEliminar.length; index++) {
+             const idAEliminar = buscarParaEliminar[index];
+              console.log(idAEliminar)
+                for (let j = 0; j < objetivosSeleccionados.length; j++) {
+                  if(objetivosSeleccionados[j]==idAEliminar){
+                    this.objetivoSeleccionado.splice(j, 1);
+                    j--;
+                  }
+                }
+            }
+            this.guardarSeleccionados()
+          }
+
+          //lo utilizamos para mostrar en el DOM los Objetivos segun perfil seleccionado.
+      setTimeout(()=>{
+      let p_cliente =  this.pilarSeleccionado[0]
+      let p_excelenciaOperativa = this.pilarSeleccionado[1]
+      let p_capitalHumano = this.pilarSeleccionado[2]
+      let p_investigacionYdesarrollo = this.pilarSeleccionado[3]
+
+      //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
+      this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
+      console.log("ENCONTRADOS: ",this.objetivosEncontrados)
+      },200);
+    },
+
+    guardarSeleccionados(){
+      console.log("OBJETIVO: ",this.objetivoSeleccionado, "PILAR: ", this.pilarSeleccionado)
+      axios.post("pilaresEstrategicosController.php",
+        {
+          objetivoSeleccionado: this.objetivoSeleccionado,
+          pilarSeleccionado: this.pilarSeleccionado, 
+          id_equipo: this.select_session_equipo,
+          nombre: this.nombre_indicador,
+
+        }).then(response => {
+          if(response.data == true){
+            this.banderaObjetivoGuardado = true
+
+            setTimeout(()=>{
+              this.banderaObjetivoGuardado = false
+            }, 3000)
+              
+          }else{
+            console.log(response.data)
+          }
+         
+        })
+        .catch(error => {
+
+          console.log(error);
+        }).finally(() => {
+
+        });
+
+    },
     uniqueAreas() {
       // Usamos Set para eliminar los duplicados
       const areasYPlantas = [...new Set(this.consultaEADparaFiltrar.flatMap(equipo => equipo[0].area))];
@@ -1870,6 +1990,9 @@ const app = {
       this.actualizar_kpi = '';
       this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
       this.myModal.show();
+      this.semanasAnio()
+      this.consultarPilares()
+      
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(document.getElementById("modalGraficaKPI"));
@@ -2092,8 +2215,13 @@ const app = {
         }
       }).then(response => {
         if (response.data[0] == true) {
+          console.log("HOLLA",response.data)
+          this.pilarSeleccionado = []
+          this.objetivoSeleccionado = []
           this.seguimientoKPIs = response.data[1];
           if (this.seguimientoKPIs.length > 0) {
+
+
             //datos para la grafica
             this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador
             this.tGrafica = this.seguimientoKPIs[0].tipo
@@ -2103,6 +2231,27 @@ const app = {
             this.datoGrafica_MetaCalculada = this.seguimientoKPIs[0].meta_calculada;
             this.datoGrafica_MetaRetadora = this.seguimientoKPIs[0].meta_retadora;
             this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
+
+
+              if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
+                try {
+                  this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
+                } catch (error) {
+                  console.log('No hay pilares seleccionados');
+                }
+              }
+
+              if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].objetivos) {
+                try {
+                  this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
+                } catch (error) {
+                  console.log('No hay pilares seleccionados');
+                }
+              }
+              //this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
+              //this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
+
+
             //this.datoGrafica_dato= this.seguimientoKPIs[0].dato_semanal
             //datos para el formulario
             this.linea_base = this.formatoNumero(this.seguimientoKPIs[0].linea_base);

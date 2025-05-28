@@ -911,7 +911,19 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <div class="col-12 text-center" v-if="select_session_equipo.length>0">
                     <div class="row barra-gris d-flex align-content-center" style="height:80px;">
                         <h6 class="text-center pasos mt-2"> Gráfica KPI <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
+                        <!--<div style="display: flex justify-content: center gap: 25px">
+                            <label><input type="checkbox" name="pilaresEstrategicos" value="Cliente (CL)">Cliente (CL)</label>
+                            <label><input type="checkbox" name="pilaresEstrategicos" value="Excelencia Operativa (EO)">Excelencia Operativa (EO)</label>
+                            <label><input type="checkbox" name="pilaresEstrategicos" value="Capital Humano (CH)">Capital Humano (CH)</label>
+                            <label><input type="checkbox" name="pilaresEstrategicos" value="Investigación y Desarrollo (I+D)">Investigación y Desarrollo (I+D)</label>
+                        </div>
+                        <div style="display: flex justify-content: center gap: 25px" hidden>
+                            <label><input type="checkbox" name="objetivosEstrategicos" value="Experiencia del Cliente (EC)">Experiencia del Cliente (EC)</label>
+                            <label><input type="checkbox" name="objetivosEstrategicos" value="Crecimiento de Ventas Nac. y Exp. (CV)">Crecimiento de Ventas Nac. y Exp. (CV)</label>
+                        </div>-->
                     </div>
+
+                    <!--Serena, te quedaste aquí. ^^^ Agregar el checkbox con v-for y verificar que la consulta si te traiga los pilares.-->
                     <div class="offset-4 col-4">
                         <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
                         <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
@@ -1018,7 +1030,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!--Fin Modal subir seguimiento-->
                 <!-- Inicio Modal KPIS-->
                 <div class="modal fade" id="modalKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                    <div class="modal-dialog modal-dialog-centered  modal-xl modal-fullscreen-xl-down">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h6 class="modal-title" id="exampleModalLabel">Seguimiento KPI's</b></h6>
@@ -1028,7 +1040,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div v-if="select_session_equipo.length>0">
                                     <div class="row">
                                         <div class="col-12 d-flex justify-content-center">
-                                            <div class="tarjeta_kpis my-2 text-center">
+                                            <div class="tarjeta_kpis col-8 my-2 mx-3 text-center">
                                                 <div class="input-group mb-3" style="min-width:270px;">
                                                     <label class="input-group-text w-25" style="font-size:0.8em">Nom. Indicador</label>
                                                     <input type="text" class="form-control" v-model="nombre_indicador" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='nombre_indicador'" />
@@ -1130,6 +1142,20 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-warning btn-boton py-0 mt-3" style="font-size: 0.9em;" @click="guardarActualizacionDatoKPI()"><i class="bi bi-floppy-fill"></i> Actualizar</button>
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-danger btn-boton py-0 ms-2 mt-3" style="font-size: 0.9em;" @click="cancelarDatosKPI()"><i class="bi bi-x-circle-fill"></i> Cancelar</button>
                                             </div>
+                                            <div class=" tarjeta_kpisPilares col-4 my-2 text-center">
+                                                <span v-for="(pilar,index) in pilar_estrategico" :key="index">
+                                                    <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model = "pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID)"/><label>{{ pilar.pilarNombre }}</label>
+                                                </span>
+                                                <span>
+                                                    <ul class="text-start">
+                                                        <li style= "list-style: none; background-color: #f7dddd" v-for="objetivo in objetivosEncontrados"> 
+                                                            <input type="checkbox" :id="objetivo.objetivoID" :value="objetivo.objetivoID" v-model = "objetivoSeleccionado" @change="guardarSeleccionados()" /><label>{{objetivo.objetivoNombre}}</label>
+                                                        </li>
+                                                    </ul>
+                                                </span>
+                                                <span v-if="banderaObjetivoGuardado" class= "badge bg-success">Se guardaron los objetivo/s</span>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                     <!--Tabla registro KPIs-->

@@ -199,7 +199,7 @@ table,
 
 .tarjeta_kpis {
     font-size: 13px;
-    width: 600px;
+    width: 550px;
     height: auto;
     /* Altura automática según el contenido */
     border-radius: 10px;
@@ -216,6 +216,28 @@ table,
 .tarjeta_kpis .container {
     padding: 5px 5px 5px 10px;
 }
+
+.tarjeta_kpisPilares {
+    font-size: 13px;
+    width: 500px;
+    height: auto;
+    /* Altura automática según el contenido */
+    border-radius: 10px;
+    /* Borde redondeado */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    /* Sombra */
+    background-color: #f7d5d5;
+    /* Color de fondo */
+    padding: 10px;
+    /* Espaciado interno */
+    color: #666666;
+}
+
+.tarjeta_kpisPilares .container {
+    padding: 5px 5px 5px 10px;
+}
+
+
 
 .color-actualizar {
     background: #fff3cd;
