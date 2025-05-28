@@ -15,7 +15,9 @@ if (isset($_SESSION['nombre'])) {
         case 'consultar':
         if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario']=='Coordinador'){
             $area =  $_SESSION['area'];
-            $consulta = "SELECT * FROM equipos_ead WHERE area ='$area' ORDER BY id DESC";
+            //$consulta = "SELECT * FROM equipos_ead WHERE area ='$area' ORDER BY id DESC";
+            //Coordinador miguel no quiere que aparacezcan estos equipos ya que no participaran en proyetos, activar cuando los necesite.
+            $consulta = "SELECT * FROM equipos_ead WHERE area = '$area' AND id NOT IN (55, 59, 84) ORDER BY id DESC";
         }else{
             $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
         }
