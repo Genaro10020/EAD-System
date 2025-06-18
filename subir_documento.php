@@ -16,7 +16,15 @@ if ($tipo_archivo === 'Presentacion') {
     $id = $_POST['id_equipo'];
     $ruta = "documentoSession/".$id."/";
 } else if ($tipo_archivo === 'Capacitacion') {
-    $area = $_SESSION['area'];
+   if($_SESSION['tipo_usuario']=="Admin"){
+        if(isset($_POST['area'])){
+                $area=$_POST['area'];
+            }else{
+                $area = $_SESSION['area'];
+            }
+    }else{
+        $area = $_SESSION['area'];
+    }
     $fecha_ruta = $_POST['fecha_ruta'];
     $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
 } else {

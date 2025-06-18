@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 header("Content-Type: application/json");
@@ -9,11 +8,19 @@ $respuesta = [];
 $tipo_archivo=$variables['tipo_archivo'];
 $fecha_ruta=$variables['fecha_ruta'];
 $id_equipo=$variables['id_equipo'];
-
+$area = '';
 if($tipo_archivo === 'Presentacion'){
     $ruta = "documentoSession/".$id_equipo;
 }else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha'){
-    $area = $_SESSION['area'];
+    if($_SESSION['tipo_usuario']=="Admin"){
+        if(isset($variables['area'])){
+                $area=$variables['area'];
+            }else{
+                $area = $_SESSION['area'];
+            }
+    }else{
+        $area = $_SESSION['area'];
+    }
     $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta;
 }
 

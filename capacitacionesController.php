@@ -14,7 +14,8 @@ if(isset($_SESSION['nombre'])){
             case 'GET':
                     if(isset($_GET['accion']) &&  $_GET['accion']==='Consultar'){
                         $area=$_SESSION['area'];
-                        $resultado = consultarCapacitacion($area);
+                        $tipo_usuario=$_SESSION['tipo_usuario'];
+                        $resultado = consultarCapacitacion($area,$tipo_usuario);
                     }else{
                         $resultado = "No me llegaron la variables."; 
                     }

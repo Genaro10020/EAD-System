@@ -1229,8 +1229,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <thead>
                                     <tr class="table-secondary">
                                         <th scope="col" class="text-center"><button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="nuevaCapacitaciones()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nueva Capacitacion</button></th>
-                                        <th scope="col" class="text-center">Fecha de capacitacion</th>
-                                        <th scope="col" class="text-center">Nuevos ingresos</th>
+                                         <th scope="col" class="text-center">Fecha de capacitacion</th>
+                                        
+                                        <?php if($_SESSION['tipo_usuario']=="Admin")
+                                        {  
+                                        ?>
+                                           <th scope="col" class="text-center">Área</th>
+                                        <?php
+                                        }
+                                        ?>
+                                       <th scope="col" class="text-center">Nuevos ingresos</th>
                                         <th scope="col" class="text-center">Evidencia</th>
                                         <th scope="col" class="text-center">¿Se impartió? (Si/No)</th>
                                         <th scope="col" class="text-center">Comentarios</th>
@@ -1242,6 +1250,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCapacitacion()"> <i class="bi bi-x-lg"></i> Cancelar</button>
                                             <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
                                         </td>
+                                        <?php if($_SESSION['tipo_usuario']=="Admin")
+                                        {  
+                                        ?>
+                                            <td ></td>
+                                        <?php
+                                        }
+                                        ?>
                                         <td>
                                             <input v-model="fecha_capacitacion" type="date" class="form-control" @change="buscarDocumentos('Por Fecha',fecha_capacitacion)" />
                                         </td>
@@ -1265,6 +1280,15 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <button  v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-floppy-fill"></i> Guardar </button>
                                             
                                         </td>
+                                       <?php if($_SESSION['tipo_usuario']=="Admin")
+                                        {  
+                                        ?>
+                                            <td>
+                                                 <label>{{capacitacion.area}}</label>
+                                            </td>
+                                        <?php
+                                        }
+                                        ?>
                                         <td class="text-center">
                                             <input v-if="editarCapacitacion===index" :id="'capacitacionFecha'+index" :value= "capacitacion.fecha"  type="date" class="form-control w-50 mx-auto"></input>
                                             <label v-else>{{capacitacion.fecha}}</label>
@@ -1276,7 +1300,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                            
                                         </td>
                                         <td class="text-center">
-                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" :class="cantidadDocumentos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(capacitacion.fecha,index)"> 
+                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" :class="cantidadDocumentos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(capacitacion.fecha,index,capacitacion.area)"> 
                                                 <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantidadDocumentos[index]}})
                                             </button>
                                         </td>
@@ -1344,6 +1368,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                             <div class="modal-body">
                                 <div class="text-center">
+                                    
                                     <form @submit.prevent="uploadFile('Capacitacion')">
                                         Subir Documento
                                         <div class="col-12">

@@ -162,6 +162,7 @@ const app = {
       editarCapacitacion: false,
       posicion_canti_doc:'',
       cantNewDoc: 0,
+      areaDocumento:'',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1104,13 +1105,14 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos(tipo_archivo,fecha_por_capacitacion) {
-        console.log(tipo_archivo)
+    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area) {
+      console.log("Tipo archivo"+tipo_archivo,"Area: "+area)
       var id_equipo = ''
       var fecha_ruta =''
 
       if(tipo_archivo === 'Capacitacion'){
         fecha_ruta = this.fecha_ruta
+        area = this.areaDocumento
       }else if( tipo_archivo ===  'Presentacion'){
         id_equipo = this.select_session_equipo.split('<->')[0];
       }else if(tipo_archivo === 'Por Fecha'){
@@ -1122,8 +1124,10 @@ const app = {
       axios.post("buscar_documentos.php", {
         tipo_archivo: tipo_archivo,
         fecha_ruta: fecha_ruta,
-        id_equipo: id_equipo
+        id_equipo: id_equipo,
+        area:area
       }).then(response => {
+         console.log("Buscando documentos",response.data);
         if(tipo_archivo === 'Presentacion'){
           this.documento_session = response.data
           if (this.documento_session.length > 0) {
@@ -1133,6 +1137,7 @@ const app = {
             console.log(this.documento_session + "Sin imagen encontrada.")
           }
         }else if(tipo_archivo === 'Capacitacion'){
+         
           this.documento_capacitacion = response.data
           if (this.documento_capacitacion.length > 0) {
             console.log(this.documento_capacitacion + "Archivos encontrados.")
@@ -1147,6 +1152,7 @@ const app = {
           }
 
         }else if(tipo_archivo === 'Por Fecha'){
+          
            if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
               this.cantNewDoc=response.data.length
           }else{
@@ -1174,6 +1180,7 @@ const app = {
       }else if (tipo_archivo === 'Capacitacion'){
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
+         formData.append("area", this.areaDocumento);
         var files = this.$refs.ref_imagen_capacitacion.files;
         var totalfiles = this.$refs.ref_imagen_capacitacion.files.length;
       }else{
@@ -2482,13 +2489,14 @@ const app = {
       });
     },
 //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
-    modalDocumentoCapacitacion(fecha,index) {
+    modalDocumentoCapacitacion(fecha,index,area) {
       
       if(fecha == ''){
         alert('Favor de seleccionar una fecha antes de subir su documento.')
       }else{
         this.posicion_canti_doc = index  
         this.fecha_ruta = fecha
+        this.areaDocumento = area
         this.myModal = new bootstrap.Modal(document.getElementById("modal"));
         this.myModal.show();
         this.buscarDocumentos('Capacitacion')
@@ -2560,7 +2568,7 @@ const app = {
           this.capacitaciones = response.data[1];
           this.cantidadDocumentos = []
            for (let index = 0; index < this.capacitaciones.length; index++) {
-            this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha)//busco la cantidad de archivos que contiene cada capacitacion.
+            this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha,this.capacitaciones[index].area)//busco la cantidad de archivos que contiene cada capacitacion.
            } 
           
         } else {

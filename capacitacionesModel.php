@@ -1,14 +1,23 @@
 <?php
 include("conexionGhoner.php");
 
-    function consultarCapacitacion($area){
+    function consultarCapacitacion($area,$tipo_usuario){
         global $conexion;
         $estado1 = false;
         $resultado = [];
         $vueltas=0;
-        $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY id DESC";//consulto las capacitaciones
+
+         
+        if ($tipo_usuario === "Admin") {
+            $consulta = "SELECT * FROM capacitaciones ORDER BY id DESC"; // Consulta toda la BD
+        } else {
+            $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY id DESC"; // Consulta por área
+        }
+       // $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY id DESC";//consulto las capacitaciones
         if ($stmt = $conexion->prepare($consulta)) {
-            $stmt->bind_param("s",$area);
+            if ($tipo_usuario != "Admin") {
+                    $stmt->bind_param("s", $area); 
+             }
             if ($stmt->execute()) {
                 $estado1 = true;
                 $result = $stmt->get_result();
