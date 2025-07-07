@@ -3941,7 +3941,7 @@ const app = {
                   equiposPorMes[mes]++;
               
                   // Contar equipos con más de 850 puntos por mes
-                  if (puntos > 850) {
+                  if (puntos >= 850) {
                     if (!equiposConMasDe850[mes]) {
                       equiposConMasDe850[mes] = 0;
                     }

@@ -2075,7 +2075,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <td>{{index+1}}</td>
                                     <td class="text-start">{{indexNombre}}</td>
                                     <td v-for="i in 12" :key="i">
-                                        <span v-if="getPuntosPorMes(cumplimiento, i) > 850" class="badge bg-success w-100">
+                                        <span v-if="getPuntosPorMes(cumplimiento, i) >= 850" class="badge bg-success w-100">
                                             {{ getPuntosPorMes(cumplimiento, i) }}
                                         </span>
                                         <span v-else>
