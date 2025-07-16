@@ -468,7 +468,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <div class="col-12 col-lg-3 col-xl-2"><!--Colaboradores-->
                     <div class="d-flex justify-content-around mt-2 mb-1">
                         <button class="btn btn-success btn-boton px-2 py-0 me-2" @click="modalAltaColaborador()"><i class="bi bi-person-plus-fill"></i> Dar de alta colaborador</button>
-                        <button class="btn btn-danger btn-boton px-2 py-0 ms-2"><i class="bi bi-person-x-fill"></i> Dar de baja colaborador</button>
+                        <button class="btn btn-danger btn-boton px-2 py-0 ms-2" @click=" modalBajaColaborador()"><i class="bi bi-person-x-fill"></i> Dar de baja colaborador</button>
                     </div>
                     <span class=" badge text-light bg-secondary mb-2 w-100">Selecciona los colaboradores</span>
                     <div class="input-group mb-3">
@@ -598,6 +598,30 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <!--Fin Modal Alta-->
+                
+                <!--Modal Baja colaborador-->
+                <div id="modal_baja_colaborador" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-md">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6>Baja de Colaborador</h6>
+                                <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
+                            </div>
+                            <div class="modal-body text-start text-md-center">
+                                <p class="fw-bold">¿Seguro que deseas dar de baja a los siguientes colaboradores? </p>
+                                <ul class="list-unstyled text-center text-decoration-underline">
+                                    <li class="text-capitalize text-danger" v-for="(integrantes,index) in checkIntegrantes"> {{integrantes.split("<->")[1].toLowerCase()}}
+                                </ul>
+                                <label style="font-size: 0.7rem;" class="text-center text-muted">Al dar de baja, el colaborador perderá el acceso a la aplicación y se eliminarán sus permisos.</label>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary py-1 btn-sm" @click="cerrarModal()">Cancelar</button>
+                                <button type="button" class="btn btn-danger py-1 btn-sm" @click="bajaColaborador()">Si, dar de baja</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- FIN Modal Baja colaborador-->
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
@@ -2704,6 +2728,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
         </div>
         <script src="js/panel.js?<? echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
 
     </html>

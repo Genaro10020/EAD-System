@@ -56,6 +56,24 @@ include("conexionBDSugerencias.php");
             return $stmt->error;
         }
     }
+    function DarBajaColaborador($id){
+        global $conexion;
+        $status = "Baja";
+        $equipo_ead = NULL;
+        $equipo_ead_grafica = NULL;
+        $id_grafica_acceso = NULL;
+        $update = "UPDATE usuarios_colocaboradores_sugerencias SET status = ?, equipo_ead =?, equipo_ead_grafica = ?, id_grafica_acceso = ?  WHERE id=?";
+        $stmt = $conexion->prepare($update);
+        if(!$stmt){
+            return $conexion->error;
+        }
+        $stmt->bind_param("siiii",$status, $equipo_ead, $equipo_ead_grafica, $id_grafica_acceso ,$id);
+        if($stmt->execute()){
+            return true;
+        }else{
+            return $stmt->error;
+        }
+    }
 
     function eliminar(){
        

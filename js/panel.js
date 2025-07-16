@@ -1514,6 +1514,33 @@ const app = {
       }, 300)
 
     },
+    modalBajaColaborador(){
+      if (this.checkIntegrantes.length <= 0){
+        Swal.fire( '¡Selecciona primero!','Favor de seleccionar un colaborador', 'info')
+
+      }else if(this.checkIntegrantes.length>1){
+        Swal.fire( 'Un solo colaborador','Favor de seleccionar solamente un colaborador', 'info')
+
+      }else{
+        this.myModal = new bootstrap.Modal(document.getElementById("modal_baja_colaborador"));
+        this.myModal.show();
+      }
+    },
+    bajaColaborador(){
+      axios.put('colaboradorController.php', {
+        accion: 'Dar de baja',
+        idColaborador: this.ids[0]
+      }).then(response => {
+        if(response.data == true){
+          console.log('yeii')
+          this.myModal.hide();
+          Swal.fire( '¡Operación exitosa!','El colaborador fue dado de baja.','success'); // success | error | warning | info | question
+        }
+        
+      }).catch(error => {
+        console.log('Axios Erro :-(' + error)
+      })
+    },
     modalAltaColaborador() {
       this.myModal = new bootstrap.Modal(document.getElementById("modal_alta_colaborador"));
       this.myModal.show();

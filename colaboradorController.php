@@ -38,6 +38,13 @@ if(isset($_SESSION['nombre'])){
                         }else{
                             $resultado = "No llegaron las variables para descarmar acceso".$arreglo['id_integrante'].$arreglo['id_ead'];
                         }
+                    }else if(isset($arreglo['accion']) && $arreglo['accion']=="Dar de baja"){
+                        if(isset($arreglo['idColaborador'])){
+                            $idColaborador = $arreglo['idColaborador'];
+                            $resultado = DarBajaColaborador($idColaborador);
+                        }else{
+                            $resultado = "No llegaron las variables";
+                        }
                     }else{
                         $resultado = "Acción no renocida";
                     }
