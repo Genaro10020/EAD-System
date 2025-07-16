@@ -36,7 +36,7 @@ $contrasena = $arreglo['contrasena'];
                                 }
                             }else{
                                 include("conexionBDSugerencias.php");
-                                $consultarEvaluador = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE numero_nomina='$usuario' AND password='$contrasena' AND id_grafica_acceso!=''";
+                                $consultarEvaluador = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE numero_nomina='$usuario' AND password='$contrasena' AND id_grafica_acceso!='' AND status != 'Baja'";
                                 $query3=$conexion->query($consultarEvaluador);
                                 if($query3){
                                         if (mysqli_num_rows($query3) > 0) {
