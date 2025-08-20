@@ -1558,8 +1558,10 @@ const app = {
           this.planta_colaborador = ''
           this.myModal.hide();
           this.consultarColaboradores()
-        } else {
-          console.log(response.data)
+        }else if(response.data == "Existe") {
+          alert("Ya existe ese registro");
+        }else{
+          console.log("Error en inserción",response.data);
         }
 
       }).catch(error => {

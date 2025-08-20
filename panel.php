@@ -56,7 +56,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
                                 <?php } ?>
                                 <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Puntos'),graficaBateo()"><b>Puntos</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo()"><b>Puntos</b></button></a>
                             <?php
                             }
                             ?>
