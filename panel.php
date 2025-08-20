@@ -56,7 +56,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
                                 <?php } ?>
                                 <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Puntos')"><b>Puntos</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Puntos'),graficaBateo()"><b>Puntos</b></button></a>
                             <?php
                             }
                             ?>
@@ -1172,7 +1172,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 </span>
                                                 <span>
                                                     <ul class="text-start">
-                                                        <li style= "list-style: none; background-color: #f7dddd" v-for="objetivo in objetivosEncontrados"> 
+                                                        <li style= "list-style: none; background-color: white" v-for="objetivo in objetivosEncontrados"> 
                                                             <input type="checkbox" :id="objetivo.objetivoID" :value="objetivo.objetivoID" v-model = "objetivoSeleccionado" @change="guardarSeleccionados()" /><label>{{objetivo.objetivoNombre}}</label>
                                                         </li>
                                                     </ul>
@@ -2072,67 +2072,71 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </select>
                     </div>-->
                 </div>
-                <div class="col-12 d-flex justify-content-center mx-auto">
-                    <div class="scroll-w">
-                   
-                        <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered  mb-5 table  table-bordered border-dark text-center">
-                            <thead>
-                                <tr>
-                                    <th scope="row" class="columna-color-criterios">#</th>
-                                    <th scope="row" class="columna-color-criterios">EAD</th>
-                                    <th scope="row" class="columna-color-criterios">Enero</th>
-                                    <th scope="row" class="columna-color-criterios">Febrero</th>
-                                    <th scope="row" class="columna-color-criterios">Marzo</th>
-                                    <th scope="row" class="columna-color-criterios">Abril</th>
-                                    <th scope="row" class="columna-color-criterios">Mayo</th>
-                                    <th scope="row" class="columna-color-criterios">Junio</th>
-                                    <th scope="row" class="columna-color-criterios">Julio</th>
-                                    <th scope="row" class="columna-color-criterios">Agosto</th>
-                                    <th scope="row" class="columna-color-criterios">Septiembre</th>
-                                    <th scope="row" class="columna-color-criterios">Octubre</th>
-                                    <th scope="row" class="columna-color-criterios">Noviembre</th>
-                                    <th scope="row" class="columna-color-criterios">Diciembre</th>
-                                </tr>
-                            <tbody>
-                            
-                                <tr v-for="(cumplimiento,indexNombre,index) in cumplimiento_scorecard">
-                                    <td>{{index+1}}</td>
-                                    <td class="text-start">{{indexNombre}}</td>
-                                    <td v-for="i in 12" :key="i">
-                                        <span v-if="getPuntosPorMes(cumplimiento, i) >= 850" class="badge bg-success w-100">
-                                            {{ getPuntosPorMes(cumplimiento, i) }}
-                                        </span>
-                                        <span v-else>
-                                            {{ getPuntosPorMes(cumplimiento, i) }}
-                                        </span>
-                                    </td>                      
-                                </tr>
-                                <tr v-if="Object.keys(cumplimiento_scorecard).length > 0">
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-start" v-for="i in 12" :key="i">
-                                        <!--<span class="badge bg-success w-100" v-if="cumplimiento[indexNombre][i-1] && cumplimiento[indexNombre][i-1].puntos>850 && cumplimiento[indexNombre][i-1].mes===i">{{cumplimiento[i-1].puntos}}</span>-->
-                                    <label v-if="porcentajeArribaDe850[i] !== undefined">
-                                            Total Equipos: <label v-if="equiposPorMes[i]"><b>{{equiposPorMes[i]}}</b></label><br>
-                                            Ganadores (Mes {{ i }}): <b>{{ equiposConMasDe850[i] ?? 0 }}</b><br>
-                                            % de bateo (Mes {{ i }}):  
-                                            <b>
-                                                <label 
-                                                    :class="{
-                                                        'text-success': porcentajeArribaDe850[i] > 50,
-                                                        'text-warning': porcentajeArribaDe850[i] === 50,
-                                                        'text-danger': porcentajeArribaDe850[i] < 50
-                                                    }"
-                                                >
-                                                    {{ porcentajeArribaDe850[i] }}
-                                                </label>
-                                            </b>
-                                        </label>
-                                    </td>  
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="col-12 d-flex">
+                     <div class="col-12 d-flex flex-column justify-content-center align-items-center">
+                        <div class="scroll-w">
+                                    <table style="max-width:1400px; min-width:1200px" class="mt-2 table table-bordered border-dark table-striped table-hover text-center">
+                                        <thead>
+                                            <tr>
+                                                <th scope="row" style="color:white; background:lightslategrey">#</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">EAD</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Enero</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Febrero</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Marzo</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Abril</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Mayo</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Junio</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Julio</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Agosto</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Septiembre</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Octubre</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Noviembre</th>
+                                                <th scope="row" style="color:white; background:lightslategrey">Diciembre</th>
+                                            </tr>
+                                        <tbody>
+                                        
+                                            <tr v-for="(cumplimiento,indexNombre,index) in cumplimiento_scorecard">
+                                                <td>{{index+1}}</td>
+                                                <td class="text-start">{{indexNombre}}</td>
+                                                <td v-for="i in 12" :key="i">
+                                                    <span v-if="getPuntosPorMes(cumplimiento, i) >= 850" class="badge bg-success w-100">
+                                                        {{ getPuntosPorMes(cumplimiento, i) }}
+                                                    </span>
+                                                    <span v-else>
+                                                        {{ getPuntosPorMes(cumplimiento, i) }}
+                                                    </span>
+                                                </td>                      
+                                            </tr>
+                                            <tr v-if="Object.keys(cumplimiento_scorecard).length > 0">
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-start" v-for="i in 12" :key="i">
+                                                    <!--<span class="badge bg-success w-100" v-if="cumplimiento[indexNombre][i-1] && cumplimiento[indexNombre][i-1].puntos>850 && cumplimiento[indexNombre][i-1].mes===i">{{cumplimiento[i-1].puntos}}</span>-->
+                                                <label v-if="porcentajeArribaDe850[i] !== undefined">
+                                                        Total Equipos: <label v-if="equiposPorMes[i]"><b>{{equiposPorMes[i]}}</b></label><br>
+                                                        Ganadores (Mes {{ i }}): <b>{{ equiposConMasDe850[i] ?? 0 }}</b><br>
+                                                        % de bateo (Mes {{ i }}):  
+                                                        <b>
+                                                            <label 
+                                                                :class="{
+                                                                    'text-success': porcentajeArribaDe850[i] > 50,
+                                                                    'text-warning': porcentajeArribaDe850[i] === 50,
+                                                                    'text-danger': porcentajeArribaDe850[i] < 50
+                                                                }"
+                                                            >
+                                                                {{ porcentajeArribaDe850[i] }}
+                                                            </label>
+                                                        </b>
+                                                    </label>
+                                                </td>  
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                        </div>
+                        <div class="d-flex col-12 justify-content-center align-items-center">
+                            <canvas class="p-5" id="canvaBateo"></canvas>
+                        </div>
+                     </div>       
                 </div>
             </div> <!--FIN PUNTOS-->
 

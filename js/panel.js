@@ -2074,7 +2074,6 @@ const app = {
     graficaKPI(idCanva) {
       console.log("grafica KPI");
       const canvas = document.getElementById(idCanva);
-      const context = canvas.getContext('2d');
 
       if (!canvas) {
         console.error("No se pudo obtener la referencia al elemento canvas.");
@@ -2236,7 +2235,6 @@ const app = {
               chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
             });
           }
-
         }]
 
       });
@@ -3993,6 +3991,8 @@ const app = {
             console.log("Cantidad de equipos con más de 850 puntos por mes:",  this.equiposConMasDe850);
             console.log("Porcentaje de equipos con más de 850 puntos por mes:",this.porcentajeArribaDe850);
 
+              this.graficaBateo();
+
             } else {
               console.log("Error en la consulta de Cumplimiento scorecard", response.data)
             }
@@ -4005,7 +4005,88 @@ const app = {
       const mesData = cumplimiento.find(item => item.mes === mes);
       return mesData ? mesData.puntos : '';
     },
+    graficaBateo(){
+        console.log("Iniciando grafica bateo")
 
+          const canvas = document.getElementById('canvaBateo');
+          if (!canvas) {
+            console.error("No se pudo obtener la referencia al elemento canvas.");
+            return;
+          }
+          let existingChart = Chart.getChart(canvas);
+          if (existingChart) {
+            existingChart.destroy();
+          }
+        porcentajeArribaDe850 = this.porcentajeArribaDe850 || [];
+
+        // Crear un arreglo de datos que tenga el mismo orden que this.meses
+        const data = this.meses.map((mes, index) => {
+          // Los meses en porcentajeArribaDe850 empiezan desde 2 (Febrero)
+          const mesKey = (index + 1).toString(); // porque los keys están como strings "2", "3", etc.
+          return porcentajeArribaDe850[mesKey] ? parseFloat(porcentajeArribaDe850[mesKey]) : null;
+        });
+        console.log("Datos para la gráfica de BATEO:", data);
+
+          new Chart(canvas, {
+              type: 'bar',
+              data: {
+                labels: this.meses,
+                datasets: [{
+                  label: '%',
+                  data: data,
+                  borderWidth: 1,
+                  backgroundColor: data.map((valor, index) => {
+                    if(valor>50){
+                     return 'rgba(31, 128, 29, 0.8)'  // Color Verde
+                    }else if(valor<50 ){
+                       return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
+                    }else if(valor==50 ){
+                      return 'rgba(242, 206, 68, 0.8)' // Color amarillo con opacidad
+                    }
+                  }), // Color azul con opacidad
+                  borderColor: 'rgba(8, 80, 158, 0.6)' // Borde del mismo color sin opacidad
+                }],
+              },
+               options: {
+                plugins: {
+                   legend:{ //legend es para eliminar el boton que oculta y aparece las barras
+                      display: false
+                    },
+                  title: {
+                      display: true,
+                      text: 'Indicador del éxito ScoreCard',
+                      font: {
+                        size: 18
+                      },
+                    }
+                  },
+                  scales: {
+                      x: {
+                      ticks: {
+                        font: {
+                          size: 20, // Cambia el tamaño de la fuente aquí
+                          weight: ''
+                        }
+                      }
+                    },
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+              },  
+              plugins: [{
+              afterDatasetsDraw: (chart) => {
+              data.forEach((data, index) => {
+              chart.ctx.fillStyle = 'black';
+              chart.ctx.font = '22px Arial';
+              chart.ctx.textAlign = 'center';
+              chart.ctx.textBaseline = 'top';
+              chart.ctx.fillText(this.formatoNumero(data)+'%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
+            });
+          }
+        }]
+            });
+    },
     consultarNombresEquipos(){
       
     },
