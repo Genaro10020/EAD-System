@@ -7,19 +7,39 @@ include("conexionBDSugerencias.php");
 
     function insertarColaborador($nombre,$nomina,$password,$planta){
         global $conexion;
-        $insertar = "INSERT INTO usuarios_colocaboradores_sugerencias (colaborador, numero_nomina, password, planta) VALUES (?,?,?,?)";
-        $stmt = $conexion->prepare($insertar);
+
+        $estado = false;
+        $consulta = "SELECT COUNT(*) FROM usuarios_colocaboradores_sugerencias WHERE colaborador = ? OR numero_nomina = ? ";
+        $stmt = $conexion->prepare($consulta);
         if(!$stmt){
             return $conexion->error;
         }
-        $stmt->bind_param("ssss", $nombre, $nomina, $password, $planta);
+        $stmt->bind_param("ss", $nombre, $nomina);
         $stmt->execute();
-        if($stmt->affected_rows > 0){
-            $respuesta = true;
+        $stmt->bind_result($count);
+        $stmt->fetch();
+        $estado = ($count > 0);
+        $stmt->close();
+
+        if(!$estado){
+            $insertar = "INSERT INTO usuarios_colocaboradores_sugerencias (colaborador, numero_nomina, password, planta) VALUES (?,?,?,?)";
+            $stmt = $conexion->prepare($insertar);
+            if(!$stmt){
+                return $conexion->error;
+            }
+            $stmt->bind_param("ssss", $nombre, $nomina, $password, $planta);
+            $stmt->execute();
+            if($stmt->affected_rows > 0){
+                $respuesta = true;
+            }else{
+                $respuesta = $stmt->error;
+            }
+            
         }else{
-            return $stmt->error;
+            $respuesta = "Existe";
         }
         return $respuesta;
+
     }
 
     function asignarAccesoTabla($id_ead,$id_criterio,$id_integrante){
