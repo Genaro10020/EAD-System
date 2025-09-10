@@ -3770,10 +3770,11 @@ const app = {
 
       }
     },
-
-    guardarDatoScoreCard(id_criterio) {
+    guardarDatoScoreCard(id_criterio, event) {
       this.guardoNuevoDato = true;// lo utilizo para ejecutar el metodo guardarTotalScoreCard(), despues de ejecutar todos los metodos desencadenados por this.consultarScoreCard()
-      
+      if (event && event.target) {
+        event.target.blur();
+      }
       /*let arregloPuntos = this.puntosEvaluacion
       let total = arregloPuntos.reduce((acumulador, valorActual) => { return acumulador + valorActual; }, 0); 
       console.log("RESULTADOS A SUMAR",arregloPuntos)
@@ -3801,6 +3802,16 @@ const app = {
         accion: 'guardarGeneral'
       }).then(response => {
         console.log("guardado ScoreCard", response.data)
+        Swal.fire({
+          title: "!Listo!",
+          text: "Se guardó con éxito",
+          icon: "success",
+          allowOutsideClick: false,
+          showConfirmButton: false
+        });
+        setTimeout(() => {
+          Swal.close();
+        }, 500);
         this.consultarScoreCard()
       }).catch(error => {
         console.log("Error en el axios", error)

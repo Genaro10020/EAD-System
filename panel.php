@@ -1975,7 +1975,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <label v-else-if="criterio.tipo!='Input' && criterio.id_criterios!=10 ">
                                             <span class="badge bg-danger text-white">Sin valores en gráfica</span>
                                         </label>
-                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios)"></input>
+                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)"></input>
                                         <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                     </td>
                                     <!--Columna Puntos Obtenidos-->
