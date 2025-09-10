@@ -347,6 +347,10 @@ const app = {
       porcentajeArribaDe850:'',
       equiposPorMes:'',
 
+      idsEquipo: [],
+      totalCumplieron: [],
+      porcentajePorMes: [],
+      minimoCumplimiento: 70,
      
     }
   },
@@ -2308,7 +2312,6 @@ const app = {
                 datos_meses_semanas.push(datosKPIS[i].dato_semanal);
               }
             }
-
             console.log(meses_semanas)
             console.log(datos_meses_semanas)
             this.leyedasGafica = ['Línea Base', 'Entitlement', 'Meta Calculada', 'Meta Retadora'].concat(meses_semanas);//concatenando leyendass
@@ -3919,8 +3922,6 @@ const app = {
       }
     },
 
-  
-
     consultarCumplimientoScorecard(){
       
      
@@ -3943,7 +3944,22 @@ const app = {
             if (response.data[0] == true) {
               this.cumplimiento_scorecard = response.data[1];
               console.log("Bateo Cumplimiento", this.cumplimiento_scorecard)
+              /* var idEquipoArea = this.cumplimiento_scorecard.forEach(item=>item.idEquipo);
+              console.log("IDS?",idEquipoArea) */
 
+              let ids = [];
+
+              Object.values(this.cumplimiento_scorecard).forEach(equipoArray => {
+                equipoArray.forEach(item => {
+                  if (!ids.includes(item.idEquipo)) {
+                    ids.push(item.idEquipo);
+                  }
+                });
+              });
+
+              console.log("ids", ids);
+              this.idsEquipo = ids;
+              console.log("jojo", this.idsEquipo)
               // Ordenar los datos por mes
             for (const equipo in this.cumplimiento_scorecard) {
               this.cumplimiento_scorecard[equipo].sort((a, b) => a.mes - b.mes);
@@ -3994,6 +4010,7 @@ const app = {
             console.log("Porcentaje de equipos con más de 850 puntos por mes:",this.porcentajeArribaDe850);
 
               this.graficaBateo();
+              this.consultarCumplimientoProyectos()
 
             } else {
               console.log("Error en la consulta de Cumplimiento scorecard", response.data)
@@ -4088,6 +4105,213 @@ const app = {
           }
         }]
             });
+    },
+      
+    
+    consultarAlFondo(){
+      this.irAlFondo();
+      this.consultarCumplimientoProyectos();
+    },
+    irAlFondo() {
+     setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight) 
+      }, 50);// sin animación
+    },
+    consultarCumplimientoProyectos(){
+       /* let stringIdsEq = JSON.parse(this.idsEquipo)
+       console.log("Equipos ids string",stringIdsEq) */;
+      axios.post("cumplimientoProyectosController.php", { 
+         /* parámetros de consulta */ 
+          accion: "Consultar",
+          area: this.select_area,
+          anio: this.anio_bateo,
+          idsEquipos: this.idsEquipo,/* 
+          proyectos: this.cumplimiento_scorecard, */
+        
+      }).then(response => {
+        // Manejar la respuesta exitosa
+        
+        /* var  dcreOincre = response.data.map(element => element.tipo);
+        console.log("jjejej", dcreOincre); */
+        // Los datos que se retornan del servidor
+        console.log("Respuesta consulta proyectos kpis",response.data);
+        const proyectos = response.data;
+            
+        /* if(response.data!=''){ */
+          var proyectoMasReciente= Object.values(
+            proyectos.reduce((acc, item) => {
+              const clave = `${item.id_equipo}-${item.mes_cierre}`;
+              if (!acc[clave] || parseInt(item.semana) > parseInt(acc[clave].semana)) {
+                acc[clave] = item; // guarda solo el de mayor semana
+              }
+              return acc;
+            }, {})
+          )
+
+          
+          this.meses.forEach((mes) => {
+            let cumplidos = 0;
+            proyectoMasReciente.forEach(items => {
+
+              if(items.mes_cierre == mes){
+                /* items.push("cumplio") <<CUANDO ES ARRAY*/
+                let datoMetaCalculada =parseFloat(items.meta_calculada)
+                let datoMensual =parseFloat(items.dato_semanal)//ultima seman en teoria es el cierre de mes.
+                if(items.tipo=='Decremento'|| items.tipo==''){
+                  
+                  if(datoMensual<=datoMetaCalculada){
+                    items.cumplio = 1
+                    cumplidos++;
+                    items.cumplidos = cumplidos;
+                  }else{
+                    items.cumplio = 0
+                      items.cumplidos = cumplidos
+                  }
+
+                }else if(items.tipo=='Incremento'){
+
+                  if(datoMensual>=datoMetaCalculada){
+                    items.cumplio = 1
+                    cumplidos++;
+                    items.cumplidos = cumplidos;
+                  }else{
+                    items.cumplio = 0
+                    items.cumplidos = cumplidos
+                  }
+
+                }
+              }
+            })
+          });
+          let ultimoPorMes = {};
+          let totalCumplieron =[];
+          proyectoMasReciente.forEach(item => {
+            let mes = item.mes_cierre;
+            ultimoPorMes[mes] = { 
+              mes_cierre: mes, 
+              cumplidos: item.cumplidos   // ya viene sumado en tu dato
+            }; // siempre sobrescribe → queda el último
+          });
+          console.log("HOLAA", proyectoMasReciente);
+        
+
+        
+          console.log("ultimodeMes??", ultimoPorMes);
+          /* this.meses.forEach((mes) => {
+            totalCumplieron = Object.values(ultimoPorMes).filter(item=>item.mes_cierre == mes)
+          });  */
+
+          totalCumplieron = this.meses.map(mes => {
+            return ultimoPorMes[mes]?.cumplidos || 0;
+          });
+          let cantProyectos = Object.keys(this.cumplimiento_scorecard).length 
+          console.log("Cantidad de proyectos:", cantProyectos);
+
+          this.porcentajePorMes = this.meses.map((mes, index) => {
+           return +((totalCumplieron[index] / cantProyectos) * 100).toFixed(2)
+          });
+          
+
+          /* this.porcentajePorMes = [...new Set(this.porcentajePorMes)]; */
+          console.log("porcentaje ",this.porcentajePorMes);
+          /* let porcentajeMes = [...this.porcentajePorMes]
+          console.log("porcentajeMes ",porcentajeMes); */
+
+          console.log("TOTAL CUMPLIERON",totalCumplieron);
+          this.totalCumplieron = totalCumplieron;
+          console.log("proyectos??",this.cumplimiento_scorecard);
+          console.log("sjsjsj", this.minimoCumplimiento);
+          this.graficaCumplimientoProyectos();
+        
+        /* }else{ */
+          /* const canvas = document.getElementById('canvaCumplimientoProyectos');
+          let existingChart = Chart.getChart(canvas);
+          if (existingChart) {
+            existingChart.destroy();
+          }
+        } */
+      })
+      .catch(error => {
+        // Manejar cualquier error
+        console.error('Hubo un error al realizar la solicitud GET:', error);
+      });
+    },
+
+    graficaCumplimientoProyectos(){
+      console.log("Iniciando grafica cumplimiento",this.totalCumplieron)
+          const canvas = document.getElementById('canvaCumplimientoProyectos');
+          if (!canvas) {
+            console.error("No se pudo obtener la referencia al elemento canvas.");
+            return;
+          }
+          let existingChart = Chart.getChart(canvas);
+          if (existingChart) {
+            existingChart.destroy();
+          }
+          var nombreArea = this.areas.map(element => {
+            if(element.id === this.select_area){
+              return element.nombre
+            }
+          }).filter(nombre => nombre !== undefined)[0];
+
+          var totalCumplimiento = this.totalCumplieron;
+          new Chart(canvas, {
+              type: 'bar',
+              data: {
+                labels: this.meses,
+                datasets: [{
+                  label: '%',
+                  data: this.porcentajePorMes,
+                  borderWidth: 1,
+                  backgroundColor: this.porcentajePorMes.map((valor, index) => {
+                    if(valor>=this.minimoCumplimiento){
+                     return 'rgba(31, 128, 29, 0.8)'  // Color Verde
+                    }else if(valor<this.minimoCumplimiento){
+                       return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
+                    }
+                  }),
+                  borderColor: 'rgba(107, 154, 204, 0.6)' // Borde del mismo color sin opacidad
+                }],
+              },
+               options: {
+                plugins: {
+                   legend:{ //legend es para eliminar el boton que oculta y aparece las barras
+                      display: false
+                    },
+                  title: {
+                      display: true,
+                      text: '% de cumplimiento de proyectos '+ nombreArea,
+                      font: {
+                        size: 18
+                      },
+                    }
+                  },
+                  scales: {
+                      x: {
+                      ticks: {
+                        font: {
+                          size: 20, // Cambia el tamaño de la fuente aquí
+                          weight: ''
+                        }
+                      }
+                    },
+                    y: {
+                      beginAtZero: true
+                    }
+                  }
+              },  
+              plugins: [{
+              afterDatasetsDraw: (chart) => {
+              this.porcentajePorMes.forEach((data, index) => {
+              chart.ctx.fillStyle = 'black';
+              chart.ctx.font = '22px Arial';
+              chart.ctx.textAlign = 'center';
+              chart.ctx.textBaseline = 'top';
+              chart.ctx.fillText(this.formatoNumero(data)+'%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
+            });
+          }
+        }]
+      });
     },
     consultarNombresEquipos(){
       

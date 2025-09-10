@@ -56,7 +56,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
                                 <?php } ?>
                                 <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo()"><b>Puntos</b></button></a>
+                                <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos()"><b>Puntos</b></button></a>
                             <?php
                             }
                             ?>
@@ -129,35 +129,35 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="mb-2">
                                 <label class="label-session">Planta</label>
                                 <select v-model="selector_planta" class="form-control select">
-                                    <option disabled default selected value="">Seleccione Planta..</option>
+                                    <option disabled default value="">Seleccione Planta..</option>
                                     <option v-for="planta in plantas" :value="planta.nombre">{{planta.nombre}}</option>
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class="label-session ">Área</label>
                                 <select v-model="selector_area" class="form-control select">
-                                    <option disabled default selected value="">Seleccione Área..</option>
+                                    <option disabled default value="">Seleccione Área..</option>
                                     <option v-for="area in areas" :value="area.nombre">{{area.nombre}}</option>
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class=" label-session ">Procesos</label>
                                 <select v-model="selector_subarea" class="form-control select">
-                                    <option disabled default selected value="">Seleccione Proceso.</option>
+                                    <option disabled default value="">Seleccione Proceso.</option>
                                     <option v-for="subarea in subareas" :value="subarea.nombre">{{subarea.nombre}}</option>
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class=" label-session ">Tipo usuario</label> <label @click="datosModalTipoUsuario()"><i class="icono-mas bi bi-plus-circle p-1"></i></label>
                                 <select v-model="selector_tipo_usuario" class="form-control select">
-                                    <option disabled default selected value="">Seleccione Tipo..</option>
+                                    <option disabled default value="">Seleccione Tipo..</option>
                                     <option v-for="tipo in tipos" :value="tipo">{{tipo}}</option>
                                 </select>
                             </div>
                             <div class="mb-2">
                                 <label class=" label-session ">Accesos</label>
                                 <select v-model="selector_tipo_acceso" class="form-control select">
-                                    <option disabled default selected value="">Seleccione Acceso..</option>
+                                    <option disabled default value="">Seleccione Acceso..</option>
                                     <option v-for="acceso in tipo_accesos" :value="acceso">{{acceso}}</option>
                                 </select>
                             </div>
@@ -362,7 +362,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text ">Planta</span>
                                     <select v-model="select_planta" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="planta in plantas">
                                             {{planta.nombre}}
                                         </option>
@@ -373,7 +373,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Area</span>
                                     <select v-model="select_area" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="area in areas">
                                             {{area.nombre}}
                                         </option>
@@ -384,7 +384,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Proceso</span>
                                     <select v-model="select_proceso" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="subarea in subareas">
                                             {{subarea.nombre}}
                                         </option>
@@ -398,7 +398,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Coordinador</span>
                                     <select v-model="select_coordinador" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="usuario in filtraCordinador()">
                                             {{usuario.nombre}}
                                         </option>
@@ -409,7 +409,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Jefe de Área</span>
                                     <select v-model="select_jefe_area" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="usuario in filtraJefeArea()">
                                             {{usuario.nombre}}
                                         </option>
@@ -420,7 +420,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Ing. de Proceso</span>
                                     <select v-model="select_ing_proceso" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="usuario in filtraIngenieroProceso()">
                                             {{usuario.nombre}}
                                         </option>
@@ -431,7 +431,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Ing. de Cálidad</span>
                                     <select v-model="select_ing_calidad" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="usuario in filtraIngenieroCalidad()">
                                             {{usuario.nombre}}
                                         </option>
@@ -442,7 +442,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Supervisor</span>
                                     <select v-model="select_supervisor" class="form-control select" aria-label="With textarea">
-                                        <option disabled default selected value="">Seleccione...</option>
+                                        <option disabled default value="">Seleccione...</option>
                                         <option v-for="usuario in filtraSupervisor()">
                                             {{usuario.nombre}}
                                         </option>
@@ -633,7 +633,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             ?>
                                 <div class="col-3 me-5">
                                     <select class="form-select" v-model="seleccion_eds_areas" @change="filtrandoEADsGestion()" style="font-size:0.8em">
-                                        <option value="" selected>Todos los equipos</option>
+                                        <option value="">Todos los equipos</option>
                                         <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
                                     </select>
                                 </div>
@@ -683,7 +683,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Equipo </label>
                                 <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos()" style="font-size:0.8em">
-                                    <option value="" selected>Seleccione..</option>
+                                    <option value="">Seleccione..</option>
                                     <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                 </select>
                             </div>
@@ -716,7 +716,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Etapa </label>
                                 <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
-                                    <option value="" selected>Seleccione..</option>
+                                    <option value="">Seleccione..</option>
                                     <option v-for="etapa in etapas" :value="etapa.id+'<->'+etapa.etapa">{{etapa.etapa}}</option>
                                 </select>
                             </div>
@@ -826,7 +826,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </td>
                                             <td>
                                                 <select v-model="responsable_compromiso">
-                                                    <option value="" selected disabled>Seleccione responsable</option>
+                                                    <option value="" disabled>Seleccione responsable</option>
                                                     <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
                                                 </select>
                                             </td>
@@ -852,7 +852,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </td>
                                             <td>
                                                 <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                    <option value="" selected disabled>Seleccione responsable</option>
+                                                    <option value="" disabled>Seleccione responsable</option>
                                                     <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
                                                 </select>
                                                 <label v-else>{{commitment.nombre_responsable}}</label>
@@ -864,7 +864,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <td>
                                                 <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
                                                 <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                    <option value="0" selected disabled>0 %</option>
+                                                    <option value="0" disabled>0 %</option>
                                                     <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
                                                 </select>
                                             </td>
@@ -1078,7 +1078,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     
                                                         <label class="input-group-text w-25" style="font-size:0.8em">Tipo Gráfica</label>
                                                         <select class="form-select" v-model="tGrafica" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='tipo'">
-                                                            <option value="" selected disabled>Seleccione..</option>
+                                                            <option value="" disabled>Seleccione..</option>
                                                             <option value="Decremento">Decremento (Por debajo de la Meta Retadora)</option>
                                                             <option value="Incremento">Incremento (Por encima de la Meta Retadora)</option>
                                                         </select>
@@ -1142,7 +1142,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         <label class="input-group-text w-25" style="font-size:0.8em">Cerrar Mes</label>
                                                         <input type="checkbox" class="mx-2" v-model="checkMes" :disabled="actualizar_kpi!=false" />
                                                         <select class="form-select w-50" style="font-size:0.8em" v-model="mes_cierre" :disabled="!checkMes">
-                                                            <option value="" selected disabled>Seleccione mes</option>
+                                                            <option value="" disabled>Seleccione mes</option>
                                                             <option v-show="actualizar_datoKPI" value="">Deshacer Cierre</option>
                                                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                                                         </select>
@@ -1152,7 +1152,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <div class="input-group mb-3" style="min-width:270px">
                                                         <label class="input-group-text w-25" style="font-size:0.8em">Semana</label>
                                                         <select class="form-select" v-model="semana_kpi" style="font-size:0.8em" :disabled="actualizar_kpi!=false">
-                                                            <option value="" selected>Seleccione la semana</option>
+                                                            <option value="">Seleccione la semana</option>
                                                             <option v-for="semana in semanas_anio" :value="semana">{{semana}} Semana</option>
                                                         </select>
                                                     </div>
@@ -1350,7 +1350,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         </td>
                                         <td>
                                             <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                <option value="" selected disabled>Seleccione responsable</option>
+                                                <option value="" disabled>Seleccione responsable</option>
                                                 <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
                                             </select>
                                             <label v-else>{{commitment.nombre_responsable}}</label>
@@ -1362,8 +1362,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <td>
                                             <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
                                             <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                <option value="0" selected disabled>0 %</option>
-                                                <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                                <option value="0" disabled>0 %</option>
+                                                <option v-for="valor in porcentaje" :value="valor" ="valor == commitment.estatus">{{valor}} %</option>
                                             </select>
                                         </td>
                                         <td>
@@ -1644,7 +1644,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </div>
                                     <div    v-if="tablaPonderacion.area == 0">
                                                 <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class=" d-inline form-control select ms-3">
-                                                    <option disabled default selected value="">Seleccione Área</option>
+                                                    <option disabled default value="">Seleccione Área</option>
                                                     <option> <?php echo $_SESSION['area'];?> </option>
                                                 </select>
                                                 <span class="d-inline badge bg-danger mt-2 ms-1">Dar clic y seleccionar su área en caso de que esta ponderación le pertenezca.</span>
@@ -1909,21 +1909,21 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div>
                         <span class="mx-2">Año: </span>
                         <select v-model="anio_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="anio in anios" :value="anio">{{anio}}</option>
                         </select>
                     </div>
                     <div>
                         <span class="mx-2">Mes: </span>
                         <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
                     <!--<div>
                         <span class="mx-2">Ponderacion: </span>
                         <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="ponderacion in listaPonderaciones" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
                         </select>
                     </div>-->
@@ -2039,35 +2039,35 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div>
                         <span class="mx-2">Área: </span>
                         <select v-model="select_area" @change="consultarCumplimientoScorecard()">
-                            <option disabled default selected value="">Seleccione</option>
+                            <option disabled default value="">Seleccione</option>
                             <option v-for="area in areas" :value="area.id">{{area.nombre}}</option>
                         </select>
                     </div>
                     <div style="display:none">
                         <span class="mx-2">Mes: </span>
                         <select v-model="mes_bateo" @change="consultarCumplimientoScorecard()">
-                            <option default selected value="">Todos...</option>
+                            <option default value="">Todos...</option>
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
                     <div>
                         <span class="mx-2">Año: </span>
                         <select v-model="anio_bateo" @change="consultarCumplimientoScorecard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="anio in anios" :value="anio">{{anio}}</option>
                         </select>
                     </div>
                <!--     <div>
                         <span class="mx-2">Mes: </span>
                         <select v-model="mes_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>-->
                     <!--<div>
                         <span class="mx-2">Ponderacion: </span>
                         <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option v-for="ponderacion in listaPonderaciones" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
                         </select>
                     </div>-->
@@ -2133,10 +2133,28 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         </tbody>
                                     </table>
                         </div>
-                        <div class="d-flex col-12 justify-content-center align-items-center">
+                        <div class="flex-column col-12 justify-content-center align-items-center">
+                            <hr style="border: none; border-top: 2px solid #ccc; margin: 10px 0;">
                             <canvas class="p-5" id="canvaBateo"></canvas>
                         </div>
-                     </div>       
+                        
+                        <div class="flex-column col-12 justify-content-center align-items-center">
+                            <div v-if="select_area != '' && anio_bateo != ''">
+                                <hr style="border: none; border-top: 2px solid #ccc; margin: 10px 0;">
+                                <label style="margin-top: 30px" for="minimo">Nivel mínimo de cumplimiento: </label>
+                                <select  v-model.number="minimoCumplimiento" @change="consultarAlFondo()" class= "custom-select" name="minimo" id="minimo">
+                                    <option value="70">70%</option>
+                                    <option value="75">75%</option>
+                                    <option value="80">80%</option>
+                                    <option value="85">85%</option>
+                                    <option value="90">90%</option>  
+                                </select>
+                            </div>
+                            <canvas class="p-5" id="canvaCumplimientoProyectos"></canvas>
+                        </div>
+                        <!-- <div class="flex-column col-12 justify-content-center align-items-center">
+                            
+                        </div>   -->     
                 </div>
             </div> <!--FIN PUNTOS-->
 
@@ -2146,7 +2164,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="col-4">
                         <span class="mx-2">Seleccione Foro: </span>
                         <select>
-                            <option disabled default selected value="">Seleccione...</option>
+                            <option disabled default value="">Seleccione...</option>
                             <option>Foro1</option>
                             <option>Foro2</option>
                             <option>Foro3</option>
@@ -2351,7 +2369,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <label class="btn btn-light me-2 border border-1 border-danger rounded-end" for="btnradio2" style="font-size: 0.8em">No</label>
                                     <span v-if="foroGlobal=='true'" class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
                                     <select v-if="foroGlobal=='true'" class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="consultarEADxPlanta()">
-                                        <option value="" selected>Multiplanta</option>
+                                        <option value="">Multiplanta</option>
                                         <option v-for="planta in plantasEADs">{{planta}}
                                     </select>
                                     <span v-if="foroGlobal=='true'" class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
@@ -2362,13 +2380,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="input-group" style="padding:2px 2px;">
                                 <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
                                 <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxArea()">
-                                    <option value="" selected disabled>Seleccione..</option>
+                                    <option value="" disabled>Seleccione..</option>
                                     <option v-for="planta in plantasEADs">{{planta}}
 
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Área: </span>
                                 <select class="form-control select  me-2" v-model="select_area_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
-                                    <option value="" selected disabled>Seleccione..</option>
+                                    <option value="" disabled>Seleccione..</option>
                                     <option v-for="area in areasEADs">{{area}}</option>
                                 </select>
                                 <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>

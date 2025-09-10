@@ -8,7 +8,7 @@ function consultarCumplimientoScorecard($id_area,$mes,$anio)
     $resultado = [];
     $param_mes = "%$mes%";
     $proyectoPuntos = [];
-        $consulta = "SELECT cumplimiento_scorecard.*,equipos_ead.nombre_ead 
+        $consulta = "SELECT cumplimiento_scorecard.*,equipos_ead.nombre_ead, equipos_ead.id AS idEquipo
         FROM cumplimiento_scorecard 
         INNER JOIN equipos_ead 
         ON cumplimiento_scorecard.id_ead = equipos_ead.id 
@@ -27,6 +27,7 @@ function consultarCumplimientoScorecard($id_area,$mes,$anio)
                         $proyectoPuntos[$fila['nombre_ead']] =[];
                     }
                     $proyectoPuntos[$fila['nombre_ead']][] = [
+                        'idEquipo' => $fila['idEquipo'],
                         'nombre_equipo' =>$fila['nombre_ead'],
                         'mes' => $fila['mes'], 
                         'puntos' => $fila['puntos'] 
