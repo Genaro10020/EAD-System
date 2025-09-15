@@ -951,7 +951,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="offset-4 col-4">
                         <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
                         <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
-                    </div>
+                        <!-- <span class="badge bg-dark" style="font-size:0.5">{{this.nombresPilaresEncontrados }}</span> -->
+                    </div>  
                     <div class="col-4">
                         <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button> 
                     </div>
@@ -1168,7 +1169,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </div>
                                             <div class=" tarjeta_kpisPilares col-4 my-2 text-center">
                                                 <span v-for="(pilar,index) in pilar_estrategico" :key="index">
-                                                    <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model = "pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID)"/><label>{{ pilar.pilarNombre }}</label>
+                                                    <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model = "pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID, pilar.pilarNombre)"/><label>{{ pilar.pilarNombre }}</label>
                                                 </span>
                                                 <span>
                                                     <ul class="text-start">

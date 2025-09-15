@@ -4,8 +4,11 @@ include("conexionGhoner.php");
     function consultar($id_equipo){
        global $conexion;
        $resultado = [];
+       $resultadoPilares =[];
+       $idsPilares = '';
        $estado = false;
-       $sql = "SELECT * FROM kpis_proyectos WHERE id_equipo=? AND proyecto_cerrado !='Si'";
+       /* $sql = "SELECT * FROM kpis_proyectos WHERE  id_equipo=? AND proyecto_cerrado !='Si'"; */
+       $sql = "SELECT * FROM kpis_proyectos WHERE  id_equipo=? AND proyecto_cerrado !='Si'";
        $stmt=$conexion->prepare($sql);
        if(!$stmt){ return array(false,"Error en la preparacion".$conexion->error);}
        $stmt->bind_param("i",$id_equipo);
@@ -13,10 +16,30 @@ include("conexionGhoner.php");
        $datos = $stmt->get_result();
        while($fila = $datos->fetch_assoc()){
         $resultado[] = $fila;
+        $idsPilares = $fila['pilares'];
        }
        $stmt->close();
+       
+       $arrayPilares = json_decode($idsPilares, true);
+       $posiciones = count($arrayPilares);
+       for($i = 0; $i < $posiciones; $i++ ){
+            $id = $arrayPilares[$i];
+             // Consulta dentro del ciclo
+            $consulta = "SELECT * FROM pilares WHERE id=?";
+            $stmt = $conexion->prepare($consulta);
+            if(!$stmt){ return array(false,"Error en la preparacion".$conexion->error);}
+            $stmt->bind_param("i", $id); // "i" indica que es integer
+            if(!$stmt->execute()){ array(false,"Error en la consultar".$stmt->error);}
+            // Obtener resultados
+            $resultados = $stmt->get_result();
+            while ($fila = $resultados->fetch_assoc()) {
+               $resultadoPilares[] = $fila;
+            }
+
+            $stmt->close(); // cerramos el statement antes de la siguiente iteración
+       }
        $estado = true;
-       return array($estado,$resultado);
+       return array($estado,$resultado,$resultadoPilares);
     }
 
     function insertar($id_equipo,$nombre,$tipo_grafica,$unidad,$linea_base,$entitlement,$meta_calculada,$meta_retadora,$anio_kpi,$semana_kpi,$dato_semanal,$mes_cierre){

@@ -147,6 +147,7 @@ const app = {
       objetivosEncontrados: [],
       isPilarChecked: false,
       banderaObjetivoGuardado: false,
+      //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
       fecha_capacitacion: '',
@@ -1014,6 +1015,9 @@ const app = {
       //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
       this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
       console.log("ENCONTRADOS DESDE CONSULTA: ",this.objetivosEncontrados)
+       
+      /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
+      console.log("nombres: ", this.nombresPilaresEncontrados) */
     },
     buscarObjetivosDePilar(event,pilarID){
 
@@ -1049,6 +1053,8 @@ const app = {
       //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
       this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
       console.log("ENCONTRADOS: ",this.objetivosEncontrados)
+      console.log("seGUIMIENTO kpis",this.seguimientoKPIs)
+      console.log("objetivoSeleccionado",this.objetivoSeleccionado)
       },200);
     },
 
@@ -2254,12 +2260,13 @@ const app = {
       }).then(response => {
         if (response.data[0] == true) {
           console.log("HOLLA",response.data)
+
+          //
+          
           this.pilarSeleccionado = []
           this.objetivoSeleccionado = []
           this.seguimientoKPIs = response.data[1];
           if (this.seguimientoKPIs.length > 0) {
-
-
             //datos para la grafica
             this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador
             this.tGrafica = this.seguimientoKPIs[0].tipo
@@ -2283,7 +2290,7 @@ const app = {
                 try {
                   this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
                 } catch (error) {
-                  console.log('No hay pilares seleccionados');
+                  console.log('No hay objetivos seleccionados');
                 }
               }
               //this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
