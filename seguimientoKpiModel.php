@@ -7,6 +7,7 @@ include("conexionGhoner.php");
        $resultadoPilares =[];
        $idsPilares = '';
        $estado = false;
+       $posiciones =0;
        /* $sql = "SELECT * FROM kpis_proyectos WHERE  id_equipo=? AND proyecto_cerrado !='Si'"; */
        $sql = "SELECT * FROM kpis_proyectos WHERE  id_equipo=? AND proyecto_cerrado !='Si'";
        $stmt=$conexion->prepare($sql);
@@ -19,9 +20,13 @@ include("conexionGhoner.php");
         $idsPilares = $fila['pilares'];
        }
        $stmt->close();
-       
+      
        $arrayPilares = json_decode($idsPilares, true);
-       $posiciones = count($arrayPilares);
+        //echo "ESTO TIENE".printf($arrayPilares);
+       if(is_array($arrayPilares)){
+            $posiciones = count($arrayPilares);
+       }
+       
        for($i = 0; $i < $posiciones; $i++ ){
             $id = $arrayPilares[$i];
              // Consulta dentro del ciclo

@@ -35,7 +35,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
                                     <a><button class= "btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion()"><b>Capacitaciones</b></button></a>
                                     <?php
                                     if ($_SESSION['tipo_usuario'] == 'Admin') {
@@ -951,7 +951,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="offset-4 col-4">
                             <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
                             <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
-                            <!-- <span class="badge bg-dark" style="font-size:0.5">{{this.nombresPilaresEncontrados }}</span> -->
+                            <span class="badge bg-primary" style="font-size:0.5">{{this.pilaresGuardados}}</span>
                         </div>  
                         <div class="col-4">
                             <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button> 

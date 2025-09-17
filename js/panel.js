@@ -147,6 +147,8 @@ const app = {
       objetivosEncontrados: [],
       isPilarChecked: false,
       banderaObjetivoGuardado: false,
+
+      pilaresGuardados: '',
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -1020,8 +1022,6 @@ const app = {
       console.log("nombres: ", this.nombresPilaresEncontrados) */
     },
     buscarObjetivosDePilar(event,pilarID){
-
-
     if (event.target.checked) {
             console.log('Seleccionado');
           } else {
@@ -1583,26 +1583,28 @@ const app = {
       this.nombre_colaborador = texto.toUpperCase();
     },
     consultarEADXID() {
-      var id = this.select_session_equipo.split('<->')[0];
-      this.planta_ead = this.select_session_equipo.split('<->')[2];
-      this.area_ead = this.select_session_equipo.split('<->')[3];
-      axios.post('crud_ead.php', {
-        accion: 'consutarEAD',
-        id_ead: id
-      }).then(response => {
-        if (response.data[0][0] != true && response.data[0][1] != true) {
-          return console.log(response.data)
-        } else {
-          this.EADIntegrantes = response.data[3];
-          this.IDsIntegrantes = response.data[3].map(integrante => integrante.id);
-          this.asistieron = response.data[3].map(integrante => integrante.id);
-          this.tomarDiaActual()
-          this.consultarSeguimientoKPI()
-          this.consultarJuntasArranque()
-        }
-      }).catch(error => {
-        console.log("Erro en axios" + error)
-      })
+      if(this.select_session_equipo != ''){
+        var id = this.select_session_equipo.split('<->')[0];
+        this.planta_ead = this.select_session_equipo.split('<->')[2];
+        this.area_ead = this.select_session_equipo.split('<->')[3];
+        axios.post('crud_ead.php', {
+          accion: 'consutarEAD',
+          id_ead: id
+        }).then(response => {
+          if (response.data[0][0] != true && response.data[0][1] != true) {
+            return console.log(response.data)
+          } else {
+            this.EADIntegrantes = response.data[3];
+            this.IDsIntegrantes = response.data[3].map(integrante => integrante.id);
+            this.asistieron = response.data[3].map(integrante => integrante.id);
+            this.tomarDiaActual()
+            this.consultarSeguimientoKPI()
+            this.consultarJuntasArranque()
+          }
+        }).catch(error => {
+          console.log("Erro en axios" + error)
+        })
+      }
     },
     consultarAvanceEtapas() {
       axios.get('avanceEtapasController.php', {
@@ -2084,173 +2086,172 @@ const app = {
       });//success,warning,danger
     },
     graficaKPI(idCanva) {
-      console.log("grafica KPI");
-      const canvas = document.getElementById(idCanva);
+        console.log("grafica KPI");
+        const canvas = document.getElementById(idCanva);
 
-      if (!canvas) {
-        console.error("No se pudo obtener la referencia al elemento canvas.");
-        return;
-      }
+        if (!canvas) {
+          console.error("No se pudo obtener la referencia al elemento canvas.");
+          return;
+        }
 
-      // Destruye el gráfico existente si ya existe
-      let existingChart = Chart.getChart(canvas);
-      if (existingChart) {
-        existingChart.destroy();
-      }
-      var datosGraficaLength = this.datosGrafica.length; //tamanio
-      var datosGraficaElementos = this.datosGrafica; //arreglo de datos
+        // Destruye el gráfico existente si ya existe
+        let existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+          existingChart.destroy();
+        }
+        var datosGraficaLength = this.datosGrafica.length; //tamanio
+        var datosGraficaElementos = this.datosGrafica; //arreglo de datos
 
-      new Chart(canvas, {
-        type: 'bar',
-        data: {
-          labels: this.leyedasGafica,
-          datasets: [{
-            label: '',
-            data: this.datosGrafica,
-            backgroundColor: this.datosGrafica.map((valor, index) => {
-              if (index == 0) {
-                return 'red';//Línea Base
-              }
-              if (index == 1) {
-                return '#d8aa0a';//Entitlement
-              }
-              if (index == 2) {
-                return '#6bb92e';//Meta Calculada
-              }
-              if (index == 3) {
-                return 'green';//Meta Retadora
-              }
-              if (index >= 4) {
-                let color = 'black';
-
-                if (this.tGrafica == "Incremento") {
-                  if (valor >= this.datosGrafica[3]) {
-                    color = 'green';//Meta Retadora
-                  } else if (valor >= this.datosGrafica[2]) {
-                    color = '#6bb92e';//Meta Calculada
-                  } else if (valor >= this.datosGrafica[2] && valor < this.datosGrafica[3]) {
-                    color = '#6bb92e';//Meta Calculada
-                  } else if (valor >= this.datosGrafica[1] && valor < this.datosGrafica[3]) {
-                    color = '#d8aa0a';//Entitlement
-                  } else if (valor < this.datosGrafica[3]) {
-                    color = 'red';
-                  }
-                } else {
-                  if (valor <= this.datosGrafica[3]) {
-                    color = 'green';
-                  } else if (valor >= this.datosGrafica[0] || valor > this.datosGrafica[1] && valor > this.datosGrafica[2] && valor > this.datosGrafica[3]) {
-                    color = 'red';
-                    console.log("condicion 1")
-                  }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
-                            color = '#6bb92e';
-                            console.log("condicion 1")
-                          }*/else if (valor > this.datosGrafica[3] && valor <= this.datosGrafica[2]) {
-                    color = '#6bb92e';
-                    console.log("condicion 3")
-                  } else if (valor <= this.datosGrafica[1] && valor > this.datosGrafica[3]) {
-                    color = '#d8aa0a';
-                    console.log("condicion 2")
-                  }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
-                            color = '#d8aa0a';
-                            console.log("condicion 3")
-                          }*/else if (valor > this.datosGrafica[2] && valor <= this.datosGrafica[2]) {
-                    color = '#6bb92e';
-                    console.log("condicion 4")
-                  }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
-                            color = '#6bb92e';
-                            console.log("condicion 7")
-                          }*/
+        new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: this.leyedasGafica,
+            datasets: [{
+              label: '',
+              data: this.datosGrafica,
+              backgroundColor: this.datosGrafica.map((valor, index) => {
+                if (index == 0) {
+                  return 'red';//Línea Base
                 }
-                return color;
-              }
-            }),
-            borderWidth: 1,
-          }]
-        },
-        options: {
-          plugins: {
-            legend:{ //legend es para eliminar el boton que oculta y aparece las barras
-              display: false
-            },
-            title: {
-              display: true,
-              text: this.nombre_indicador,
-              font: {
-                size: 20
-              },
-              padding: {
-                //top: 20,   
-                bottom: 50
-              }
-            },
-          },
-          tooltips: {
-            enabled: true,
-          },
-          scales: {
-            x2: {
-              display: false,
-              //position: ,
-              labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
-              ticks: {
-                font: {
-                  size: 20
-                },
-                display: true,
-                beginAtZero: true,
-                color: this.datosGrafica.map((label, index) => {
-                  switch (index) {
-                    case 0:
-                      return 'red';
-                    case 1:
-                      return '#d8aa0a';
-                    case 2:
-                      return '#6bb92e';
-                    case 3:
-                      return 'green';
-                    default:
-                      return 'black';
+                if (index == 1) {
+                  return '#d8aa0a';//Entitlement
+                }
+                if (index == 2) {
+                  return '#6bb92e';//Meta Calculada
+                }
+                if (index == 3) {
+                  return 'green';//Meta Retadora
+                }
+                if (index >= 4) {
+                  let color = 'black';
+
+                  if (this.tGrafica == "Incremento") {
+                    if (valor >= this.datosGrafica[3]) {
+                      color = 'green';//Meta Retadora
+                    } else if (valor >= this.datosGrafica[2]) {
+                      color = '#6bb92e';//Meta Calculada
+                    } else if (valor >= this.datosGrafica[2] && valor < this.datosGrafica[3]) {
+                      color = '#6bb92e';//Meta Calculada
+                    } else if (valor >= this.datosGrafica[1] && valor < this.datosGrafica[3]) {
+                      color = '#d8aa0a';//Entitlement
+                    } else if (valor < this.datosGrafica[3]) {
+                      color = 'red';
+                    }
+                  } else {
+                    if (valor <= this.datosGrafica[3]) {
+                      color = 'green';
+                    } else if (valor >= this.datosGrafica[0] || valor > this.datosGrafica[1] && valor > this.datosGrafica[2] && valor > this.datosGrafica[3]) {
+                      color = 'red';
+                      console.log("condicion 1")
+                    }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
+                              color = '#6bb92e';
+                              console.log("condicion 1")
+                            }*/else if (valor > this.datosGrafica[3] && valor <= this.datosGrafica[2]) {
+                      color = '#6bb92e';
+                      console.log("condicion 3")
+                    } else if (valor <= this.datosGrafica[1] && valor > this.datosGrafica[3]) {
+                      color = '#d8aa0a';
+                      console.log("condicion 2")
+                    }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
+                              color = '#d8aa0a';
+                              console.log("condicion 3")
+                            }*/else if (valor > this.datosGrafica[2] && valor <= this.datosGrafica[2]) {
+                      color = '#6bb92e';
+                      console.log("condicion 4")
+                    }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
+                              color = '#6bb92e';
+                              console.log("condicion 7")
+                            }*/
                   }
-                })
-              },
-              grid: {
+                  return color;
+                }
+              }),
+              borderWidth: 1,
+            }]
+          },
+          options: {
+            plugins: {
+              legend:{ //legend es para eliminar el boton que oculta y aparece las barras
                 display: false
-              }
-            },
-            x: {
-              display: true,
-              position: 'bottom', //inferior
-              ticks: {
+              },
+              title: {
                 display: true,
-                beginAtZero: true,
+                text: this.nombre_indicador,
                 font: {
                   size: 20
                 },
-              }
+                padding: {
+                  //top: 20,   
+                  bottom: 50
+                }
+              },
             },
+            tooltips: {
+              enabled: true,
+            },
+            scales: {
+              x2: {
+                display: false,
+                //position: ,
+                labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
+                ticks: {
+                  font: {
+                    size: 20
+                  },
+                  display: true,
+                  beginAtZero: true,
+                  color: this.datosGrafica.map((label, index) => {
+                    switch (index) {
+                      case 0:
+                        return 'red';
+                      case 1:
+                        return '#d8aa0a';
+                      case 2:
+                        return '#6bb92e';
+                      case 3:
+                        return 'green';
+                      default:
+                        return 'black';
+                    }
+                  })
+                },
+                grid: {
+                  display: false
+                }
+              },
+              x: {
+                display: true,
+                position: 'bottom', //inferior
+                ticks: {
+                  display: true,
+                  beginAtZero: true,
+                  font: {
+                    size: 20
+                  },
+                }
+              },
+            },
+            animation: {
+
+              duration: 0,
+
+            },
+
           },
-          animation: {
+          plugins: [{
+            afterDatasetsDraw: (chart) => {
+              datosGraficaElementos.forEach((data, index) => {
+                chart.ctx.fillStyle = 'black';
+                chart.ctx.font = '20px Arial';
+                chart.ctx.textAlign = 'center';
+                chart.ctx.textBaseline = 'top';
+                chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+                chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
+              });
+            }
+          }]
 
-            duration: 0,
-
-          },
-
-        },
-        plugins: [{
-          afterDatasetsDraw: (chart) => {
-            datosGraficaElementos.forEach((data, index) => {
-              chart.ctx.fillStyle = 'black';
-              chart.ctx.font = '20px Arial';
-              chart.ctx.textAlign = 'center';
-              chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
-              chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
-            });
-          }
-        }]
-
-      });
-
+        });
     },
     consultarSeguimientoKPI() {
       axios.get("seguimientoKpiController.php", {
@@ -2260,9 +2261,11 @@ const app = {
       }).then(response => {
         if (response.data[0] == true) {
           console.log("HOLLA",response.data)
+          let extrajePilares = response.data[2].map(pilar  => pilar.nombre);
+          console.log("extrajePilares",extrajePilares);
+          this.pilaresGuardadosString = extrajePilares.map(nombre => `• ${nombre}`).join(". ");
+          console.log("PILARESGUARDADOS",this.pilaresGuardadosString)
 
-          //
-          
           this.pilarSeleccionado = []
           this.objetivoSeleccionado = []
           this.seguimientoKPIs = response.data[1];
