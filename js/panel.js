@@ -148,7 +148,8 @@ const app = {
       isPilarChecked: false,
       banderaObjetivoGuardado: false,
 
-      pilaresGuardados: '',
+      pilaresGuardadosString: '',
+      extrajeIDSPilares: [],
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -972,7 +973,23 @@ const app = {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+    comparaPilares() {
+      // Iterar sobre el array de pilares seleccionados
+      this.pilarSeleccionado.forEach((id, index) => {
+        if (!this.extrajeIDSPilares.includes(id)) { // Si el id no está en extrajeIDSpilares, desmarcamos el checkbox
+          this.pilarSeleccionado.splice(index, 1); // Desmarcar el checkbox removiendo el id de pilarSeleccionado
+          console.log('Algún id de pilarSeleccionado no coincide, deseleccionamos el select.');
+        }else{
+          console.log('Todos los ids coinciden. No se cambia el select.');
+        }
+      });
+    },
+       /* const todosCoinciden = this.pilarSeleccionado.every(id => this.extrajeIDSPilares.includes(id));
+          if(todosCoinciden){
+            console.log('Todos los ids coinciden. No se cambia el select.');
+          }else{
+            console.log('Algún id de pilarSeleccionado no coincide, deseleccionamos el select.');
+          } */
     consultarPilares() {
       axios.get("pilaresEstrategicosController.php", {
         params: {
@@ -1017,33 +1034,47 @@ const app = {
       //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
       this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
       console.log("ENCONTRADOS DESDE CONSULTA: ",this.objetivosEncontrados)
-       
-      /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
+      
+      const pilaresEncontrados = [
+        ...new Map(this.objetivosEncontrados.map(p => [p.pilarID, { pilarNombre: p.pilarNombre }])).values()
+      ];
+
+      console.log("PILARES ENCONTRAOS: ",pilaresEncontrados);
+      this.pilaresGuardadosString = pilaresEncontrados.map(p => `• ${p.pilarNombre}`).join(" ");
+
+      pilaresIDs = [
+        ...new Map(this.objetivosEncontrados.map(p => [p.pilarID, { pilarID: p.pilarID }])).values()
+      ].map(p => p.pilarID);
+      this.extrajeIDSPilares = pilaresIDs;
+
+      console.log("extrajeIDSPilares: ", this.extrajeIDSPilares);
+/*       this.extrajeIDSPilares
+ */      /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
       console.log("nombres: ", this.nombresPilaresEncontrados) */
     },
     buscarObjetivosDePilar(event,pilarID){
-    if (event.target.checked) {
-            console.log('Seleccionado');
-          } else {
-            console.log('Deseleccionado');
-            console.log(pilarID) 
-            let objetivosSeleccionados = this.objetivoSeleccionado
-            let buscarParaEliminar=this.objetivosYpilares.filter(items => items.pilarID == pilarID).map(item => item.objetivoID)
+      if (event.target.checked) {
+        console.log('Seleccionado');
+      } else {
+        console.log('Deseleccionado');
+        console.log(pilarID) 
+        let objetivosSeleccionados = this.objetivoSeleccionado
+        let buscarParaEliminar=this.objetivosYpilares.filter(items => items.pilarID == pilarID).map(item => item.objetivoID)
 
-            for (let index = 0; index < buscarParaEliminar.length; index++) {
-             const idAEliminar = buscarParaEliminar[index];
-              console.log(idAEliminar)
-                for (let j = 0; j < objetivosSeleccionados.length; j++) {
-                  if(objetivosSeleccionados[j]==idAEliminar){
-                    this.objetivoSeleccionado.splice(j, 1);
-                    j--;
-                  }
-                }
+        for (let index = 0; index < buscarParaEliminar.length; index++) {
+        const idAEliminar = buscarParaEliminar[index];
+          console.log(idAEliminar)
+            for (let j = 0; j < objetivosSeleccionados.length; j++) {
+              if(objetivosSeleccionados[j]==idAEliminar){
+                this.objetivoSeleccionado.splice(j, 1);
+                j--;
+              }
             }
-            this.guardarSeleccionados()
-          }
+        }
+        this.guardarSeleccionados()
+      }
 
-          //lo utilizamos para mostrar en el DOM los Objetivos segun perfil seleccionado.
+      //lo utilizamos para mostrar en el DOM los Objetivos segun perfil seleccionado.
       setTimeout(()=>{
       let p_cliente =  this.pilarSeleccionado[0]
       let p_excelenciaOperativa = this.pilarSeleccionado[1]
@@ -1055,6 +1086,10 @@ const app = {
       console.log("ENCONTRADOS: ",this.objetivosEncontrados)
       console.log("seGUIMIENTO kpis",this.seguimientoKPIs)
       console.log("objetivoSeleccionado",this.objetivoSeleccionado)
+      console.log("pilarSeleccionado",this.pilarSeleccionado)/* 
+      let pilaresEncontrados = this.objetivosEncontrados */
+
+    
       },200);
     },
 
@@ -1070,6 +1105,23 @@ const app = {
         }).then(response => {
           if(response.data == true){
             this.banderaObjetivoGuardado = true
+
+            let pilaresGuardadosString = []
+            let extrajeIDSPilares = []
+            this.pilarSeleccionado.forEach(id => {
+              const pilar = this.pilar_estrategico.find(p => p.pilarID === id);
+              if(pilar){
+                pilaresGuardadosString.push(pilar.pilarNombre);
+                extrajeIDSPilares.push(pilar.pilarID);
+              }
+              
+            });
+            this.pilaresGuardadosString = pilaresGuardadosString.map(nombre => `• ${nombre}`).join(" ");
+            this.extrajeIDSPilares = extrajeIDSPilares
+/*             this.extrajeIDSPilares ????
+ */          
+            console.log("saque pilares de obj",this.pilaresGuardadosString)
+            console.log("saque pilares ID",this.extrajeIDSPilares)
 
             setTimeout(()=>{
               this.banderaObjetivoGuardado = false
@@ -2263,7 +2315,9 @@ const app = {
           console.log("HOLLA",response.data)
           let extrajePilares = response.data[2].map(pilar  => pilar.nombre);
           console.log("extrajePilares",extrajePilares);
-          this.pilaresGuardadosString = extrajePilares.map(nombre => `• ${nombre}`).join(". ");
+          this.extrajeIDSPilares = response.data[2].map(pilar  => pilar.id);
+          console.log("extrajeIDSPilares",this.extrajeIDSPilares);
+          this.pilaresGuardadosString = extrajePilares.map(nombre => `• ${nombre}`).join(" ");
           console.log("PILARESGUARDADOS",this.pilaresGuardadosString)
 
           this.pilarSeleccionado = []
@@ -4244,13 +4298,13 @@ const app = {
           console.log("sjsjsj", this.minimoCumplimiento);
           this.graficaCumplimientoProyectos();
         
-        /* }else{ */
-          /* const canvas = document.getElementById('canvaCumplimientoProyectos');
-          let existingChart = Chart.getChart(canvas);
-          if (existingChart) {
-            existingChart.destroy();
-          }
-        } */
+          /* }else{ */
+            /* const canvas = document.getElementById('canvaCumplimientoProyectos');
+            let existingChart = Chart.getChart(canvas);
+            if (existingChart) {
+              existingChart.destroy();
+            }
+          } */
       })
       .catch(error => {
         // Manejar cualquier error

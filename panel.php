@@ -682,7 +682,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <h6 class="text-center pasos">1. Asistencia</h6>
                                 <div class="input-group" style="min-width:270px">
                                     <label class="input-group-text" style="font-size:0.8em">Equipo </label>
-                                    <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos()" style="font-size:0.8em">
+                                    <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos(), consultarPilares()" style="font-size:0.8em">
                                         <option value="">Seleccione..</option>
                                         <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                     </select>
@@ -950,8 +950,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <!--Serena, te quedaste aquí. ^^^ Agregar el checkbox con v-for y verificar que la consulta si te traiga los pilares.-->
                         <div class="offset-4 col-4">
                             <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
+                            
+                            <span class="badge bg-primary" style="font-size:0.5">{{this.pilaresGuardadosString}}</span><br>
                             <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
-                            <span class="badge bg-primary" style="font-size:0.5">{{this.pilaresGuardados}}</span>
                         </div>  
                         <div class="col-4">
                             <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button> 
@@ -1059,7 +1060,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h6 class="modal-title" id="exampleModalLabel">Seguimiento KPI's</b></h6>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" @click="comparaPilares()" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div v-if="select_session_equipo.length>0">
@@ -1215,7 +1216,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-secondary" @click="comparaPilares()" data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </div>
                         </div>
