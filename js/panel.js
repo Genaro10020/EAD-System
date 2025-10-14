@@ -258,6 +258,12 @@ const app = {
       causas: [],
       tGrafica: '',
       nombreDelCriterio: '',
+      diaActual: 0,
+      mesActual: '',
+      anioActual: 0,
+      habilitar: false,
+      fechaHoy: '',
+      mesEntero: 0,
       ////////////////////////////////////////////////////////////////////////////////////*COMPETENCIA PLACAS*/
       filasCP: ['UP', 'Planta', 'Posicion', 'EADs', 'Proyecto', 'Evaluador', 'Calificacion final', 'Posicion final'],
       ////////////////////////////////////////////////////////////////////////////////////*PONDERACION*/
@@ -365,6 +371,7 @@ const app = {
       window.history.forward();
       this.cerrarModalHistorial()
     });
+    this.obtenerFecha()
   },
   methods: {
     cerrarModalHistorial() {
@@ -3316,7 +3323,44 @@ const app = {
         });
       }, 200)
     },
+    convertirAFecha(fechaStr) {
+      const [mes, año] = fechaStr.split('-');
+      return new Date(año, mes - 1);  // mes - 1 porque el mes en Date es de 0 a 11
+    },
+    obtenerFecha(){
+      const fechadEHoy = new Date();
+      console.log(fechadEHoy)
+      
+      this.anioActual = fechadEHoy.getFullYear();
+      this.mesActual = fechadEHoy.getMonth() + 1;
+      this.diaActual = fechadEHoy.getDate();
 
+      console.log(this.anioActual);
+      console.log(this.mesActual);
+      console.log(this.diaActual);
+      
+    },
+    comprobando(dia){
+      if(this.tipo_usuario == 'Colaborador'){
+                if(this.habilitar==false){
+                  console.log("FALSE ")
+                  return false
+                }else{
+                  //this.mes_grafica ES UNA VARIABLE STRING Y QUIERO CONVERITRLA A INT COMO LO HAGO? PARSEiNT SOLO HACE QUE LOS MUNEROS EN STRING SEAN INT nO TEXTOS, RECOMENDACION HACER QUE mes SEA VARIABLE VUE this.mes
+                  if(this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero){
+                        if(this.diaActual>dia){
+                          return true
+                        }else{
+                          return false
+                        }
+                  }else{
+                    return true
+                  }
+        }
+      }else{
+        return false
+      }
+    },
     consultadoValoresGrafica() {
       if (this.idCriterioGrafica != '' && this.equipo_grafica != '' && this.anio_grafica != '' && this.mes_grafica != '') {
 
@@ -3334,6 +3378,45 @@ const app = {
         if (this.mes_grafica == 'Noviembre') { mes = 11 }
         if (this.mes_grafica == 'Diciembre') { mes = 12 }
 
+
+        this.mesEntero = mes
+        /* let fechaConcselect = mes + "-" + this.anio_grafica
+        console.log("fechaConcselect???",fechaConcselect) 
+
+        let fechaConcHoy = this.mesActual + "-" + this.anioActual
+        console.log("fechaConcHoy???",fechaConcHoy)
+
+        this.fechaHoy = this.convertirAFecha(fechaConcHoy);
+        console.log("fechaConcHoy",this.fechaHoy);
+        fechaSelect = this.convertirAFecha(fechaConcselect);
+        console.log("ffechaSelect",fechaSelect); */
+
+        ///comprobando año
+        if(this.anioActual > this.anio_grafica){
+          this.habilitar = true;
+          console.log("MAYOR QUE")
+        }else if(this.anioActual == this.anio_grafica){
+          console.log("IGUAL QUE")
+          this.habilitar = true;
+
+          ///comprobando mes
+          if(this.mesActual>mes){
+            console.log("Mes anterior")
+            this.habilitar = true
+          }else if(this.mesActual==mes){
+            console.log("Mes actual")
+            this.habilitar = true
+          }else if(this.mesActual<mes){
+            console.log("Mes posterior")
+            this.habilitar = false
+          }
+
+        }else if(this.anioActual < this.anio_grafica){
+          this.habilitar = false;
+          console.log("MENOR QUE")
+        }
+        console.log("hABILITAR",this.habilitar);
+        
         var id_equipo = this.equipo_grafica.split('<->')[0];
         axios.get("graficasController.php", {
           params: {
@@ -3346,6 +3429,7 @@ const app = {
         }).then(response => {
           console.log("consulta grafica", response.data)
           if (response.data[0] == true) {
+
             const nuevoArreglo = [];
             response.data[1].forEach(valores => {
               nuevoArreglo[(valores.dia - 1)] = valores.valor;//la resto ya que el arreglo empieza en 0
@@ -3353,8 +3437,8 @@ const app = {
             this.datosGrafica = nuevoArreglo
             this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
 
-          //  console.log('el tamaño del arreglo es:',this.datosGrafica.length);
-          //  console.log('el id del criterio:',this.idCriterioGrafica);
+            //  console.log('el tamaño del arreglo es:',this.datosGrafica.length);
+            //  console.log('el id del criterio:',this.idCriterioGrafica);
 
           if(this.idCriterioGrafica == 2){
             let suma_vacio = 0;

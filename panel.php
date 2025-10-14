@@ -608,7 +608,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <button type="button" class="badge rounded-pill bg-secondary border border-0" @click="cerrarModal()">X</button>
                                 </div>
                                 <div class="modal-body text-start text-md-center">
-                                    <p class="fw-bold">¿Seguro que deseas dar de baja a los siguientes colaboradores? </p>
+                                    <p class="fw-bold">¿Seguro que deseas dar de baja al siguiente colaborador? </p>
                                     <ul class="list-unstyled text-center text-decoration-underline">
                                         <li class="text-capitalize text-danger" v-for="(integrantes,index) in checkIntegrantes"> {{integrantes.split("<->")[1].toLowerCase()}}
                                     </ul>
@@ -1850,8 +1850,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <th class="border border-dark text-white bg-secondary" style="font-size: 13px;">
                                                 {{nombreDelCriterio}}
                                             </th>
-                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark" style="background-color: #B7DEE8; height: 20px; width: 40px;">
-                                                <input :id="'grafica'+index" :value="datosGrafica[index]" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--@blur="insertandoValores(index)"-->
+                                            <td v-for="(i,index) in diasDelMesAnio()" class="border border-dark"  style="height: 20px; width: 40px;">
+                                                <input :id="'grafica'+index" :value="datosGrafica[index]"
+                                                :disabled="comprobando(index+1)" :class="{'disabled-class': comprobando(index+1)}" @change="insertandoValores(index)" @keyup.enter="insertandoValores(index)" class="inpus-number-graficas text-center" type="number"> <!--  :class="{'bg-warning':habilitar || ((index+1) < diaActual),'bg-success':habilitar || ((index+1) < diaActual)} --><!--@blur="insertandoValores(index)"-->
                                             </td>
                                             <td v-if="idCriterioGrafica == 2" class="border border-dark text-white bg-secondary" style="font-size: 13px;">
                                                 {{promMermayDesperdicio}}
