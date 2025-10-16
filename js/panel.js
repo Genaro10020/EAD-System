@@ -3346,12 +3346,12 @@ const app = {
                   console.log("FALSE ")
                   return false
                 }else{
-                  //this.mes_grafica ES UNA VARIABLE STRING Y QUIERO CONVERITRLA A INT COMO LO HAGO? PARSEiNT SOLO HACE QUE LOS MUNEROS EN STRING SEAN INT nO TEXTOS, RECOMENDACION HACER QUE mes SEA VARIABLE VUE this.mes
+                  let fechaLimite = this.diaActual - 7;
                   if(this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero){
-                        if(this.diaActual>dia){
-                          return true
-                        }else{
+                        if(dia > fechaLimite){
                           return false
+                        }else{
+                          return true
                         }
                   }else{
                     return true
