@@ -9,13 +9,12 @@ if(isset($_FILES['files']['name'])){
 ///////////////////////////header("Content-Type: application/json");
 $cantidad=0;
 $suma=0;
-$tipo_archivo = $_POST['tipo_archivo'];
-
+$tipo_archivo = $_POST['tipo_archivo']; 
 
 if ($tipo_archivo === 'Presentacion') {
     $id = $_POST['id_equipo'];
     $ruta = "documentoSession/".$id."/";
-} else if ($tipo_archivo === 'Capacitacion') {
+} else if ($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'EvidenciaFoto') {
    if($_SESSION['tipo_usuario']=="Admin"){
         if(isset($_POST['area'])){
                 $area=$_POST['area'];
@@ -26,7 +25,12 @@ if ($tipo_archivo === 'Presentacion') {
         $area = $_SESSION['area'];
     }
     $fecha_ruta = $_POST['fecha_ruta'];
-    $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
+    if($tipo_archivo === 'Capacitacion'){
+        $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
+    }else if($tipo_archivo === 'EvidenciaFoto'){
+        $ruta = "evidenciacapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
+    }
+    
 } else {
     
 }
@@ -48,7 +52,12 @@ if (!file_exists($ruta)) {
                             // Obtener la extención del archivo
                             $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
                             // Validar extensiones permitidas
-                            $valid_ext = array("png","jpeg","jpg","pdf","doc","docx","ppt","pptx","xls","xlsx","rar","zip");
+                            if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Presentacion'){
+                                $valid_ext = array("pdf","doc","docx","ppt","pptx","xls","xlsx","rar","zip");
+                            }else if($tipo_archivo === 'EvidenciaFoto'){
+                                $valid_ext = array("png","jpg","jpeg");
+                            }
+                            
                             // Revisar extension
                             if(in_array($ext, $valid_ext)){
                               

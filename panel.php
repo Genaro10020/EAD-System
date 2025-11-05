@@ -1255,17 +1255,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <thead>
                                         <tr class="table-secondary">
                                             <th scope="col" class="text-center"><button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="nuevaCapacitaciones()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nueva Capacitacion</button></th>
-                                            <th scope="col" class="text-center">Fecha de capacitacion</th>
+                                            <th scope="col" class="text-center">Área</th>
                                             
                                             <?php if($_SESSION['tipo_usuario']=="Admin")
                                             {  
                                             ?>
-                                            <th scope="col" class="text-center">Área</th>
+                                            <th scope="col" class="text-center">Fecha de capacitacion</th>
                                             <?php
                                             }
                                             ?>
                                         <th scope="col" class="text-center">Nuevos ingresos</th>
                                             <th scope="col" class="text-center">Evidencia</th>
+                                            <th scope="col" class="text-center">Fotografía</th>
                                             <th scope="col" class="text-center">¿Se impartió? (Si/No)</th>
                                             <th scope="col" class="text-center">Comentarios</th>
                                         </tr>
@@ -1299,6 +1300,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <input v-model="comentarios_capacitacion" type="text" class="form-control" />
                                             </td>
                                         </tr>
+                                            {{documento_capacitacion}}
+                                        {{cantidadDocumentos}}<BR>
+                                        {{posicion_canti_doc}}
                                         <tr v-for= "(capacitacion,index) in capacitaciones " :class="editarCapacitacion === index ? 'table-warning' : ''">
                                             <td class="text-center">
                                                 <button  v-if="editarCapacitacion===index" @click="cancelarEditar()" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-x-lg"></i> Cancelar </button>
@@ -1306,7 +1310,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button  v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-floppy-fill"></i> Guardar </button>
                                                 
                                             </td>
-                                        <?php if($_SESSION['tipo_usuario']=="Admin")
+                                            <?php if($_SESSION['tipo_usuario']=="Admin")
                                             {  
                                             ?>
                                                 <td>
@@ -1329,6 +1333,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button class="btn btn-primary btn-boton px-2 py-0 ms-2" :class="cantidadDocumentos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(capacitacion.fecha,index,capacitacion.area)"> 
                                                     <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantidadDocumentos[index]}})
                                                 </button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-primary btn-boton px-2 py-0 ms-2" title="Foto evidencia de capacitacion."  :class="cantidadFotos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalEvFoto(capacitacion.fecha,index,capacitacion.area)">
+                                                    <i class="bi bi-upload"></i> Foto/s ({{cantidadFotos[index]}})</button>
                                             </td>
                                             <td class="text-center">
                                                 <label v-if="cantidadDocumentos[index]>0 " class= "text-success">Si</label>
@@ -1382,6 +1390,60 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                         </div>
                     </div>
+                    <!-- MODAL PARA SUBIR FOTOGRAFIA -->
+                        <div  class="modal fade" id="modalEvFoto" tabindex="-1" aria-labelledby="modalEvFoto" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-xl">
+                                <div class="modal-content">
+                                <!-- CABECERA -->
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="miModalLabel">Subir evidencia Fotográfica</h5>
+                                    <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Cerrar"
+                                    ></button>
+                                </div>
+
+                                <!-- CUERPO -->
+                                <div class="modal-body">
+                                    <form @submit.prevent="uploadFile('EvidenciaFoto')" class="d-flex flex-column align-items-center" enctype="multipart/form-data">
+                                        <input type="file" id="fileInput" accept=".png, .jpg, .jpeg" ref="ref_imagen_EvidenciaFoto"/>
+                                        <br><br>
+                                        <button id="uploadBtn" class="btn btn-primary btn-sm" style= "border-radius: 10px" type= "submit">Subir Imagen</button>
+                                        
+                                        <div v-if="foto_capacitacion.length>0">
+                                            
+                                            <div class="col-12" v-for="(archivos,index) in foto_capacitacion">
+                                                <div class="row">
+                                                    <span class="badge bg-secondary">Documento {{index+1}}</span><br>
+                                                    <div class="mt-1 d-flex justify-content-center">
+                                                        <button type="button" class="btn btn-danger"  style="font-size:14px;" @click="eliminarDocumento(archivos, 'EvidenciaFoto')">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                                <!--Mostar los JPG y PNG-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                    <img :src="foto_capacitacion[index]" style="width:50%" class="mb-5"></img>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                <!-- PIE -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    Cerrar
+                                    </button>
+                                </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    <!-- FIN MODAL PARA SUBIR FOTOGRAFIA -->
+
                     <!--//////////////////////////////////////////AGREGAR AQUI MODAL DOCUMENTO////////////////////////////////////////////////////////////////////////-->
 
 
@@ -1399,7 +1461,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             Subir Documento
                                             <div class="col-12">
                                                 <div class="custom-file mt-2 mb-3">
-                                                    <input type="file" id="input_file_capacitacion" @change="varificandoSelecionCapacitacion()" ref="ref_imagen_capacitacion" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                                    <input type="file" id="input_file_capacitacion" @change="varificandoSelecionCapacitacion()" ref="ref_imagen_capacitacion" accept=".pdf, .doc, .docx, .ppt, .pptx, .xls, .xlsx" multiple class="btn btn-secondary  ms-2 p-0" required />
                                                 </div>
                                             </div>
                                             <div class="col-12" v-if="existeImagenSeleccionadaCapacitacion && login!=true">

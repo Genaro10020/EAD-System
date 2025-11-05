@@ -11,7 +11,7 @@ $id_equipo=$variables['id_equipo'];
 $area = '';
 if($tipo_archivo === 'Presentacion'){
     $ruta = "documentoSession/".$id_equipo;
-}else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha'){
+}else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha' || $tipo_archivo === 'EvidenciaFoto'){
     if($_SESSION['tipo_usuario']=="Admin"){
         if(isset($variables['area'])){
                 $area=$variables['area'];
@@ -21,7 +21,14 @@ if($tipo_archivo === 'Presentacion'){
     }else{
         $area = $_SESSION['area'];
     }
-    $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta;
+
+
+    if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha'){
+        $ruta = "documentoscapacitacion/".$area."/".$fecha_ruta;
+    }else if($tipo_archivo === 'EvidenciaFoto'){
+        $ruta = "evidenciacapacitacion/".$area."/".$fecha_ruta;
+    }
+    
 }
 
 

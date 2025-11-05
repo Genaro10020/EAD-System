@@ -161,12 +161,16 @@ const app = {
       capacitaciones: '',
       fecha_ruta: '',
       documento_capacitacion: [],
+      foto_capacitacion: [],
       existeImagenSeleccionadaCapacitacion: false,
       cantidadDocumentos: [], 
+      cantidadFotos: [],
       editarCapacitacion: false,
       posicion_canti_doc:'',
       cantNewDoc: 0,
       areaDocumento:'',
+      fechaFoto: '',
+      posicion: '',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1174,7 +1178,7 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area) {
+    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenadoInicial) {
       console.log("Tipo archivo"+tipo_archivo,"Area: "+area)
       var id_equipo = ''
       var fecha_ruta =''
@@ -1186,6 +1190,16 @@ const app = {
         id_equipo = this.select_session_equipo.split('<->')[0];
       }else if(tipo_archivo === 'Por Fecha'){
         fecha_ruta = fecha_por_capacitacion
+      }else if(tipo_archivo === 'EvidenciaFoto'){
+            if(this.fechaFoto=='' && this.areaDocumento==''){
+                fecha_ruta = fecha_por_capacitacion
+                area = area
+                console.log("fecha_ruta", fecha_ruta)
+            }else{
+               fecha_ruta = this.fechaFoto
+                area =  this.areaDocumento
+            }
+        
       }else{
         return "No me llego ese tipo de documento."
       }
@@ -1206,7 +1220,7 @@ const app = {
             console.log(this.documento_session + "Sin imagen encontrada.")
           }
         }else if(tipo_archivo === 'Capacitacion'){
-         
+     //////////////////////////////////////////////////  *** 
           this.documento_capacitacion = response.data
           if (this.documento_capacitacion.length > 0) {
             console.log(this.documento_capacitacion + "Archivos encontrados.")
@@ -1214,12 +1228,19 @@ const app = {
           } else {
             console.log(this.documento_capacitacion + "Sin imagen encontrada.")
           }
-          this.cantidadDocumentos[this.posicion_canti_doc] =this.documento_capacitacion.length 
-          
+
+         if(isNum(this.posicion_canti_doc)){
+          console.log("HOLAAAAAAAAAAAAAAAAAAA")
+            this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length
+          }else{
+            console.log("VACIOOOOOOOOOOOOOO"+this.posicion_canti_doc)
+          }
+
+
          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
               this.cantNewDoc=this.documento_capacitacion.length
           }
-
+//////////////////////////////////////////  ***
         }else if(tipo_archivo === 'Por Fecha'){
           
            if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
@@ -1228,6 +1249,28 @@ const app = {
             this.cantidadDocumentos.push(response.data.length)
             console.log("Cantidad docs",this.cantidadDocumentos)
           }
+        }else if(tipo_archivo === 'EvidenciaFoto'){
+          ///////////////////////////////////////////////////
+        
+   
+            this.foto_capacitacion = response.data
+
+                if (this.foto_capacitacion.length > 0) {
+                  console.log(this.foto_capacitacion + "Archivos encontrados.")
+                  this.random = Math.random()
+                  
+                } else {
+                  console.log(this.foto_capacitacion + "Sin imagen encontrada.")
+                }
+
+          if(llenadoInicial=='llenadoInicial'){
+            this.cantidadFotos.push(this.foto_capacitacion.length)
+          }else if(llenadoInicial=='ActualizaPosicion'){
+               this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
+          }
+         
+
+          ///////////////////////////////////////////////////////////////
         }
         
       })
@@ -1237,7 +1280,6 @@ const app = {
     },
     uploadFile(tipo_archivo) {
       this.login = true
-
       let formData = new FormData();
 
       if(tipo_archivo === 'Presentacion'){
@@ -1252,6 +1294,18 @@ const app = {
          formData.append("area", this.areaDocumento);
         var files = this.$refs.ref_imagen_capacitacion.files;
         var totalfiles = this.$refs.ref_imagen_capacitacion.files.length;
+      }
+      else if (tipo_archivo === 'EvidenciaFoto'){
+        formData.append("tipo_archivo", tipo_archivo);
+        formData.append("fecha_ruta", this.fecha_ruta);
+        formData.append("area", this.areaDocumento);/* 
+        formData.append("file", file); */
+        var files = this.$refs.ref_imagen_EvidenciaFoto.files;
+        var totalfiles = this.$refs.ref_imagen_EvidenciaFoto.files.length;
+        
+        console.log("area", this.areaDocumento);
+        console.log("this.fecha_ruta", this.fecha_ruta)
+
       }else{
         return alert("No hay documentos")
       }
@@ -1264,7 +1318,8 @@ const app = {
         {
           headers: { "Content-Type": "multipart/form-data" }
         }).then(response => {
-          console.log(response.data);
+          console.log("Hola response",response.data);
+
           if (response.data.length > 0) {
              Swal.fire({
               title: "Guardado!!",
@@ -1278,6 +1333,9 @@ const app = {
             }else if(tipo_archivo === 'Capacitacion'){
                 this.$refs.ref_imagen_capacitacion.value = ''
                 this.buscarDocumentos('Capacitacion')
+            }else if(tipo_archivo === 'EvidenciaFoto'){
+                this.$refs.ref_imagen_EvidenciaFoto.value = ''
+                this.buscarDocumentos('EvidenciaFoto','','','ActualizaPosicion')
             }
 
 
@@ -1316,6 +1374,7 @@ const app = {
             console.log(response)
 
             if(tipo_archivo === 'Presentacion'){
+              console.log("presentacion")
               if (response.data == "Archivo Eliminado") {
                 alert("Archivo/Documento Eliminado con Éxito")
                 this.buscarDocumentos('Presentacion')
@@ -1325,6 +1384,7 @@ const app = {
                 alert("Error al eliminar el Documento.")
               }
             }else if(tipo_archivo === 'Capacitacion'){
+              console.log("capacitacion")
               if (response.data == "Archivo Eliminado") {
                 alert("Archivo/Documento Eliminado con Éxito")
                //this.consultarCapacitacion();
@@ -1334,6 +1394,19 @@ const app = {
               } else {
                 alert("Error al eliminar el Documento.")
               }
+            }else if(tipo_archivo === 'EvidenciaFoto'){
+              console.log("ruta", ruta)
+              console.log(tipo_archivo, "archivo")
+              console.log(response.data,"evidenciafoto")
+              if (response.data == "Archivo Eliminado") {
+                alert("Fotografía Eliminada con Éxito")
+                this.buscarDocumentos('EvidenciaFoto','','','ActualizaPosicion')
+              } else if (response.data == "No Eliminado") {
+                alert("Algo no salio bien no se logro Eliminar.")
+              } else {
+                alert("Error al eliminar la fotografía.")
+              }
+ 
             }
             
           }).catch(error => {
@@ -2590,6 +2663,46 @@ const app = {
       });
     },
 //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
+    modalEvFoto(fecha,index,area){
+      this.posicion = index  
+      this.fecha_ruta = fecha
+      this.areaDocumento = area
+      this.fechaFoto = fecha
+
+      console.log("Metodo foto");
+      this.myModal = new bootstrap.Modal(document.getElementById('modalEvFoto'));
+      this.myModal.show();
+      this.buscarDocumentos("EvidenciaFoto",'', '');
+    },
+
+    /* uploadFoto(tipo_archivo){
+      console.log("LLEGASTE AL UPLOAD")
+      let fileInput = document.getElementById('fileInput');
+      console.log("fileInput", fileInput);
+      
+
+      let file = fileInput.files[0]; // Obtener el archivo seleccionado
+      if (!file) {
+          alert("Por favor, selecciona un archivo.");
+          return;
+      }
+      console.log("file", file);
+      
+
+      // Validar si el archivo es una imagen PNG, JPG o JPEG
+      console.log("TIPO ARCHIVO",file.type)
+      const validTypes = ['image/png', 'image/jpeg'];
+      if (!validTypes.includes(file.type)) {
+          alert("Por favor, selecciona una imagen en formato PNG o JPG.");
+          return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+
+
+    }, */
     modalDocumentoCapacitacion(fecha,index,area) {
       
       if(fecha == ''){
@@ -2670,8 +2783,14 @@ const app = {
           this.cantidadDocumentos = []
            for (let index = 0; index < this.capacitaciones.length; index++) {
             this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha,this.capacitaciones[index].area)//busco la cantidad de archivos que contiene cada capacitacion.
-           } 
           
+          
+          } 
+            for (let index = 0; index < this.capacitaciones.length; index++) {
+            this.buscarDocumentos('EvidenciaFoto',this.capacitaciones[index].fecha,this.capacitaciones[index].area,'llenadoInicial')//busco la cantidad de archivos que contiene cada capacitacion.
+          
+          
+          } 
         } else {
           console.log("Error en la consulta" + response.data);
         }
@@ -3342,20 +3461,20 @@ const app = {
     },
     comprobando(dia){
       if(this.tipo_usuario == 'Colaborador'){
-                if(this.habilitar==false){
-                  console.log("FALSE ")
+        if(this.habilitar==false){
+          console.log("FALSE ")
+          return false
+        }else{
+          let fechaLimite = this.diaActual - 7;
+          if(this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero){
+                if(dia > fechaLimite){
                   return false
                 }else{
-                  let fechaLimite = this.diaActual - 7;
-                  if(this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero){
-                        if(dia > fechaLimite){
-                          return false
-                        }else{
-                          return true
-                        }
-                  }else{
-                    return true
-                  }
+                  return true
+                }
+          }else{
+            return true
+          }
         }
       }else{
         return false
