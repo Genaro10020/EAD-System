@@ -1180,7 +1180,7 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenado) {
+    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenado,index) {
       console.log("Tipo archivo"+tipo_archivo,"Area: "+area)
       var id_equipo = ''
       var fecha_ruta =''
@@ -1193,26 +1193,34 @@ const app = {
       }else if(tipo_archivo === 'Por Fecha'){
         fecha_ruta = fecha_por_capacitacion
       }else if(tipo_archivo === 'EvidenciaFoto'){
-            if(this.fecha_ruta=='' && this.areaDocumento==''){
+        if(fecha_por_capacitacion!='' && area!=''){
                 fecha_ruta = fecha_por_capacitacion
                 area = area
-                console.log("ENTRE A COND 1", fecha_ruta)
-            }else{
-               fecha_ruta = this.fecha_ruta
+                console.log("ENTRE A COND 1")
+            }else if(this.fecha_ruta=='' && this.areaDocumento==''){
+                fecha_ruta = fecha_por_capacitacion
+                area = area
+                 console.log("ENTRE A COND 2")
+                //console.log("ENTRE A COND 1", fecha_ruta)
+            }else if (this.fecha_ruta!='' && this.areaDocumento!=''){
+                fecha_ruta = this.fecha_ruta
                 area =  this.areaDocumento
-                console.log("ENTRE A COND 2", fecha_ruta)
+                 console.log("ENTRE A COND 3")
+            }else{
+                return alert("Faltan datos para buscar las fotos de evidencia.")
             }
-        
       }else{
         return "No me llego ese tipo de documento."
       }
       
+     
       axios.post("buscar_documentos.php", {
         tipo_archivo: tipo_archivo,
         fecha_ruta: fecha_ruta,
         id_equipo: id_equipo,
         area:area
       }).then(response => {
+         console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta,"area:", area)
          console.log("Buscando documentos",response.data);
         if(tipo_archivo === 'Presentacion'){
           this.documento_session = response.data
@@ -1253,14 +1261,14 @@ const app = {
           ///////////////////////////////////////////////////
           this.foto_capacitacion = response.data
           if (this.foto_capacitacion.length > 0) {
-            console.log(this.foto_capacitacion + "Archivos encontrados.")
+            //console.log(this.foto_capacitacion + "Archivos encontrados.")
             this.random = Math.random()
           } else {
-            console.log(this.foto_capacitacion + "Sin imagen encontrada.")
+            //console.log(this.foto_capacitacion + "Sin imagen encontrada.")
           }
 
          if(llenado=='llenadoInicial'){
-            this.cantidadFotos.push(this.foto_capacitacion.length)
+            this.cantidadFotos[index] =this.foto_capacitacion.length
             console.log("hola llenado inicial", this.cantidadFotos)
           }else if(llenado=='ActualizaPosicion'){
             this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
@@ -2775,6 +2783,7 @@ const app = {
             this.comentarios_capacitacion = '';  // Limpiar campo comentarios
             this.nuevos_ingresos = '';           // Limpiar campo ingresos
             this.fecha_capacitacion = '';        // Limpiar campo fecha
+            this.fecha_ruta = ''
             this.consultarCapacitacion();
             this.nueva_capacitacion = false
             this.editarCapacitacion = false
@@ -2796,6 +2805,7 @@ const app = {
       }).then(response => {
         console.log('Capacitaciones', response.data)
         if (response.data[0] == true) {
+         
           this.capacitaciones = response.data[1];
           this.cantidadDocumentos = [];
           this.cantidadFotos = [];
@@ -2805,9 +2815,7 @@ const app = {
           
           } 
           for (let index = 0; index < this.capacitaciones.length; index++) {
-            this.buscarDocumentos('EvidenciaFoto',this.capacitaciones[index].fecha,this.capacitaciones[index].area,'llenadoInicial')//busco la cantidad de archivos que contiene cada capacitacion.
-          
-          
+            this.buscarDocumentos('EvidenciaFoto',this.capacitaciones[index].fecha,this.capacitaciones[index].area,'llenadoInicial',index)//busco la cantidad de archivos que contiene cada capacitacion.
           } 
         } else {
           console.log("Error en la consulta" + response.data);

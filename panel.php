@@ -1250,8 +1250,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>-->
                     <div  class="row">
                         <div class="col-12">
-                            {{fecha_ruta}}
-                            area:{{areaDocumento}}
                             <div class="scroll6 col-12" style="font-size:0.8em">
                                 <table class="table mt-2 ">
                                     <thead>
@@ -1306,12 +1304,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <input v-model="comentarios_capacitacion" type="text" class="form-control" />
                                             </td>
                                         </tr>
-                                        {{cantNewFoto}}<BR>
-                                        {{documento_capacitacion}}<BR>
-
-                                        {{cantidadFotos}}<br>
-                                        {{cantidadDocumentos}}<BR>
-                                        {{posicion_canti_doc}}
                                         <tr v-for= "(capacitacion,index) in capacitaciones " :class="editarCapacitacion === index ? 'table-warning' : ''">
                                             <td class="text-center">
                                                 <button  v-if="editarCapacitacion===index" @click="cancelarEditar()" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-x-lg"></i> Cancelar </button>
