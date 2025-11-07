@@ -1250,6 +1250,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>-->
                     <div  class="row">
                         <div class="col-12">
+                            {{fecha_ruta}}
+                            area:{{areaDocumento}}
                             <div class="scroll6 col-12" style="font-size:0.8em">
                                 <table class="table mt-2 ">
                                     <thead>
@@ -1273,6 +1275,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </thead>
                                     <tbody>
                                         <tr v-show="nueva_capacitacion == true" class="table-success">
+                                            
                                             <td class="text-center" style="width: 200px;">
                                                 <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCapacitacion()"> <i class="bi bi-x-lg"></i> Cancelar</button>
                                                 <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
@@ -1285,13 +1288,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             }
                                             ?>
                                             <td>
-                                                <input v-model="fecha_capacitacion" type="date" class="form-control" @change="buscarDocumentos('Por Fecha',fecha_capacitacion)" />
+                                                <input v-model="fecha_capacitacion" type="date" class="form-control" @change="buscarDocumentos('Por Fecha',fecha_capacitacion), buscarDocumentos('EvidenciaFoto',fecha_capacitacion)" />
                                             </td>
                                             <td>
                                                 <input v-model="nuevos_ingresos" type="text" class="form-control" />
                                             </td>
                                             <td class="text-center">
                                                 <button class="btn btn-primary btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(fecha_capacitacion)" :class="cantNewDoc>0 ? 'bg-success': ''"> <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantNewDoc}})</button>
+                                            </td>
+                                            <td class="text-center">
+                                                <button class="btn btn-primary btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="modalEvFoto(fecha_capacitacion)" :class="cantNewFoto>0 ? 'bg-success': ''"> <i class="bi bi-file-earmark-arrow-up"></i> Foto/s ({{cantNewFoto}})</button>
                                             </td>
                                             <td>
                                                 <input v-model="capacitacion_impartida" type="text" class="form-control" disabled/>
@@ -1300,7 +1306,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <input v-model="comentarios_capacitacion" type="text" class="form-control" />
                                             </td>
                                         </tr>
-                                            {{documento_capacitacion}}
+                                        {{cantNewFoto}}<BR>
+                                        {{documento_capacitacion}}<BR>
+
+                                        {{cantidadFotos}}<br>
                                         {{cantidadDocumentos}}<BR>
                                         {{posicion_canti_doc}}
                                         <tr v-for= "(capacitacion,index) in capacitaciones " :class="editarCapacitacion === index ? 'table-warning' : ''">

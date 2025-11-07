@@ -168,9 +168,11 @@ const app = {
       editarCapacitacion: false,
       posicion_canti_doc:'',
       cantNewDoc: 0,
+      cantNewFoto: 0,
       areaDocumento:'',
-      fechaFoto: '',
+     /*  fechaFoto: '', */
       posicion: '',
+      llenado: '',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -1178,7 +1180,7 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenadoInicial) {
+    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenado) {
       console.log("Tipo archivo"+tipo_archivo,"Area: "+area)
       var id_equipo = ''
       var fecha_ruta =''
@@ -1191,13 +1193,14 @@ const app = {
       }else if(tipo_archivo === 'Por Fecha'){
         fecha_ruta = fecha_por_capacitacion
       }else if(tipo_archivo === 'EvidenciaFoto'){
-            if(this.fechaFoto=='' && this.areaDocumento==''){
+            if(this.fecha_ruta=='' && this.areaDocumento==''){
                 fecha_ruta = fecha_por_capacitacion
                 area = area
-                console.log("fecha_ruta", fecha_ruta)
+                console.log("ENTRE A COND 1", fecha_ruta)
             }else{
-               fecha_ruta = this.fechaFoto
+               fecha_ruta = this.fecha_ruta
                 area =  this.areaDocumento
+                console.log("ENTRE A COND 2", fecha_ruta)
             }
         
       }else{
@@ -1229,49 +1232,47 @@ const app = {
             console.log(this.documento_capacitacion + "Sin imagen encontrada.")
           }
 
-         if(isNum(this.posicion_canti_doc)){
-          console.log("HOLAAAAAAAAAAAAAAAAAAA")
+         if(this.posicion_canti_doc || this.posicion_canti_doc === 0){
             this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length
-          }else{
-            console.log("VACIOOOOOOOOOOOOOO"+this.posicion_canti_doc)
           }
-
 
          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
               this.cantNewDoc=this.documento_capacitacion.length
           }
 //////////////////////////////////////////  ***
         }else if(tipo_archivo === 'Por Fecha'){
-          
-           if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
-              this.cantNewDoc=response.data.length
+          console.log("Entrando apor fecha",response.data)
+          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
+            this.cantNewDoc=response.data.length
           }else{
             this.cantidadDocumentos.push(response.data.length)
             console.log("Cantidad docs",this.cantidadDocumentos)
           }
+          
         }else if(tipo_archivo === 'EvidenciaFoto'){
           ///////////////////////////////////////////////////
-        
-   
-            this.foto_capacitacion = response.data
-
-                if (this.foto_capacitacion.length > 0) {
-                  console.log(this.foto_capacitacion + "Archivos encontrados.")
-                  this.random = Math.random()
-                  
-                } else {
-                  console.log(this.foto_capacitacion + "Sin imagen encontrada.")
-                }
-
-          if(llenadoInicial=='llenadoInicial'){
-            this.cantidadFotos.push(this.foto_capacitacion.length)
-          }else if(llenadoInicial=='ActualizaPosicion'){
-               this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
+          this.foto_capacitacion = response.data
+          if (this.foto_capacitacion.length > 0) {
+            console.log(this.foto_capacitacion + "Archivos encontrados.")
+            this.random = Math.random()
+          } else {
+            console.log(this.foto_capacitacion + "Sin imagen encontrada.")
           }
-         
 
-          ///////////////////////////////////////////////////////////////
+         if(llenado=='llenadoInicial'){
+            this.cantidadFotos.push(this.foto_capacitacion.length)
+            console.log("hola llenado inicial", this.cantidadFotos)
+          }else if(llenado=='ActualizaPosicion'){
+            this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
+          }
+
+          
+          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
+            this.cantNewFoto=this.foto_capacitacion.length//response.data.length
+          }
         }
+          
+        
         
       })
         .catch(error => {
@@ -1291,15 +1292,19 @@ const app = {
       }else if (tipo_archivo === 'Capacitacion'){
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
-         formData.append("area", this.areaDocumento);
+        if(this.nueva_capacitacion == false){
+          formData.append("area", this.areaDocumento);
+        }
         var files = this.$refs.ref_imagen_capacitacion.files;
         var totalfiles = this.$refs.ref_imagen_capacitacion.files.length;
       }
       else if (tipo_archivo === 'EvidenciaFoto'){
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
-        formData.append("area", this.areaDocumento);/* 
-        formData.append("file", file); */
+        if(this.nueva_capacitacion == false){
+          formData.append("area", this.areaDocumento);
+        }
+       /*formData.append("file", file); */
         var files = this.$refs.ref_imagen_EvidenciaFoto.files;
         var totalfiles = this.$refs.ref_imagen_EvidenciaFoto.files.length;
         
@@ -2664,15 +2669,19 @@ const app = {
     },
 //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha,index,area){
-      this.posicion = index  
-      this.fecha_ruta = fecha
-      this.areaDocumento = area
-      this.fechaFoto = fecha
+      if(fecha == ''){
+        alert('Favor de seleccionar una fecha antes de subir su documento.')
+      }else{
+        this.posicion = index  
+        this.fecha_ruta = fecha
+        this.areaDocumento = area/* 
+        this.fechaFoto = fecha */
 
-      console.log("Metodo foto");
-      this.myModal = new bootstrap.Modal(document.getElementById('modalEvFoto'));
-      this.myModal.show();
-      this.buscarDocumentos("EvidenciaFoto",'', '');
+        console.log("Metodo foto");
+        this.myModal = new bootstrap.Modal(document.getElementById('modalEvFoto'));
+        this.myModal.show();
+        this.buscarDocumentos("EvidenciaFoto",'', '');
+      }
     },
 
     /* uploadFoto(tipo_archivo){
@@ -2724,6 +2733,12 @@ const app = {
       this.capacitacion_impartida = ''
       this.comentarios_capacitacion = ''
       this.cantNewDoc= 0
+      this.cantNewFoto = 0
+
+
+      this.fecha_ruta = ''
+      this.areaDocumento = ''
+
 
       /*this.agregar_compromiso = true;
       this.compromiso = ''
@@ -2741,7 +2756,9 @@ const app = {
           this.fecha_capacitacion = document.getElementById('capacitacionFecha'+index).value;
           this.comentarios_capacitacion =document.getElementById('capacitacionComentario'+index).value;
       }
-      if (this.nuevos_ingresos == '' || this.fecha_capacitacion == '' || this.comentarios_capacitacion == '') { return alert("Todos los campos de compromiso son requeridos.") }
+      if (this.nuevos_ingresos == '' || this.fecha_capacitacion == '' || this.comentarios_capacitacion == '') { 
+        return alert("Todos los campos de compromiso son requeridos.")
+      }
       axios.post("capacitacionesController.php", {
         id:id,
         accion:accion,
@@ -2780,13 +2797,14 @@ const app = {
         console.log('Capacitaciones', response.data)
         if (response.data[0] == true) {
           this.capacitaciones = response.data[1];
-          this.cantidadDocumentos = []
-           for (let index = 0; index < this.capacitaciones.length; index++) {
+          this.cantidadDocumentos = [];
+          this.cantidadFotos = [];
+          for (let index = 0; index < this.capacitaciones.length; index++) {
             this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha,this.capacitaciones[index].area)//busco la cantidad de archivos que contiene cada capacitacion.
           
           
           } 
-            for (let index = 0; index < this.capacitaciones.length; index++) {
+          for (let index = 0; index < this.capacitaciones.length; index++) {
             this.buscarDocumentos('EvidenciaFoto',this.capacitaciones[index].fecha,this.capacitaciones[index].area,'llenadoInicial')//busco la cantidad de archivos que contiene cada capacitacion.
           
           
