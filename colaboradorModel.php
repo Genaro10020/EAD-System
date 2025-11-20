@@ -64,12 +64,14 @@ include("conexionBDSugerencias.php");
         global $conexion;
         $equipo_ead_grafica = NULL;
         $id_criterio = NULL;
-        $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead_grafica = ?, id_grafica_acceso = ? WHERE id = ? AND equipo_ead_grafica=?";
+        $null = NULL;
+        $vacio = "";
+        $update = "UPDATE usuarios_colocaboradores_sugerencias SET equipo_ead=?, lider_ead=?, equipo_ead_grafica = ?, id_grafica_acceso = ? WHERE id = ? AND equipo_ead=?";
         $stmt = $conexion->prepare($update);
         if(!$stmt){
             return $conexion->error;
         }
-        $stmt->bind_param("ssii", $equipo_ead_grafica,$id_criterio,$id_integrante,$id_ead);
+        $stmt->bind_param("ssssii",$null,$vacio,$equipo_ead_grafica,$id_criterio,$id_integrante,$id_ead);
         if($stmt->execute()){
             return true;
         }else{
