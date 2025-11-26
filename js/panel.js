@@ -356,6 +356,8 @@ const app = {
       anioConsultar:'',
       areaConsultar:'',
       guardoNuevoDato:false,
+      esLider: '',
+      seguimiento: false,
       //PUNTAJES POR MES Y ANIO DE BATEO
       mes_bateo:'',
       anio_bateo:'',
@@ -434,7 +436,13 @@ const app = {
         } else if (response.data[0] == "Colaborador") {
           this.ventanas('Graficas');
           this.consultarEADColaborador()
-        } else {
+        }else if (response.data[0] == "ColaboradorLider") {
+          this.ventanas('ScoreCard');
+          this.consultarEADLider();
+          this.esLider = 'ColaboradorLider';
+          this.consultarSeguimientoAsistencia();
+          this.consultarScoreCard();
+        }  else {
           //Admin
         }
       }).catch(error => {
@@ -721,6 +729,16 @@ const app = {
         alert("Axios error :-(" + error)
       })
     },
+
+    redireccionar(opciones) { //btn para ir al menu principal
+      
+      if (opciones == 'Atras') {
+        console.log("Atras")
+        window.location.href = "../Sugerencia/principalColaborador.php"
+      }
+
+    },
+
     /*/////////////////////////////////////////////////////////////////////////////////CREACIÓN DE EQUIPOS DE ALTO DESEMPEÑO */
     consultarEAD() {
       axios.post("crud_ead.php", {
@@ -743,6 +761,29 @@ const app = {
           } else {
             console.log("no se logro consultar los Integrantes EAD")
           }
+        }
+      }).catch(error => {
+        console.log("Error en la consulta :-( " + error)
+      }).finally(() => {
+
+      })
+    },
+    consultarEADLider() {
+      axios.post("crud_ead.php", {
+        accion: 'consultarRegistroLider'
+      }).then(response => {
+        //console.log("Consulta EAD",response.data)
+        if (response.data[0] == true) {
+          console.log("Entre", response.data[1][0])
+          this.consultaEAD = response.data[1] 
+
+          if (this.consultaEAD.length > 0) {
+            const equipo = this.consultaEAD[0];
+            this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
+            
+            
+          }
+
         }
       }).catch(error => {
         console.log("Error en la consulta :-( " + error)

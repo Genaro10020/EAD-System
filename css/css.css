@@ -761,6 +761,13 @@ button {
     padding: 5px;
 }
 
+.color-disabled{
+    background: #ffffff59;
+    color: #00000059;
+    font-weight: bold;
+    border: solid #c0bfbf 1px;
+    font-size: 12px;
+}
 
 .columna-color-criterios {
     background: linear-gradient(0deg, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 0%, rgb(226, 226, 226) 100%);
@@ -867,6 +874,24 @@ button {
 .seccion2 {
     font-size: 0.9em;
 }
+
+.btn_principal_coloborador {
+    border-radius: 100px;
+    height: 50px;
+    width: 50px;
+    box-shadow: 0px 0px 2px black;
+    background-color: rgb(158, 0, 0);
+
+}
+
+.btn_principal_coloborador:hover {
+    border-radius: 100px;
+    height: 50px;
+    width: 50px;
+    box-shadow: 0px 0px 10px rgb(0, 0, 0);
+    background-color: rgb(35, 54, 226);
+}
+
 
 /*////////////////////// FINALIZA MENU PRINCIPAL */
 

@@ -74,9 +74,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <div class="col-6">
                                     <label style="font-size: 0.7em"> <?php echo $_SESSION['nombre']; ?> (<?php echo $_SESSION['tipo_acceso']; ?>) </label>
                                 </div>
-                                <div class="col-6">
-                                    <a href="index.php"><button class="btn btn-danger btn-salir  rounded-pill border-0 mt-0 py-0"><i class="bi bi-door-closed"></i> Salir</button></a>
-                                </div>
+                                <!-- holichi -->
+
+                                <?php if($_SESSION['tipo_acceso']=='ColaboradorLider'){ ?>
+                                    <!-- <div class="col-6">
+                                        <a href="index.php"><button class="btn btn-danger btn-salir  rounded-pill border-0 mt-0 py-0"><i class="bi bi-door-closed"></i> Salir</button></a>
+                                    </div> -->
+                                <?php } else { ?>
+                                    <div class="col-6">
+                                        <a href="index.php"><button class="btn btn-danger btn-salir  rounded-pill border-0 mt-0 py-0"><i class="bi bi-door-closed"></i> Salir</button></a>
+                                    </div>
+                                <?php } ?>
+
                             </div>
                         </div>
                     </div>
@@ -1968,8 +1977,15 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div>
                             <span class="mx-2">Equipo: </span>
                             <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                                <option value="" disabled>Seleccione...</option>
-                                <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion">{{equipos[0].nombre_ead}}</option>
+                                
+                                
+                                <?php if($_SESSION['tipo_acceso']=='ColaboradorLider'){ ?>
+                                    <option v-for="equipos in consultaEAD" :value="equipos.id+'<->'+equipos.nombre_ead+'<->'+equipos.planta+'<->'+equipos.area+'<->'+equipos.id_ponderacion">{{equipos.nombre_ead}}</option><!-- :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion" --><!-- {{equipos[0].nombre_ead}} -->
+                                <?php } else { ?>
+                                    <option value="" disabled>Seleccione...</option>
+                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion">{{equipos[0].nombre_ead}}</option><!-- :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion" --><!-- {{equipos[0].nombre_ead}} -->
+                                <?php } ?>
+                                <!-- VERIFICA CMO AGREGAR CONDICION DE TIPO DE CCESO EN LAS OPCIONES DE ESTE SELECT -->
                             </select>
                         </div>
                         <div>
@@ -2041,7 +2057,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <label v-else-if="criterio.tipo!='Input' && criterio.id_criterios!=10 ">
                                                 <span class="badge bg-danger text-white">Sin valores en gráfica</span>
                                             </label>
-                                            <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)"></input>
+                                            <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" :disabled = "esLider == 'ColaboradorLider'" :class = "esLider == 'ColaboradorLider' ? 'color-disabled':'' "></input>
                                             <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                         </td>
                                         <!--Columna Puntos Obtenidos-->
@@ -2076,8 +2092,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <!--Columna Ponderacion-->
                                         <td :class="puntosEvaluacion[criterio.id_criterios] || puntosEvaluacion[criterio.id_criterios]===0 ? 'columna-color-una':''">
                                             <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
-                                                <button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>
-                                                <input v-show="inputPonderacionSC===(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class="form-control text-center" type="text" />
+                                                <!--<button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input" :disabled = "esLider == 'ColaboradorLider'" :class = "esLider == 'ColaboradorLider' ? 'color-disabled':'' ">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>-->
+                                                <input @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class=" text-center" :disabled = "esLider == 'ColaboradorLider'" :class = "esLider == 'ColaboradorLider' ? 'color-disabled':'' "></input>
                                             </label>
                                         </td>
                                         <td :class="puntosEvaluacion[criterio.id_criterios]>=0 ? 'columna-color-cuatro':''"><!--Puntos Evaluados-->
@@ -2093,6 +2109,24 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </tr>
                                 </tbody>
                             </table>
+                            <?php if($_SESSION['tipo_acceso']=='ColaboradorLider'){ ?>
+
+
+                                <div id="opciones" style="min-height:5vh; max-height:5vh;" class=" d-flex align-items-center justify-content-center ">
+                                    <div class="row text-center mb-2 d-flex justify-content-center align-items-center">
+                                        <div  v-if="seguimiento==false" @click="redireccionar('Atras')" class="btn_principal_coloborador text-center col-12 d-flex align-items-center justify-content-center" style="cursor: pointer">
+                                            <div> <img src="img/app_atras.png" class="img-fluid" alt="..." style=" width: 50px;"></div>
+                                        </div>
+                                        <!-- <div v-else @click="seguimiento=false" class="btn_principal_coloborador text-center col-12 d-flex align-items-center justify-content-center" style="cursor: pointer">
+                                            <div> <img src="img/app_atras.png" class="img-fluid" alt="..." style=" width: 50px;"></div>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+
+                            <?php } else { ?>
+                                
+                            <?php } ?>
                         </div>
                     </div>
                 </div> <!--FIN SCORECARD-->

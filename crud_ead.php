@@ -64,7 +64,7 @@ if (isset($_SESSION['nombre'])) {
         $validaciones[0] = false;
     }
     break;
-    case 'consutarEAD':
+    case 'consutarEAD'://Solicitado desde Sugerencias
         $id_ead=$arreglo['id_ead'];
         $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
         $result = $conexion->query($consulta);
@@ -96,7 +96,6 @@ if (isset($_SESSION['nombre'])) {
             $validaciones[0] = false;
         }
     break;
-    break;
     case 'consultarEADColaborador':
         $id_equipo=$_SESSION['id_equipo'];
         $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
@@ -120,6 +119,7 @@ if (isset($_SESSION['nombre'])) {
         $stmt->close();
         $result->close();
     break;
+    
     case 'consultarPlantasEADs':
           //$PlantasAreasEADs['areas'][] = $row['area'];
             //$PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
@@ -136,23 +136,45 @@ if (isset($_SESSION['nombre'])) {
             $validaciones[0] = $conexion->error;
         }
     break;
-    case 'consultarAreasEADs':
-        //$PlantasAreasEADs['areas'][] = $row['area'];
-          //$PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
-      $planta=$arreglo['planta'];
-      $consulta = "SELECT area FROM equipos_ead WHERE planta='$planta'";
-      $result = $conexion->query($consulta);
-      if ($result) {
-          foreach ($result as $row) {
-              $PlantasAreasEADs['areas'][] = $row['area'];
-             
-          }
-          $PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
-          $validaciones[0] = true;
-      } else {
-          $validaciones[0] = $conexion->error;
-      }
-  break;
+    case 'consultarRegistroLider':
+       $id_equipo=$_SESSION['id_ead'];
+        $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
+        $stmt = $conexion->prepare($consulta);
+        if(!$stmt){
+                $validaciones = $conexion->error;
+            }else{
+            $stmt->bind_param("i", $id_equipo);
+            if($stmt->execute()){
+                $validaciones = true;
+                    $result = $stmt->get_result();
+                    if($result){
+                            if($fila= $result->num_rows>0){
+                                $equipos[] = $result->fetch_assoc();
+                            }
+                    }
+            }else{
+                $validaciones = $stmt->error;
+            }
+        }
+        $stmt->close();
+        $result->close();
+    break;  
+    case 'consultarPlantasEADs':
+          //$PlantasAreasEADs['areas'][] = $row['area'];
+            //$PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
+        $consulta = "SELECT planta FROM equipos_ead";
+        $result = $conexion->query($consulta);
+        if ($result) {
+            foreach ($result as $row) {
+                $PlantasAreasEADs['plantas'][] = $row['planta'];
+               
+            }
+            $PlantasAreasEADs['plantas'] = array_unique($PlantasAreasEADs['plantas']);
+            $validaciones[0] = true;
+        } else {
+            $validaciones[0] = $conexion->error;
+        }
+    break;
         case 'insertar':
             $nombre = $arreglo['nombre'];
             $planta = $arreglo['planta'];

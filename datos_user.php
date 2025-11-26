@@ -10,7 +10,9 @@ if(isset($_SESSION['nombre'])){
             $resultado[] =  $_SESSION['tipo_usuario'];
         }else if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=="Evaluador"){ //enfocado a Evaluadores
             $resultado[] =  $_SESSION['tipo_acceso'];
-        }if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=="Colaborador"){
+        }else if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=="Colaborador"){
+            $resultado[] =  $_SESSION['tipo_acceso'];
+        }if(isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=="ColaboradorLider"){
             $resultado[] =  $_SESSION['tipo_acceso'];
         }else{
             $resultado[] = "No existe ese tipo";
