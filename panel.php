@@ -1266,10 +1266,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <th scope="col" class="text-center"><button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="nuevaCapacitaciones()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nueva Capacitacion</button></th>
                                             <th scope="col" class="text-center">Área</th>
                                             
-                                            <?php if($_SESSION['tipo_usuario']=="Admin")
+                                            <?php if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] =="Admin")
                                             {  
                                             ?>
-                                            <th scope="col" class="text-center">Fecha de capacitacion</th>
+                                                <th scope="col" class="text-center">Fecha de capacitacion</th>
                                             <?php
                                             }
                                             ?>
@@ -1287,7 +1287,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCapacitacion()"> <i class="bi bi-x-lg"></i> Cancelar</button>
                                                 <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
                                             </td>
-                                            <?php if($_SESSION['tipo_usuario']=="Admin")
+                                            <?php if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] =="Admin")
                                             {  
                                             ?>
                                                 <td ></td>
@@ -1320,7 +1320,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button  v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-floppy-fill"></i> Guardar </button>
                                                 
                                             </td>
-                                            <?php if($_SESSION['tipo_usuario']=="Admin")
+                                            <?php if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] =="Admin")
                                             {  
                                             ?>
                                                 <td>
@@ -1708,7 +1708,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <div class="col-1 w-auto p-2"><button v-if="inputNewName==tablaPonderacion.id_ponderacion" class="me-1 mt-1 btn btn-secondary px-1 py-0" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)"><i class="bi bi-x-square"></i></button></div>
                                         <div class="col-2 w-auto p-2"><input :id="'inputNombre'+indexTablaPonderacion" v-if="inputNewName==tablaPonderacion.id_ponderacion" class="form-control" type="text" :value="tablaPonderacion.ponderacion" @keyup.enter="actualizarNombrePonderacion(indexTablaPonderacion,tablaPonderacion.id_ponderacion)" /></div>
                                         <div class="col-2 p-2"> 
-                                            <?php if($_SESSION['tipo_usuario']=='Admin'){ ?>
+                                            <?php if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] =="Admin"){ ?>
                                                 <span class="badge bg-primary  text-bold"> ({{tablaPonderacion.nombreArea}}) </span><br>
                                             <?php } ?>
                                             <span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span></div>
@@ -1719,7 +1719,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <div    v-if="tablaPonderacion.area == 0">
                                                     <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class=" d-inline form-control select ms-3">
                                                         <option disabled default value="">Seleccione Área</option>
-                                                        <option> <?php echo $_SESSION['area'];?> </option>
+                                                        <option> <?php echo isset($_SESSION['area']);?> </option>
                                                     </select>
                                                     <span class="d-inline badge bg-danger mt-2 ms-1">Dar clic y seleccionar su área en caso de que esta ponderación le pertenezca.</span>
                                         </div>

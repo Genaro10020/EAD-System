@@ -772,17 +772,11 @@ const app = {
       axios.post("crud_ead.php", {
         accion: 'consultarRegistroLider'
       }).then(response => {
-        //console.log("Consulta EAD",response.data)
-        if (response.data[0] == true) {
-          console.log("Entre", response.data[1][0])
-          this.consultaEAD = response.data[1] 
-
-          if (this.consultaEAD.length > 0) {
-            const equipo = this.consultaEAD[0];
-            this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
-            
-            
-          }
+        console.log("Consulta EAD",response.data)
+        if (response.data[0][0] == true) {
+          this.consultaEAD = response.data[1]; 
+          const equipo = this.consultaEAD[0];
+          this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
 
         }
       }).catch(error => {

@@ -145,7 +145,7 @@ if (isset($_SESSION['nombre'])) {
             }else{
             $stmt->bind_param("i", $id_equipo);
             if($stmt->execute()){
-                $validaciones = true;
+                $validaciones[0] = true;
                     $result = $stmt->get_result();
                     if($result){
                             if($fila= $result->num_rows>0){
@@ -153,7 +153,7 @@ if (isset($_SESSION['nombre'])) {
                             }
                     }
             }else{
-                $validaciones = $stmt->error;
+                $validaciones[0] = $stmt->error;
             }
         }
         $stmt->close();
