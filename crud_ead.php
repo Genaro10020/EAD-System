@@ -96,6 +96,23 @@ if (isset($_SESSION['nombre'])) {
             $validaciones[0] = false;
         }
     break;
+    case 'consultarAreasEADs':
+        //$PlantasAreasEADs['areas'][] = $row['area'];
+          //$PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
+      $planta=$arreglo['planta'];
+      $consulta = "SELECT area FROM equipos_ead WHERE planta='$planta'";
+      $result = $conexion->query($consulta);
+      if ($result) {
+          foreach ($result as $row) {
+              $PlantasAreasEADs['areas'][] = $row['area'];
+             
+          }
+          $PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);
+          $validaciones[0] = true;
+      } else {
+          $validaciones[0] = $conexion->error;
+      }
+  break;
     case 'consultarEADColaborador':
         $id_equipo=$_SESSION['id_equipo'];
         $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
