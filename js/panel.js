@@ -3,6 +3,7 @@ const app = {
   data() {
     return {
       verMenu: 'Si',
+      menuAbierto: false,
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
       var_actualizarEAD: false,
       tipo_usuario: '',
@@ -369,7 +370,6 @@ const app = {
       totalCumplieron: [],
       porcentajePorMes: [],
       minimoCumplimiento: 70,
-     
     }
   },
   mounted() {
@@ -382,6 +382,10 @@ const app = {
     this.obtenerFecha()
   },
   methods: {
+    toggleMenu(){
+      console.log("hola togglr");
+      this.menuAbierto = !this.menuAbierto;
+    },
     cerrarModalHistorial() {
       this.myModal.hide();
     },

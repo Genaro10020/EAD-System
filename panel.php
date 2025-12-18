@@ -20,30 +20,30 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                     ?>
                         <div v-show="verMenu=='Si'" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
-                            <p class="dropbtn text-white" style="max-height:10px;">
+                            <button class="dropbtn text-white" style="max-height:10px;" @click="toggleMenu">
                                 <i class="bi bi-list me-5">Menú</i>
-                            </p>
-                            <div class="dropdown-content">
+                            </button>
+                            <div class="dropdown-content" :class="{ 'show': menuAbierto }"><!-- class="dropdown-content" -->
                                 <?php
                                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
                                     if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                                 ?>
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
-                                    <a><button class="btn_menu" @click="ventanas('Departamentos')"><b>Departamentos</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Usuarios')"><b>Usuarios</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Departamentos'), toggleMenu()"><b>Departamentos</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Usuarios'), toggleMenu()"><b>Usuarios</b></button></a>
                                     <?php } ?>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio()"><b> Gestion de Sesiones</b></button></a>
-                                    <a><button class= "btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion()"><b>Capacitaciones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
+                                    <a><button class= "btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
                                     <?php
                                     if ($_SESSION['tipo_usuario'] == 'Admin') {
                                     ?>
                                         <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
-                                        <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas()"><b> Preguntas</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas(), toggleMenu()"><b> Preguntas</b></button></a>
                                         <a><i class="bi bi-trophy-fill"> Competencias</i></a>
-                                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos()"><b>Foros</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Crear Competencia'),cosultarEADxPlantaxArea(),consultarPlantasEADs(),consultarEvaludores(),consultarForos(), toggleMenu()"><b>Foros</b></button></a>
                                         <!--<a><button class="btn_menu" @click="ventanas('CrearCompetenciaPlanta')"><b>Crear comp. planta </b></button></a>-->
                                         <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                         <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
@@ -52,11 +52,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <?php }
                                     if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
                                     ?>
-                                        <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD()"><b>Ponderación</b></button></a>
-                                        <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios()"><b>Graficas</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD(), toggleMenu()"><b>Ponderación</b></button></a>
+                                        <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios(), toggleMenu()"><b>Graficas</b></button></a>
                                     <?php } ?>
-                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard()"><b>Scorecard</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos()"><b>Puntos</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos(), toggleMenu()"><b>Puntos</b></button></a>
                                 <?php
                                 }
                                 ?>

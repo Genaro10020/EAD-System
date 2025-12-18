@@ -795,10 +795,17 @@ button {
 
 /*////////////////////// MENU PRINCIPAL */
 .dropbtn {
-    color: #000000;
+    /* color: #000000;
     padding: 20px;
     text-align: center;
-    width: auto;
+    width: auto; */
+    background: none;
+    border: none;
+    margin-bottom: 15px;
+    padding: 20px;
+    cursor: pointer;
+    font: inherit;
+    outline: none;
 }
 
 .divLineaMenu {
@@ -836,8 +843,11 @@ button {
     background-color: #f1f1f1;
 }
 
-.dropdown:hover .dropdown-content {
+/* .dropdown:hover .dropdown-content {
     display: block;
+} */
+.dropdown-content.show {
+  display: block !important;
 }
 
 .degrada2 {
