@@ -2562,6 +2562,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 Área
                                             </th>
                                             <th>
+                                                Fecha
+                                            </th>
+                                            <th>
                                                 Detalles
                                             </th>
                                             <th>
@@ -2582,6 +2585,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </td>
                                             <td>
                                                 {{foro.area}}
+                                            </td>
+                                            <td>
+                                                {{foro.fecha}}
                                             </td>
                                             <td>
                                                 <button class="btn btn-success btn-boton" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
