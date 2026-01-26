@@ -2451,7 +2451,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                 <!--/////////////////////////////////FOROS////////////////////////////////////////////////////////////////////////////////////////-->
                 <div v-if="ventana == 'Crear Competencia'">
-                    <div class="col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2  offset-xl-2 col-xl-8  col-xxl-6 offset-xxl-3 px-4 shadow-lg mt-3 border border-white rounded-3 mx-auto" style="max-width: 700px;">
+                    <div class="col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2  offset-xl-2 col-xl-8  col-xxl-6 offset-xxl-3 px-4 shadow-lg mt-3 border border-white rounded-3 mx-auto" style="max-width: 900px;">
                         <div class="col-12">
                             <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
                                 <div class=" d-flex" style="padding:2px 2px;">
@@ -2561,7 +2561,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <th>
                                                 Área
                                             </th>
-                                            <th>
+                                            <th style="min-width: 80px;">
                                                 Fecha
                                             </th>
                                             <th>
@@ -2586,7 +2586,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <td>
                                                 {{foro.area}}
                                             </td>
-                                            <td>
+                                            <td style="min-width: 80px;">
                                                 {{foro.fecha}}
                                             </td>
                                             <td>
