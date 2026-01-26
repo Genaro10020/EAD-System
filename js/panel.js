@@ -384,7 +384,14 @@ const app = {
   methods: {
     toggleMenu(){
       console.log("hola togglr");
-      this.menuAbierto = !this.menuAbierto;
+      //this.menuAbierto = !this.menuAbierto;
+      var menu = document.getElementById('menuEAD')
+      
+      if(menu.style.display === 'block'){
+        menu.style.display = 'none'
+      }else{
+        menu.style.display = 'block'
+      }
     },
     cerrarModalHistorial() {
       this.myModal.hide();

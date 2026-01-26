@@ -23,7 +23,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <button class="dropbtn text-white" style="max-height:10px;" @click="toggleMenu">
                                 <i class="bi bi-list me-5">Menú</i>
                             </button>
-                            <div class="dropdown-content" :class="{ 'show': menuAbierto }"><!-- class="dropdown-content" -->
+                            <div class="dropdown-content" id="menuEAD"><!-- class="dropdown-content"  :class="{ 'show': menuAbierto }" -->
                                 <?php
                                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
                                     if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
