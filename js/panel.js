@@ -168,6 +168,7 @@ const app = {
       cantidadFotos: [],
       editarCapacitacion: false,
       posicion_canti_doc:'',
+      posicion_inicial:0,
       cantNewDoc: 0,
       cantNewFoto: 0,
       areaDocumento:'',
@@ -1267,26 +1268,27 @@ const app = {
         area:area
       }).then(response => {
          console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta,"area:", area)
-         console.log("Buscando documentos",response.data);
+         //console.log("Buscando documentos",response.data);
         if(tipo_archivo === 'Presentacion'){
           this.documento_session = response.data
           if (this.documento_session.length > 0) {
-            console.log(this.documento_session + "Archivos encontrados.")
+            //console.log(this.documento_session + "Archivos encontrados.")
             this.random = Math.random()
           } else {
-            console.log(this.documento_session + "Sin imagen encontrada.")
+            //console.log(this.documento_session + "Sin imagen encontrada.")
           }
         }else if(tipo_archivo === 'Capacitacion'){
      //////////////////////////////////////////////////  *** 
           this.documento_capacitacion = response.data
           if (this.documento_capacitacion.length > 0) {
-            console.log(this.documento_capacitacion + "Archivos encontrados.")
+            //console.log(this.documento_capacitacion + "Archivos encontrados.")
             this.random = Math.random()
           } else {
-            console.log(this.documento_capacitacion + "Sin imagen encontrada.")
+            //console.log(this.documento_capacitacion + "Sin imagen encontrada.")
           }
 
          if(this.posicion_canti_doc || this.posicion_canti_doc === 0){
+           console.log("Entrando por capacitacion e index")
             this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length
           }
 
@@ -1295,12 +1297,13 @@ const app = {
           }
 //////////////////////////////////////////  ***
         }else if(tipo_archivo === 'Por Fecha'){
-          console.log("Entrando apor fecha",response.data)
+       
           if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
             this.cantNewDoc=response.data.length
           }else{
+               console.log("Entrando por fecha y push")
             this.cantidadDocumentos.push(response.data.length)
-            console.log("Cantidad docs",this.cantidadDocumentos)
+            //console.log("Cantidad docs",this.cantidadDocumentos)
           }
           
         }else if(tipo_archivo === 'EvidenciaFoto'){
@@ -1315,7 +1318,7 @@ const app = {
 
          if(llenado=='llenadoInicial'){
             this.cantidadFotos[index] =this.foto_capacitacion.length
-            console.log("hola llenado inicial", this.cantidadFotos)
+            //console.log("hola llenado inicial", this.cantidadFotos)
           }else if(llenado=='ActualizaPosicion'){
             this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
           }

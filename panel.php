@@ -1257,6 +1257,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!--<div class="col-12 text-center">
                         <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nuevaCapacitaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Capacitación</button>
                     </div>-->
+                    {{cantidadDocumentos}}
                     <div  class="row">
                         <div class="col-12">
                             <div class="scroll6 col-12" style="font-size:0.8em">
@@ -1318,7 +1319,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button  v-if="editarCapacitacion===index" @click="cancelarEditar()" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-x-lg"></i> Cancelar </button>
                                                 <button v-if="editarCapacitacion!==index" @click="editCap(index, capacitacion)" class="btn btn-warning btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-pencil-fill"></i> Editar </button>
                                                 <button  v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" ><i class="bi bi-floppy-fill"></i> Guardar </button>
-                                                
                                             </td>
                                             <?php if(isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] =="Admin")
                                             {  
@@ -1349,8 +1349,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <i class="bi bi-upload"></i> Foto/s ({{cantidadFotos[index]}})</button>
                                             </td>
                                             <td class="text-center">
-                                                <label v-if="cantidadDocumentos[index]>0 " class= "text-success">Si</label>
-                                                <label v-if="cantidadDocumentos[index]<=0" class="text-danger">No</label>
+                                                <label v-if="cantidadDocumentos[index]>0 || cantidadFotos[index]>0" class= "text-success">Si</label>
+                                                <label v-else="cantidadDocumentos[index]<=0 || cantidadFotos[index]<=0" class="text-danger">No</label>
                                             </td>
                                             <td>
                                                 <input v-if="editarCapacitacion===index" :id="'capacitacionComentario'+index" :value= "capacitacion.comentario"  type="text" class="form-control"></input>

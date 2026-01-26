@@ -12,7 +12,7 @@ $area = '';
 if($tipo_archivo === 'Presentacion'){
     $ruta = "documentoSession/".$id_equipo;
 }else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha' || $tipo_archivo === 'EvidenciaFoto'){
-    if($_SESSION['tipo_usuario']=="Admin"){
+    if($_SESSION['tipo_acceso']=="Admin"){
         if(isset($variables['area'])){
                 $area=$variables['area'];
             }else{

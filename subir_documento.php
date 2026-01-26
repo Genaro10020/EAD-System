@@ -14,7 +14,7 @@ if(isset($_FILES['files']['name'])){
         $id = $_POST['id_equipo'];
         $ruta = "documentoSession/".$id."/";
     } else if ($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'EvidenciaFoto') {
-        if($_SESSION['tipo_usuario']=="Admin"){
+        if($_SESSION['tipo_acceso']=="Admin"){
 
             
 
