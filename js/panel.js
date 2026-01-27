@@ -66,7 +66,9 @@ const app = {
       agregar_compromiso: false,
       actualizar_compromiso: false,
       existeImagenSeleccionada: false,
+      existeDocumentoSeleccionadaDefinicionProyectos: false,
       documento_session: [],
+      documento_definicion: [],
       random: '',
       compromisos: [],
       compromiso: '',
@@ -1220,13 +1222,16 @@ const app = {
         console.log("Resultados filtrados", resultado);
         // Si necesitas actualizar una lista en el data con los resultados filtrados, puedes hacerlo aquí:
         this.consultaEAD = resultado;
+        this.buscarDocumentos('DefinicionProyectos')
       }
-
-
     },
 
     modalDocumentoGestionSession() {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
+      this.myModal.show();
+    },
+    modalDocumentoDefinicionDeProyectos() {
+      this.myModal = new bootstrap.Modal(document.getElementById("modalDefinicionProyectos"));
       this.myModal.show();
     },
     buscarDocumentos(tipo_archivo, fecha_por_capacitacion, area, llenado, index) {
@@ -1239,6 +1244,8 @@ const app = {
         area = this.areaDocumento
       } else if (tipo_archivo === 'Presentacion') {
         id_equipo = this.select_session_equipo.split('<->')[0];
+      }else if (tipo_archivo === 'DefinicionProyectos') {
+        area = this.seleccion_eds_areas
       } else if (tipo_archivo === 'Por Fecha') {
         fecha_ruta = fecha_por_capacitacion
       } else if (tipo_archivo === 'EvidenciaFoto') {
@@ -1269,7 +1276,7 @@ const app = {
         id_equipo: id_equipo,
         area: area
       }).then(response => {
-        console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
+        //console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
         //console.log("Buscando documentos",response.data);
         if (tipo_archivo === 'Presentacion') {
           this.documento_session = response.data
@@ -1278,6 +1285,14 @@ const app = {
             this.random = Math.random()
           } else {
             //console.log(this.documento_session + "Sin imagen encontrada.")
+          }
+        } else if (tipo_archivo === 'DefinicionProyectos') {
+          this.documento_definicion = response.data
+          if (this.documento_definicion.length > 0) {
+            //console.log(this.documento_definicion + "Archivos encontrados.")
+            this.random = Math.random()
+          } else {
+            //console.log(this.documento_definicion + "Sin imagen encontrada.")
           }
         } else if (tipo_archivo === 'Capacitacion') {
           //////////////////////////////////////////////////  *** 
@@ -1336,9 +1351,6 @@ const app = {
             this.cantNewFoto = this.foto_capacitacion.length//response.data.length
           }
         }
-
-
-
       })
         .catch(error => {
           console.log(error);
@@ -1354,6 +1366,15 @@ const app = {
         formData.append("tipo_archivo", tipo_archivo);
         var files = this.$refs.ref_imagen_presentacion.files;
         var totalfiles = this.$refs.ref_imagen_presentacion.files.length;
+      } else if (tipo_archivo === 'DefinicionProyectos') {
+
+
+        formData.append("tipo_archivo", tipo_archivo);
+        formData.append("area", this.seleccion_eds_areas);
+        var files = this.$refs.ref_documentos_definicion_proyectos.files;
+        var totalfiles = this.$refs.ref_documentos_definicion_proyectos.files.length;
+
+
       } else if (tipo_archivo === 'Capacitacion') {
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
@@ -1384,7 +1405,7 @@ const app = {
         formData.append("files[]", files[index]);//arreglo de documentos_seguimiento
       }
 
-      axios.post("subir_documento.php", formData,
+       axios.post("subir_documento.php", formData,
         {
           headers: { "Content-Type": "multipart/form-data" }
         }).then(response => {
@@ -1403,6 +1424,9 @@ const app = {
             } else if (tipo_archivo === 'Capacitacion') {
               this.$refs.ref_imagen_capacitacion.value = ''
               this.buscarDocumentos('Capacitacion')
+            } else if (tipo_archivo === 'DefinicionProyectos') {
+              this.$refs.ref_documentos_definicion_proyectos.value = ''
+              this.buscarDocumentos('DefinicionProyectos')
             } else if (tipo_archivo === 'EvidenciaFoto') {
               this.$refs.ref_imagen_EvidenciaFoto.value = ''
               this.buscarDocumentos('EvidenciaFoto', '', '', 'ActualizaPosicion')
@@ -1419,7 +1443,7 @@ const app = {
           console.log(error);
         }).finally(() => {
           this.login = false
-        });
+        }); 
     },
     eliminarDocumento(ruta, tipo_archivo) {
 
@@ -1448,6 +1472,15 @@ const app = {
               if (response.data == "Archivo Eliminado") {
                 alert("Archivo/Documento Eliminado con Éxito")
                 this.buscarDocumentos('Presentacion')
+              } else if (response.data == "No Eliminado") {
+                alert("Algo no salio bien no se logro Eliminar.")
+              } else {
+                alert("Error al eliminar el Documento.")
+              }
+            } else if (tipo_archivo === 'DefinicionProyectos') {
+              if (response.data == "Archivo Eliminado") {
+                alert("Archivo/Documento Eliminado con Éxito")
+                this.buscarDocumentos('DefinicionProyectos')
               } else if (response.data == "No Eliminado") {
                 alert("Algo no salio bien no se logro Eliminar.")
               } else {
@@ -1496,6 +1529,12 @@ const app = {
       var imagen_seleccion = document.getElementById('input_file_seguimiento').value;
       if (imagen_seleccion != null) {
         this.existeImagenSeleccionada = true;
+      }
+    },
+    varificandoSelecionDefinicionProyectos() {
+      var imagen_seleccion = document.getElementById('input_file_def_proyectos').value;
+      if (imagen_seleccion != null) {
+        this.existeDocumentoSeleccionadaDefinicionProyectos = true;
       }
     },
     consultarCantidadFaseXEtapas() {

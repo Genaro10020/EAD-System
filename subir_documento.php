@@ -13,11 +13,11 @@ if(isset($_FILES['files']['name'])){
     if ($tipo_archivo === 'Presentacion') {
         $id = $_POST['id_equipo'];
         $ruta = "documentoSession/".$id."/";
-    } else if ($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'EvidenciaFoto') {
+    }else if ($tipo_archivo === 'DefinicionProyectos') {
+         $area = $_POST['area'];
+        $ruta = "documentosdefinicionproyectos/".$area."/";
+    }else if ($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'EvidenciaFoto') {
         if($_SESSION['tipo_acceso']=="Admin"){
-
-            
-
             if (isset($_POST['area']) && !empty($_POST['area'])) {
                 // Si 'area' está definida en POST y no está vacía
                  $area = $_POST['area'];
@@ -33,8 +33,6 @@ if(isset($_FILES['files']['name'])){
                 $ruta = "evidenciacapacitacion/".$area."/".$fecha_ruta."/";//AREA/FECHA
             }
         } 
-
-        
     }
 
 
@@ -59,6 +57,8 @@ if(isset($_FILES['files']['name'])){
                 $valid_ext = array("pdf","doc","docx","ppt","pptx","xls","xlsx","rar","zip");
             }else if($tipo_archivo === 'EvidenciaFoto'){
                 $valid_ext = array("png","jpg","jpeg");
+            }else if($tipo_archivo ==='DefinicionProyectos'){
+                $valid_ext = array("pdf","doc","docx","ppt","pptx","xls","xlsx","rar","zip","png","jpg","jpeg");
             }
             
             // Revisar extension

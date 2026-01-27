@@ -634,12 +634,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
-
-
-
                     <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
                         <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
                         ?>
+                            <button class="py-1 me-2" style="font-size:12px" :class="{'btn btn-success': documento_definicion.length > 0, 'btn btn-primary': documento_definicion.length <= 0}" @click="modalDocumentoDefinicionDeProyectos()" :disabled="!seleccion_eds_areas.length">
+                                <i class="bi bi-folder-plus"></i>
+                                Definición Proyectos ({{documento_definicion.length}})
+                            </button>
+                        
                             <div class="col-3 me-5">
                                 <select class="form-select" v-model="seleccion_eds_areas" @change="filtrandoEADsGestion()" style="font-size:0.8em">
                                     <option value="">Todos los equipos</option>
@@ -969,6 +971,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <canvas style="width:100%" id="canvaKPI"></canvas>
                 </div>
                 <!--KPI Final-->
+                
                 <!--MODAL DOCUMENTO--->
                 <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
                 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1063,6 +1066,102 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <!--Fin Modal subir seguimiento-->
+
+                 <!--MODAL DEFINICION DE PROYECTOS--->
+                <!-- Modal Eliminar/Actualizar Documento del Definición de Proyectos-->
+                <div class="modal fade" id="modalDefinicionProyectos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h6 class="modal-title" id="exampleModalLabel">Definición de proyectos {{seleccion_eds_areas}} Documento/s <b>{{select_session_equipo.split('<->')[1]}}</b></h6>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="text-center">
+                                    <form @submit.prevent="uploadFile('DefinicionProyectos')">
+                                        <div class="col-12">
+                                            <div class="custom-file mt-2 mb-3">
+                                                <input type="file" id="input_file_def_proyectos" @change="varificandoSelecionDefinicionProyectos()" ref="ref_documentos_definicion_proyectos" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                            </div>
+                                        </div>
+                                        <div class="col-12" v-if="existeDocumentoSeleccionadaDefinicionProyectos && login!=true">
+                                            <button type="submit" name="upload" class="btn btn-primary">Subir Archivos </button>
+                                        </div>
+                                        <div v-if="login==true" class="d-flex justify-content-center">
+                                            <div>
+                                                <img class="mx-auto" style="width:50px;" src="img/loading.gif" /><label>Subiendo...</label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mostrando los archivos cargados SEGUIMIENTO-->
+                                        <div v-if="documento_definicion.length>0">
+                                            <hr>
+                                            <div class="col-12" v-for="(archivos,index) in documento_definicion">
+                                                <div class="row">
+                                                    <span class="badge bg-secondary">Documento {{index+1}}</span><br>
+                                                    <div class="mt-1">
+                                                        <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos,'DefinicionProyectos')" style="font-size:14px;">Eliminar</button>
+                                                    </div>
+                                                </div>
+                                                <!--Mostar los JPG y PNG-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                    <img :src="documento_definicion[index]" style="width:50%" class="mb-5"></img>
+                                                </div>
+                                                <!--Mostrar PDF-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='pdf'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
+                                                    <iframe :src="documento_definicion[index]" style="width:100%;height:500px;" class="mb-5"></iframe>
+                                                </div>
+                                                <!--Mostrar Word-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='doc' || archivos.slice(archivos.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/word.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar Excel-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='xls' || archivos.slice(archivos.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/excel.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar Power Point -->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='pptx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar .RAR-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/rar.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                                <!--Mostrar .RAR-->
+                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
+                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
+                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                        <img src="img/zip.png" style="width:200px" class="mb-5"></img>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Fin Modal subir seguimiento-->
+
+
                 <!-- Inicio Modal KPIS-->
                 <div class="modal fade" id="modalKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered  modal-xl modal-fullscreen-xl-down">
