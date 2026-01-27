@@ -139,8 +139,8 @@ const app = {
       actualizar_datoKPI: false,
       idUpdateDatoKPI: '',
       justasArranque: [],
-      seguimiento_completado:0,
-      seleccion_eds_areas:'',
+      seguimiento_completado: 0,
+      seleccion_eds_areas: '',
       pilar_estrategico: [],
       objetivosYpilares: [],
       pilarSeleccionado: [],
@@ -157,22 +157,23 @@ const app = {
       fecha_capacitacion: '',
       nuevos_ingresos: '',
       evidencia_capacitacion: '',
-      capacitacion_impartida:'',
+      capacitacion_impartida: '',
       comentarios_capacitacion: '',
       capacitaciones: '',
       fecha_ruta: '',
       documento_capacitacion: [],
       foto_capacitacion: [],
+      pdf_capacitacion: [],
       existeImagenSeleccionadaCapacitacion: false,
-      cantidadDocumentos: [], 
+      cantidadDocumentos: [],
       cantidadFotos: [],
       editarCapacitacion: false,
-      posicion_canti_doc:'',
-      posicion_inicial:0,
+      posicion_canti_doc: '',
+      posicion_inicial: 0,
       cantNewDoc: 0,
       cantNewFoto: 0,
-      areaDocumento:'',
-     /*  fechaFoto: '', */
+      areaDocumento: '',
+      /*  fechaFoto: '', */
       posicion: '',
       llenado: '',
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
@@ -303,7 +304,7 @@ const app = {
       puntosObtenidos: [],
       tipo_criterio: 'Gráfica',
       nombre_nuevo_criterio: '',
-      mostrar_ponderacion_id:'',
+      mostrar_ponderacion_id: '',
       /*///////////////////////////////////////////////////////////////////////////////////////VARIBLES SCORECARD*/
       tipoPlantillas: ['Placas', 'Formacion', 'Etiquetado', 'Ensamble'],
       ver_plantillas: '',
@@ -346,31 +347,32 @@ const app = {
       totalSC: '',
       nombrePonderacionAsignada: '',
       scoreCardCompletado: '',
-      consultaEADparaFiltrar:[],
-      id_actual:'',
-      promMermayDesperdicio:'',
+      consultaEADparaFiltrar: [],
+      id_actual: '',
+      promMermayDesperdicio: '',
       tamArregloMermaYDesp: '',
-      totalGuardar:'',
+      totalGuardar: '',
       guardarptsOBT: [],
       datoNuevo: '',
-      valorB:'',
-      cumplimiento_scorecard:[],
-      anioConsultar:'',
-      areaConsultar:'',
-      guardoNuevoDato:false,
+      valorB: '',
+      cumplimiento_scorecard: [],
+      anioConsultar: '',
+      areaConsultar: '',
+      guardoNuevoDato: false,
       esLider: '',
       seguimiento: false,
       //PUNTAJES POR MES Y ANIO DE BATEO
-      mes_bateo:'',
-      anio_bateo:'',
-      equiposConMasDe850:'',
-      porcentajeArribaDe850:'',
-      equiposPorMes:'',
+      mes_bateo: '',
+      anio_bateo: '',
+      equiposConMasDe850: '',
+      porcentajeArribaDe850: '',
+      equiposPorMes: '',
 
       idsEquipo: [],
       totalCumplieron: [],
       porcentajePorMes: [],
       minimoCumplimiento: 70,
+      arraywhitDate: [],
     }
   },
   mounted() {
@@ -383,35 +385,35 @@ const app = {
     this.obtenerFecha()
   },
   methods: {
-    toggleMenu(){
+    toggleMenu() {
       console.log("hola togglr");
       //this.menuAbierto = !this.menuAbierto;
       var menu = document.getElementById('menuEAD')
-      
-      if(menu.style.display === 'block'){
+
+      if (menu.style.display === 'block') {
         menu.style.display = 'none'
-      }else{
+      } else {
         menu.style.display = 'block'
       }
     },
     cerrarModalHistorial() {
       this.myModal.hide();
     },
-    editCap(index){
+    editCap(index) {
       this.editarCapacitacion = index
 
     },
-    cancelarEditar(){
+    cancelarEditar() {
       this.editarCapacitacion = false
     },
-    guardarEditar(index){
-     let comentario =document.getElementById('capacitacionComentario'+index).value;
-     let fecha =document.getElementById('capacitacionFecha'+index).value;
-     let ingresos =document.getElementById('capacitacionIngreso'+index).value;
-      
-     console.log("comentario",comentario,"fecha",fecha,"ingreso",ingresos)
-      
-      
+    guardarEditar(index) {
+      let comentario = document.getElementById('capacitacionComentario' + index).value;
+      let fecha = document.getElementById('capacitacionFecha' + index).value;
+      let ingresos = document.getElementById('capacitacionIngreso' + index).value;
+
+      console.log("comentario", comentario, "fecha", fecha, "ingreso", ingresos)
+
+
       axios.put("capacitacionesController.php", {
         accion: "Actualizar Capacitacion",
         comentario: comentario,
@@ -448,13 +450,13 @@ const app = {
         } else if (response.data[0] == "Colaborador") {
           this.ventanas('Graficas');
           this.consultarEADColaborador()
-        }else if (response.data[0] == "ColaboradorLider") {
+        } else if (response.data[0] == "ColaboradorLider") {
           this.ventanas('ScoreCard');
           this.consultarEADLider();
           this.esLider = 'ColaboradorLider';
           this.consultarSeguimientoAsistencia();
           this.consultarScoreCard();
-        }  else {
+        } else {
           //Admin
         }
       }).catch(error => {
@@ -475,7 +477,7 @@ const app = {
         this.usuarios = response.data.Usuarios
 
         //this.evaluadores = this.usuarios.filter(usuario => usuario.tipo_usuario === "Evaluador")//filtra
-        
+
       }).catch(error => {
         //console.log('Erro :-(' + error)
       })
@@ -536,22 +538,22 @@ const app = {
       })
     },
 
-    insertarArea(id_actual){ //para las ponderaciones anteriores que no se les insertaba automaticamente el area
+    insertarArea(id_actual) { //para las ponderaciones anteriores que no se les insertaba automaticamente el area
       console.log('mi id es:', id_actual, this.selector_area)
 
-      if(!confirm("¿Está seguro de que esta ponderación le corresponde?. Una vez que la seleccione, solo usted podrá ver esta ponderación.")){
+      if (!confirm("¿Está seguro de que esta ponderación le corresponde?. Una vez que la seleccione, solo usted podrá ver esta ponderación.")) {
         this.selector_area = '';
         return
-      } 
-      axios.put('ponderacionesController.php',{
+      }
+      axios.put('ponderacionesController.php', {
         accion: "insertarArea",
         area: this.selector_area,
         id: id_actual
       }).then(response => {
-        if(response.data == true){
+        if (response.data == true) {
           this.consultarPonderaciones();
           this.selector_area = '';
-        }else{
+        } else {
           alert("No se logró insertar el area");
         }
       })
@@ -743,7 +745,7 @@ const app = {
     },
 
     redireccionar(opciones) { //btn para ir al menu principal
-      
+
       if (opciones == 'Atras') {
         console.log("Atras")
         window.location.href = "../Sugerencia/principalColaborador.php"
@@ -784,9 +786,9 @@ const app = {
       axios.post("crud_ead.php", {
         accion: 'consultarRegistroLider'
       }).then(response => {
-        console.log("Consulta EAD",response.data)
+        console.log("Consulta EAD", response.data)
         if (response.data[0][0] == true) {
-          this.consultaEAD = response.data[1]; 
+          this.consultaEAD = response.data[1];
           const equipo = this.consultaEAD[0];
           this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
 
@@ -1039,28 +1041,28 @@ const app = {
         if (!this.extrajeIDSPilares.includes(id)) { // Si el id no está en extrajeIDSpilares, desmarcamos el checkbox
           this.pilarSeleccionado.splice(index, 1); // Desmarcar el checkbox removiendo el id de pilarSeleccionado
           console.log('Algún id de pilarSeleccionado no coincide, deseleccionamos el select.');
-        }else{
+        } else {
           console.log('Todos los ids coinciden. No se cambia el select.');
         }
       });
     },
-       /* const todosCoinciden = this.pilarSeleccionado.every(id => this.extrajeIDSPilares.includes(id));
-          if(todosCoinciden){
-            console.log('Todos los ids coinciden. No se cambia el select.');
-          }else{
-            console.log('Algún id de pilarSeleccionado no coincide, deseleccionamos el select.');
-          } */
+    /* const todosCoinciden = this.pilarSeleccionado.every(id => this.extrajeIDSPilares.includes(id));
+       if(todosCoinciden){
+         console.log('Todos los ids coinciden. No se cambia el select.');
+       }else{
+         console.log('Algún id de pilarSeleccionado no coincide, deseleccionamos el select.');
+       } */
     consultarPilares() {
       axios.get("pilaresEstrategicosController.php", {
         params: {
           accion: "Consultar",
         }
       }).then(response => {
-        console.log("Respuesta consulta Pilares var: ",response.data )
+        console.log("Respuesta consulta Pilares var: ", response.data)
         /*console.log("RESCANDO TODO DE PILARES",response.data.map(items=>({
         pilarID: items.pilarID,
         pilarNombre:  items.pilarNombre})))*/
-        this.objetivosYpilares = response.data 
+        this.objetivosYpilares = response.data
 
         const pilaresUnicos = [];
         const idsVistos = new Set();
@@ -1085,21 +1087,21 @@ const app = {
       })
 
     },
-    buscarObjetivosDePilarGuardados(){
-      let p_cliente =  this.pilarSeleccionado[0]
+    buscarObjetivosDePilarGuardados() {
+      let p_cliente = this.pilarSeleccionado[0]
       let p_excelenciaOperativa = this.pilarSeleccionado[1]
       let p_capitalHumano = this.pilarSeleccionado[2]
       let p_investigacionYdesarrollo = this.pilarSeleccionado[3]
 
       //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
       this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
-      console.log("ENCONTRADOS DESDE CONSULTA: ",this.objetivosEncontrados)
-      
+      console.log("ENCONTRADOS DESDE CONSULTA: ", this.objetivosEncontrados)
+
       const pilaresEncontrados = [
         ...new Map(this.objetivosEncontrados.map(p => [p.pilarID, { pilarNombre: p.pilarNombre }])).values()
       ];
 
-      console.log("PILARES ENCONTRAOS: ",pilaresEncontrados);
+      console.log("PILARES ENCONTRAOS: ", pilaresEncontrados);
       this.pilaresGuardadosString = pilaresEncontrados.map(p => `• ${p.pilarNombre}`).join(" ");
 
       pilaresIDs = [
@@ -1108,89 +1110,89 @@ const app = {
       this.extrajeIDSPilares = pilaresIDs;
 
       console.log("extrajeIDSPilares: ", this.extrajeIDSPilares);
-/*       this.extrajeIDSPilares
- */      /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
-      console.log("nombres: ", this.nombresPilaresEncontrados) */
+      /*       this.extrajeIDSPilares
+       */      /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
+   console.log("nombres: ", this.nombresPilaresEncontrados) */
     },
-    buscarObjetivosDePilar(event,pilarID){
+    buscarObjetivosDePilar(event, pilarID) {
       if (event.target.checked) {
         console.log('Seleccionado');
       } else {
         console.log('Deseleccionado');
-        console.log(pilarID) 
+        console.log(pilarID)
         let objetivosSeleccionados = this.objetivoSeleccionado
-        let buscarParaEliminar=this.objetivosYpilares.filter(items => items.pilarID == pilarID).map(item => item.objetivoID)
+        let buscarParaEliminar = this.objetivosYpilares.filter(items => items.pilarID == pilarID).map(item => item.objetivoID)
 
         for (let index = 0; index < buscarParaEliminar.length; index++) {
-        const idAEliminar = buscarParaEliminar[index];
+          const idAEliminar = buscarParaEliminar[index];
           console.log(idAEliminar)
-            for (let j = 0; j < objetivosSeleccionados.length; j++) {
-              if(objetivosSeleccionados[j]==idAEliminar){
-                this.objetivoSeleccionado.splice(j, 1);
-                j--;
-              }
+          for (let j = 0; j < objetivosSeleccionados.length; j++) {
+            if (objetivosSeleccionados[j] == idAEliminar) {
+              this.objetivoSeleccionado.splice(j, 1);
+              j--;
             }
+          }
         }
         this.guardarSeleccionados()
       }
 
       //lo utilizamos para mostrar en el DOM los Objetivos segun perfil seleccionado.
-      setTimeout(()=>{
-      let p_cliente =  this.pilarSeleccionado[0]
-      let p_excelenciaOperativa = this.pilarSeleccionado[1]
-      let p_capitalHumano = this.pilarSeleccionado[2]
-      let p_investigacionYdesarrollo = this.pilarSeleccionado[3]
+      setTimeout(() => {
+        let p_cliente = this.pilarSeleccionado[0]
+        let p_excelenciaOperativa = this.pilarSeleccionado[1]
+        let p_capitalHumano = this.pilarSeleccionado[2]
+        let p_investigacionYdesarrollo = this.pilarSeleccionado[3]
 
-      //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
-      this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
-      console.log("ENCONTRADOS: ",this.objetivosEncontrados)
-      console.log("seGUIMIENTO kpis",this.seguimientoKPIs)
-      console.log("objetivoSeleccionado",this.objetivoSeleccionado)
-      console.log("pilarSeleccionado",this.pilarSeleccionado)/* 
+        //console.log("BUSCÓ PILARES: ",p_cliente,p_excelenciaOperativa, p_capitalHumano, p_investigacionYdesarrollo)
+        this.objetivosEncontrados = this.objetivosYpilares.filter(items => items.pilarID == p_cliente || items.pilarID == p_excelenciaOperativa || items.pilarID == p_capitalHumano || items.pilarID == p_investigacionYdesarrollo)
+        console.log("ENCONTRADOS: ", this.objetivosEncontrados)
+        console.log("seGUIMIENTO kpis", this.seguimientoKPIs)
+        console.log("objetivoSeleccionado", this.objetivoSeleccionado)
+        console.log("pilarSeleccionado", this.pilarSeleccionado)/* 
       let pilaresEncontrados = this.objetivosEncontrados */
 
-    
-      },200);
+
+      }, 200);
     },
 
-    guardarSeleccionados(){
-      console.log("OBJETIVO: ",this.objetivoSeleccionado, "PILAR: ", this.pilarSeleccionado)
+    guardarSeleccionados() {
+      console.log("OBJETIVO: ", this.objetivoSeleccionado, "PILAR: ", this.pilarSeleccionado)
       axios.post("pilaresEstrategicosController.php",
         {
           objetivoSeleccionado: this.objetivoSeleccionado,
-          pilarSeleccionado: this.pilarSeleccionado, 
+          pilarSeleccionado: this.pilarSeleccionado,
           id_equipo: this.select_session_equipo,
           nombre: this.nombre_indicador,
 
         }).then(response => {
-          if(response.data == true){
+          if (response.data == true) {
             this.banderaObjetivoGuardado = true
 
             let pilaresGuardadosString = []
             let extrajeIDSPilares = []
             this.pilarSeleccionado.forEach(id => {
               const pilar = this.pilar_estrategico.find(p => p.pilarID === id);
-              if(pilar){
+              if (pilar) {
                 pilaresGuardadosString.push(pilar.pilarNombre);
                 extrajeIDSPilares.push(pilar.pilarID);
               }
-              
+
             });
             this.pilaresGuardadosString = pilaresGuardadosString.map(nombre => `• ${nombre}`).join(" ");
             this.extrajeIDSPilares = extrajeIDSPilares
-/*             this.extrajeIDSPilares ????
- */          
-            console.log("saque pilares de obj",this.pilaresGuardadosString)
-            console.log("saque pilares ID",this.extrajeIDSPilares)
+            /*             this.extrajeIDSPilares ????
+             */
+            console.log("saque pilares de obj", this.pilaresGuardadosString)
+            console.log("saque pilares ID", this.extrajeIDSPilares)
 
-            setTimeout(()=>{
+            setTimeout(() => {
               this.banderaObjetivoGuardado = false
             }, 3000)
-              
-          }else{
+
+          } else {
             console.log(response.data)
           }
-         
+
         })
         .catch(error => {
 
@@ -1210,66 +1212,66 @@ const app = {
       this.select_session_equipo = "";
       let areaSeleccionadaEAD = this.seleccion_eds_areas;
       // Filtra los equipos que coinciden con el área seleccionada
-      if(areaSeleccionadaEAD==''){
+      if (areaSeleccionadaEAD == '') {
         this.consultarEAD();
-      }else{
+      } else {
         let resultado = this.consultaEADparaFiltrar.filter(equipo => equipo[0].area === areaSeleccionadaEAD);
         // Para ver los resultados en la consola
-      console.log("Resultados filtrados", resultado);
-      // Si necesitas actualizar una lista en el data con los resultados filtrados, puedes hacerlo aquí:
-      this.consultaEAD = resultado;
+        console.log("Resultados filtrados", resultado);
+        // Si necesitas actualizar una lista en el data con los resultados filtrados, puedes hacerlo aquí:
+        this.consultaEAD = resultado;
       }
-     
-    
+
+
     },
-    
+
     modalDocumentoGestionSession() {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
-    buscarDocumentos(tipo_archivo,fecha_por_capacitacion,area,llenado,index) {
-      console.log("Tipo archivo"+tipo_archivo,"Area: "+area)
+    buscarDocumentos(tipo_archivo, fecha_por_capacitacion, area, llenado, index) {
+      console.log("Tipo archivo" + tipo_archivo, "Area: " + area)
       var id_equipo = ''
-      var fecha_ruta =''
+      var fecha_ruta = ''
 
-      if(tipo_archivo === 'Capacitacion'){
+      if (tipo_archivo === 'Capacitacion') {
         fecha_ruta = this.fecha_ruta
         area = this.areaDocumento
-      }else if( tipo_archivo ===  'Presentacion'){
+      } else if (tipo_archivo === 'Presentacion') {
         id_equipo = this.select_session_equipo.split('<->')[0];
-      }else if(tipo_archivo === 'Por Fecha'){
+      } else if (tipo_archivo === 'Por Fecha') {
         fecha_ruta = fecha_por_capacitacion
-      }else if(tipo_archivo === 'EvidenciaFoto'){
-        if(fecha_por_capacitacion!='' && area!=''){
-                fecha_ruta = fecha_por_capacitacion
-                area = area
-                console.log("ENTRE A COND 1")
-            }else if(this.fecha_ruta=='' && this.areaDocumento==''){
-                fecha_ruta = fecha_por_capacitacion
-                area = area
-                 console.log("ENTRE A COND 2")
-                //console.log("ENTRE A COND 1", fecha_ruta)
-            }else if (this.fecha_ruta!='' && this.areaDocumento!=''){
-                fecha_ruta = this.fecha_ruta
-                area =  this.areaDocumento
-                 console.log("ENTRE A COND 3")
-            }else{
-                return alert("Faltan datos para buscar las fotos de evidencia.")
-            }
-      }else{
+      } else if (tipo_archivo === 'EvidenciaFoto') {
+        if (fecha_por_capacitacion != '' && area != '') {
+          fecha_ruta = fecha_por_capacitacion
+          area = area
+          console.log("ENTRE A COND 1")
+        } else if (this.fecha_ruta == '' && this.areaDocumento == '') {
+          fecha_ruta = fecha_por_capacitacion
+          area = area
+          console.log("ENTRE A COND 2")
+          //console.log("ENTRE A COND 1", fecha_ruta)
+        } else if (this.fecha_ruta != '' && this.areaDocumento != '') {
+          fecha_ruta = this.fecha_ruta
+          area = this.areaDocumento
+          console.log("ENTRE A COND 3")
+        } else {
+          return alert("Faltan datos para buscar las fotos de evidencia.")
+        }
+      } else {
         return "No me llego ese tipo de documento."
       }
-      
-     
+
+
       axios.post("buscar_documentos.php", {
         tipo_archivo: tipo_archivo,
         fecha_ruta: fecha_ruta,
         id_equipo: id_equipo,
-        area:area
+        area: area
       }).then(response => {
-         console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta,"area:", area)
-         //console.log("Buscando documentos",response.data);
-        if(tipo_archivo === 'Presentacion'){
+        console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
+        //console.log("Buscando documentos",response.data);
+        if (tipo_archivo === 'Presentacion') {
           this.documento_session = response.data
           if (this.documento_session.length > 0) {
             //console.log(this.documento_session + "Archivos encontrados.")
@@ -1277,8 +1279,8 @@ const app = {
           } else {
             //console.log(this.documento_session + "Sin imagen encontrada.")
           }
-        }else if(tipo_archivo === 'Capacitacion'){
-     //////////////////////////////////////////////////  *** 
+        } else if (tipo_archivo === 'Capacitacion') {
+          //////////////////////////////////////////////////  *** 
           this.documento_capacitacion = response.data
           if (this.documento_capacitacion.length > 0) {
             //console.log(this.documento_capacitacion + "Archivos encontrados.")
@@ -1287,26 +1289,32 @@ const app = {
             //console.log(this.documento_capacitacion + "Sin imagen encontrada.")
           }
 
-         if(this.posicion_canti_doc || this.posicion_canti_doc === 0){
-           console.log("Entrando por capacitacion e index")
+          if (this.posicion_canti_doc || this.posicion_canti_doc === 0) {
+            console.log("Entrando por capacitacion e index")
             this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length
           }
 
-         if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
-              this.cantNewDoc=this.documento_capacitacion.length
+          if (this.nueva_capacitacion === true) {//buscar documentos al seleccionar una fecha en nueva capacitacion
+            this.cantNewDoc = this.documento_capacitacion.length
           }
-//////////////////////////////////////////  ***
-        }else if(tipo_archivo === 'Por Fecha'){
-       
-          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
-            this.cantNewDoc=response.data.length
-          }else{
-               console.log("Entrando por fecha y push")
-            this.cantidadDocumentos.push(response.data.length)
+          //////////////////////////////////////////  ***
+        } else if (tipo_archivo === 'Por Fecha') {
+
+          if (this.nueva_capacitacion === true) {//buscar documentos al seleccionar una fecha en nueva capacitacion
+            this.cantNewDoc = response.data.length
+          } else {
+            if (llenado == 'llenadoInicial') {
+              this.pdf_capacitacion = response.data
+              this.cantidadDocumentos[index] = this.pdf_capacitacion.length
+              //console.log("hola llenado inicial", this.cantidadFotos)
+            } /* else if (llenado == 'ActualizaPosicion') {
+              this.cantidadDocumentos[this.posicion] = this.foto_capacitacion.length
+            } */
+            //this.cantidadDocumentos.push(response.data.length)
             //console.log("Cantidad docs",this.cantidadDocumentos)
           }
-          
-        }else if(tipo_archivo === 'EvidenciaFoto'){
+
+        } else if (tipo_archivo === 'EvidenciaFoto') {
           ///////////////////////////////////////////////////
           this.foto_capacitacion = response.data
           if (this.foto_capacitacion.length > 0) {
@@ -1316,21 +1324,21 @@ const app = {
             //console.log(this.foto_capacitacion + "Sin imagen encontrada.")
           }
 
-         if(llenado=='llenadoInicial'){
-            this.cantidadFotos[index] =this.foto_capacitacion.length
+          if (llenado == 'llenadoInicial') {
+            this.cantidadFotos[index] = this.foto_capacitacion.length
             //console.log("hola llenado inicial", this.cantidadFotos)
-          }else if(llenado=='ActualizaPosicion'){
+          } else if (llenado == 'ActualizaPosicion') {
             this.cantidadFotos[this.posicion] = this.foto_capacitacion.length
           }
 
-          
-          if(this.nueva_capacitacion === true){//buscar documentos al seleccionar una fecha en nueva capacitacion
-            this.cantNewFoto=this.foto_capacitacion.length//response.data.length
+
+          if (this.nueva_capacitacion === true) {//buscar documentos al seleccionar una fecha en nueva capacitacion
+            this.cantNewFoto = this.foto_capacitacion.length//response.data.length
           }
         }
-          
-        
-        
+
+
+
       })
         .catch(error => {
           console.log(error);
@@ -1340,35 +1348,35 @@ const app = {
       this.login = true
       let formData = new FormData();
 
-      if(tipo_archivo === 'Presentacion'){
+      if (tipo_archivo === 'Presentacion') {
         var id = this.select_session_equipo.split('<->')[0];
         formData.append("id_equipo", id);
         formData.append("tipo_archivo", tipo_archivo);
         var files = this.$refs.ref_imagen_presentacion.files;
         var totalfiles = this.$refs.ref_imagen_presentacion.files.length;
-      }else if (tipo_archivo === 'Capacitacion'){
+      } else if (tipo_archivo === 'Capacitacion') {
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
-        if(this.nueva_capacitacion == false){
+        if (this.nueva_capacitacion == false) {
           formData.append("area", this.areaDocumento);
         }
         var files = this.$refs.ref_imagen_capacitacion.files;
         var totalfiles = this.$refs.ref_imagen_capacitacion.files.length;
       }
-      else if (tipo_archivo === 'EvidenciaFoto'){
+      else if (tipo_archivo === 'EvidenciaFoto') {
         formData.append("tipo_archivo", tipo_archivo);
         formData.append("fecha_ruta", this.fecha_ruta);
-        if(this.nueva_capacitacion == false){
+        if (this.nueva_capacitacion == false) {
           formData.append("area", this.areaDocumento);
         }
-       /*formData.append("file", file); */
+        /*formData.append("file", file); */
         var files = this.$refs.ref_imagen_EvidenciaFoto.files;
         var totalfiles = this.$refs.ref_imagen_EvidenciaFoto.files.length;
-        
+
         console.log("area", this.areaDocumento);
         console.log("this.fecha_ruta", this.fecha_ruta)
 
-      }else{
+      } else {
         return alert("No hay documentos")
       }
 
@@ -1380,24 +1388,24 @@ const app = {
         {
           headers: { "Content-Type": "multipart/form-data" }
         }).then(response => {
-          console.log("Hola response",response.data);
+          console.log("Hola response", response.data);
 
           if (response.data.length > 0) {
-             Swal.fire({
+            Swal.fire({
               title: "Guardado!!",
               text: "Archivo guardado con éxito",
               icon: "success"
             });
 
-            if(tipo_archivo === 'Presentacion'){
+            if (tipo_archivo === 'Presentacion') {
               this.$refs.ref_imagen_presentacion.value = ''
-                this.buscarDocumentos('Presentacion')
-            }else if(tipo_archivo === 'Capacitacion'){
-                this.$refs.ref_imagen_capacitacion.value = ''
-                this.buscarDocumentos('Capacitacion')
-            }else if(tipo_archivo === 'EvidenciaFoto'){
-                this.$refs.ref_imagen_EvidenciaFoto.value = ''
-                this.buscarDocumentos('EvidenciaFoto','','','ActualizaPosicion')
+              this.buscarDocumentos('Presentacion')
+            } else if (tipo_archivo === 'Capacitacion') {
+              this.$refs.ref_imagen_capacitacion.value = ''
+              this.buscarDocumentos('Capacitacion')
+            } else if (tipo_archivo === 'EvidenciaFoto') {
+              this.$refs.ref_imagen_EvidenciaFoto.value = ''
+              this.buscarDocumentos('EvidenciaFoto', '', '', 'ActualizaPosicion')
             }
 
 
@@ -1432,10 +1440,10 @@ const app = {
           axios.post("eliminar_documento.php", {
             ruta_eliminar: ruta
           }).then(response => {
-            
+
             console.log(response)
 
-            if(tipo_archivo === 'Presentacion'){
+            if (tipo_archivo === 'Presentacion') {
               console.log("presentacion")
               if (response.data == "Archivo Eliminado") {
                 alert("Archivo/Documento Eliminado con Éxito")
@@ -1445,32 +1453,32 @@ const app = {
               } else {
                 alert("Error al eliminar el Documento.")
               }
-            }else if(tipo_archivo === 'Capacitacion'){
+            } else if (tipo_archivo === 'Capacitacion') {
               console.log("capacitacion")
               if (response.data == "Archivo Eliminado") {
                 alert("Archivo/Documento Eliminado con Éxito")
-               //this.consultarCapacitacion();
+                //this.consultarCapacitacion();
                 this.buscarDocumentos('Capacitacion')
               } else if (response.data == "No Eliminado") {
                 alert("Algo no salio bien no se logro Eliminar.")
               } else {
                 alert("Error al eliminar el Documento.")
               }
-            }else if(tipo_archivo === 'EvidenciaFoto'){
+            } else if (tipo_archivo === 'EvidenciaFoto') {
               console.log("ruta", ruta)
               console.log(tipo_archivo, "archivo")
-              console.log(response.data,"evidenciafoto")
+              console.log(response.data, "evidenciafoto")
               if (response.data == "Archivo Eliminado") {
                 alert("Fotografía Eliminada con Éxito")
-                this.buscarDocumentos('EvidenciaFoto','','','ActualizaPosicion')
+                this.buscarDocumentos('EvidenciaFoto', '', '', 'ActualizaPosicion')
               } else if (response.data == "No Eliminado") {
                 alert("Algo no salio bien no se logro Eliminar.")
               } else {
                 alert("Error al eliminar la fotografía.")
               }
- 
+
             }
-            
+
           }).catch(error => {
             console.log("Error :-(" + error)
           })
@@ -1718,29 +1726,29 @@ const app = {
       }, 300)
 
     },
-    modalBajaColaborador(){
-      if (this.checkIntegrantes.length <= 0){
-        Swal.fire( '¡Selecciona primero!','Favor de seleccionar un colaborador', 'info')
+    modalBajaColaborador() {
+      if (this.checkIntegrantes.length <= 0) {
+        Swal.fire('¡Selecciona primero!', 'Favor de seleccionar un colaborador', 'info')
 
-      }else if(this.checkIntegrantes.length>1){
-        Swal.fire( 'Un solo colaborador','Favor de seleccionar solamente un colaborador', 'info')
+      } else if (this.checkIntegrantes.length > 1) {
+        Swal.fire('Un solo colaborador', 'Favor de seleccionar solamente un colaborador', 'info')
 
-      }else{
+      } else {
         this.myModal = new bootstrap.Modal(document.getElementById("modal_baja_colaborador"));
         this.myModal.show();
       }
     },
-    bajaColaborador(){
+    bajaColaborador() {
       axios.put('colaboradorController.php', {
         accion: 'Dar de baja',
         idColaborador: this.ids[0]
       }).then(response => {
-        if(response.data == true){
+        if (response.data == true) {
           console.log('yeii')
           this.myModal.hide();
-          Swal.fire( '¡Operación exitosa!','El colaborador fue dado de baja.','success'); // success | error | warning | info | question
+          Swal.fire('¡Operación exitosa!', 'El colaborador fue dado de baja.', 'success'); // success | error | warning | info | question
         }
-        
+
       }).catch(error => {
         console.log('Axios Erro :-(' + error)
       })
@@ -1762,10 +1770,10 @@ const app = {
           this.planta_colaborador = ''
           this.myModal.hide();
           this.consultarColaboradores()
-        }else if(response.data == "Existe") {
+        } else if (response.data == "Existe") {
           alert("Ya existe ese registro");
-        }else{
-          console.log("Error en inserción",response.data);
+        } else {
+          console.log("Error en inserción", response.data);
         }
 
       }).catch(error => {
@@ -1777,7 +1785,7 @@ const app = {
       this.nombre_colaborador = texto.toUpperCase();
     },
     consultarEADXID() {
-      if(this.select_session_equipo != ''){
+      if (this.select_session_equipo != '') {
         var id = this.select_session_equipo.split('<->')[0];
         this.planta_ead = this.select_session_equipo.split('<->')[2];
         this.area_ead = this.select_session_equipo.split('<->')[3];
@@ -2234,7 +2242,7 @@ const app = {
       this.myModal.show();
       this.semanasAnio()
       this.consultarPilares()
-      
+
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(document.getElementById("modalGraficaKPI"));
@@ -2280,172 +2288,172 @@ const app = {
       });//success,warning,danger
     },
     graficaKPI(idCanva) {
-        console.log("grafica KPI");
-        const canvas = document.getElementById(idCanva);
+      console.log("grafica KPI");
+      const canvas = document.getElementById(idCanva);
 
-        if (!canvas) {
-          console.error("No se pudo obtener la referencia al elemento canvas.");
-          return;
-        }
+      if (!canvas) {
+        console.error("No se pudo obtener la referencia al elemento canvas.");
+        return;
+      }
 
-        // Destruye el gráfico existente si ya existe
-        let existingChart = Chart.getChart(canvas);
-        if (existingChart) {
-          existingChart.destroy();
-        }
-        var datosGraficaLength = this.datosGrafica.length; //tamanio
-        var datosGraficaElementos = this.datosGrafica; //arreglo de datos
+      // Destruye el gráfico existente si ya existe
+      let existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+      var datosGraficaLength = this.datosGrafica.length; //tamanio
+      var datosGraficaElementos = this.datosGrafica; //arreglo de datos
 
-        new Chart(canvas, {
-          type: 'bar',
-          data: {
-            labels: this.leyedasGafica,
-            datasets: [{
-              label: '',
-              data: this.datosGrafica,
-              backgroundColor: this.datosGrafica.map((valor, index) => {
-                if (index == 0) {
-                  return 'red';//Línea Base
-                }
-                if (index == 1) {
-                  return '#d8aa0a';//Entitlement
-                }
-                if (index == 2) {
-                  return '#6bb92e';//Meta Calculada
-                }
-                if (index == 3) {
-                  return 'green';//Meta Retadora
-                }
-                if (index >= 4) {
-                  let color = 'black';
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: this.leyedasGafica,
+          datasets: [{
+            label: '',
+            data: this.datosGrafica,
+            backgroundColor: this.datosGrafica.map((valor, index) => {
+              if (index == 0) {
+                return 'red';//Línea Base
+              }
+              if (index == 1) {
+                return '#d8aa0a';//Entitlement
+              }
+              if (index == 2) {
+                return '#6bb92e';//Meta Calculada
+              }
+              if (index == 3) {
+                return 'green';//Meta Retadora
+              }
+              if (index >= 4) {
+                let color = 'black';
 
-                  if (this.tGrafica == "Incremento") {
-                    if (valor >= this.datosGrafica[3]) {
-                      color = 'green';//Meta Retadora
-                    } else if (valor >= this.datosGrafica[2]) {
-                      color = '#6bb92e';//Meta Calculada
-                    } else if (valor >= this.datosGrafica[2] && valor < this.datosGrafica[3]) {
-                      color = '#6bb92e';//Meta Calculada
-                    } else if (valor >= this.datosGrafica[1] && valor < this.datosGrafica[3]) {
-                      color = '#d8aa0a';//Entitlement
-                    } else if (valor < this.datosGrafica[3]) {
-                      color = 'red';
-                    }
-                  } else {
-                    if (valor <= this.datosGrafica[3]) {
-                      color = 'green';
-                    } else if (valor >= this.datosGrafica[0] || valor > this.datosGrafica[1] && valor > this.datosGrafica[2] && valor > this.datosGrafica[3]) {
-                      color = 'red';
-                      console.log("condicion 1")
-                    }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
+                if (this.tGrafica == "Incremento") {
+                  if (valor >= this.datosGrafica[3]) {
+                    color = 'green';//Meta Retadora
+                  } else if (valor >= this.datosGrafica[2]) {
+                    color = '#6bb92e';//Meta Calculada
+                  } else if (valor >= this.datosGrafica[2] && valor < this.datosGrafica[3]) {
+                    color = '#6bb92e';//Meta Calculada
+                  } else if (valor >= this.datosGrafica[1] && valor < this.datosGrafica[3]) {
+                    color = '#d8aa0a';//Entitlement
+                  } else if (valor < this.datosGrafica[3]) {
+                    color = 'red';
+                  }
+                } else {
+                  if (valor <= this.datosGrafica[3]) {
+                    color = 'green';
+                  } else if (valor >= this.datosGrafica[0] || valor > this.datosGrafica[1] && valor > this.datosGrafica[2] && valor > this.datosGrafica[3]) {
+                    color = 'red';
+                    console.log("condicion 1")
+                  }/*else if(valor>=this.datosGrafica[2] && valor<this.datosGrafica[0]){
                               color = '#6bb92e';
                               console.log("condicion 1")
                             }*/else if (valor > this.datosGrafica[3] && valor <= this.datosGrafica[2]) {
-                      color = '#6bb92e';
-                      console.log("condicion 3")
-                    } else if (valor <= this.datosGrafica[1] && valor > this.datosGrafica[3]) {
-                      color = '#d8aa0a';
-                      console.log("condicion 2")
-                    }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
+                    color = '#6bb92e';
+                    console.log("condicion 3")
+                  } else if (valor <= this.datosGrafica[1] && valor > this.datosGrafica[3]) {
+                    color = '#d8aa0a';
+                    console.log("condicion 2")
+                  }/*else if(valor>=this.datosGrafica[1] && valor<this.datosGrafica[0]){
                               color = '#d8aa0a';
                               console.log("condicion 3")
                             }*/else if (valor > this.datosGrafica[2] && valor <= this.datosGrafica[2]) {
-                      color = '#6bb92e';
-                      console.log("condicion 4")
-                    }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
+                    color = '#6bb92e';
+                    console.log("condicion 4")
+                  }/*else if(valor>this.datosGrafica[2] && this.datosGrafica[2]<valor){
                               color = '#6bb92e';
                               console.log("condicion 7")
                             }*/
-                  }
-                  return color;
                 }
-              }),
-              borderWidth: 1,
-            }]
-          },
-          options: {
-            plugins: {
-              legend:{ //legend es para eliminar el boton que oculta y aparece las barras
-                display: false
+                return color;
+              }
+            }),
+            borderWidth: 1,
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { //legend es para eliminar el boton que oculta y aparece las barras
+              display: false
+            },
+            title: {
+              display: true,
+              text: this.nombre_indicador,
+              font: {
+                size: 20
               },
-              title: {
-                display: true,
-                text: this.nombre_indicador,
+              padding: {
+                //top: 20,   
+                bottom: 50
+              }
+            },
+          },
+          tooltips: {
+            enabled: true,
+          },
+          scales: {
+            x2: {
+              display: false,
+              //position: ,
+              labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
+              ticks: {
                 font: {
                   size: 20
                 },
-                padding: {
-                  //top: 20,   
-                  bottom: 50
-                }
-              },
-            },
-            tooltips: {
-              enabled: true,
-            },
-            scales: {
-              x2: {
-                display: false,
-                //position: ,
-                labels: this.datosGrafica.map(value => this.formatoNumero(value) + " " + this.tipo_unidad + ""),
-                ticks: {
-                  font: {
-                    size: 20
-                  },
-                  display: true,
-                  beginAtZero: true,
-                  color: this.datosGrafica.map((label, index) => {
-                    switch (index) {
-                      case 0:
-                        return 'red';
-                      case 1:
-                        return '#d8aa0a';
-                      case 2:
-                        return '#6bb92e';
-                      case 3:
-                        return 'green';
-                      default:
-                        return 'black';
-                    }
-                  })
-                },
-                grid: {
-                  display: false
-                }
-              },
-              x: {
                 display: true,
-                position: 'bottom', //inferior
-                ticks: {
-                  display: true,
-                  beginAtZero: true,
-                  font: {
-                    size: 20
-                  },
-                }
+                beginAtZero: true,
+                color: this.datosGrafica.map((label, index) => {
+                  switch (index) {
+                    case 0:
+                      return 'red';
+                    case 1:
+                      return '#d8aa0a';
+                    case 2:
+                      return '#6bb92e';
+                    case 3:
+                      return 'green';
+                    default:
+                      return 'black';
+                  }
+                })
               },
+              grid: {
+                display: false
+              }
             },
-            animation: {
-
-              duration: 0,
-
+            x: {
+              display: true,
+              position: 'bottom', //inferior
+              ticks: {
+                display: true,
+                beginAtZero: true,
+                font: {
+                  size: 20
+                },
+              }
             },
+          },
+          animation: {
+
+            duration: 0,
 
           },
-          plugins: [{
-            afterDatasetsDraw: (chart) => {
-              datosGraficaElementos.forEach((data, index) => {
-                chart.ctx.fillStyle = 'black';
-                chart.ctx.font = '20px Arial';
-                chart.ctx.textAlign = 'center';
-                chart.ctx.textBaseline = 'top';
-                chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
-                chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
-              });
-            }
-          }]
 
-        });
+        },
+        plugins: [{
+          afterDatasetsDraw: (chart) => {
+            datosGraficaElementos.forEach((data, index) => {
+              chart.ctx.fillStyle = 'black';
+              chart.ctx.font = '20px Arial';
+              chart.ctx.textAlign = 'center';
+              chart.ctx.textBaseline = 'top';
+              chart.ctx.fillText(this.formatoNumero(data), chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 40);
+              chart.ctx.fillText(this.tipo_unidad, chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 20);
+            });
+          }
+        }]
+
+      });
     },
     consultarSeguimientoKPI() {
       axios.get("seguimientoKpiController.php", {
@@ -2454,13 +2462,13 @@ const app = {
         }
       }).then(response => {
         if (response.data[0] == true) {
-          console.log("HOLLA",response.data)
-          let extrajePilares = response.data[2].map(pilar  => pilar.nombre);
-          console.log("extrajePilares",extrajePilares);
-          this.extrajeIDSPilares = response.data[2].map(pilar  => pilar.id);
-          console.log("extrajeIDSPilares",this.extrajeIDSPilares);
+          console.log("HOLLA", response.data)
+          let extrajePilares = response.data[2].map(pilar => pilar.nombre);
+          console.log("extrajePilares", extrajePilares);
+          this.extrajeIDSPilares = response.data[2].map(pilar => pilar.id);
+          console.log("extrajeIDSPilares", this.extrajeIDSPilares);
           this.pilaresGuardadosString = extrajePilares.map(nombre => `• ${nombre}`).join(" ");
-          console.log("PILARESGUARDADOS",this.pilaresGuardadosString)
+          console.log("PILARESGUARDADOS", this.pilaresGuardadosString)
 
           this.pilarSeleccionado = []
           this.objetivoSeleccionado = []
@@ -2477,23 +2485,23 @@ const app = {
             this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
 
 
-              if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
-                try {
-                  this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
-                } catch (error) {
-                  console.log('No hay pilares seleccionados');
-                }
+            if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
+              try {
+                this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
+              } catch (error) {
+                console.log('No hay pilares seleccionados');
               }
+            }
 
-              if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].objetivos) {
-                try {
-                  this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
-                } catch (error) {
-                  console.log('No hay objetivos seleccionados');
-                }
+            if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].objetivos) {
+              try {
+                this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
+              } catch (error) {
+                console.log('No hay objetivos seleccionados');
               }
-              //this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
-              //this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
+            }
+            //this.pilarSeleccionado = JSON.parse(this.seguimientoKPIs[0].pilares);
+            //this.objetivoSeleccionado = JSON.parse(this.seguimientoKPIs[0].objetivos);
 
 
             //this.datoGrafica_dato= this.seguimientoKPIs[0].dato_semanal
@@ -2724,12 +2732,12 @@ const app = {
         }
       });
     },
-//////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
-    modalEvFoto(fecha,index,area){
-      if(fecha == ''){
+    //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
+    modalEvFoto(fecha, index, area) {
+      if (fecha == '') {
         alert('Favor de seleccionar una fecha antes de subir su documento.')
-      }else{
-        this.posicion = index  
+      } else {
+        this.posicion = index
         this.fecha_ruta = fecha
         this.areaDocumento = area/* 
         this.fechaFoto = fecha */
@@ -2737,7 +2745,7 @@ const app = {
         console.log("Metodo foto");
         this.myModal = new bootstrap.Modal(document.getElementById('modalEvFoto'));
         this.myModal.show();
-        this.buscarDocumentos("EvidenciaFoto",'', '');
+        this.buscarDocumentos("EvidenciaFoto", '', '');
       }
     },
 
@@ -2769,12 +2777,12 @@ const app = {
 
 
     }, */
-    modalDocumentoCapacitacion(fecha,index,area) {
-      
-      if(fecha == ''){
+    modalDocumentoCapacitacion(fecha, index, area) {
+
+      if (fecha == '') {
         alert('Favor de seleccionar una fecha antes de subir su documento.')
-      }else{
-        this.posicion_canti_doc = index  
+      } else {
+        this.posicion_canti_doc = index
         this.fecha_ruta = fecha
         this.areaDocumento = area
         this.myModal = new bootstrap.Modal(document.getElementById("modal"));
@@ -2782,14 +2790,14 @@ const app = {
         this.buscarDocumentos('Capacitacion')
       }
     },
-    nuevaCapacitaciones(){
+    nuevaCapacitaciones() {
       this.nueva_capacitacion = true;
       this.fecha_capacitacion = ''
       this.nuevos_ingresos = ''
       this.evidencia_capacitacion = ''
       this.capacitacion_impartida = ''
       this.comentarios_capacitacion = ''
-      this.cantNewDoc= 0
+      this.cantNewDoc = 0
       this.cantNewFoto = 0
 
 
@@ -2806,36 +2814,36 @@ const app = {
 
     },
 
-    guardarCapacitacion(accion,index,id){
-      if(accion=='Actualizar'){
+    guardarCapacitacion(accion, index, id) {
+      if (accion == 'Actualizar') {
         console.log("Estoy actualizando")
-          this.nuevos_ingresos =document.getElementById('capacitacionIngreso'+index).value;
-          this.fecha_capacitacion = document.getElementById('capacitacionFecha'+index).value;
-          this.comentarios_capacitacion =document.getElementById('capacitacionComentario'+index).value;
+        this.nuevos_ingresos = document.getElementById('capacitacionIngreso' + index).value;
+        this.fecha_capacitacion = document.getElementById('capacitacionFecha' + index).value;
+        this.comentarios_capacitacion = document.getElementById('capacitacionComentario' + index).value;
       }
-      if (this.nuevos_ingresos == '' || this.fecha_capacitacion == '' || this.comentarios_capacitacion == '') { 
+      if (this.nuevos_ingresos == '' || this.fecha_capacitacion == '' || this.comentarios_capacitacion == '') {
         return alert("Todos los campos de compromiso son requeridos.")
       }
       axios.post("capacitacionesController.php", {
-        id:id,
-        accion:accion,
+        id: id,
+        accion: accion,
         nuevos_ingresos: this.nuevos_ingresos,
         fecha_capacitacion: this.fecha_capacitacion,
         comentarios_capacitacion: this.comentarios_capacitacion
       }).then(response => {
         if (response.data == true) {
           Swal.fire({
-              title: "Guardado!!",
-              text: "Capacitación Guardada con Éxito.",
-              icon: "success"
-            });
-            this.comentarios_capacitacion = '';  // Limpiar campo comentarios
-            this.nuevos_ingresos = '';           // Limpiar campo ingresos
-            this.fecha_capacitacion = '';        // Limpiar campo fecha
-            this.fecha_ruta = ''
-            this.consultarCapacitacion();
-            this.nueva_capacitacion = false
-            this.editarCapacitacion = false
+            title: "Guardado!!",
+            text: "Capacitación Guardada con Éxito.",
+            icon: "success"
+          });
+          this.comentarios_capacitacion = '';  // Limpiar campo comentarios
+          this.nuevos_ingresos = '';           // Limpiar campo ingresos
+          this.fecha_capacitacion = '';        // Limpiar campo fecha
+          this.fecha_ruta = ''
+          this.consultarCapacitacion();
+          this.nueva_capacitacion = false
+          this.editarCapacitacion = false
         } else {
           console.log(response.data);
         }
@@ -2844,7 +2852,7 @@ const app = {
       })
     },
 
-    consultarCapacitacion(){
+    consultarCapacitacion() {
       //this.nuevos_ingresos = ''
       //this.fecha_capacitacion = ''
       axios.get('capacitacionesController.php', {
@@ -2854,28 +2862,27 @@ const app = {
       }).then(response => {
         console.log('Capacitaciones', response.data)
         if (response.data[0] == true) {
-         
+
           this.capacitaciones = response.data[1];
           this.cantidadDocumentos = [];
           this.cantidadFotos = [];
           for (let index = 0; index < this.capacitaciones.length; index++) {
-            this.buscarDocumentos('Por Fecha',this.capacitaciones[index].fecha,this.capacitaciones[index].area)//busco la cantidad de archivos que contiene cada capacitacion.
-          
-          
-          } 
+            this.buscarDocumentos('Por Fecha', this.capacitaciones[index].fecha, this.capacitaciones[index].area, 'llenadoInicial', index)//busco la cantidad de archivos que contiene cada capacitacion.
+
+          }
           for (let index = 0; index < this.capacitaciones.length; index++) {
-            this.buscarDocumentos('EvidenciaFoto',this.capacitaciones[index].fecha,this.capacitaciones[index].area,'llenadoInicial',index)//busco la cantidad de archivos que contiene cada capacitacion.
-          } 
+            this.buscarDocumentos('EvidenciaFoto', this.capacitaciones[index].fecha, this.capacitaciones[index].area, 'llenadoInicial', index)//busco la cantidad de archivos que contiene cada capacitacion.
+          }
         } else {
           console.log("Error en la consulta" + response.data);
         }
-      }).catch(error=>{
-          console.log("Error :-( en axios: "+error)
+      }).catch(error => {
+        console.log("Error :-( en axios: " + error)
       })
 
     },
-    
-    cancelarCapacitacion(){
+
+    cancelarCapacitacion() {
       this.nueva_capacitacion = false
 
     },
@@ -2884,8 +2891,8 @@ const app = {
     cancelarActualizarCompromiso()
     actualizandoCompromiso()
     eliminarCompromiso(*/
-    
-    
+
+
 
 
 
@@ -3439,7 +3446,7 @@ const app = {
     diasDelMesAnio() {
       var anio
       var mes
-     // console.log(this.anio_grafica + '' + this.mes_grafica)
+      // console.log(this.anio_grafica + '' + this.mes_grafica)
       if (this.anio_grafica != '' && this.mes_grafica != '') {
         if (this.mes_grafica == 'Enero') { mes = 1 }
         if (this.mes_grafica == 'Febrero') { mes = 2 }
@@ -3521,10 +3528,10 @@ const app = {
       const [mes, año] = fechaStr.split('-');
       return new Date(año, mes - 1);  // mes - 1 porque el mes en Date es de 0 a 11
     },
-    obtenerFecha(){
+    obtenerFecha() {
       const fechadEHoy = new Date();
       console.log(fechadEHoy)
-      
+
       this.anioActual = fechadEHoy.getFullYear();
       this.mesActual = fechadEHoy.getMonth() + 1;
       this.diaActual = fechadEHoy.getDate();
@@ -3532,26 +3539,26 @@ const app = {
       console.log(this.anioActual);
       console.log(this.mesActual);
       console.log(this.diaActual);
-      
+
     },
-    comprobando(dia){
-      if(this.tipo_usuario == 'Colaborador'){
-        if(this.habilitar==false){
+    comprobando(dia) {
+      if (this.tipo_usuario == 'Colaborador') {
+        if (this.habilitar == false) {
           console.log("FALSE ")
           return false
-        }else{
+        } else {
           let fechaLimite = this.diaActual - 7;
-          if(this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero){
-                if(dia > fechaLimite){
-                  return false
-                }else{
-                  return true
-                }
-          }else{
+          if (this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero) {
+            if (dia > fechaLimite) {
+              return false
+            } else {
+              return true
+            }
+          } else {
             return true
           }
         }
-      }else{
+      } else {
         return false
       }
     },
@@ -3586,31 +3593,31 @@ const app = {
         console.log("ffechaSelect",fechaSelect); */
 
         ///comprobando año
-        if(this.anioActual > this.anio_grafica){
+        if (this.anioActual > this.anio_grafica) {
           this.habilitar = true;
           console.log("MAYOR QUE")
-        }else if(this.anioActual == this.anio_grafica){
+        } else if (this.anioActual == this.anio_grafica) {
           console.log("IGUAL QUE")
           this.habilitar = true;
 
           ///comprobando mes
-          if(this.mesActual>mes){
+          if (this.mesActual > mes) {
             console.log("Mes anterior")
             this.habilitar = true
-          }else if(this.mesActual==mes){
+          } else if (this.mesActual == mes) {
             console.log("Mes actual")
             this.habilitar = true
-          }else if(this.mesActual<mes){
+          } else if (this.mesActual < mes) {
             console.log("Mes posterior")
             this.habilitar = false
           }
 
-        }else if(this.anioActual < this.anio_grafica){
+        } else if (this.anioActual < this.anio_grafica) {
           this.habilitar = false;
           console.log("MENOR QUE")
         }
-        console.log("hABILITAR",this.habilitar);
-        
+        console.log("hABILITAR", this.habilitar);
+
         var id_equipo = this.equipo_grafica.split('<->')[0];
         axios.get("graficasController.php", {
           params: {
@@ -3634,34 +3641,34 @@ const app = {
             //  console.log('el tamaño del arreglo es:',this.datosGrafica.length);
             //  console.log('el id del criterio:',this.idCriterioGrafica);
 
-          if(this.idCriterioGrafica == 2){
-            let suma_vacio = 0;
-            let suma_valores = 0;
-            let cant_pos_llenas = 0;
-            this.tamArregloMermaYDesp = this.datosGrafica.length 
-    
-            for(let i = 0; i < this.datosGrafica.length; i++){
-             if(this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])){
-                suma_vacio ++;
-              
-              }else{
-                suma_valores = this.datosGrafica[i] + suma_valores;
-                cant_pos_llenas ++;
+            if (this.idCriterioGrafica == 2) {
+              let suma_vacio = 0;
+              let suma_valores = 0;
+              let cant_pos_llenas = 0;
+              this.tamArregloMermaYDesp = this.datosGrafica.length
+
+              for (let i = 0; i < this.datosGrafica.length; i++) {
+                if (this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])) {
+                  suma_vacio++;
+
+                } else {
+                  suma_valores = this.datosGrafica[i] + suma_valores;
+                  cant_pos_llenas++;
+                }
               }
+
+              if (suma_vacio == this.datosGrafica.length || isNaN((suma_valores / cant_pos_llenas).toFixed(2))) {
+                this.promMermayDesperdicio = 0;
+
+              } else {
+                this.promMermayDesperdicio = (suma_valores / cant_pos_llenas).toFixed(2)
+
+              }
+              //console.log('mi suma es:',suma_vacio);
+              //console.log('mi total es:',this.promMermayDesperdicio);
             }
-    
-            if(suma_vacio == this.datosGrafica.length || isNaN((suma_valores/cant_pos_llenas).toFixed(2))){
-              this.promMermayDesperdicio = 0;
-              
-            }else{
-              this.promMermayDesperdicio = (suma_valores/cant_pos_llenas).toFixed(2)
-              
-            }
-            //console.log('mi suma es:',suma_vacio);
-            //console.log('mi total es:',this.promMermayDesperdicio);
-          } 
-          
-        //}
+
+            //}
 
             /* if (this.idCriterioGrafica == 'Rechazos') {
                this.datosGraficaRechazo = nuevoArreglo
@@ -3706,32 +3713,32 @@ const app = {
       this.datosGrafica[index] = valor;
       this.sumaTabla = this.datosGrafica.reduce((total, valor) => { if (isNaN(valor) || valor === null) { return total + 0; } else { return total + valor; } }, 0).toFixed(2);
 
-      if(this.idCriterioGrafica == 2){
+      if (this.idCriterioGrafica == 2) {
         let suma_vacio = 0;
         let suma_valores = 0;
         let cant_pos_llenas = 0;
-        this.tamArregloMermaYDesp = this.datosGrafica.length 
+        this.tamArregloMermaYDesp = this.datosGrafica.length
 
-        for(let i = 0; i < this.datosGrafica.length; i++){
-         if(this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])){
-            suma_vacio ++;
-          
-          }else{
+        for (let i = 0; i < this.datosGrafica.length; i++) {
+          if (this.datosGrafica[i] == null || this.datosGrafica[i] == undefined || isNaN(this.datosGrafica[i])) {
+            suma_vacio++;
+
+          } else {
             suma_valores = this.datosGrafica[i] + suma_valores;
-            cant_pos_llenas ++;
+            cant_pos_llenas++;
           }
         }
 
-        if(suma_vacio == this.datosGrafica.length || isNaN((suma_valores/cant_pos_llenas).toFixed(2))){
+        if (suma_vacio == this.datosGrafica.length || isNaN((suma_valores / cant_pos_llenas).toFixed(2))) {
           this.promMermayDesperdicio = 0;
-          
-        }else{
-          this.promMermayDesperdicio = (suma_valores/cant_pos_llenas).toFixed(2)
-          
+
+        } else {
+          this.promMermayDesperdicio = (suma_valores / cant_pos_llenas).toFixed(2)
+
         }
-       console.log('mi suma es:',suma_vacio);
-       console.log('mi total es:',this.promMermayDesperdicio);
-      } 
+        console.log('mi suma es:', suma_vacio);
+        console.log('mi total es:', this.promMermayDesperdicio);
+      }
 
 
 
@@ -4161,28 +4168,28 @@ const app = {
     },
 
 
-    guardarTotalScoreCard(){
+    guardarTotalScoreCard() {
       //console.log("TOTAL:",this.totalSC)
       let mes_numero = this.mesesNumeros(this.mes_score)
-        if(this.guardoNuevoDato===true){
-            axios.post("cumplimiento_scorecard_Controller.php", {
-              accion: 'guardarTotalScoreCard',
-                idEquipo: this.equipo_score.split('<->')[0],
-                anio:this.anio_score,
-                mes:mes_numero,
-                total: this.totalSC,
-            }).then(response => {
-              console.log("Respuesta GuardarTotal",response.data);
-                if (response.data[0] == true) {
-                console.log("Calificación guardada con éxito")
-                } else {
-                  alert("Algo no salio bien al guardar la Calificación")
-                  console.log("Error en la consulta de Cumplimiento scorecard", response.data)
-                }
-            }).catch(error => {
-              console.log("Error en el axios", error)
-            })
-        }
+      if (this.guardoNuevoDato === true) {
+        axios.post("cumplimiento_scorecard_Controller.php", {
+          accion: 'guardarTotalScoreCard',
+          idEquipo: this.equipo_score.split('<->')[0],
+          anio: this.anio_score,
+          mes: mes_numero,
+          total: this.totalSC,
+        }).then(response => {
+          console.log("Respuesta GuardarTotal", response.data);
+          if (response.data[0] == true) {
+            console.log("Calificación guardada con éxito")
+          } else {
+            alert("Algo no salio bien al guardar la Calificación")
+            console.log("Error en la consulta de Cumplimiento scorecard", response.data)
+          }
+        }).catch(error => {
+          console.log("Error en el axios", error)
+        })
+      }
     },
 
     consultarGraficasParaScoreCard() {
@@ -4235,12 +4242,12 @@ const app = {
                     operacion: origen.operacion,
                     registros: 1 // Si es el primer registro para este criterio, inicializamos el contador a 1
                   });
-                   indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
+                  indexCant = 1; // Iniciamos el contador con 1 para el primer valor válido
                 }
               }
 
               return nuevo;
-              
+
             }, []);
 
             // Al final, después de haber sumado todos los valores, calculamos el promedio si es necesario
@@ -4275,18 +4282,18 @@ const app = {
       }
     },
 
-    consultarCumplimientoScorecard(){
-      
-     
-      if(this.select_area && this.anio_bateo){
-        if(this.anio_bateo!==''){
+    consultarCumplimientoScorecard() {
+
+
+      if (this.select_area && this.anio_bateo) {
+        if (this.anio_bateo !== '') {
           mes_numero = parseInt(this.mesesNumeros(this.mes_bateo))
         }
-       
 
-       // console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
+
+        // console.log("area:",this.select_area,"anio:",this.anio_bateo,"mes:",mes_numero);
         axios.get("cumplimiento_scorecard_Controller.php", {
-          params:{
+          params: {
             area: this.select_area,
             mes: mes_numero,
             anio: this.anio_bateo,
@@ -4294,80 +4301,80 @@ const app = {
           }
         }).then(response => {
           //console.log("Respuesta Bateo", response.data)
-            if (response.data[0] == true) {
-              this.cumplimiento_scorecard = response.data[1];
-              console.log("Bateo Cumplimiento", this.cumplimiento_scorecard)
-              /* var idEquipoArea = this.cumplimiento_scorecard.forEach(item=>item.idEquipo);
-              console.log("IDS?",idEquipoArea) */
+          if (response.data[0] == true) {
+            this.cumplimiento_scorecard = response.data[1];
+            console.log("Bateo Cumplimiento", this.cumplimiento_scorecard)
+            /* var idEquipoArea = this.cumplimiento_scorecard.forEach(item=>item.idEquipo);
+            console.log("IDS?",idEquipoArea) */
 
-              let ids = [];
+            let ids = [];
 
-              Object.values(this.cumplimiento_scorecard).forEach(equipoArray => {
-                equipoArray.forEach(item => {
-                  if (!ids.includes(item.idEquipo)) {
-                    ids.push(item.idEquipo);
-                  }
-                });
+            Object.values(this.cumplimiento_scorecard).forEach(equipoArray => {
+              equipoArray.forEach(item => {
+                if (!ids.includes(item.idEquipo)) {
+                  ids.push(item.idEquipo);
+                }
               });
+            });
 
-              console.log("ids", ids);
-              this.idsEquipo = ids;
-              console.log("jojo", this.idsEquipo)
-              // Ordenar los datos por mes
+            console.log("ids", ids);
+            this.idsEquipo = ids;
+            console.log("jojo", this.idsEquipo)
+            // Ordenar los datos por mes
             for (const equipo in this.cumplimiento_scorecard) {
               this.cumplimiento_scorecard[equipo].sort((a, b) => a.mes - b.mes);
             }
 
-              let datos = response.data[1]; // Asignas el objeto de datos
-              // Objetos para almacenar los resultados
-              const equiposPorMes = {}; // Cantidad de equipos por mes
-              const equiposConMasDe850 = {}; // Cantidad de equipos con más de 850 puntos por mes
-              const porcentajeArribaDe850 = {}; // Porcentaje de equipos con más de 850 puntos por mes
-              
-              //buscar mes con mes por equipo.
-              for (const equipo in datos) {
-                datos[equipo].forEach((registro) => { 
-                  const mes = registro.mes;
-                  const puntos = registro.puntos;
-              
-                  // Contar equipos por mes
-                  if (!equiposPorMes[mes]) {
-                    equiposPorMes[mes] = 0;
+            let datos = response.data[1]; // Asignas el objeto de datos
+            // Objetos para almacenar los resultados
+            const equiposPorMes = {}; // Cantidad de equipos por mes
+            const equiposConMasDe850 = {}; // Cantidad de equipos con más de 850 puntos por mes
+            const porcentajeArribaDe850 = {}; // Porcentaje de equipos con más de 850 puntos por mes
+
+            //buscar mes con mes por equipo.
+            for (const equipo in datos) {
+              datos[equipo].forEach((registro) => {
+                const mes = registro.mes;
+                const puntos = registro.puntos;
+
+                // Contar equipos por mes
+                if (!equiposPorMes[mes]) {
+                  equiposPorMes[mes] = 0;
+                }
+                equiposPorMes[mes]++;
+
+                // Contar equipos con más de 850 puntos por mes
+                if (puntos >= 850) {
+                  if (!equiposConMasDe850[mes]) {
+                    equiposConMasDe850[mes] = 0;
                   }
-                  equiposPorMes[mes]++;
-              
-                  // Contar equipos con más de 850 puntos por mes
-                  if (puntos >= 850) {
-                    if (!equiposConMasDe850[mes]) {
-                      equiposConMasDe850[mes] = 0;
-                    }
-                    equiposConMasDe850[mes]++;
-                  }
-                });
-              }
-              
-             // Calcular el porcentaje de equipos con más de 850 puntos por mes
-          for (const mes in equiposPorMes) {
-            const totalEquipos = equiposPorMes[mes]; // Total de equipos en el mes
-            const equiposArribaDe850 = equiposConMasDe850[mes] || 0; // Equipos con más de 850 puntos (si no hay, es 0)
-            const porcentaje = (equiposArribaDe850 / totalEquipos) * 100; // Fórmula del porcentaje
-
-            porcentajeArribaDe850[mes] = porcentaje.toFixed(2); // Redondear a 2 decimales
-          }
-          this.equiposPorMes = equiposPorMes
-          this.equiposConMasDe850 = equiposConMasDe850
-          this.porcentajeArribaDe850 = porcentajeArribaDe850
-            // Mostrar resultados
-            console.log("Cantidad de equipos por mes:",this.equiposPorMes );
-            console.log("Cantidad de equipos con más de 850 puntos por mes:",  this.equiposConMasDe850);
-            console.log("Porcentaje de equipos con más de 850 puntos por mes:",this.porcentajeArribaDe850);
-
-              this.graficaBateo();
-              this.consultarCumplimientoProyectos()
-
-            } else {
-              console.log("Error en la consulta de Cumplimiento scorecard", response.data)
+                  equiposConMasDe850[mes]++;
+                }
+              });
             }
+
+            // Calcular el porcentaje de equipos con más de 850 puntos por mes
+            for (const mes in equiposPorMes) {
+              const totalEquipos = equiposPorMes[mes]; // Total de equipos en el mes
+              const equiposArribaDe850 = equiposConMasDe850[mes] || 0; // Equipos con más de 850 puntos (si no hay, es 0)
+              const porcentaje = (equiposArribaDe850 / totalEquipos) * 100; // Fórmula del porcentaje
+
+              porcentajeArribaDe850[mes] = porcentaje.toFixed(2); // Redondear a 2 decimales
+            }
+            this.equiposPorMes = equiposPorMes
+            this.equiposConMasDe850 = equiposConMasDe850
+            this.porcentajeArribaDe850 = porcentajeArribaDe850
+            // Mostrar resultados
+            console.log("Cantidad de equipos por mes:", this.equiposPorMes);
+            console.log("Cantidad de equipos con más de 850 puntos por mes:", this.equiposConMasDe850);
+            console.log("Porcentaje de equipos con más de 850 puntos por mes:", this.porcentajeArribaDe850);
+
+            this.graficaBateo();
+            this.consultarCumplimientoProyectos()
+
+          } else {
+            console.log("Error en la consulta de Cumplimiento scorecard", response.data)
+          }
         }).catch(error => {
           console.log("Error en el axios", error)
         })
@@ -4377,301 +4384,301 @@ const app = {
       const mesData = cumplimiento.find(item => item.mes === mes);
       return mesData ? mesData.puntos : '';
     },
-    graficaBateo(){
-        console.log("Iniciando grafica bateo")
+    graficaBateo() {
+      console.log("Iniciando grafica bateo")
 
-          const canvas = document.getElementById('canvaBateo');
-          if (!canvas) {
-            console.error("No se pudo obtener la referencia al elemento canvas.");
-            return;
-          }
-          let existingChart = Chart.getChart(canvas);
-          if (existingChart) {
-            existingChart.destroy();
-          }
-        porcentajeArribaDe850 = this.porcentajeArribaDe850 || [];
+      const canvas = document.getElementById('canvaBateo');
+      if (!canvas) {
+        console.error("No se pudo obtener la referencia al elemento canvas.");
+        return;
+      }
+      let existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+      porcentajeArribaDe850 = this.porcentajeArribaDe850 || [];
 
-        // Crear un arreglo de datos que tenga el mismo orden que this.meses
-        const data = this.meses.map((mes, index) => {
-          // Los meses en porcentajeArribaDe850 empiezan desde 2 (Febrero)
-          const mesKey = (index + 1).toString(); // porque los keys están como strings "2", "3", etc.
-          return porcentajeArribaDe850[mesKey] ? parseFloat(porcentajeArribaDe850[mesKey]) : null;
-        });
-        console.log("Datos para la gráfica de BATEO:", data);
+      // Crear un arreglo de datos que tenga el mismo orden que this.meses
+      const data = this.meses.map((mes, index) => {
+        // Los meses en porcentajeArribaDe850 empiezan desde 2 (Febrero)
+        const mesKey = (index + 1).toString(); // porque los keys están como strings "2", "3", etc.
+        return porcentajeArribaDe850[mesKey] ? parseFloat(porcentajeArribaDe850[mesKey]) : null;
+      });
+      console.log("Datos para la gráfica de BATEO:", data);
 
-          new Chart(canvas, {
-              type: 'bar',
-              data: {
-                labels: this.meses,
-                datasets: [{
-                  label: '%',
-                  data: data,
-                  borderWidth: 1,
-                  backgroundColor: data.map((valor, index) => {
-                    if(valor>50){
-                     return 'rgba(31, 128, 29, 0.8)'  // Color Verde
-                    }else if(valor<50 ){
-                       return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
-                    }else if(valor==50 ){
-                      return 'rgba(242, 206, 68, 0.8)' // Color amarillo con opacidad
-                    }
-                  }), // Color azul con opacidad
-                  borderColor: 'rgba(8, 80, 158, 0.6)' // Borde del mismo color sin opacidad
-                }],
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: this.meses,
+          datasets: [{
+            label: '%',
+            data: data,
+            borderWidth: 1,
+            backgroundColor: data.map((valor, index) => {
+              if (valor > 50) {
+                return 'rgba(31, 128, 29, 0.8)'  // Color Verde
+              } else if (valor < 50) {
+                return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
+              } else if (valor == 50) {
+                return 'rgba(242, 206, 68, 0.8)' // Color amarillo con opacidad
+              }
+            }), // Color azul con opacidad
+            borderColor: 'rgba(8, 80, 158, 0.6)' // Borde del mismo color sin opacidad
+          }],
+        },
+        options: {
+          plugins: {
+            legend: { //legend es para eliminar el boton que oculta y aparece las barras
+              display: false
+            },
+            title: {
+              display: true,
+              text: 'Indicador del éxito ScoreCard',
+              font: {
+                size: 18
               },
-               options: {
-                plugins: {
-                   legend:{ //legend es para eliminar el boton que oculta y aparece las barras
-                      display: false
-                    },
-                  title: {
-                      display: true,
-                      text: 'Indicador del éxito ScoreCard',
-                      font: {
-                        size: 18
-                      },
-                    }
-                  },
-                  scales: {
-                      x: {
-                      ticks: {
-                        font: {
-                          size: 20, // Cambia el tamaño de la fuente aquí
-                          weight: ''
-                        }
-                      }
-                    },
-                    y: {
-                      beginAtZero: true
-                    }
-                  }
-              },  
-              plugins: [{
-              afterDatasetsDraw: (chart) => {
-              data.forEach((data, index) => {
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  size: 20, // Cambia el tamaño de la fuente aquí
+                  weight: ''
+                }
+              }
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+        plugins: [{
+          afterDatasetsDraw: (chart) => {
+            data.forEach((data, index) => {
               chart.ctx.fillStyle = 'black';
               chart.ctx.font = '22px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data)+'%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
+              chart.ctx.fillText(this.formatoNumero(data) + '%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
             });
           }
         }]
-            });
+      });
     },
-      
-    
-    consultarAlFondo(){
+
+
+    consultarAlFondo() {
       this.irAlFondo();
       this.consultarCumplimientoProyectos();
     },
     irAlFondo() {
-     setTimeout(() => {
-        window.scrollTo(0, document.body.scrollHeight) 
+      setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight)
       }, 50);// sin animación
     },
-    consultarCumplimientoProyectos(){
+    consultarCumplimientoProyectos() {
        /* let stringIdsEq = JSON.parse(this.idsEquipo)
        console.log("Equipos ids string",stringIdsEq) */;
-      axios.post("cumplimientoProyectosController.php", { 
-         /* parámetros de consulta */ 
-          accion: "Consultar",
-          area: this.select_area,
-          anio: this.anio_bateo,
-          idsEquipos: this.idsEquipo,/* 
+      axios.post("cumplimientoProyectosController.php", {
+        /* parámetros de consulta */
+        accion: "Consultar",
+        area: this.select_area,
+        anio: this.anio_bateo,
+        idsEquipos: this.idsEquipo,/* 
           proyectos: this.cumplimiento_scorecard, */
-        
+
       }).then(response => {
         // Manejar la respuesta exitosa
-        
+
         /* var  dcreOincre = response.data.map(element => element.tipo);
         console.log("jjejej", dcreOincre); */
         // Los datos que se retornan del servidor
-        console.log("Respuesta consulta proyectos kpis",response.data);
+        console.log("Respuesta consulta proyectos kpis", response.data);
         const proyectos = response.data;
-            
+
         /* if(response.data!=''){ */
-          var proyectoMasReciente= Object.values(
-            proyectos.reduce((acc, item) => {
-              const clave = `${item.id_equipo}-${item.mes_cierre}`;
-              if (!acc[clave] || parseInt(item.semana) > parseInt(acc[clave].semana)) {
-                acc[clave] = item; // guarda solo el de mayor semana
-              }
-              return acc;
-            }, {})
-          )
-
-          
-          this.meses.forEach((mes) => {
-            let cumplidos = 0;
-            proyectoMasReciente.forEach(items => {
-
-              if(items.mes_cierre == mes){
-                /* items.push("cumplio") <<CUANDO ES ARRAY*/
-                let datoMetaCalculada =parseFloat(items.meta_calculada)
-                let datoMensual =parseFloat(items.dato_semanal)//ultima seman en teoria es el cierre de mes.
-                if(items.tipo=='Decremento'|| items.tipo==''){
-                  
-                  if(datoMensual<=datoMetaCalculada){
-                    items.cumplio = 1
-                    cumplidos++;
-                    items.cumplidos = cumplidos;
-                  }else{
-                    items.cumplio = 0
-                      items.cumplidos = cumplidos
-                  }
-
-                }else if(items.tipo=='Incremento'){
-
-                  if(datoMensual>=datoMetaCalculada){
-                    items.cumplio = 1
-                    cumplidos++;
-                    items.cumplidos = cumplidos;
-                  }else{
-                    items.cumplio = 0
-                    items.cumplidos = cumplidos
-                  }
-
-                }
-              }
-            })
-          });
-          let ultimoPorMes = {};
-          let totalCumplieron =[];
-          proyectoMasReciente.forEach(item => {
-            let mes = item.mes_cierre;
-            ultimoPorMes[mes] = { 
-              mes_cierre: mes, 
-              cumplidos: item.cumplidos   // ya viene sumado en tu dato
-            }; // siempre sobrescribe → queda el último
-          });
-          console.log("HOLAA", proyectoMasReciente);
-        
-
-        
-          console.log("ultimodeMes??", ultimoPorMes);
-          /* this.meses.forEach((mes) => {
-            totalCumplieron = Object.values(ultimoPorMes).filter(item=>item.mes_cierre == mes)
-          });  */
-
-          totalCumplieron = this.meses.map(mes => {
-            return ultimoPorMes[mes]?.cumplidos || 0;
-          });
-          let cantProyectos = Object.keys(this.cumplimiento_scorecard).length 
-          console.log("Cantidad de proyectos:", cantProyectos);
-
-          this.porcentajePorMes = this.meses.map((mes, index) => {
-           return +((totalCumplieron[index] / cantProyectos) * 100).toFixed(2)
-          });
-          
-
-          /* this.porcentajePorMes = [...new Set(this.porcentajePorMes)]; */
-          console.log("porcentaje ",this.porcentajePorMes);
-          /* let porcentajeMes = [...this.porcentajePorMes]
-          console.log("porcentajeMes ",porcentajeMes); */
-
-          console.log("TOTAL CUMPLIERON",totalCumplieron);
-          this.totalCumplieron = totalCumplieron;
-          console.log("proyectos??",this.cumplimiento_scorecard);
-          console.log("sjsjsj", this.minimoCumplimiento);
-          this.graficaCumplimientoProyectos();
-        
-          /* }else{ */
-            /* const canvas = document.getElementById('canvaCumplimientoProyectos');
-            let existingChart = Chart.getChart(canvas);
-            if (existingChart) {
-              existingChart.destroy();
+        var proyectoMasReciente = Object.values(
+          proyectos.reduce((acc, item) => {
+            const clave = `${item.id_equipo}-${item.mes_cierre}`;
+            if (!acc[clave] || parseInt(item.semana) > parseInt(acc[clave].semana)) {
+              acc[clave] = item; // guarda solo el de mayor semana
             }
-          } */
+            return acc;
+          }, {})
+        )
+
+
+        this.meses.forEach((mes) => {
+          let cumplidos = 0;
+          proyectoMasReciente.forEach(items => {
+
+            if (items.mes_cierre == mes) {
+              /* items.push("cumplio") <<CUANDO ES ARRAY*/
+              let datoMetaCalculada = parseFloat(items.meta_calculada)
+              let datoMensual = parseFloat(items.dato_semanal)//ultima seman en teoria es el cierre de mes.
+              if (items.tipo == 'Decremento' || items.tipo == '') {
+
+                if (datoMensual <= datoMetaCalculada) {
+                  items.cumplio = 1
+                  cumplidos++;
+                  items.cumplidos = cumplidos;
+                } else {
+                  items.cumplio = 0
+                  items.cumplidos = cumplidos
+                }
+
+              } else if (items.tipo == 'Incremento') {
+
+                if (datoMensual >= datoMetaCalculada) {
+                  items.cumplio = 1
+                  cumplidos++;
+                  items.cumplidos = cumplidos;
+                } else {
+                  items.cumplio = 0
+                  items.cumplidos = cumplidos
+                }
+
+              }
+            }
+          })
+        });
+        let ultimoPorMes = {};
+        let totalCumplieron = [];
+        proyectoMasReciente.forEach(item => {
+          let mes = item.mes_cierre;
+          ultimoPorMes[mes] = {
+            mes_cierre: mes,
+            cumplidos: item.cumplidos   // ya viene sumado en tu dato
+          }; // siempre sobrescribe → queda el último
+        });
+        console.log("HOLAA", proyectoMasReciente);
+
+
+
+        console.log("ultimodeMes??", ultimoPorMes);
+        /* this.meses.forEach((mes) => {
+          totalCumplieron = Object.values(ultimoPorMes).filter(item=>item.mes_cierre == mes)
+        });  */
+
+        totalCumplieron = this.meses.map(mes => {
+          return ultimoPorMes[mes]?.cumplidos || 0;
+        });
+        let cantProyectos = Object.keys(this.cumplimiento_scorecard).length
+        console.log("Cantidad de proyectos:", cantProyectos);
+
+        this.porcentajePorMes = this.meses.map((mes, index) => {
+          return +((totalCumplieron[index] / cantProyectos) * 100).toFixed(2)
+        });
+
+
+        /* this.porcentajePorMes = [...new Set(this.porcentajePorMes)]; */
+        console.log("porcentaje ", this.porcentajePorMes);
+        /* let porcentajeMes = [...this.porcentajePorMes]
+        console.log("porcentajeMes ",porcentajeMes); */
+
+        console.log("TOTAL CUMPLIERON", totalCumplieron);
+        this.totalCumplieron = totalCumplieron;
+        console.log("proyectos??", this.cumplimiento_scorecard);
+        console.log("sjsjsj", this.minimoCumplimiento);
+        this.graficaCumplimientoProyectos();
+
+        /* }else{ */
+        /* const canvas = document.getElementById('canvaCumplimientoProyectos');
+        let existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+          existingChart.destroy();
+        }
+      } */
       })
-      .catch(error => {
-        // Manejar cualquier error
-        console.error('Hubo un error al realizar la solicitud GET:', error);
-      });
+        .catch(error => {
+          // Manejar cualquier error
+          console.error('Hubo un error al realizar la solicitud GET:', error);
+        });
     },
 
-    graficaCumplimientoProyectos(){
-      console.log("Iniciando grafica cumplimiento",this.totalCumplieron)
-          const canvas = document.getElementById('canvaCumplimientoProyectos');
-          if (!canvas) {
-            console.error("No se pudo obtener la referencia al elemento canvas.");
-            return;
-          }
-          let existingChart = Chart.getChart(canvas);
-          if (existingChart) {
-            existingChart.destroy();
-          }
-          var nombreArea = this.areas.map(element => {
-            if(element.id === this.select_area){
-              return element.nombre
-            }
-          }).filter(nombre => nombre !== undefined)[0];
+    graficaCumplimientoProyectos() {
+      console.log("Iniciando grafica cumplimiento", this.totalCumplieron)
+      const canvas = document.getElementById('canvaCumplimientoProyectos');
+      if (!canvas) {
+        console.error("No se pudo obtener la referencia al elemento canvas.");
+        return;
+      }
+      let existingChart = Chart.getChart(canvas);
+      if (existingChart) {
+        existingChart.destroy();
+      }
+      var nombreArea = this.areas.map(element => {
+        if (element.id === this.select_area) {
+          return element.nombre
+        }
+      }).filter(nombre => nombre !== undefined)[0];
 
-          var totalCumplimiento = this.totalCumplieron;
-          new Chart(canvas, {
-              type: 'bar',
-              data: {
-                labels: this.meses,
-                datasets: [{
-                  label: '%',
-                  data: this.porcentajePorMes,
-                  borderWidth: 1,
-                  backgroundColor: this.porcentajePorMes.map((valor, index) => {
-                    if(valor>=this.minimoCumplimiento){
-                     return 'rgba(31, 128, 29, 0.8)'  // Color Verde
-                    }else if(valor<this.minimoCumplimiento){
-                       return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
-                    }
-                  }),
-                  borderColor: 'rgba(107, 154, 204, 0.6)' // Borde del mismo color sin opacidad
-                }],
+      var totalCumplimiento = this.totalCumplieron;
+      new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: this.meses,
+          datasets: [{
+            label: '%',
+            data: this.porcentajePorMes,
+            borderWidth: 1,
+            backgroundColor: this.porcentajePorMes.map((valor, index) => {
+              if (valor >= this.minimoCumplimiento) {
+                return 'rgba(31, 128, 29, 0.8)'  // Color Verde
+              } else if (valor < this.minimoCumplimiento) {
+                return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
+              }
+            }),
+            borderColor: 'rgba(107, 154, 204, 0.6)' // Borde del mismo color sin opacidad
+          }],
+        },
+        options: {
+          plugins: {
+            legend: { //legend es para eliminar el boton que oculta y aparece las barras
+              display: false
+            },
+            title: {
+              display: true,
+              text: '% de cumplimiento de proyectos ' + nombreArea,
+              font: {
+                size: 18
               },
-               options: {
-                plugins: {
-                   legend:{ //legend es para eliminar el boton que oculta y aparece las barras
-                      display: false
-                    },
-                  title: {
-                      display: true,
-                      text: '% de cumplimiento de proyectos '+ nombreArea,
-                      font: {
-                        size: 18
-                      },
-                    }
-                  },
-                  scales: {
-                      x: {
-                      ticks: {
-                        font: {
-                          size: 20, // Cambia el tamaño de la fuente aquí
-                          weight: ''
-                        }
-                      }
-                    },
-                    y: {
-                      beginAtZero: true
-                    }
-                  }
-              },  
-              plugins: [{
-              afterDatasetsDraw: (chart) => {
-              this.porcentajePorMes.forEach((data, index) => {
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                font: {
+                  size: 20, // Cambia el tamaño de la fuente aquí
+                  weight: ''
+                }
+              }
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        },
+        plugins: [{
+          afterDatasetsDraw: (chart) => {
+            this.porcentajePorMes.forEach((data, index) => {
               chart.ctx.fillStyle = 'black';
               chart.ctx.font = '22px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data)+'%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
+              chart.ctx.fillText(this.formatoNumero(data) + '%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
             });
           }
         }]
       });
     },
-    consultarNombresEquipos(){
-      
+    consultarNombresEquipos() {
+
     },
 
     consultarDatosPonderacionID() {
-      
+
       let id_ponderacion = this.equipo_score.split("<->")[4];
       if (id_ponderacion == '') {
         return Swal.fire({
@@ -4734,7 +4741,7 @@ const app = {
           this.puntosObtenidos = puntosInput
           this.puntosCriterios = puntos
           this.guardarptsOBT = puntos
-          console.log('puntos criterios:',this.guardarptsOBT)
+          console.log('puntos criterios:', this.guardarptsOBT)
 
           //Multiplicando Puntos Obtenidos Graficas * Ponderacion  
           puntos.forEach((element) => {
@@ -4771,7 +4778,7 @@ const app = {
         console.log("Erro en axios", error)
       })
     },
-  
+
     saveInputDinamico(id_criterios, index) {
       let valor = this.inputValorActual[id_criterios]
       //obtengo el puntaje desde ponderacion
@@ -4909,16 +4916,16 @@ const app = {
         console.log("Error en axios", error)
       })
     },
-    MostrarOcultarPonderacion(ocultarOmostrar,id_ponderacion){
-      console.log("Quiero: "+ocultarOmostrar+"La ponderación con ID: "+id_ponderacion)
-      if(ocultarOmostrar=='Mostrar'){
+    MostrarOcultarPonderacion(ocultarOmostrar, id_ponderacion) {
+      console.log("Quiero: " + ocultarOmostrar + "La ponderación con ID: " + id_ponderacion)
+      if (ocultarOmostrar == 'Mostrar') {
         this.mostrar_ponderacion_id = id_ponderacion
       }
-      if(ocultarOmostrar=='Ocultar'){
+      if (ocultarOmostrar == 'Ocultar') {
         this.mostrar_ponderacion_id = ""
       }
-     
-     
+
+
     },
     consultarPonderaciones() {
       axios.get("ponderacionesController.php", {
@@ -4931,7 +4938,7 @@ const app = {
           //Obtenga titulo ponderaciones unicas
           this.tablasPonderaciones = Object.values(
             this.ponderaciones.reduce((acc, objeto) => {
-              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion, area: objeto.area, nombreArea: objeto.nombreArea};
+              acc[objeto.id_ponderacion] = { ponderacion: objeto.ponderacion, id_ponderacion: objeto.id_ponderacion, area: objeto.area, nombreArea: objeto.nombreArea };
               return acc;
             }, {})
           ).reverse();
@@ -4989,7 +4996,7 @@ const app = {
       })
     },
 
-    consultarAreas(){
+    consultarAreas() {
       this.areas = "";
       axios.post("crud_ead.php", {
         accion: 'consultarAreasEADs',
@@ -5129,7 +5136,7 @@ const app = {
         console.log("Error en axios: " + error)
       })
     },
-    
+
     cancelarPonderacion() {
       this.nueva_ponderacion = false
     },
