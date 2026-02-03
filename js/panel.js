@@ -388,7 +388,7 @@ const app = {
   },
   methods: {
     toggleMenu() {
-      console.log("hola togglr");
+      this.verificarSesion();
       //this.menuAbierto = !this.menuAbierto;
       var menu = document.getElementById('menuEAD')
 
@@ -398,6 +398,18 @@ const app = {
         menu.style.display = 'block'
       }
     },
+    verificarSesion(){
+      axios.get('verificarSesion.php', {
+      }).then(response => {
+       if(response.data.success === true){
+         console.log("Sesión activa");
+       }
+      }).catch(error => {
+        console.log('Error :-(' + error)
+        window.location.href = 'index.php?cerrar=1';
+      })
+    },
+
     cerrarModalHistorial() {
       this.myModal.hide();
     },

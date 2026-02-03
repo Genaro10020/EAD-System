@@ -1,17 +1,35 @@
 <?php 
 session_start();
 session_destroy();
+
+$mostrarMensaje = false;
+if (isset($_GET['cerrar']) && $_GET['cerrar'] == 1) {
+    $mostrarMensaje = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <?php include('head.php'); ?> 
 </head>
+<script>
+  setTimeout(() => {
+    const msg = document.getElementById('mensajeSesion');
+    if (msg) {
+      msg.style.display = 'none';
+    }
+  }, 6000); // 6000 ms = 6 segundos
+</script>
 <body class="cuerpo-index">
                 <header>
                        <div id="header-app"></div>
                 </header>
-                <div  id="app" class="container-fluid">
+                <div id="app" class="container-fluid">
+                    <?php if ($mostrarMensaje): ?>
+                    <div id="mensajeSesion" class="alert alert-warning text-center m-0 rounded-0">
+                        ⚠️ Tu sesión ha expirado, vuelve a iniciar sesión
+                    </div>
+                    <?php endif; ?>
                    
                                     <div  class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
 
