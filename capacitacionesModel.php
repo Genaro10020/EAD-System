@@ -9,9 +9,9 @@ include("conexionGhoner.php");
 
          
         if ($tipo_usuario === "Admin") {
-            $consulta = "SELECT * FROM capacitaciones ORDER BY id DESC"; // Consulta toda la BD
+            $consulta = "SELECT * FROM capacitaciones ORDER BY fecha DESC"; // Consulta toda la BD
         } else {
-            $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY id DESC"; // Consulta por área
+            $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY fecha DESC"; // Consulta por área
         }
        // $consulta = "SELECT * FROM capacitaciones WHERE area = ? ORDER BY id DESC";//consulto las capacitaciones
         if ($stmt = $conexion->prepare($consulta)) {
