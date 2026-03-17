@@ -32,15 +32,15 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Departamentos'), toggleMenu()"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios'), toggleMenu()"><b>Usuarios</b></button></a>
-                                <?php }?>
+                                <?php }
+                
+                                if(isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') || isset( $_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Consultor' ){?>
+                                    <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
+                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                     <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
+                                <?php }
 
-                                <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                                <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                                <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
-                             
-                               
-                                <?php
                                 if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
                                    <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
@@ -59,7 +59,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD(), toggleMenu()"><b>Ponderación</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios(), toggleMenu()"><b>Graficas</b></button></a>
-                                      <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos(), toggleMenu()"><b>Puntos</b></button></a>
                                 <?php } 
                             }

@@ -35,61 +35,72 @@ $resultado = "";
                                 }
                             }else{//Entrar como consultor.
 
-                                $final = [];
-                                $selectIntegrante = "";
-                                $consultares = "Consultor";
-                                $consultaConsultores = "SELECT * FROM equipos_ead WHERE tipo_ead IN ('EAD Consultor')";//Busco equipos consultores
-                                $queryConsultores = $conexion->query($consultaConsultores);
-                                if($consultares == "Consultor"){
-                                    include("conexionBDSugerencias.php");
-                                    while($datoConsultores = mysqli_fetch_array($queryConsultores)){
-                                          $resultado=$final = json_decode($datoConsultores['integrantes'], true);//encuentro el equipo al que pertenece al equipo consultor 
-                                          foreach($final as $idIntegrante){//busco a cada integrante del equipo consultor para verificar su acceso al sistema
-                                              $selectIntegrante = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id='$idIntegrante' AND numero_nomina='$usuario' AND password='$contrasena' AND status != 'Baja'";
-                                              $queryIntegrante = $conexion->query($selectIntegrante);
-                                                if($queryIntegrante){
-                                                    if (mysqli_num_rows($queryIntegrante) > 0) {
-                                                        $row = mysqli_fetch_assoc($queryIntegrante);
-                                                            if($row){
-                                                                $_SESSION['id'] = $row['id'];
-                                                                $_SESSION['nombre'] = $row['colaborador'];
-                                                                $_SESSION['nomina'] = $row['numero_nomina'];
-                                                                $_SESSION['tipo_acceso'] = "Consultor";
-                                                                $_SESSION['id_equipo'] = $row['equipo_ead_grafica'];
-                                                                $resultado = "Autorizado";
-                                                               break 2; // rompe foreach y while de consultores
-                                                            }
-                                                    }else{
-                                                        $resultado = "Verifique CONSULTOR";
-                                                    }
-                                                }else{
-                                                    $resultado = "Error ".$conexion->error;
-                                                }
-                                          }
-                                    }
-                                }else{//Acceso colaboradores ScoreCard
+                             $final = [];
+                            $encontradoConsultor = false;
 
-                                        $consultarEvaluador = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE numero_nomina='$usuario' AND password='$contrasena' AND id_grafica_acceso!='' AND status != 'Baja'";
-                                        $query3=$conexion->query($consultarEvaluador);
-                                        if($query3){
-                                                if (mysqli_num_rows($query3) > 0) {
-                                                    while($row = mysqli_fetch_array($query3)){
-                                                        $_SESSION['id']=$row['id'];
-                                                        $_SESSION['nombre']=$row['colaborador'];
-                                                        $_SESSION['nomina']=$row['numero_nomina'];
-                                                        $_SESSION['tipo_acceso']="Colaborador";
-                                                        $_SESSION['id_equipo']=$row['equipo_ead_grafica'];
-                                                        $_SESSION['id_tabla']=$row['id_grafica_acceso'];
-                                                        $resultado = "Autorizado";
-                                                    }
-                                                }else{
-                                                    $resultado = "Verifique";
-                                                }   
-                                        }else{
-                                            $resultado = "Error ".$conexion->error;
+                            $consultaConsultores = "SELECT * FROM equipos_ead WHERE tipo_ead IN ('EAD Consultor')";
+                            $queryConsultores = $conexion->query($consultaConsultores);
+
+                            if(mysqli_num_rows($queryConsultores) > 0){
+                                include("conexionBDSugerencias.php");
+
+                                while($datoConsultores = mysqli_fetch_array($queryConsultores)){
+                                    $final = json_decode($datoConsultores['integrantes'], true);
+
+                                    foreach($final as $idIntegrante){
+                                        $selectIntegrante = "SELECT * 
+                                            FROM usuarios_colocaboradores_sugerencias 
+                                            WHERE id='$idIntegrante' 
+                                            AND numero_nomina='$usuario' 
+                                            AND password='$contrasena' 
+                                            AND status != 'Baja'";
+
+                                        $queryIntegrante = $conexion->query($selectIntegrante);
+
+                                        if($queryIntegrante && mysqli_num_rows($queryIntegrante) > 0){
+                                            $row = mysqli_fetch_assoc($queryIntegrante);
+                                            $_SESSION['id'] = $row['id'];
+                                            $_SESSION['nombre'] = $row['colaborador'];
+                                            $_SESSION['nomina'] = $row['numero_nomina'];
+                                            $_SESSION['tipo_acceso'] = "Consultor";
+                                            $_SESSION['id_equipo'] = $row['equipo_ead_grafica'];
+                                            $resultado = "Autorizado";
+                                            $encontradoConsultor = true;
+                                            break 2; // salir de ambos loops
                                         }
+                                    }
                                 }
-                             
+                            }
+
+                            # SOLO si NO se encontró como consultor
+                            if(!$encontradoConsultor){
+                                $consultarEvaluador = "SELECT * 
+                                    FROM usuarios_colocaboradores_sugerencias 
+                                    WHERE numero_nomina='$usuario' 
+                                    AND password='$contrasena' 
+                                    AND id_grafica_acceso!='' 
+                                    AND status != 'Baja'";
+
+                                $query3 = $conexion->query($consultarEvaluador);
+
+                                if($query3){
+                                    if (mysqli_num_rows($query3) > 0){
+                                        while($row = mysqli_fetch_array($query3)){
+                                            $_SESSION['id'] = $row['id'];
+                                            $_SESSION['nombre'] = $row['colaborador'];
+                                            $_SESSION['nomina'] = $row['numero_nomina'];
+                                            $_SESSION['tipo_acceso'] = "Colaborador";
+                                            $_SESSION['id_equipo'] = $row['equipo_ead_grafica'];
+                                            $_SESSION['id_tabla'] = $row['id_grafica_acceso'];
+                                            $resultado = "Autorizado";
+                                        }
+                                    } else {
+                                        $resultado = "Verifique";
+                                    }
+                                } else {
+                                    $resultado = "Error " . $conexion->error;
+                                }
+                            }
                             }   
                     }else{
                         $resultado = "Error ".$conexion->error;
