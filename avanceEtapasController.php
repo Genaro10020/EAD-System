@@ -7,8 +7,9 @@ if(isset($_SESSION['nombre'])){
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':
-                if (isset($_GET['accion']) && $_GET['accion']==="Consultar"){
-                    $resultado = consultarEtapas();
+                if (isset($_GET['accion']) && isset($_GET['metodologia']) && $_GET['accion']==="Consultar"){
+                    $metodologia = $_GET['metodologia'];
+                    $resultado = consultarEtapas($metodologia);
                 }
                 break;
             case 'POST':

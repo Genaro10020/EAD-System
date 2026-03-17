@@ -25,21 +25,25 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </button>
                         <div class="dropdown-content" id="menuEAD"><!-- class="dropdown-content"  :class="{ 'show': menuAbierto }" -->
                             <?php
-                            if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Admin') {
-                                if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                            if (isset($_SESSION['tipo_acceso'])){
+                                
+                                if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                             ?>
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Departamentos'), toggleMenu()"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios'), toggleMenu()"><b>Usuarios</b></button></a>
-                                <?php } ?>
+                                <?php }?>
+
                                 <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
                                 <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
                                 <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),consultarAvanceEtapas(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
+                                <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
+                             
+                               
                                 <?php
-                                if ($_SESSION['tipo_usuario'] == 'Admin') {
+                                if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
+                                   <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas(), toggleMenu()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
@@ -48,16 +52,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
-                                    <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
+                                   
                                 <?php }
-                                if ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') {
+                                if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                                 ?>
+                                    <a><i class="bi bi-bar-chart-line-fill"> Graficos</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD(), toggleMenu()"><b>Ponderación</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios(), toggleMenu()"><b>Graficas</b></button></a>
-                                <?php } ?>
-                                <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
-                                <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos(), toggleMenu()"><b>Puntos</b></button></a>
-                            <?php
+                                      <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos(), toggleMenu()"><b>Puntos</b></button></a>
+                                <?php } 
                             }
                             ?>
                         </div>
@@ -397,6 +401,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="subarea in subareas">
                                             {{subarea.nombre}}
                                         </option>
+                                        <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -411,6 +416,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraCordinador()">
                                             {{usuario.nombre}}
                                         </option>
+                                         <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -422,6 +428,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraJefeArea()">
                                             {{usuario.nombre}}
                                         </option>
+                                         <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -433,6 +440,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraIngenieroProceso()">
                                             {{usuario.nombre}}
                                         </option>
+                                         <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -444,6 +452,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraIngenieroCalidad()">
                                             {{usuario.nombre}}
                                         </option>
+                                         <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -455,6 +464,19 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraSupervisor()">
                                             {{usuario.nombre}}
                                         </option>
+                                        <option value="No aplica">No aplica</option>
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="col-12">
+                                <div class="input-group mt-3">
+                                    <span class="text-ezquierdo-form input-group-text">Tipo de Equipo</span>
+                                    <select v-model="select_tipo_ead" class="form-control select" aria-label="With textarea">
+                                        <option disabled default value="">Seleccione...</option>
+                                        <option value="EAD">EAD</option>
+                                        <option value="EAD Consultor">EAD Consultor</option>
+                                        <!--<option value="Consultor PDCA">EAD Consultor (PDCA)</option>
+                                        <option value="Consultor DMAIC">EAD Consultor (DMAIC)</option>-->
                                     </select>
                                 </div>
                             </div>
@@ -634,34 +656,81 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             </div>
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
-                    <div class="col-12 col-lg-6 d-flex justify-content-center align-items-center">
-                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
-                        ?>
-                            <button class="py-1 me-2" style="font-size:12px" :class="{'btn btn-success': documento_definicion.length > 0, 'btn btn-primary': documento_definicion.length <= 0}" @click="modalDocumentoDefinicionDeProyectos()" :disabled="!seleccion_eds_areas.length">
-                                <i class="bi bi-folder-plus"></i>
-                                Definición Proyectos ({{documento_definicion.length}})
-                            </button>
-                        
-                            <div class="col-3 me-5">
-                                <select class="form-select" v-model="seleccion_eds_areas" @change="filtrandoEADsGestion()" style="font-size:0.8em">
-                                    <option value="">Todos los equipos</option>
-                                    <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
-                                </select>
+                    <div class="col-12 ">
+                            <div class="row g-2 mt-2 mb-2 align-items-center justify-content-center">
+
+                                <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') { ?>
+
+                                <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center">
+                                    <button class="btn py-1 w-100"
+                                        style="font-size:12px; max-width:200px;"
+                                        :class="{'btn-success': documento_definicion.length > 0, 'btn-primary': documento_definicion.length <= 0}"
+                                        @click="modalDocumentoDefinicionDeProyectos()"
+                                        :disabled="!seleccion_eds_areas.length">
+                                        <i class="bi bi-folder-plus"></i>
+                                        Definición Proyectos ({{documento_definicion.length}})
+                                    </button>
+                                </div>
+
+                               <div class="col-12 col-md-6 col-xl-2">
+                                    <div class="input-group  d-flex justify-content-center">
+                                        <label class="input-group-text" style="font-size:0.8em">Área</label>
+                                        <select class="form-select"
+                                            style="font-size:12px; max-width:200px;"
+                                            v-model="seleccion_eds_areas"
+                                            @change="filtrandoEADsGestion()"
+                                            style="font-size:0.8em">
+                                            <option value="">Todas las áreas..</option>
+                                            <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
+                                            </select>
+                                    </div>
+                                </div>
+
+                                <?php } ?>
+
+                                <div class="col-12 col-md-6 col-xl-2 d-flex justify-content-center">
+                                    <button class="btn py-1 w-100"
+                                        style="font-size:12px; max-width:200px;"
+                                        :class="{'btn-success': documento_session.length > 0, 'btn-primary': documento_session.length <= 0}"
+                                        @click="modalDocumentoGestionSession()"
+                                        :disabled="!select_session_equipo.length">
+                                        <i class="bi bi-folder-plus"></i>
+                                        Documento ({{documento_session.length}})
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-md-6 col-xl-2">
+                                    <div class="input-group d-flex justify-content-center">
+                                        <label class="input-group-text" style="font-size:0.7em">Fecha</label>
+                                        <input v-model="fecha_session"
+                                         style="font-size:12px; max-width:200px;"
+                                            type="date"
+                                            class="form-control"
+                                            style="font-size:0.7em"
+                                            @change="buscarDocumentos('Presentacion')">
+                                    </div>
+                                </div>
+
+                                <!--<div class="col-12 col-md-6 col-xl-3">
+                                    <div class="input-group d-flex justify-content-center">
+                                        <label class="input-group-text" style="font-size:0.8em">Metodología</label>
+                                        <select class="form-select"
+                                            :disabled="tipo_equipo=='EAD'"
+                                            style="font-size:12px; max-width:200px;"
+                                            v-model="metodologia"
+                                            @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()"
+                                            style="font-size:0.8em">
+                                            <option value="">Seleccione...</option>
+                                            <option value="PDCA">PDCA</option>
+                                            <option value="DMAIC">DMAIC</option>
+                                        </select>
+                                    </div>
+                                </div>-->
+
                             </div>
-                        <?php
-                        }
-                        ?>
-                        <button class="py-1 me-2" style="font-size:12px" :class="{'btn btn-success': documento_session.length > 0, 'btn btn-primary': documento_session.length <= 0}" @click="modalDocumentoGestionSession()" :disabled="!select_session_equipo.length">
-                            <i class="bi bi-folder-plus"></i>
-                            Documento ({{documento_session.length}})
-                        </button>
-                        <div class="input-group mt-1 mb-1" style="width:300px">
-                            <label class="input-group-text" id="basic-addon1" style="font-size:0.7em">Fecha</label>
-                            <input v-model="fecha_session" type="date" class="form-control" style="font-size:0.7em" @change="buscarDocumentos('Presentacion')">
                         </div>
-                    </div>
-                    <div class="col-12 col-lg-6 ">
-                        <div class="d-flex justify-content-center">
+                    <div class="col-12  d-flex justify-content-center align-items-center">
+                        <div v-if="metodologia=='PDCA'" class="d-flex justify-content-center">
                             <div class="col-3 col-sm-3 d-flex justify-content-center">
                                 <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">P</label></div>
                                 <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaP"></canvas><br>
@@ -683,6 +752,33 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <label style="margin-top:30px;font-size:0.7em">{{llevaA}}%</label>
                             </div>
                         </div>
+                         <div v-if="metodologia=='DMAIC'" class="d-flex justify-content-center">
+                            <div class="col-3 col-sm-3 d-flex justify-content-center">
+                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">D</label></div>
+                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicD"></canvas><br>
+                                <label style="margin-top:30px;font-size:0.7em">{{llevaMD}}%</label>
+                            </div>
+                            <div class="col-3 col-sm-3 d-flex justify-content-center">
+                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">M</label></div>
+                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicM"></canvas>
+                                <label style="margin-top:30px;font-size:0.7em">{{llevaMM}}%</label>
+                            </div>
+                            <div class="col-3 col-sm-3 d-flex justify-content-center">
+                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">A</label></div>
+                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicA"></canvas>
+                                <label style="margin-top:30px;font-size:0.7em">{{llevaMA}}%</label>
+                            </div>
+                            <div class="col-3 col-sm-3 d-flex justify-content-center">
+                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">I</label></div>
+                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicI"></canvas>
+                                <label style="margin-top:30px;font-size:0.7em">{{llevaMI}}%</label>
+                            </div>
+                             <div class="col-3 col-sm-3 d-flex justify-content-center">
+                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">C</label></div>
+                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicC"></canvas>
+                                <label style="margin-top:30px;font-size:0.7em">{{llevaMC}}%</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -693,7 +789,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <h6 class="text-center pasos">1. Asistencia</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Equipo </label>
-                                <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarSeguimientoSession(),consultarCompromisos(), consultarPilares()" style="font-size:0.8em">
+                                <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarCompromisos(), consultarPilares()" style="font-size:0.8em">
                                     <option value="">Seleccione..</option>
                                     <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
                                 </select>
@@ -703,7 +799,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </label>
                                 <br>
                                 <b class="letrasCard">Planta:</b> {{planta_ead}}
-                                <b class="letrasCard">Area:</b> {{area_ead}}<br>
+                                <b class="letrasCard">Area:</b> {{area_ead}} 
+                                <b class="letrasCard">Tipo:</b> {{tipo_equipo}}<br>
                                 <div class="row">
                                     <div class="col-12">
                                         <ul class="text-start">
@@ -723,16 +820,31 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!--Tarjeta Fases-->
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
                         <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
-                            <h6 class="text-center pasos">2. Etapa y fases</h6>
+                            <h6 class="text-center pasos">2. Metodología</h6>
+                            <div class="input-group" style="min-width:270px">
+                                        <label class="input-group-text" style="font-size:0.8em">Metodología</label>
+                                        <select class="form-select"
+                                            :disabled="tipo_equipo=='EAD' || existenDatosSesion==true"
+                                            v-model="metodologia"
+                                            @change="consultarAvanceEtapas()"
+                                            style="font-size:0.8em">
+                                            <option value="">Seleccione...</option>
+                                            <option value="PDCA">PDCA</option>
+                                            <option value="DMAIC">DMAIC</option>
+                                        </select>
+                            </div>
+                            <h6 class="text-center pasos mt-2">3. Etapa y fases</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Etapa </label>
-                                <select class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
+                                <select
+                                :disabled="metodologia==''" 
+                                class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
                                     <option value="">Seleccione..</option>
                                     <option v-for="etapa in etapas" :value="etapa.id+'<->'+etapa.etapa">{{etapa.etapa}}</option>
                                 </select>
                             </div>
                             <div v-if="fases_etapa.length>0" class="container text-center">
-                                <label class="letrasCard text-center mb-2">
+                                <label class="letrasCard text-center">
                                 </label>
                                 <br>
                                 <b class="letrasCard">Fases</b>

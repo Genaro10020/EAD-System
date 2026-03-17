@@ -10,6 +10,8 @@ if (isset($_SESSION['nombre'])) {
     $equipos = array();
     $integrantesIDs = array(); 
     $integrantes= array();  
+    $tipo_ead="";
+    $metodologia="";
    
     switch ($accion) {
         case 'consultar':
@@ -18,8 +20,10 @@ if (isset($_SESSION['nombre'])) {
             //$consulta = "SELECT * FROM equipos_ead WHERE area ='$area' ORDER BY id DESC";
             //Coordinador miguel no quiere que aparacezcan estos equipos ya que no participaran en proyetos, activar cuando los necesite.
             $consulta = "SELECT * FROM equipos_ead WHERE area = '$area' AND id NOT IN (55, 59, 84) ORDER BY id DESC";
+        }else if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Consultor'){
+            $consulta = "SELECT * FROM equipos_ead  WHERE tipo_ead IN ('EAD Consultor') ORDER BY id DESC";
         }else{
-            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";
+            $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";//Administrador
         }
         $result = $conexion->query($consulta);
     
@@ -66,12 +70,29 @@ if (isset($_SESSION['nombre'])) {
     break;
     case 'consutarEAD'://Solicitado desde Sugerencias
         $id_ead=$arreglo['id_ead'];
+        //Buscando la metodología del equipo
+        $consult = "SELECT * FROM gestion_sesiones WHERE id_equipo = '$id_ead' AND proyecto_cerrado!='Si' ORDER BY id DESC LIMIT 1";//Proyecto aun en abierto o en proceso
+        $query = $conexion->query($consult);
+
+        if ($query) {
+            $validaciones[0] = true;
+            if ($query->num_rows > 0) {
+                $datos = $query->fetch_assoc();
+                $metodologia = $datos['metodologia'];
+            }
+
+        } else {
+            $validaciones[0] = $conexion->error;
+        }
+
+        //Buscando tipo de EAD y integrantes
         $consulta = "SELECT * FROM equipos_ead WHERE id ='$id_ead'";
         $result = $conexion->query($consulta);
         if($result){
-            $validaciones[0] = true;
+            $validaciones[1] = true;
                 if($fila= $result->num_rows>0){
                     $fila = $result->fetch_assoc();
+                    $tipo_ead = $fila['tipo_ead'];
                     $integrantesIDs = json_decode($fila['integrantes'],true);
                         include("conexionBDSugerencias.php");
                             if (!empty($integrantesIDs) && is_array($integrantesIDs)) {
@@ -79,21 +100,21 @@ if (isset($_SESSION['nombre'])) {
                                     $consultaIntegrantes = "SELECT * FROM usuarios_colocaboradores_sugerencias WHERE id = '$idIntegrante'";
                                     $resultIntegrantes = $conexion->query($consultaIntegrantes);
                                     if($resultIntegrantes){
-                                        $validaciones[1] = true;
+                                        $validaciones[2] = true;
                                         if ($resultIntegrantes->num_rows > 0) {
                                             while ($datos = $resultIntegrantes->fetch_assoc()) {
                                                 $integrantes[] = $datos; // Agregar datos al array usando $idEAD como clave
                                             }
                                         }
                                     }else{
-                                        $validaciones[1] = false;
+                                        $validaciones[2] = false;
                                     }
                                 }
                             }
                 }
 
         }else{
-            $validaciones[0] = false;
+            $validaciones[1] = false;
         }
     break;
     case 'consultarAreasEADs':
@@ -203,16 +224,17 @@ if (isset($_SESSION['nombre'])) {
             $ing_proceso = $arreglo['ing_proceso'];
             $ing_calidad = $arreglo['ing_calidad'];
             $supervisor = $arreglo['supervisor'];
+            $tipo_ead = $arreglo['tipo_ead'];
             $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
             $lider = explode('<->', $lider_equipo);
             (int)$id_lider = $lider[0];
-            $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor,integrantes) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            $insertar = "INSERT INTO equipos_ead (nombre_ead,planta,area,proceso,tipo_ead,lider_equipo,coordinador,jefe_area,ing_procesos,ing_calidad,supervisor,integrantes) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexion->prepare($insertar);
            
             if ($stmt === false) {
                 $validaciones[0] = "Error en Bind" . $conexion->error;
             } else {
-                $stmt->bind_param("sssssssssss", $nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes);
+                $stmt->bind_param("ssssssssssss", $nombre, $planta, $area, $proceso, $tipo_ead, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes);
                 if ($stmt->execute()) {
                     $validaciones[0] = true;
                     $id_integrante=json_decode($ids_integrantes,true);
@@ -266,6 +288,7 @@ if (isset($_SESSION['nombre'])) {
             $ing_proceso = $arreglo['ing_proceso'];
             $ing_calidad = $arreglo['ing_calidad'];
             $supervisor = $arreglo['supervisor'];
+            $tipo_ead = $arreglo['tipo_ead'];
             $ids_integrantes = json_encode($arreglo['ids_integrantes'],JSON_UNESCAPED_UNICODE);
             $lider_anterior = $arreglo['lider_anterior'];
             
@@ -277,11 +300,11 @@ if (isset($_SESSION['nombre'])) {
             
 
             //Actualizo Equipos EAD    
-            $actualizar = "UPDATE equipos_ead SET nombre_ead = ?,planta = ?,area = ? ,proceso = ?,lider_equipo = ?,coordinador = ?,jefe_area = ?,ing_procesos = ?,ing_calidad = ?,supervisor = ?,integrantes = ? WHERE id = ?";
+            $actualizar = "UPDATE equipos_ead SET nombre_ead = ?,planta = ?,area = ? ,proceso = ?,tipo_ead = ?,lider_equipo = ?,coordinador = ?,jefe_area = ?,ing_procesos = ?,ing_calidad = ?,supervisor = ?,integrantes = ? WHERE id = ?";
             $stmt = $conexion->prepare($actualizar);
             if($stmt){
                 $validaciones[0] = true;
-                $stmt->bind_param('sssssssssssi',$nombre, $planta, $area, $proceso, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes,$idEquipo);
+                $stmt->bind_param('ssssssssssssi',$nombre, $planta, $area, $proceso, $tipo_ead, $lider_equipo, $coordinador, $jefe_area, $ing_proceso, $ing_calidad, $supervisor,$ids_integrantes,$idEquipo);
                 $stmt->execute();
                 $stmt->close();
                     include("conexionBDSugerencias.php");
@@ -371,7 +394,7 @@ if (isset($_SESSION['nombre'])) {
             break;
     }
     $conexion->close();
-    echo json_encode([$validaciones,$equipos,$integrantesIDs,$integrantes,$PlantasAreasEADs]);
+    echo json_encode([$validaciones,$equipos,$integrantesIDs,$integrantes,$PlantasAreasEADs,$tipo_ead,$metodologia]);
 } else {
     header("Location:index.php");
 }

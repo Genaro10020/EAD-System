@@ -24,17 +24,18 @@ if(isset($_SESSION['nombre'])){
                 break;
             case 'POST':
           
-                    if(isset($arreglo['accion']) && isset($arreglo['id_gestion_session']) && isset($arreglo['id_equipo']) && isset($arreglo['fecha']) && isset($arreglo['etapa']) && isset($arreglo['fases'])  && isset($arreglo['ids_integrantes']) && isset($arreglo['asistieron']) && isset($arreglo['porcentaje'])){
+                    if(isset($arreglo['accion']) && isset($arreglo['id_gestion_session']) && isset($arreglo['id_equipo']) && isset($arreglo['fecha']) && isset($arreglo['metodologia'])  && isset($arreglo['etapa']) && isset($arreglo['fases'])  && isset($arreglo['ids_integrantes']) && isset($arreglo['asistieron']) && isset($arreglo['porcentaje'])){
                         $accion=$arreglo['accion'];
                         $id_equipo=$arreglo['id_equipo'];
                         $fecha=$arreglo['fecha'];
+                        $metodologia=$arreglo['metodologia'];
                         $etapa=$arreglo['etapa'];
                         $fases=$arreglo['fases'];
                         $ids_integrantes=$arreglo['ids_integrantes'];
                         $asistieron=$arreglo['asistieron'];
                         $porcentaje=$arreglo['porcentaje'];
                         $id_gestion_session=$arreglo['id_gestion_session'];
-                        $resultado = guardarActualizarSession($id_gestion_session,$accion,$id_equipo,$fecha,$etapa,$fases,$ids_integrantes,$asistieron,$porcentaje);
+                        $resultado = guardarActualizarSession($id_gestion_session,$accion,$id_equipo,$fecha,$metodologia,$etapa,$fases,$ids_integrantes,$asistieron,$porcentaje);
                     }else{
                         $resultado = "No existen todas la variables";
                     }

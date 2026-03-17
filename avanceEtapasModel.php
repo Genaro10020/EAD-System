@@ -1,12 +1,12 @@
 <?php
 include("conexionGhoner.php");
 
-    function consultarEtapas(){
+    function consultarEtapas($metodologia){
         global $conexion;
         $etapas = [];
         $resultado = [];
         $estado = false;
-        $consulta = "SELECT * FROM avance_etapas";
+        $consulta = "SELECT * FROM avance_etapas WHERE metodologia='$metodologia'";
         $query = $conexion->query($consulta);
         if ($query) {
             $estado = true;

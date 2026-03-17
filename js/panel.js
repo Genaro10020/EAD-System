@@ -47,6 +47,7 @@ const app = {
       select_ing_proceso: '',
       select_ing_calidad: '',
       select_supervisor: '',
+      select_tipo_ead: '',
       checkIntegrantes: [],
       nombresIntegrantes: [],
       idsIntegrantes: [],
@@ -93,6 +94,8 @@ const app = {
       actualizar_session: false,
       index_session_actualizar: '',
       id_gestion_session: '',
+      existenDatosSesion:false,
+      //PDCA
       cantidadFasesP: '',
       cantidadFasesD: '',
       cantidadFasesC: '',
@@ -109,6 +112,29 @@ const app = {
       faltaC: 100,
       llevaA: 0,
       faltaA: 100,
+
+      //DMAIC
+      cantidadFaseMD: '',
+      cantidadFaseMI: '',
+      cantidadFaseMM: '',
+      cantidadFaseMA: '',
+      cantidadFaseMI: '',
+      sumaFasesMD: '',
+      sumaFasesMM: '',
+      sumaFasesMA: '',
+      sumaFasesMI: '',
+      sumaFaseMC: '',
+      llevaMD: 0,
+      faltaMD: 100,
+      llevaMM: 0,
+      faltaMM: 100,
+      llevaMA: 0,
+      faltaMA: 100,
+      llevaMI: 0,
+      faltaMI: 100,
+      llevaMC: 0,
+      faltaMC: 100,
+      
       nombre_colaborador: '',
       nomina_colaborador: '',
       planta_colaborador: '',
@@ -153,6 +179,8 @@ const app = {
 
       pilaresGuardadosString: '',
       extrajeIDSPilares: [],
+      metodologia:'',
+      tipo_equipo: '',
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -458,7 +486,6 @@ const app = {
         } else if (response.data[0] == "Coordinador") {
           this.ventanas('Gestion Sesiones');
           this.consultarEAD()
-          this.consultarAvanceEtapas()
           this.tomarDiaActual()
           this.consultarCantidadFaseXEtapas()
         } else if (response.data[0] == "Colaborador") {
@@ -470,7 +497,12 @@ const app = {
           this.esLider = 'ColaboradorLider';
           this.consultarSeguimientoAsistencia();
           this.consultarScoreCard();
-        } else {
+        }else if(response.data[0] == "Consultor"){
+          this.ventanas('Gestion Sesiones');
+          this.consultarEAD()
+          this.tomarDiaActual()
+          this.consultarCantidadFaseXEtapas()
+        }else {
           //Admin
         }
       }).catch(error => {
@@ -858,10 +890,11 @@ const app = {
       if (!this.select_ing_proceso) { return alert("Seleccione Ing. de Proceso") }
       if (!this.select_ing_calidad) { return alert("Seleccione Ing. de Cálidad") }
       if (!this.select_supervisor) { return alert("Seleccione Supervisor") }
-      if (this.checkIntegrantes.length < 7) { return alert("Minimo 7 Integrantes") }
+      if (!this.select_tipo_ead) { return alert("Seleccione Tipo de EAD") }
+      if (this.checkIntegrantes.length < 5) { return alert("Minimo 5 Integrantes") }
       if (!this.select_lider_equipo) { return alert("Seleccione Líder de Equipo") }
-      console.log('ID EQUIPO', this.idEquipo)
-      axios.post("crud_ead.php", {
+        console.log('ID EQUIPO', this.idEquipo)
+        axios.post("crud_ead.php", {
         accion: accion,
         nombre: this.nombre_ead,
         planta: this.select_planta,
@@ -873,6 +906,7 @@ const app = {
         ing_proceso: this.select_ing_proceso,
         ing_calidad: this.select_ing_calidad,
         supervisor: this.select_supervisor,
+        tipo_ead: this.select_tipo_ead,
         ids_integrantes: this.ids,
         idEquipo: this.idEquipo,
         lider_anterior: this.lider_anterior
@@ -894,6 +928,7 @@ const app = {
         this.select_ing_proceso = ''
         this.select_ing_calidad = ''
         this.select_supervisor = ''
+        this.select_tipo_ead = ''
         this.idsIntegrantes = []
         this.nombresIntegrantes = []
         this.ids = []
@@ -944,6 +979,7 @@ const app = {
       this.select_ing_proceso = this.consultaEAD[index][0].ing_procesos
       this.select_ing_calidad = this.consultaEAD[index][0].ing_calidad
       this.select_supervisor = this.consultaEAD[index][0].supervisor
+      this.select_tipo_ead = this.consultaEAD[index][0].tipo_ead
       var arregloColaboradores = [];
 
       this.integrantesEAD[id_equipo].forEach(function (element) {
@@ -965,6 +1001,7 @@ const app = {
       this.select_ing_proceso = ''
       this.select_ing_calidad = ''
       this.select_supervisor = ''
+      this.select_tipo_ead = ''
       this.idsIntegrantes = []
       this.nombresIntegrantes = []
       this.ids = []
@@ -1559,10 +1596,17 @@ const app = {
           return "No se logro contar la cantidad de fase por etapa" + console.log(response.data[0]);
         }
         console.log('TotalFasesXetapa', response.data)
+        
         this.cantidadFasesP = response.data[1][0].cantidad
         this.cantidadFasesD = response.data[1][1].cantidad
         this.cantidadFasesC = response.data[1][2].cantidad
         this.cantidadFasesA = response.data[1][3].cantidad
+
+        this.cantidadFasesMD = response.data[1][4].cantidad
+        this.cantidadFasesMM = response.data[1][5].cantidad
+        this.cantidadFasesMA = response.data[1][6].cantidad
+        this.cantidadFasesMI = response.data[1][7].cantidad
+        this.cantidadFasesMC = response.data[1][8].cantidad
       }).catch(error => {
         console.log("Error en axios :-(" + error);
       }).finally({
@@ -1570,191 +1614,69 @@ const app = {
       })
     },
     circulosPDCA() {
-      //P
-      const ctxP = document.getElementById('pdcaP');
-      if (!ctxP) {
-        console.error("No se obtuvo elemento pdcs.");
-        return;
-      }
-
-      // Destruye el gráfico existente si ya existe
-      let existingChart = Chart.getChart(ctxP);
-      if (existingChart) {
-        existingChart.destroy();
-      }
-
-
-      const dataP = {
-        labels: [
-          // 'Green',
-          // 'White',
-        ],
-        datasets: [{
-          label: [],
-          data: [this.llevaP, this.faltaP],
-          backgroundColor: [
-            'rgb( 26, 193, 54 )',
-            'rgb(255, 255, 255)',
-          ],
-          borderColor: [
-            'rgb(26, 193, 54)',
-          ],
-          borderWidth: 1,
-          hoverOffset: 4
-        }]
-      };
-
-      new Chart(ctxP, {
-        type: 'doughnut',
-        data: dataP,
-        options: {
-          plugins: {},
-          layout: {
-            padding: {
-              bottom: 10, // Ajusta este valor según sea necesario
-            }
+       let fases = [];
+      if(this.metodologia=='PDCA'){
+         fases = [
+            { id: 'pdcaP', lleva: this.llevaP, falta: this.faltaP },
+            { id: 'pdcaD', lleva: this.llevaD, falta: this.faltaD },
+            { id: 'pdcaC', lleva: this.llevaC, falta: this.faltaC },
+            { id: 'pdcaA', lleva: this.llevaA, falta: this.faltaA },
+           ];
+       }
+        if(this.metodologia=='DMAIC'){ 
+           fases = [
+            { id: 'dmaicD', lleva: this.llevaMD, falta: this.faltaMD},
+            { id: 'dmaicM', lleva: this.llevaMM, falta: this.faltaMM },
+            { id: 'dmaicA', lleva: this.llevaMA, falta: this.faltaMA},
+            { id: 'dmaicI', lleva: this.llevaMI, falta: this.faltaMI},
+            { id: 'dmaicC', lleva: this.llevaMC, falta: this.faltaMC},
+            ];
           }
-        }
-      });
 
-      //D
-      const ctxD = document.getElementById('pdcaD');
-      if (!ctxD) {
-        console.error("No se obtuvo elemento pdcs.");
-        return;
-      }
-
-      // Destruye el gráfico existente si ya existe
-      let existingChartD = Chart.getChart(ctxD);
-      if (existingChartD) {
-        existingChartD.destroy();
-      }
-
-
-      const dataD = {
-        labels: [
-          // 'Green',
-          // 'White',
-        ],
-        datasets: [{
-          label: [],
-          data: [this.llevaD, this.faltaD],
-          backgroundColor: [
-            'rgb( 26, 193, 54 )',
-            'rgb(255, 255, 255)',
-          ],
-          borderColor: [
-            'rgb(26, 193, 54)',
-          ],
-          borderWidth: 1,
-          hoverOffset: 4
-        }]
-      };
-      new Chart(ctxD, {
-        type: 'doughnut',
-        data: dataD,
-        options: {
-          plugins: {},
-          layout: {
-            padding: {
-              bottom: 10, // Ajusta este valor según sea necesario
+          fases.forEach(fase => {
+            const ctx = document.getElementById(fase.id);
+            if (!ctx) {
+              console.error(`No se obtuvo elemento ${fase.id}.`);
+              return;
             }
-          }
-        }
-      });
 
-      //C
-      const ctxC = document.getElementById('pdcaC');
-      if (!ctxC) {
-        console.error("No se obtuvo elemento pdcs.");
-        return;
-      }
-
-
-      // Destruye el gráfico existente si ya existe
-      let existingChartC = Chart.getChart(ctxC);
-      if (existingChartC) {
-        existingChartC.destroy();
-      }
-
-      const dataC = {
-        labels: [
-          // 'Green',
-          // 'White',
-        ],
-        datasets: [{
-          label: [],
-          data: [this.llevaC, this.faltaC],
-          backgroundColor: [
-            'rgb( 26, 193, 54 )',
-            'rgb(255, 255, 255)',
-          ],
-          borderColor: [
-            'rgb(26, 193, 54)',
-          ],
-          borderWidth: 1,
-          hoverOffset: 4
-        }]
-      };
-      new Chart(ctxC, {
-        type: 'doughnut',
-        data: dataC,
-        options: {
-          plugins: {},
-          layout: {
-            padding: {
-              bottom: 10, // Ajusta este valor según sea necesario
+            // destruir gráfico existente
+            let existingChart = Chart.getChart(ctx);
+            if (existingChart) {
+              existingChart.destroy();
             }
-          }
-        }
-      });
 
-      //A
-      const ctxA = document.getElementById('pdcaA');
-      if (!ctxA) {
-        console.error("No se obtuvo elemento pdcs.");
-        return;
-      }
+            const data = {
+              labels: [],
+              datasets: [{
+                label: [],
+                data: [fase.lleva, fase.falta],
+                backgroundColor: [
+                  'rgb(26, 193, 54)',
+                  'rgb(255, 255, 255)',
+                ],
+                borderColor: [
+                  'rgb(26, 193, 54)',
+                ],
+                borderWidth: 1,
+                hoverOffset: 4
+              }]
+            };
 
-      // Destruye el gráfico existente si ya existe
-      let existingChartA = Chart.getChart(ctxA);
-      if (existingChartA) {
-        existingChartA.destroy();
-      }
-
-
-      const dataA = {
-        labels: [
-          // 'Green',
-          // 'White',
-        ],
-        datasets: [{
-          label: [],
-          data: [this.llevaA, this.faltaA],
-          backgroundColor: [
-            'rgb( 26, 193, 54 )',
-            'rgb(255, 255, 255)',
-          ],
-          borderColor: [
-            'rgb(26, 193, 54)',
-          ],
-          borderWidth: 1,
-          hoverOffset: 4
-        }]
-      };
-      new Chart(ctxA, {
-        type: 'doughnut',
-        data: dataA,
-        options: {
-          plugins: {},
-          layout: {
-            padding: {
-              bottom: 10, // Ajusta este valor según sea necesario
-            }
-          }
-        }
-      });
-    },
+            new Chart(ctx, {
+              type: 'doughnut',
+              data: data,
+              options: {
+                plugins: {},
+                layout: {
+                  padding: {
+                    bottom: 10
+                  }
+                }
+              }
+            });
+          });
+        },
     porcetajeTotal() {
       var porcentaje = ((this.llevaP + this.llevaD + this.llevaC + this.llevaA) / 4).toFixed(2)
       this.seguimiento_completado = porcentaje;
@@ -1772,9 +1694,9 @@ const app = {
         this.buscarDocumentos('Presentacion')
       }
 
-      setTimeout(() => {
+      /*setTimeout(() => {
         this.circulosPDCA()
-      }, 300)
+      }, 300)*/
 
     },
     modalBajaColaborador() {
@@ -1844,12 +1766,36 @@ const app = {
           accion: 'consutarEAD',
           id_ead: id
         }).then(response => {
+          console.log("Respuesta de EAD:", response.data)
+         this.tipo_equipo = response.data[5];
           if (response.data[0][0] != true && response.data[0][1] != true) {
             return console.log(response.data)
           } else {
+            //si en gestion de sesiones se recupera informacion hay datos entonces.
+            if(response.data[6]=='DMAIC' || response.data[6]=='PDCA'){
+                this.existenDatosSesion = true;
+            }else{
+               this.existenDatosSesion = false;
+            }
+
+            //Tipo de equipo, si detecata EAD en automatico es metodologia PDCA, de lo contrario es un equipo consultor, y checa que metodologia es.
+            //el tipo de metodologia no es necesario si detecta que el tipo de quipo es un EAD.
+            if(response.data[5] == 'EAD'){ 
+              this.metodologia = "PDCA"//AQUI
+              this.consultarAvanceEtapas()
+            }else if(response.data[6] == 'DMAIC'){
+               this.metodologia = "DMAIC"//AQUI
+               this.consultarAvanceEtapas()
+            }else if(response.data[6] == 'PDCA'){
+               this.metodologia = "PDCA"//AQUI
+               this.consultarAvanceEtapas()
+              }
+
+
             this.EADIntegrantes = response.data[3];
             this.IDsIntegrantes = response.data[3].map(integrante => integrante.id);
             this.asistieron = response.data[3].map(integrante => integrante.id);
+            this.consultarSeguimientoSession()
             this.tomarDiaActual()
             this.consultarSeguimientoKPI()
             this.consultarJuntasArranque()
@@ -1857,42 +1803,57 @@ const app = {
         }).catch(error => {
           console.log("Erro en axios" + error)
         })
+      }else{
+        this.EADIntegrantes = [];
       }
     },
     consultarAvanceEtapas() {
-      axios.get('avanceEtapasController.php', {
-        params: {
-          accion: 'Consultar'
-        }
-      }).then(response => {
-        console.log('Etapas', response.data)
-        if (response.data[0] == true) {
-          this.etapas = response.data[1];
-        } else {
-          console.log("Error en la consulta");
-        }
-      }).catch({
+        this.etapas = [];
+         this.fases_etapa = []
+         this.fases_seleccionadas = []
+         this.select_etapa = ""
+      if(this.metodologia!=''){
+          axios.get('avanceEtapasController.php', {
+            params: {
+              accion: 'Consultar',
+              metodologia:this.metodologia
+            }
+          }).then(response => {
+            console.log('Etapas', response.data)
+            if (response.data[0] == true) {
+              this.etapas = response.data[1];
+              this.tomarDiaActual()
+            } else {
+              console.log("Error en la consulta");
+            }
+          }).catch({
 
-      })
+          })
+      }else{
+         console.log("Debe existir una metodologia para localizar las etapas y fases")
+         
+      }
     },
     consultarFaseXetapaSeleccionada() {
       this.fases_seleccionadas = [];
       var id = this.select_etapa.split('<->')[0];
-      axios.get("avanceFaseController.php", {
+      
+         axios.get("avanceFaseController.php", {
         params: {
           accion: "ConsultarXIDEtapa",
           id_etapa: id
         }
-      }).then(response => {
-        if (response.data[0] != true) { return console.log(response.data); }
-        this.fases_etapa = response.data[1];
-        this.select_fase = ""
+        }).then(response => {
+          if (response.data[0] != true) { return console.log(response.data); }
+          this.fases_etapa = response.data[1];
+          this.select_fase = ""
 
-      }).catch(error => {
-        console.log("Error en axios :-(" + error);
-      }).finally({
+        }).catch(error => {
+          console.log("Error en axios :-(" + error);
+        }).finally({
 
-      })
+        })
+      
     },
     fasesUtilizadas() {
       //buscado todas las fases ya usadas de esa etapa
@@ -1929,7 +1890,10 @@ const app = {
           this.seguimiento_session = response.data[1];
           console.log("Seguimiento", response.data[1])
           var seguimiento = response.data[1]
-          var suma1 = 0; var suma2 = 0; var suma3 = 0; var suma4 = 0;
+          var suma1 = 0; var suma2 = 0; var suma3 = 0; var suma4 = 0; 
+          var suma5 =0; var suma6 = 0; var suma7 = 0; var suma8 = 0; var suma9 = 0;
+
+
           for (let i = 0; i < seguimiento.length; i++) {
             if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 1) {//P Que se llevan
               suma1 += JSON.parse(seguimiento[i].fase).length
@@ -1943,25 +1907,62 @@ const app = {
             if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 4) {//A Que se llevan
               suma4 += JSON.parse(seguimiento[i].fase).length
             }
+             if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 5) {//DMAIC (D) Que se llevan
+              suma5 += JSON.parse(seguimiento[i].fase).length
+            }
+            if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 6) {//DMAIC (M) Que se llevan
+              suma6 += JSON.parse(seguimiento[i].fase).length
+            }
+            if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 7) {//DMAIC (A) Que se llevan
+              suma7 += JSON.parse(seguimiento[i].fase).length
+            }
+            if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 8) {//DMAIC (I) Que se llevan
+              suma8 += JSON.parse(seguimiento[i].fase).length
+            }
+             if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 9) {//DMAIC (C) Que se llevan
+              suma9 += JSON.parse(seguimiento[i].fase).length
+            }
             //console.log("PARSEANDO"+i,parseInt(JSON.parse(seguimiento[i].etapa)[0]))
           }
 
+          var valorMaximo = 100
+          
+          if(this.metodologia=='PDCA'){
           this.sumaFasesP = suma1
           this.sumaFasesD = suma2
           this.sumaFasesC = suma3
           this.sumaFasesA = suma4
-
-          var valorMaximo = 100
+          
           this.llevaP = parseFloat((100 / this.cantidadFasesP * this.sumaFasesP).toFixed(2));
           this.llevaD = parseFloat((100 / this.cantidadFasesD * this.sumaFasesD).toFixed(2));
           this.llevaC = parseFloat((100 / this.cantidadFasesC * this.sumaFasesC).toFixed(2));
           this.llevaA = parseFloat((100 / this.cantidadFasesA * this.sumaFasesA).toFixed(2));
 
-
           this.faltaP = valorMaximo - this.llevaP
           this.faltaD = valorMaximo - this.llevaD
           this.faltaC = valorMaximo - this.llevaC
           this.faltaA = valorMaximo - this.llevaA
+
+          }else if(this.metodologia=='DMAIC'){
+          this.sumaFasesMD = suma5
+          this.sumaFasesMM = suma6
+          this.sumaFasesMA = suma7
+          this.sumaFasesMI = suma8
+          this.sumaFasesMC = suma9
+
+          this.llevaMD = parseFloat((100 / this.cantidadFasesMD * this.sumaFasesMD).toFixed(2));
+          this.llevaMM = parseFloat((100 / this.cantidadFasesMM * this.sumaFasesMM).toFixed(2));
+          this.llevaMA = parseFloat((100 / this.cantidadFasesMA * this.sumaFasesMA).toFixed(2));
+          this.llevaMI = parseFloat((100 / this.cantidadFasesMI * this.sumaFasesMI).toFixed(2));
+          this.llevaMC = parseFloat((100 / this.cantidadFasesMC * this.sumaFasesMC).toFixed(2));
+
+          this.faltaMD = valorMaximo - this.llevaMD
+          this.faltaMM = valorMaximo - this.llevaMM
+          this.faltaMA = valorMaximo - this.llevaMA
+          this.faltaMI = valorMaximo - this.llevaMI
+          this.faltaMC = valorMaximo - this.llevaMC
+
+          }
 
           this.circulosPDCA()
           this.fasesUtilizadas()
@@ -2017,6 +2018,7 @@ const app = {
         id_gestion_session: this.id_gestion_session,
         id_equipo: id_equipo,
         fecha: this.fecha_session,
+        metodologia:this.metodologia,
         etapa: arregloEtapa,
         fases: this.fases_seleccionadas,
         ids_integrantes: this.IDsIntegrantes,
@@ -2769,7 +2771,6 @@ const app = {
             console.log("Respuesta Cerrar Proyecto", response);
             if (response.data[0] == true && response.data[1] == true && response.data[2] == true && response.data[3] == true) {
               this.consultarEADXID()
-              this.consultarSeguimientoSession()
               this.consultarCompromisos()
             } else {
               Swal.fire("Algo salio mal al guardar y limpiar!");
