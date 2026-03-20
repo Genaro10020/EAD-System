@@ -41,9 +41,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                      <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
                                 <?php }
 
+                                if(isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')){
+                                ?>
+                                    <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
+                                <?php
+                                }
+                                ?>
+                                <?php
                                 if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
-                                   <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
+                                   
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas(), toggleMenu()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
