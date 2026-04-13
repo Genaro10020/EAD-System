@@ -7,16 +7,17 @@ function consultarCumplimientoScorecard($id_area,$mes,$anio)
     $estado = false;
     $resultado = [];
     $param_mes = "%$mes%";
+    $tipo_equipo = "EAD Consultor";
     $proyectoPuntos = [];
-        $consulta = "SELECT cumplimiento_scorecard.*,equipos_ead.nombre_ead, equipos_ead.id AS idEquipo
+        $consulta = "SELECT cumplimiento_scorecard.*, equipos_ead.tipo_ead,equipos_ead.nombre_ead, equipos_ead.id AS idEquipo
         FROM cumplimiento_scorecard 
         INNER JOIN equipos_ead 
         ON cumplimiento_scorecard.id_ead = equipos_ead.id 
         WHERE cumplimiento_scorecard.id_area=? 
         /*LIKE cumplimiento_scorecard.mes=? */
-        AND cumplimiento_scorecard.anio=?";
+        AND cumplimiento_scorecard.anio=? AND equipos_ead.tipo_ead!=?";
         $stmt = $conexion->prepare($consulta);
-        $stmt->bind_param("si", $id_area,$anio);
+        $stmt->bind_param("iss", $id_area,$anio,$tipo_equipo);
         if ($stmt) {
             if ($stmt->execute()) {
                 $estado = true;
