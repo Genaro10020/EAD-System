@@ -52,8 +52,8 @@ $resultado = "";
                                             FROM usuarios_colocaboradores_sugerencias 
                                             WHERE id='$idIntegrante' 
                                             AND numero_nomina='$usuario' 
-                                            AND password='$contrasena' 
-                                            AND status != 'Baja'";
+                                            AND `password`='$contrasena' 
+                                            AND `status` != 'Baja'";
 
                                         $queryIntegrante = $conexion->query($selectIntegrante);
 
@@ -77,9 +77,9 @@ $resultado = "";
                                 $consultarEvaluador = "SELECT * 
                                     FROM usuarios_colocaboradores_sugerencias 
                                     WHERE numero_nomina='$usuario' 
-                                    AND password='$contrasena' 
+                                    AND `password`='$contrasena' 
                                     AND id_grafica_acceso!='' 
-                                    AND status != 'Baja'";
+                                    AND `status` != 'Baja'";
 
                                 $query3 = $conexion->query($consultarEvaluador);
 
