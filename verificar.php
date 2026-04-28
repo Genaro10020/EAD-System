@@ -46,6 +46,7 @@ $resultado = "";
 
                                 while($datoConsultores = mysqli_fetch_array($queryConsultores)){
                                     $final = json_decode($datoConsultores['integrantes'], true);
+                                    $_SESSION['area']=$datoConsultores['area'];
 
                                     foreach($final as $idIntegrante){
                                         $selectIntegrante = "SELECT * 

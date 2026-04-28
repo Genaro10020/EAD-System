@@ -21,7 +21,8 @@ if (isset($_SESSION['nombre'])) {
             //Coordinador miguel no quiere que aparacezcan estos equipos ya que no participaran en proyetos, activar cuando los necesite.
             $consulta = "SELECT * FROM equipos_ead WHERE area = '$area' AND id NOT IN (55, 59, 84) ORDER BY id DESC";
         }else if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso']=='Consultor'){
-            $consulta = "SELECT * FROM equipos_ead  WHERE tipo_ead IN ('EAD Consultor') ORDER BY id DESC";
+            $area =  $_SESSION['area'];
+            $consulta = "SELECT * FROM equipos_ead  WHERE tipo_ead IN ('EAD Consultor') AND area = '$area' ORDER BY id DESC";
         }else{
             $consulta = "SELECT * FROM equipos_ead ORDER BY id DESC";//Administrador
         }
