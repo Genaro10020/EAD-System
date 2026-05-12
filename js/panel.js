@@ -4561,47 +4561,53 @@ const app = {
         )
 
 
-        this.meses.forEach((mes) => {
-          let cumplidos = 0;
-          proyectoMasReciente.forEach(items => {
+          this.meses.forEach((mes) => {
+            let cumplidos = 0;
+            let proyectos = []; 
 
-            if (items.mes_cierre == mes) {
-              /* items.push("cumplio") <<CUANDO ES ARRAY*/
-              let datoMetaCalculada = parseFloat(items.meta_calculada)
-              let datoMensual = parseFloat(items.dato_semanal)//ultima seman en teoria es el cierre de mes.
-              if (items.tipo == 'Decremento' || items.tipo == '') {
+            proyectoMasReciente.forEach(items => {
 
-                if (datoMensual <= datoMetaCalculada) {
-                  items.cumplio = 1
-                  cumplidos++;
-                  items.cumplidos = cumplidos;
-                } else {
-                  items.cumplio = 0
-                  items.cumplidos = cumplidos
+              if (items.mes_cierre == mes) {
+                let datoMetaCalculada = parseFloat(items.meta_calculada);
+                let datoMensual = parseFloat(items.dato_semanal);
+
+                if (items.tipo == 'Decremento' || items.tipo == '') {
+
+                  if (datoMensual <= datoMetaCalculada) {
+                    items.cumplio = 1;
+                    cumplidos++;
+                    items.proyectos_cumplieron = items.nombre_indicador;
+                    proyectos.push(items.nombre_indicador); 
+                  } else {
+                    items.cumplio = 0;
+                  }
+
+                } else if (items.tipo == 'Incremento') {
+
+                  if (datoMensual >= datoMetaCalculada) {
+                    items.cumplio = 1;
+                    cumplidos++;
+                    items.proyectos_cumplieron = items.nombre_indicador;
+                    proyectos.push(items.nombre_indicador); 
+                  } else {
+                    items.cumplio = 0;
+                  }
                 }
 
-              } else if (items.tipo == 'Incremento') {
-
-                if (datoMensual >= datoMetaCalculada) {
-                  items.cumplio = 1
-                  cumplidos++;
-                  items.cumplidos = cumplidos;
-                } else {
-                  items.cumplio = 0
-                  items.cumplidos = cumplidos
-                }
-
+                items.cumplidos = cumplidos;
               }
-            }
-          })
-        });
+            });
+
+            console.log(mes, cumplidos, proyectos); 
+          });
         let ultimoPorMes = {};
         let totalCumplieron = [];
         proyectoMasReciente.forEach(item => {
           let mes = item.mes_cierre;
           ultimoPorMes[mes] = {
             mes_cierre: mes,
-            cumplidos: item.cumplidos   // ya viene sumado en tu dato
+            cumplidos: item.cumplidos,
+            proyectos: item.proyectos_cumplieron  // ya viene sumado en tu dato
           }; // siempre sobrescribe → queda el último
         });
         console.log("HOLAA", proyectoMasReciente);
@@ -4616,6 +4622,7 @@ const app = {
         totalCumplieron = this.meses.map(mes => {
           return ultimoPorMes[mes]?.cumplidos || 0;
         });
+        console.log("totalCumplieron: ", totalCumplieron);
         let cantProyectos = Object.keys(this.cumplimiento_scorecard).length
         console.log("Cantidad de proyectos:", cantProyectos);
 
