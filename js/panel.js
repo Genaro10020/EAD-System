@@ -4485,7 +4485,7 @@ const app = {
             },
             title: {
               display: true,
-              text: 'Indicador del éxito ScoreCard',
+              text: `Indicador del éxito ScoreCard ${this.anio_bateo}`,
               font: {
                 size: 18
               },
@@ -4699,7 +4699,7 @@ const app = {
             },
             title: {
               display: true,
-              text: '% de cumplimiento de proyectos ' + nombreArea,
+              text: 'Porcentaje de bateo por proyecto ' + nombreArea + ` ${this.anio_bateo}`,
               font: {
                 size: 18
               },
