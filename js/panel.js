@@ -3322,7 +3322,7 @@ const app = {
       window.history.pushState({ modalAbierta: true }, '', '');
       console.log("Estado", window.history.state.modalAbierta); // Log the state object
     },
-    IDCalifiacion(id_calificacion, id_ead_foro, comentario) {//variable que utilizare para insertar la calificacion en tabla calificacion con el ID 
+    IDCalifiacion(id_calificacion, id_ead_foro, comentario = '') {//variable que utilizare para insertar la calificacion en tabla calificacion con el ID 
       this.id_calificacion = id_calificacion;
       this.id_ead_foro = id_ead_foro;
       this.comentario = comentario
