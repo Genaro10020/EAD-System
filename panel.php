@@ -2767,6 +2767,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <thead class="sticky-top">
                                     <tr class="table-active" style="font-size:0.8em !important">
                                         <th>
+                                            Detalles
+                                        </th>
+                                        <th>
                                             Nombre
                                         </th>
                                         <th>
@@ -2779,9 +2782,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             Fecha
                                         </th>
                                         <th>
-                                            Detalles
-                                        </th>
-                                        <th>
                                             Estatus
                                         </th>
                                         <th>
@@ -2791,6 +2791,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </thead>
                                 <tbody>
                                     <tr class="middle-center" v-for="foro in foros" style="font-size:0.8em">
+                                        <td>
+                                            <button class="btn btn-success btn-boton" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                        </td>
                                         <td>
                                             {{foro.nombre_foro}}
                                         </td>
@@ -2804,16 +2809,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             {{foro.fecha}}
                                         </td>
                                         <td>
-                                            <button class="btn btn-success btn-boton" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
-                                                <i class="bi bi-eye-fill"></i>
-                                            </button>
-                                        </td>
-                                        <td>
                                             <button v-if="foro.estatus=='Cerrado'" class="btn btn-danger btn-cerrar-foro " @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)"><i class="bi bi-door-open-fill"></i> Cerrado</button>
                                             <button v-if="foro.estatus=='Abierto'" class="btn btn-success btn-cerrar-foro" @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)"><i class="bi bi-door-closed-fill"></i> Abierto</button>
                                         </td>
                                         <td>
-                                            <button class="btn btn-warning btn-boton">Actualizar</button>
+                                            <button class="btn btn-warning btn-boton" @click='modalForoActualizar(foro.nombre_foro, foro.id)'>Actualizar</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -2875,6 +2875,206 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                             <!--FinModalDeDepartamento-->
 
+                            <!-- modal para actualizar foro -->
+                            <div id="modal_foros_actualizar" class="modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+                                <div class="modal-dialog modal-dialog-centered modal-fullscreen-lg-down modal-xl p-5">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <label style="font-size: 1em" class="modal-title">Editar {{tituloModal}}</label>
+                                            <button type="button" class="btn-close" @click="cerrarModal()" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body" style="font-size: 1em">
+                                            <!-- Alert de mensaje de éxito o no -->
+                                            <div v-if="alert" :class="'alert alert-' + alert.type + ' alert-dismissible fade show'" role="alert">
+                                                {{ alert.message }}
+
+                                                <button type="button" class="btn-close" @click="alert = null"></button>
+                                            </div>
+                                            <!-- CONTENIDO DEL FORO, TABLAS COMO EDITAR  -->
+                                            <div class="scroll6">
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover table-bordered align-middle mb-0">
+                                                        <thead style="background-color: #343a40 !important">
+                                                            <tr class="text-center align-middle">
+                                                                <th style=" background-color: #343a40 !important; color: white !important; width: 15%; ">
+                                                                    Ordenar
+                                                                </th>
+                                                                <th style="background-color: #343a40 !important; color: white !important; width: 45%; ">
+                                                                    EAD'S
+                                                                </th>
+                                                                <th style="background-color: #343a40 !important; color: white !important;width: 40%;">
+                                                                    <button class="btn btn-success btn-sm px-3 fw-semibold shadow-sm"
+                                                                        @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
+                                                                        <i class="bi bi-plus-lg me-1"></i> Agregar Equipo
+                                                                    </button>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <!-- Fila para Agregar o Actualizar Equipo -->
+                                                            <tr v-if="agregarEquipo || actualizarEquipoEAD" class="table-warning align-middle">
+                                                                <td class="text-center text-muted fw-bold">#</td>
+                                                                <td>
+                                                                    <select class="form-select form-select-sm" v-model="equipoEADSeleccionado">
+                                                                        <option v-if="agregarEquipo" :value="null">
+                                                                            Seleccione...
+                                                                        </option>
+                                                                        <option v-if="actualizarEquipoEAD && equipoActual" :value="equipoActual.id">
+                                                                            {{ equipoActual.nombre_ead }}
+                                                                        </option>
+                                                                        <option v-for="equiposEADS in eadsEquiposAdd" :key="equiposEADS.id"
+                                                                            :value="Number(equiposEADS.id)">
+                                                                            {{ equiposEADS.nombre_ead }}
+                                                                        </option>
+                                                                    </select>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <div class="d-flex justify-content-center gap-2">
+                                                                        <button class="btn btn-outline-secondary btn-sm px-2 py-1"
+                                                                            @click="modalForoAddCancelar()">
+                                                                            <i class="bi bi-x-lg"></i> Cancelar
+                                                                        </button>
+                                                                        <button v-if="agregarEquipo" class="btn btn-success btn-sm px-2 py-1"
+                                                                            @click="guardarNuevoEquipoForo()">
+                                                                            <i class="bi bi-floppy-fill me-1"></i> Guardar
+                                                                        </button>
+                                                                        <button v-if="actualizarEquipoEAD" class="btn btn-primary btn-sm px-2 py-1"
+                                                                            @click="actualizarEquipoEnForo()">
+                                                                            <i class="bi bi-floppy-fill me-1"></i> Actualizar
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+
+                                                            <!-- Filas de EADs Ordenadas -->
+                                                            <tr v-for="(foroEAD, index) in eadsForoOrdenados" :key="foroEAD.ead_foro_id">
+                                                                <td class="text-center">
+                                                                    <select :id="'forosEAD'+index"
+                                                                        class="form-select form-select-sm text-center mx-auto" style="width: 70px"
+                                                                        @change="reordenarEquipoEAD(foroEAD.ead_foro_id, $event.target.value)"
+                                                                        title="Cambiar el orden">
+                                                                        <option v-for="numero in metodoFiltrar(foroEAD.id_foro)" :value="numero"
+                                                                            :selected="numero == foroEAD.orden">
+                                                                            {{ numero }}
+                                                                        </option>
+                                                                    </select>
+                                                                </td>
+                                                                <td class="fw-medium text-dark">{{ foroEAD.nombre_ead }}</td>
+                                                                <td class="text-center">
+                                                                    <div class="d-flex justify-content-center gap-2">
+                                                                        <button v-if="foroEAD.suma == 0 || foroEAD.suma == 'null'"
+                                                                            class="btn btn-outline-warning btn-sm px-2 py-1"
+                                                                            @click="actualizarEquipoForo(foroEAD.id)">
+                                                                            <i class="bi bi-pencil-square me-1"></i> Actualizar
+                                                                        </button>
+                                                                        <button v-if="foroEAD.suma == 0 || foroEAD.suma == 'null'"
+                                                                            class="btn btn-outline-danger btn-sm px-2 py-1"
+                                                                            @click="eliminarEquipoEADForo(foroEAD.ead_foro_id, foroEAD.id_foro, foroEAD.orden)">
+                                                                            <i class="bi bi-trash-fill me-1"></i> Eliminar
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                <!-- EVALUADORES -->
+                                                <div class="col-12 col-md-8 mx-auto mt-4">
+                                                    <div class="text-white p-2 text-center fw-bold" style="background-color: #b80e0e; border-top-left-radius: 10px; border-top-right-radius: 10px; font-size: 0.85em">
+                                                        Evaluadores
+                                                    </div>
+
+
+                                                    <!-- Seleccion del evaluador -->
+                                                    <div class="scroll3 border border-top-0 p-2 bg-light" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; max-height: 200px; overflow-y: auto">
+
+                                                        <div class="input-group mb-1" v-for="(evaluador, index) in evaluadores" :key="evaluador.id">
+                                                            <div class="input-group-text bg-white">
+                                                                <input class="form-check-input mt-0" type="checkbox" v-model="EvaSeleccionadosForoC"
+                                                                    :value="evaluador.id" :id="'evaluador-' + evaluador.id"
+                                                                    :disabled="datosEvaluadoresCargados && evaluadorTieneCalificacion(evaluador.id)" />
+                                                            </div>
+                                                            <label class="form-control text-start bg-white text-dark"
+                                                                :for="'evaluador-' + evaluador.id" style="font-size: 0.8em; cursor: pointer">
+                                                                {{ evaluador.nombre }}
+                                                                <span v-if="datosEvaluadoresCargados && evaluadorTieneCalificacion(evaluador.id)"
+                                                                    class="text-muted">(Ya hay calificación)</span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- BOTONES -->
+                                                    <div class="d-flex justify-content-center gap-2 mt-3">
+                                                        <button class="btn btn-outline-secondary btn-sm px-2 py-1" @click="modalCambiarEva()">
+                                                            <i class="bi bi-x-lg"></i> Cancelar
+                                                        </button>
+                                                        <button class="btn btn-success btn-sm px-2 py-1" @click="cambiarEvaInForo()">
+                                                            <i class="bi bi-floppy-fill me-1"></i> Guardar
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div v-if="EvaluadoresEvaluaron == true" class="card shadow-sm p-3 border-0 bg-light mx-auto mt-5"
+                                                    style="max-width: 500px">
+                                                    <!-- Sección de selección para ordenar -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label small text-muted fw-bold d-block text-center mb-2">
+                                                            Cambiar el evaluador con que ya ha evaluado
+                                                        </label>
+                                                        <div class="d-flex align-items-center justify-content-center gap-2">
+                                                            <select :id="'forosEAD_1_'+index" class="form-select form-select-sm text-center"
+                                                                v-model="evaluadorACambiar">
+                                                                <option disabled hidden :value="null">Seleccione...</option>
+
+                                                                <option v-for="calificacionEva in evaluadorConCalificacion"
+                                                                    :key="calificacionEva.id_evaluador" :value="calificacionEva.id_evaluador"
+                                                                    :id="'calificacionEva-' + calificacionEva.id_evaluador">
+                                                                    {{calificacionEva.nombre}}
+                                                                </option>
+                                                            </select>
+
+                                                            <i class="bi bi-arrow-left-right text-muted fs-6"></i>
+
+                                                            <select :id="'forosEAD_2_'+index" class="form-select form-select-sm text-center"
+                                                                v-model="nuevoEvaluadorCambio">
+                                                                <option disabled hidden value="null">Seleccione...</option>
+
+                                                                <option v-for="evaluador in evaluadoresDisponibles" :key="evaluador.id"
+                                                                    :value="evaluador.id" :id="'evaluador-' + evaluador.id">
+                                                                    {{evaluador.nombre}}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Separador visual -->
+                                                    <hr class="text-muted opacity-25 my-2" />
+
+                                                    <!-- Botones de acción -->
+                                                    <div class="d-flex justify-content-center gap-2">
+                                                        <button type="button" class="btn btn-outline-warning btn-sm px-3 shadow-none"
+                                                            @click="cambiarEvaluadores()">
+                                                            <i class="bi bi-pencil-square me-1"></i> Cambiar
+                                                        </button>
+                                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-none">
+                                                            <i class="bi bi-x-circle"></i> Cancelar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="cerrarModal()">
+                                                Salir
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                <!-- Fin modal para actualizar foro -->
                             <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
                             <div id="modal_foros_detalles" class="modal" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
                                 <div class="modal-dialog modal-dialog-centered modal-fullscreen  p-5">

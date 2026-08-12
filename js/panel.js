@@ -2,6 +2,7 @@ var arreglo = [];
 const app = {
   data() {
     return {
+      alert: null,
       verMenu: 'Si',
       menuAbierto: false,
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
@@ -238,6 +239,20 @@ const app = {
       responsable_compromiso: '',
       compromiso_status: 0,
       foroGlobal: 'false',
+      agregarEquipo: false,
+      eadsEquiposAdd: [],
+      equipoEADSeleccionado: null,
+      actualizarEquipoEAD: false,
+      equipoEADSelectEdit: null,
+      evaluadoresAnteriores: null,
+      evaluadoresNuevos: null,
+      EvaSeleccionadosForoC: [],
+      EvaSelectForoCalificacion: [],
+      datosEvaluadoresCargados: false,
+      evaluadorConCalificacion: [],
+      evaluadorACambiar: null,
+      nuevoEvaluadorCambio: null,
+      EvaluadoresEvaluaron: false,
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador: [],
       etapas_preguntas: '',
@@ -405,6 +420,37 @@ const app = {
       arraywhitDate: [],
     }
   },
+  watch: {
+      equipoEADSeleccionado(valor) {
+          console.log("Seleccionado:", valor);
+      },
+      evaluadorACambiar(viejo) {
+        console.log("Evaluador antiguo")
+        console.log("id viejo: ", viejo)  
+        console.log()
+      },
+      nuevoEvaluadorCambio(nuevo) {
+        console.log("Evaluador nuevo")
+        console.log("id nuevo: ", nuevo)
+        console.log()
+      },
+  },
+  computed: {
+    eadsForoOrdenados() {
+      return [...this.eadsForo].sort((a, b) => Number(a.orden) - Number(b.orden));
+    },
+
+    evaluadoresDisponibles() {
+      const idsConCalificacion = new Set(
+        this.evaluadorConCalificacion.map(e => Number(e.id_evaluador))
+      );
+
+      return this.evaluadores.filter(
+        e => !idsConCalificacion.has(Number(e.id))
+      );
+    }
+
+  },
   mounted() {
     this.consultarUsuarios()
     this.ventanaSegunTipoUsuario()//tomo datos de session
@@ -422,7 +468,7 @@ const app = {
 
       if (menu.style.display === 'block') {
         menu.style.display = 'none'
-      } else {
+      } else {  
         menu.style.display = 'block'
       }
     },
@@ -714,6 +760,9 @@ const app = {
     cerrarModal() {
       this.verMenu = "Si"
       this.myModal.hide()
+      this.datosEvaluadoresCargados = false;
+      this.agregarEquipo = false
+      this.actualizarEquipoEAD = false
     },
     nuevoDepartamento() {
       axios.post("nuevo_departamento.php", {
@@ -2945,10 +2994,6 @@ const app = {
     eliminarCompromiso(*/
 
 
-
-
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////CREAR COMPETENCIAS/////////////////////////////////////////////////////////////////
@@ -3027,7 +3072,7 @@ const app = {
             this.EADFiltrado = response.data[0];
             this.ckeckEADForo = [];
           } else {
-            console.log("Algo salio mal al consultar")
+            console.log("Algo salio mal al consultar sdfsf")
           }
         }).catch(error => {
           console.log("Error en axios: " + error)
@@ -3209,7 +3254,7 @@ const app = {
     },
     consultarDetallesForo(id) {
       this.id_foro = id;
-      axios.get("competenciasController.php", {
+      return axios.get("competenciasController.php", {
         params: {
           accion: "DetallesForo",
           id: id
@@ -3290,6 +3335,310 @@ const app = {
 
       });
     },
+      /*########################################
+            EDITAR UN FORO
+      ########################################*/
+      
+    /*========== modales y acciones ==========*/
+
+    //ABRE MODAL PARA ACTUALIZAR EL FORO YA CREADO
+    async modalForoActualizar(nombre, id) {
+      this.datosEvaluadoresCargados = false;
+      await this.consultarDetallesForo(id);
+      await this.evaluadoreSeleccionados(id);
+      this.datosEvaluadoresCargados = true;
+      await this.verEvaluadoresConCalificacion()
+      
+
+      this.myModal = new bootstrap.Modal(document.getElementById('modal_foros_actualizar'));
+
+      this.myModal.show();
+      this.tituloModal = nombre;
+      this.verMenu = 'No';
+    },
+    modalForoAgregarEquipoEAD(){
+      this.agregarEquipo = true;
+    },
+    modalForoAddCancelar() {
+      this.agregarEquipo = false
+      this.actualizarEquipoEAD = false
+    },
+    async modalCambiarEva() {
+      await this.consultarDetallesForo(this.id_foro);
+      this.evaluadoreSeleccionados(this.id_foro);
+    },
+    metodoFiltrar(id_foro){
+      return this.eadsForo.filter(e => e.id_foro == id_foro).length;
+    },
+    async recargarEvaluadores(id) {
+      this.datosEvaluadoresCargados = false;
+      await this.consultarDetallesForo(id);
+      await this.evaluadoreSeleccionados(id);
+      this.datosEvaluadoresCargados = true;
+    },    
+    appendAlert(message, type) {
+      this.alert = {
+        message,
+        type
+      }
+
+      setTimeout(() => {
+        this.alert = null
+      }, 3000) // 3000 ms = 3 segundos
+    },
+    evaluadorTieneCalificacion(idEvaluador) {
+      if (!this.datosEvaluadoresCargados) {
+        return false;
+      }
+      return Object.values(this.EvaSelectForoCalificacion)
+        .flatMap(foro => Object.values(foro))
+        .some(evaluador =>
+          Number(evaluador.id_evaluador) === Number(idEvaluador) &&
+          Number(evaluador.calificacion) > 0
+        );
+    },
+    /*========== consultas ==========*/
+    // *Get
+    consultarEquiposEnAgregar(){
+      console.log("Consultar los equipos para agregar: " + this.id_foro)
+      axios.get("competenciasController.php", {
+        params: {
+          accion: "consultarEquiposEADAF",
+          id_foro: this.id_foro
+        }
+      }).then(response => {
+        // console.log(response.data);
+        if (response.data[1] == true) {
+          this.eadsEquiposAdd = response.data[0];
+          console.log("lista de equipos:", this.eadsEquiposAdd)
+        } else {
+          this.eadsEquiposAdd = []
+          console.log("Ha fallado en cargar los equipos.");
+          console.log("lista de equipos en else:", this.eadsEquiposAdd)
+        }
+      }).catch(error => {
+        alert("Error en axios: " + error);
+      });
+
+    },
+    async verEvaluadoresConCalificacion(){
+      // console.log("id del foro: " + this.id_foro)
+      axios.get("competenciasController.php", {
+        params: {
+          accion: 'consultaEvaluadoresGenerales',
+          idForo: this.id_foro
+        }
+      }).then(response => {
+        // console.log("consulto evaluadores ", response.data)
+        if(response.data[0] == true){
+          this.evaluadorConCalificacion = response.data[1]
+          this.EvaluadoresEvaluaron = true;
+        }else {
+          console.log("No hay evaluadores que hayan calificado")
+          this.EvaluadoresEvaluaron = false;
+        }
+
+      }).catch(error => {
+        console.log('Error en axios: ' + error)
+      })
+    },
+    actualizarEquipoForo(id) {
+      console.log("area: " + this.select_planta_foro)
+      this.equipoEADSelectEdit = id
+      this.actualizarEquipoEAD = true
+      axios.get("competenciasController.php", {
+        params: {
+          accion: "consultarEquipo",
+          equipoIdForo: this.equipoEADSelectEdit
+        }
+      }).then(response => {
+        if (response.data[0] == true) {
+          this.equipoActual = response.data[1];
+          this.equipoEADSeleccionado = Number(this.equipoActual.id);
+          this.consultarEquiposEnAgregar()
+        } else {
+          alert("Error al cargar la información del equipo");
+        }
+
+      }).catch(error => {
+        alert("Error en axios: " + error);
+      })
+    },
+    async evaluadoreSeleccionados(id) {
+      axios.get("competenciasController.php", {
+        params: {
+          accion: "consultarEvaluadores",
+          idForo: this.id_foro
+        }
+      }).then(response => {
+
+        if (response.data[0] == true) {
+          this.EvaSeleccionadosForoC = this.evaluadoresForo.map(e => e.id);
+          this.EvaSelectForoCalificacion = response.data[1]
+
+          // console.log('evaluadoresForo: ', this.evaluadoresForo)
+          // console.log('Evaluadores', this.EvaSeleccionadosForoC)
+          // console.log()
+          // console.log('calificaiconevaluadores', this.EvaSelectForoCalificacion)
+
+        }
+      }).catch(error => {
+        console.log("Error: " + error);
+      })
+    },
+    // *post
+    guardarNuevoEquipoForo() {
+      if (this.equipoEADSeleccionado === null) {
+        this.appendAlert('Selecciona un equipo.', 'warning')
+        return;
+      }
+      axios.post("competenciasController.php", {
+        accion: "AgregarEquipoForoExistente",
+        id_ead: this.equipoEADSeleccionado,
+        id_foro: this.id_foro
+      }).then(response => {
+        if (response.data == true) {
+          this.appendAlert('Equipo guardado correctamente.', 'success')
+          this.consultarDetallesForo(this.id_foro);
+          this.agregarEquipo = false
+        } else {
+          this.appendAlert('Ha ocurrido un error al guardar el equipo.', 'danger')
+          return;
+        }
+      }).catch(error => {
+        console.log("Error en axios: " + error);
+      });
+
+    },    
+    eliminarEquipoEADForo(ead_foro_id, id_foro, orden){
+      if (!confirm("¿Esta seguro que desea eliminar el equipo en el foro?")) return
+
+      axios.post("competenciasController.php", {
+        accion: "eliminarEquipoForo",
+        ead_foro_id: ead_foro_id,
+        id_foro: id_foro,
+        ordenActual: orden
+      }).then(response => {
+        if (response.data == true) {
+          this.appendAlert('Equipo eliminado correctamente.', 'success')
+          this.consultarDetallesForo(id_foro);
+        } else {
+          this.appendAlert('No se ha podido eliminar el equipo.', 'danger')
+        }
+      }).catch(error => {
+        alert("Error interno " + error)
+      })
+    },
+    cambiarEvaInForo(){
+      const evaluadoresAnteriores = this.evaluadoresForo.map(e => Number(e.id));
+      const evaluadoresNuevos = this.EvaSeleccionadosForoC.map(id => Number(id));
+
+      const deseleccionados = evaluadoresAnteriores.filter(id => !evaluadoresNuevos.includes(id));
+      const agregados = evaluadoresNuevos.filter(id => !evaluadoresAnteriores.includes(id));
+
+      if (!deseleccionados.length && !agregados.length) {
+        this.appendAlert('No se han realizado cambios.', 'warning')
+        return;
+      }
+      if (evaluadoresNuevos.length == '') {
+        this.appendAlert('Selecciona al menos un evaluador.', 'warning')
+        return
+      }
+      axios.post("competenciasController.php", {
+        accion: 'actualizarEvaluadoresForo',
+        deseleccionados,
+        agregados,
+        id_foro: this.id_foro
+      }).then(response => {
+        if (agregados == 0) {
+          console.log('eliminar')
+          if (response.data[1] === true) {
+            this.appendAlert('Evaluador(es) eliminado(s) con éxito.', 'success')
+          } else {
+            this.appendAlert('No se pudo completar la eliminación del evaluador(es).', 'danger')
+          }
+        } else if (deseleccionados == 0) {
+          if (response.data[2] === true) {
+            this.appendAlert('Evaluadores añadidos con éxito.', 'success')
+          } else {
+            this.appendAlert('Error al agregar al evaluador.', 'danger')
+
+          }
+        } else if (agregados !== 0 && deseleccionados !== 0) {
+          if (response.data[1] == true && response.data[2] == true) {
+            this.appendAlert('Completado correctamente.', 'success')
+          } else {
+            this.appendAlert('No se pudo completar la acción.', 'danger')
+          }
+        } else {
+          this.appendAlert('Ha ocurrido un error interno', 'danger')
+        }
+
+        this.recargarEvaluadores(this.id_foro)
+      }).catch(error => {
+        console.log("Error en axios. " + error)
+      })
+    },
+    reordenarEquipoEAD(ead_foro_id, nuevoOrden){
+      nuevoOrden = Number(nuevoOrden);
+      const actual = this.eadsForo.find(
+        e => e.ead_foro_id == ead_foro_id
+      );
+      const destino = this.eadsForo.find(
+        e => e.orden == nuevoOrden
+      );
+
+      if (actual.orden == nuevoOrden) {
+        console.log("No es posible, número de orden duplicado.")
+        return;
+      }
+      axios.post("competenciasController.php", {
+
+        accion: "editarOrden",
+        ead_foro_id: actual.ead_foro_id,
+        ordenActual: actual.orden,
+        ead_foro_id_dos: destino.ead_foro_id,
+        ordenDestino: destino.orden
+      }).then(response => {
+        this.eadsForo.sort((a, b) => Number(a.orden) - Number(b.orden));
+        this.consultarDetallesForo(actual.id_foro);
+      }).catch(error => {
+        alert("Error en axios " + error)
+      })
+    },
+    // *PUT
+    actualizarEquipoEnForo(){
+      axios.put("competenciasController.php", {
+        accion: 'CambiarEquipoEnForo',
+        equipoAnterior: this.equipoEADSelectEdit,
+        equipoNuevo: this.equipoEADSeleccionado
+      }).then(response => {
+        if (response.data == true) {
+          this.appendAlert('Equipo actualizado correctamente.', 'success')
+          this.consultarDetallesForo(this.id_foro);
+          this.actualizarEquipoEAD = false
+
+        } else {
+          alert("Error al cambiar los equipos");
+        }
+
+      }).catch(error => {
+        console.log(error);
+      })
+    },    
+    cambiarEvaluadores() {
+      axios.put("competenciasController.php", {
+        accion: 'cambiarEvaluador',
+        id_foro: this.id_foro,
+        id_eva_anterior: this.evaluadorACambiar,
+        id_eva_nuevo: this.nuevoEvaluadorCambio
+      }).then(response => {
+        console.log("respuesta: " + response.data)
+      }).catch(error => {
+        console.log("Error en axios: " + error)
+      })
+    },
+
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////EVALUAR/////////////////////////////////////////////////////////////////
@@ -5308,5 +5657,3 @@ const app = {
 
 const App = Vue.createApp(app);
 App.mount("#app");
-
-
