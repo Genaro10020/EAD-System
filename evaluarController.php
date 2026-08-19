@@ -4,7 +4,7 @@ if(isset($_SESSION['nombre'])){
         $arreglo = json_decode(file_get_contents('php://input'), true);
         header('Content-Type: application/json');
         include("evaluarModel.php");
-        $accion = $arreglo['accion'];
+        $accion = $arreglo['accion'] ?? null;
         $resultado = "";  
         switch ($_SERVER['REQUEST_METHOD']){
             case 'GET':

@@ -2893,6 +2893,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             </div>
                                             <!-- CONTENIDO DEL FORO, TABLAS COMO EDITAR  -->
                                             <div class="scroll6">
+                                                <!-- CRUD EQUIPOS -->
                                                 <div class="table-responsive">
                                                     <table class="table table-hover table-bordered align-middle mb-0">
                                                         <thead style="background-color: #343a40 !important">
@@ -2904,7 +2905,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                     EAD'S
                                                                 </th>
                                                                 <th style="background-color: #343a40 !important; color: white !important;width: 40%;">
-                                                                    <button class="btn btn-success btn-sm px-3 fw-semibold shadow-sm"
+                                                                    <button v-if="actualizarEquipoEAD != true" class="btn btn-success btn-sm px-3 fw-semibold shadow-sm"
                                                                         @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
                                                                         <i class="bi bi-plus-lg me-1"></i> Agregar Equipo
                                                                     </button>
@@ -2931,8 +2932,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 </td>
                                                                 <td class="text-center">
                                                                     <div class="d-flex justify-content-center gap-2">
-                                                                        <button class="btn btn-outline-secondary btn-sm px-2 py-1"
-                                                                            @click="modalForoAddCancelar()">
+                                                                        <button class="btn btn-outline-secondary btn-sm px-2 py-1" @click="modalForoAddCancelar()">
                                                                             <i class="bi bi-x-lg"></i> Cancelar
                                                                         </button>
                                                                         <button v-if="agregarEquipo" class="btn btn-success btn-sm px-2 py-1"
@@ -2950,9 +2950,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                             <!-- Filas de EADs Ordenadas -->
                                                             <tr v-for="(foroEAD, index) in eadsForoOrdenados" :key="foroEAD.ead_foro_id">
                                                                 <td class="text-center">
-                                                                    <select :id="'forosEAD'+index"
-                                                                        class="form-select form-select-sm text-center mx-auto" style="width: 70px"
-                                                                        @change="reordenarEquipoEAD(foroEAD.ead_foro_id, $event.target.value)"
+                                                                    <select :id="'forosEAD'+index" class="form-select form-select-sm text-center mx-auto"
+                                                                        style="width: 70px" @change="reordenarEquipoEAD(foroEAD.ead_foro_id, $event.target.value)"
                                                                         title="Cambiar el orden">
                                                                         <option v-for="numero in metodoFiltrar(foroEAD.id_foro)" :value="numero"
                                                                             :selected="numero == foroEAD.orden">
@@ -2963,10 +2962,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 <td class="fw-medium text-dark">{{ foroEAD.nombre_ead }}</td>
                                                                 <td class="text-center">
                                                                     <div class="d-flex justify-content-center gap-2">
-                                                                        <button v-if="foroEAD.suma == 0 || foroEAD.suma == 'null'"
-                                                                            class="btn btn-outline-warning btn-sm px-2 py-1"
-                                                                            @click="actualizarEquipoForo(foroEAD.id)">
-                                                                            <i class="bi bi-pencil-square me-1"></i> Actualizar
+                                                                        <button v-if="agregarEquipo != true && foroEAD.suma == 0 || foroEAD.suma == 'null'"
+                                                                            class="btn btn-outline-warning btn-sm px-2 py-1" @click="actualizarEquipoForo(foroEAD.id)">
+                                                                            <i class="bi bi-pencil-square me-1"></i> Actualizar df
                                                                         </button>
                                                                         <button v-if="foroEAD.suma == 0 || foroEAD.suma == 'null'"
                                                                             class="btn btn-outline-danger btn-sm px-2 py-1"
@@ -3058,7 +3056,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                             @click="cambiarEvaluadores()">
                                                             <i class="bi bi-pencil-square me-1"></i> Cambiar
                                                         </button>
-                                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-none">
+                                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-none"  @click="cancelarActualizacionEvaluador()">
                                                             <i class="bi bi-x-circle"></i> Cancelar
                                                         </button>
                                                     </div>
@@ -3076,83 +3074,124 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                                 <!-- Fin modal para actualizar foro -->
                             <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
-                            <div id="modal_foros_detalles" class="modal" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
-                                <div class="modal-dialog modal-dialog-centered modal-fullscreen  p-5">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <label class="modal-title" id="exampleModalLabel" style="font-size:0.9em">Detalles {{tituloModal}}</label>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="verMenu = 'Si'"></button>
+                            <div id="modal_foros_detalles" class="modal fade" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
+                                <div class="modal-dialog modal-dialog-centered modal-fullscreen p-lg-4">
+                                    <div class="modal-content border-0 shadow-lg">
+                                        <!-- Header moderno -->
+                                        <div class="modal-header border-bottom px-4 py-3" style="background-color: #b80e0e">
+                                            <h5 class="modal-title fw-bold text-white" id="exampleModalLabel" style="font-size: 1.1em">
+                                                <i class="bi bi-trophy-fill text-white me-2"></i> Detalles:
+                                                {{tituloModal}}
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                                                @click="verMenu = 'Si'"></button>
                                         </div>
-                                        <div class="modal-body" style="font-size: 1em;">
-                                            <div class="scroll6">
-                                                <table class="table table-bordered table-striped">
-                                                    <thead class="thead-dark bg-secondary">
-                                                        <tr class="table-active text-center">
-                                                            <th>#</th>
-                                                            <th>EAD's</th>
-                                                            <th>Proyecto</th>
-                                                            <th>Planta</th>
-                                                            <th>Área</th>
-                                                            <th v-for="(evaluador,index) in evaluadoresForo">
-                                                                <label style="font-size:1em">{{evaluador.nombre}}</label><br>
-                                                                <span class="badge text-bg-primary">Evaluador {{index+1}}</span>
+
+                                        <!-- Cuerpo del Modal -->
+                                        <div class="modal-body p-4 bg-white" style="font-size: 0.95em">
+                                            <div class="table-responsive scroll6">
+                                                <table class="table table-hover align-middle mb-0">
+                                                    <thead class="table-light text-uppercase fs-7 text-muted border-bottom">
+                                                        <tr>
+                                                            <th class="py-3 text-center" style="width: 60px">#</th>
+                                                            <th class="py-3">EAD's</th>
+                                                            <th class="py-3">Proyecto</th>
+                                                            <th class="py-3">Planta</th>
+                                                            <th class="py-3">Área</th>
+                                                            <th class="py-3 text-center" v-for="(evaluador, index) in evaluadoresForo">
+                                                                <span class="d-block text-dark fw-semibold"
+                                                                    style="font-size: 0.9em">{{evaluador.nombre}}</span>
+                                                                <span class="badge bg-light text-primary border mt-1">Evaluador {{index+1}}</span>
                                                             </th>
-                                                            <th>Calificación</th>
+                                                            <th class="py-3 text-center text-black fw-bold">
+                                                                Calificación
+                                                            </th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr class="align-middle" v-for="(foroEAD, index) in eadsForo">
-                                                            <th><b>{{index+1}}</b></th>
-                                                            <td>{{foroEAD.nombre_ead}}</td>
-                                                            <td width="300px">
-                                                                <div class="row">
-                                                                    <div class="div col-10 d-flex align-content-center my-auto">
-                                                                        <input :id="'input'+index" v-if="editar_nombre_proyecto===index" type="text" class="form-control" :value="foroEAD.proyecto" />
-                                                                        <label v-else class="text-start">{{foroEAD.proyecto}}</label>
+                                                        <tr v-for="(foroEAD, index) in eadsForo" :class="{
+                                                                                        'table-success bg-opacity-10 fw-semibold': index === 0, 
+                                                                                        'table-warning bg-opacity-10': index === 1, 
+                                                                                        'table-active': index === 2}">
+                                                                                        
+                                                            <!-- Columna de Puesto con Iconos para el Podio -->
+                                                            <td class="text-center fw-bold">
+                                                                <span v-if="index === 0" class="fs-6" title="Primer Lugar">👑 1 </span>
+                                                                <span v-else-if="index === 1" class="fs-6" title="Segundo Lugar">🥈 2</span>
+                                                                <span v-else-if="index === 2" class="fs-6" title="Tercer Lugar">🥉 3</span>
+                                                                <span v-else class="text-muted">{{index+1}}</span>
+                                                                <span v-else class="text-muted">{{index+1}}</span>
+                                                            </td>
+
+                                                            <td class="fw-medium text-dark">{{foroEAD.nombre_ead}}</td>
+
+                                                            <td style="min-width: 250px">
+                                                                <div class="row g-1 align-items-center">
+                                                                    <div class="col-10">
+                                                                        <input :id="'input'+index" v-if="editar_nombre_proyecto===index" type="text"
+                                                                            class="form-control form-control-sm" :value="foroEAD.proyecto" />
+                                                                        <span v-else class="text-dark">{{foroEAD.proyecto}}</span>
                                                                     </div>
-                                                                    <div class="div col-1  d-flex align-content-center  my-auto">
-                                                                        <button type="button" v-if="editar_nombre_proyecto===index" @click="guardarNombreProyecto(foroEAD.ead_foro_id,index)"><i class="bi bi-floppy-fill"></i></button> <!--GUARDAR-->
-                                                                        <button type="button" v-else @click="editarNombreProyecto(index)"><i class="bi bi-pencil-fill"></i></button> <!--EDITAR-->
+                                                                    <div class="col-2">
+                                                                        <button type="button" class="btn btn-sm btn-outline-secondary border-0"
+                                                                            v-if="editar_nombre_proyecto===index"
+                                                                            @click="guardarNombreProyecto(foroEAD.ead_foro_id,index)"
+                                                                            title="Guardar">
+                                                                            <i class="bi bi-floppy-fill text-success"></i>
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-sm btn-outline-secondary border-0"
+                                                                            v-else @click="editarNombreProyecto(index)" title="Editar">
+                                                                            <i class="bi bi-pencil"></i>
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </td>
-                                                            <td>{{foroEAD.planta}}</td>
-                                                            <td>{{foroEAD.area}}</td>
-                                                            <td v-for="evaluador in evaluadoresForo">
-                                                                <label v-if="calificacionEvaluadorForo[foroEAD.ead_foro_id]">
+
+                                                            <td class="text-muted">{{foroEAD.planta}}</td>
+                                                            <td class="text-muted">{{foroEAD.area}}</td>
+
+                                                            <td class="text-center" v-for="evaluador in evaluadoresForo">
+                                                                <span class="badge bg-light text-dark border px-2 py-1"
+                                                                    v-if="calificacionEvaluadorForo[foroEAD.ead_foro_id]">
                                                                     {{calificacionEvaluadorForo[foroEAD.ead_foro_id][evaluador.id].calificacion}}
-                                                                </label>
+                                                                </span>
                                                             </td>
-                                                            <td>
-                                                                <label>
-                                                                    <b>{{(foroEAD.suma/(evaluadoresForo.length)).toFixed(3)}}</b>
-                                                                </label>
+
+                                                            <!-- Calificación Promedio Final -->
+                                                            <td class="text-center">
+                                                                <span class="badge rounded-pill fs-6 px-3 py-2"
+                                                                    :class="index === 0 || index === 1 || index === 2 ? 'bg-success text-white border border-success' : 'bg-warning-subtle text-dark border border-warning'">
+                                                                    {{ (foroEAD.suma / (evaluadoresForo.length)).toFixed(3) }}
+                                                                </span>
                                                             </td>
                                                         </tr>
-                                                        <tr>
-                                                            <td class=""></td>
-                                                            <td class=""></td>
-                                                            <td class=""></td>
-                                                            <td class=""></td>
-                                                            <td class=""></td>
+
+                                                        <!-- Fila de Promedio General -->
+                                                        <tr class="table-active fw-bold border-top border-2">
+                                                            <td colspan="5" class="text-end text-muted uppercase">
+                                                                Promedio General del Foro:
+                                                            </td>
                                                             <td :colspan="evaluadoresForo.length"></td>
-                                                            <td class="text-primary fw-bold">
+                                                            <td class="text-center text-success fs-5">
                                                                 {{promedioCalificaciones}}
                                                             </td>
                                                         </tr>
-                                                        <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="verMenu = 'Si'">Salir</button>
+
+                                        <!-- Footer -->
+                                        <div class="modal-footer bg-light px-4 py-3">
+                                            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal"
+                                                @click="verMenu = 'Si'">
+                                                Cerrar
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </div>

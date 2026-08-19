@@ -253,6 +253,7 @@ const app = {
       evaluadorACambiar: null,
       nuevoEvaluadorCambio: null,
       EvaluadoresEvaluaron: false,
+      equipoActual: null,
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equiposEvaluador: [],
       etapas_preguntas: '',
@@ -422,7 +423,7 @@ const app = {
   },
   watch: {
       equipoEADSeleccionado(valor) {
-          console.log("Seleccionado:", valor);
+          console.log("Seleccionado ead:", valor);
       },
       evaluadorACambiar(viejo) {
         console.log("Evaluador antiguo")
@@ -3362,6 +3363,7 @@ const app = {
     modalForoAddCancelar() {
       this.agregarEquipo = false
       this.actualizarEquipoEAD = false
+      this.equipoEADSeleccionado = null
     },
     async modalCambiarEva() {
       await this.consultarDetallesForo(this.id_foro);
@@ -3397,6 +3399,11 @@ const app = {
           Number(evaluador.calificacion) > 0
         );
     },
+    cancelarActualizacionEvaluador() {
+      console.log("cancelar")
+      this.evaluadorACambiar = null
+      this.nuevoEvaluadorCambio = null
+    },
     /*========== consultas ==========*/
     // *Get
     consultarEquiposEnAgregar(){
@@ -3410,26 +3417,21 @@ const app = {
         // console.log(response.data);
         if (response.data[1] == true) {
           this.eadsEquiposAdd = response.data[0];
-          console.log("lista de equipos:", this.eadsEquiposAdd)
         } else {
           this.eadsEquiposAdd = []
           console.log("Ha fallado en cargar los equipos.");
-          console.log("lista de equipos en else:", this.eadsEquiposAdd)
         }
       }).catch(error => {
         alert("Error en axios: " + error);
       });
-
     },
     async verEvaluadoresConCalificacion(){
-      // console.log("id del foro: " + this.id_foro)
       axios.get("competenciasController.php", {
         params: {
           accion: 'consultaEvaluadoresGenerales',
           idForo: this.id_foro
         }
       }).then(response => {
-        // console.log("consulto evaluadores ", response.data)
         if(response.data[0] == true){
           this.evaluadorConCalificacion = response.data[1]
           this.EvaluadoresEvaluaron = true;
@@ -3471,16 +3473,11 @@ const app = {
           idForo: this.id_foro
         }
       }).then(response => {
-
         if (response.data[0] == true) {
           this.EvaSeleccionadosForoC = this.evaluadoresForo.map(e => e.id);
           this.EvaSelectForoCalificacion = response.data[1]
-
-          // console.log('evaluadoresForo: ', this.evaluadoresForo)
-          // console.log('Evaluadores', this.EvaSeleccionadosForoC)
-          // console.log()
-          // console.log('calificaiconevaluadores', this.EvaSelectForoCalificacion)
-
+        } else {
+          alert("Hubo un error al momento de cargar los evaluadores.")
         }
       }).catch(error => {
         console.log("Error: " + error);
@@ -3497,10 +3494,12 @@ const app = {
         id_ead: this.equipoEADSeleccionado,
         id_foro: this.id_foro
       }).then(response => {
+        console.log("this.equipoEADSeleccionado: "+ this.equipoEADSeleccionado)
         if (response.data == true) {
           this.appendAlert('Equipo guardado correctamente.', 'success')
           this.consultarDetallesForo(this.id_foro);
           this.agregarEquipo = false
+          this.equipoEADSeleccionado = null
         } else {
           this.appendAlert('Ha ocurrido un error al guardar el equipo.', 'danger')
           return;
@@ -3541,7 +3540,7 @@ const app = {
         return;
       }
       if (evaluadoresNuevos.length == '') {
-        this.appendAlert('Selecciona al menos un evaluador.', 'warning')
+        this.appendAlert('Selecciona mínimo un evaluador.', 'warning')
         return
       }
       axios.post("competenciasController.php", {
@@ -3551,7 +3550,6 @@ const app = {
         id_foro: this.id_foro
       }).then(response => {
         if (agregados == 0) {
-          console.log('eliminar')
           if (response.data[1] === true) {
             this.appendAlert('Evaluador(es) eliminado(s) con éxito.', 'success')
           } else {
@@ -3573,7 +3571,6 @@ const app = {
         } else {
           this.appendAlert('Ha ocurrido un error interno', 'danger')
         }
-
         this.recargarEvaluadores(this.id_foro)
       }).catch(error => {
         console.log("Error en axios. " + error)
@@ -3587,13 +3584,11 @@ const app = {
       const destino = this.eadsForo.find(
         e => e.orden == nuevoOrden
       );
-
       if (actual.orden == nuevoOrden) {
-        console.log("No es posible, número de orden duplicado.")
+        this.appendAlert('No es posible cambiar el orden, número de orden duplicado.', 'danger')
         return;
       }
       axios.post("competenciasController.php", {
-
         accion: "editarOrden",
         ead_foro_id: actual.ead_foro_id,
         ordenActual: actual.orden,
@@ -3617,11 +3612,11 @@ const app = {
           this.appendAlert('Equipo actualizado correctamente.', 'success')
           this.consultarDetallesForo(this.id_foro);
           this.actualizarEquipoEAD = false
-
+          this.EvaSeleccionadosForoC = null
         } else {
-          alert("Error al cambiar los equipos");
+          this.appendAlert('Ha ocurrido un error al actualizar el equipo.', 'danger')
+          this.EvaSeleccionadosForoC = null
         }
-
       }).catch(error => {
         console.log(error);
       })
@@ -3633,7 +3628,15 @@ const app = {
         id_eva_anterior: this.evaluadorACambiar,
         id_eva_nuevo: this.nuevoEvaluadorCambio
       }).then(response => {
-        console.log("respuesta: " + response.data)
+        if (response.data == true) {
+          this.appendAlert('Se ha cambiado correctamente al evaluador', 'success')
+          this.recargarEvaluadores(this.id_foro);
+          this.verEvaluadoresConCalificacion()
+          this.evaluadorACambiar = null
+          this.nuevoEvaluadorCambio = null
+        } else {
+          this.appendAlert('Ha ocurrido un error al momento de cambiar el evaluador', 'danger')
+        }
       }).catch(error => {
         console.log("Error en axios: " + error)
       })

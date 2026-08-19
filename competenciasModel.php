@@ -716,17 +716,20 @@ include("conexionGhoner.php");
 
             //CONSULTAR SI EXISTE EL EVALUADOR QUE POR EL QUE SE QUIERE CAMBIAR.
             // die();
-            $consulta = $conexion->prepare("SELECT * FROM `calificacion` WHERE `id_evaluador` = ?");
-            $consulta->bind_param("i", $id_eva_nuevo);
+            $consulta = $conexion->prepare("SELECT * FROM `calificacion` WHERE `id_evaluador` = ? AND `id_ead_foro` IN ($placeholderidEquiposEAD);");
+            
+            $valores = array_merge([$id_eva_nuevo], $id_equipos_eadforo);
+            $tipoVal = str_repeat('i', count($valores));
+            $consulta->bind_param($tipoVal, ...$valores);
             $consulta->execute();
             $consulta1 = $consulta->get_result();
 
-            if ($consulta1->num_rows > 0) {
 
+            if ($consulta1->num_rows > 0) {
                 if (!empty($ids_eva_anterior) && !empty($id_eva_nuevo)) {
 
                     /*========== CALIFICACION EVALUADOR ORIGINALES ==========*/
-                    $evaluador = $conexion->prepare("SELECT `id` FROM `calificacion` WHERE id_ead_foro IN($placeholderidEquiposEAD) AND id_evaluador = ?");
+                    $evaluador = $conexion->prepare("SELECT `id` FROM `calificacion` WHERE id_ead_foro IN($placeholderidEquiposEAD) AND id_evaluador = ?;");
                     if (!$evaluador) {
                         die("Error en prepare(): " . $conexion->error);
                     }
@@ -844,7 +847,7 @@ include("conexionGhoner.php");
                                                         WHEN `id` IN($idsCalnuevoEva) THEN ?
                                                         WHEN `id` IN($idsCalAntEva) THEN ?
                                                     END
-                                                    WHERE `id` IN($idsCalificacionP)");
+                                                    WHERE `id` IN($idsCalificacionP);");
                     if (!$Updatecalificacion) {
                         die("Error en prepare: " . $conexion->error);
                     }
@@ -863,7 +866,7 @@ include("conexionGhoner.php");
                                                     WHEN `id` IN($idsPreguntasNue) THEN ?
                                                     WHEN `id` IN($idsPreguntasAnt) THEN ?
                                                 END 
-                                                WHERE `id` IN($idsPreguntasP)");
+                                                WHERE `id` IN($idsPreguntasP);");
                     if (!$UpdatePreguntasEva) {
                         die("Error en prepare: " . $conexion->error);
                     }
@@ -886,12 +889,12 @@ include("conexionGhoner.php");
                     $calificacion = $conexion->prepare("UPDATE `calificacion` 
                                         SET `id_evaluador` = ? 
                                     WHERE `id_ead_foro` IN($placeholderidEquiposEAD)
-                                    AND `id_evaluador` = ?");
+                                    AND `id_evaluador` = ?;");
 
                     $preguntasEvaluador = $conexion->prepare("UPDATE `preguntas_evaluador` 
                                         SET `id_evaluador` = ?
                                     WHERE `id_ead_foro` IN($placeholderidEquiposEAD) 
-                                    AND `id_evaluador` = ?");
+                                    AND `id_evaluador` = ?;");
 
                     $contenido = array_merge(
                         [$id_eva_nuevo],
