@@ -2903,12 +2903,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 </th>
                                                                 <th style="background-color: #343a40 !important; color: white !important; width: 45%; ">
                                                                     EAD'S
-                                                                </th>
-                                                                <th style="background-color: #343a40 !important; color: white !important;width: 40%;">
-                                                                    <button v-if="actualizarEquipoEAD != true" class="btn btn-success btn-sm px-3 fw-semibold shadow-sm"
-                                                                        @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
+                                                                    
+                                                                    <button v-if="actualizarEquipoEAD != true" class="btn btn-success btn-sm px-3 fw-semibold shadow-sm ms-4"
+                                                                    @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
                                                                         <i class="bi bi-plus-lg me-1"></i> Agregar Equipo
                                                                     </button>
+                                                                </th>
+                                                                <th style="background-color: #343a40 !important; color: white !important;width: 40%;">
+                                                                        Opciones
                                                                 </th>
                                                             </tr>
                                                         </thead>
@@ -2964,7 +2966,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                     <div class="d-flex justify-content-center gap-2">
                                                                         <button v-if="agregarEquipo != true && foroEAD.suma == 0 || foroEAD.suma == 'null'"
                                                                             class="btn btn-outline-warning btn-sm px-2 py-1" @click="actualizarEquipoForo(foroEAD.id)">
-                                                                            <i class="bi bi-pencil-square me-1"></i> Actualizar df
+                                                                            <i class="bi bi-pencil-square me-1"></i> Actualizar
                                                                         </button>
                                                                         <button v-if="foroEAD.suma == 0 || foroEAD.suma == 'null'"
                                                                             class="btn btn-outline-danger btn-sm px-2 py-1"
@@ -2981,13 +2983,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <!-- EVALUADORES -->
                                                 <div class="col-12 col-md-8 mx-auto mt-4">
                                                     <div class="text-white p-2 text-center fw-bold" style="background-color: #b80e0e; border-top-left-radius: 10px; border-top-right-radius: 10px; font-size: 0.85em">
-                                                        Evaluadores
+                                                        Asignación de Evaluadores
                                                     </div>
 
+                                                    <div class="bg-warning-subtle px-2 py-2 border-start border-end border-bottom text-dark text-center d-flex align-items-center justify-content-center gap-2" style="font-size: 0.75rem;">
+                                                        <i class="bi bi-info-circle text-warning fs-5"></i>
+                                                        <span>Marque o desmarque los evaluadores. Los que tienen calificación no se pueden modificar.</span>
+                                                    </div>
 
-                                                    <!-- Seleccion del evaluador -->
+                                                    <!-- Contenido -->
                                                     <div class="scroll3 border border-top-0 p-2 bg-light" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; max-height: 200px; overflow-y: auto">
-
                                                         <div class="input-group mb-1" v-for="(evaluador, index) in evaluadores" :key="evaluador.id">
                                                             <div class="input-group-text bg-white">
                                                                 <input class="form-check-input mt-0" type="checkbox" v-model="EvaSeleccionadosForoC"
@@ -3014,50 +3019,64 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </div>
                                                 </div>
 
+                                                <!-- Cambiar evaluador -->
                                                 <div v-if="EvaluadoresEvaluaron == true" class="card shadow-sm p-3 border-0 bg-light mx-auto mt-5"
                                                     style="max-width: 500px">
+                                                    
                                                     <!-- Sección de selección para ordenar -->
                                                     <div class="mb-3">
                                                         <label class="form-label small text-muted fw-bold d-block text-center mb-2">
-                                                            Cambiar el evaluador con que ya ha evaluado
+                                                            Reemplazar evaluador (con evaluación previa)
                                                         </label>
-                                                        <div class="d-flex align-items-center justify-content-center gap-2">
-                                                            <select :id="'forosEAD_1_'+index" class="form-select form-select-sm text-center"
-                                                                v-model="evaluadorACambiar">
-                                                                <option disabled hidden :value="null">Seleccione...</option>
+                                                        
+                                                        <div class="row g-2 align-items-center">
+                                                            <!-- Primer Selector: Evaluador actual -->
+                                                            <div class="col-md-5">
+                                                                <label :for="'forosEAD_1_'+index" class="form-label text-center text-muted d-block mb-1" style="font-size: 0.75rem;">
+                                                                    Evaluador actual:
+                                                                </label>
+                                                                <select :id="'forosEAD_1_'+index" class="form-select form-select-sm text-center"
+                                                                    v-model="evaluadorACambiar">
+                                                                    <option disabled hidden :value="null">Seleccione...</option>
+                                                                    <option v-for="calificacionEva in evaluadorConCalificacion"
+                                                                        :key="calificacionEva.id_evaluador" :value="calificacionEva.id_evaluador"
+                                                                        :id="'calificacionEva-' + calificacionEva.id_evaluador">
+                                                                        {{calificacionEva.nombre}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
 
-                                                                <option v-for="calificacionEva in evaluadorConCalificacion"
-                                                                    :key="calificacionEva.id_evaluador" :value="calificacionEva.id_evaluador"
-                                                                    :id="'calificacionEva-' + calificacionEva.id_evaluador">
-                                                                    {{calificacionEva.nombre}}
-                                                                </option>
-                                                            </select>
+                                                            <div class="col-md-2 d-flex align-items-center justify-content-center pt-3">
+                                                                <i class="bi bi-arrow-left-right text-muted fs-5"></i>
+                                                            </div>
 
-                                                            <i class="bi bi-arrow-left-right text-muted fs-6"></i>
-
-                                                            <select :id="'forosEAD_2_'+index" class="form-select form-select-sm text-center"
-                                                                v-model="nuevoEvaluadorCambio">
-                                                                <option disabled hidden value="null">Seleccione...</option>
-
-                                                                <option v-for="evaluador in evaluadoresDisponibles" :key="evaluador.id"
-                                                                    :value="evaluador.id" :id="'evaluador-' + evaluador.id">
-                                                                    {{evaluador.nombre}}
-                                                                </option>
-                                                            </select>
+                                                            <!-- Segundo Selector: Nuevo evaluador -->
+                                                            <div class="col-md-5">
+                                                                <label :for="'forosEAD_2_'+index" class="form-label text-center text-muted d-block mb-1" style="font-size: 0.75rem;">
+                                                                    Nuevo evaluador:
+                                                                </label>
+                                                                <select :id="'forosEAD_2_'+index" class="form-select form-select-sm text-center"
+                                                                    v-model="nuevoEvaluadorCambio">
+                                                                    <option disabled hidden :value="null">Seleccione...</option>
+                                                                    <option v-for="evaluador in evaluadoresDisponibles" :key="evaluador.id"
+                                                                        :value="evaluador.id" :id="'evaluador-' + evaluador.id">
+                                                                        {{evaluador.nombre}}
+                                                                    </option>
+                                                                </select>
+                                                            </div>
                                                         </div>
                                                     </div>
 
-                                                    <!-- Separador visual -->
                                                     <hr class="text-muted opacity-25 my-2" />
 
-                                                    <!-- Botones de acción -->
+                                                    <!-- Botones -->
                                                     <div class="d-flex justify-content-center gap-2">
                                                         <button type="button" class="btn btn-outline-warning btn-sm px-3 shadow-none"
                                                             @click="cambiarEvaluadores()">
                                                             <i class="bi bi-pencil-square me-1"></i> Cambiar
                                                         </button>
-                                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-none"  @click="cancelarActualizacionEvaluador()">
-                                                            <i class="bi bi-x-circle"></i> Cancelar
+                                                        <button type="button" class="btn btn-outline-danger btn-sm px-3 shadow-none" @click="cancelarActualizacionEvaluador()">
+                                                            <i class="bi bi-x-circle me-1"></i> Cancelar
                                                         </button>
                                                     </div>
                                                 </div>
@@ -3073,6 +3092,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </div>
                             </div>
                                 <!-- Fin modal para actualizar foro -->
+                                 
                             <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
                             <div id="modal_foros_detalles" class="modal fade" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
                                 <div class="modal-dialog modal-dialog-centered modal-fullscreen p-lg-4">
