@@ -19,7 +19,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                 ?>
-                    <div v-show="verMenu=='Si'" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                    <div v-show="verMenu=='Si' && !(tipo_usuario == 'ColaboradorLider' && (ventana == 'Graficas' || ventana == 'ScoreCard'))" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
                         <button class="dropbtn text-white" style="max-height:10px;" @click="toggleMenu()">
                             <i class="bi bi-list me-5">Menú</i>
                         </button>
@@ -2073,9 +2073,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="input-group my-3">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
                             <select class="w-50" v-model="equipo_grafica" @change="consultarCriterios(),consultadoValoresGrafica()">
+                            <?php if ($_SESSION['tipo_acceso'] == 'ColaboradorLider') { ?>
+                                <option v-for="equipos in consultaEAD" :value="equipos.id+'<->'+equipos.nombre_ead+'<->'+equipos.planta+'<->'+equipos.area">{{equipos.nombre_ead}}</option>
+                            <?php } else { ?>
                                 <option value="" disabled>Seleccione...</option>
                                 <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
-                            </select>
+                            <?php } ?>
+                        </select>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
@@ -2181,7 +2185,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <!--Tabla compromisos-->
                             <?php include("tabla_compromisos.php") ?>
                             <!---->
-                        </div>
+                        </div>                        
+                    </div>                   
+                </div>
+                <div id="opciones" style="min-height:5vh; max-height:5vh;" class=" d-flex align-items-center justify-content-center ">
+                    <div class="row text-center mb-2 d-flex justify-content-center align-items-center">
+                        <div v-if="seguimiento==false" @click="redireccionar('Atras')" class="btn_principal_coloborador text-center col-12 d-flex align-items-center justify-content-center" style="cursor: pointer">
+                            <div> <img src="img/app_atras.png" class="img-fluid" alt="..." style=" width: 50px;"></div>
+                        </div>                                    
                     </div>
                 </div>
             </div>
@@ -3326,7 +3337,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>-->
             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
         </div>
-        <script src="js/panel.js?<? echo time(); ?>"></script>
+        <script src="js/panel.js?<?php echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
