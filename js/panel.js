@@ -3613,6 +3613,10 @@ const app = {
 
     },
     comprobando(dia) {
+    if (this.tipo_usuario === 'ColaboradorLider') {
+      return true; 
+    }
+
       if (this.tipo_usuario == 'Colaborador') {
         if (this.habilitar == false) {
           console.log("FALSE ")
