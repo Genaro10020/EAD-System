@@ -853,10 +853,15 @@ const app = {
           this.consultaEAD = response.data[1];
           const equipo = this.consultaEAD[0];
           this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
-
-          this.equipo_grafica = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
-
-          this.consultarCriterios();
+          this.equipo_grafica = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}`;
+          
+          if (this.ventana === 'Graficas') {
+              this.consultarCriterios();
+              this.consultadoValoresGrafica();
+          } else if (this.ventana === 'ScoreCard') {
+              this.consultarSeguimientoAsistencia();
+              this.consultarScoreCard();
+          }
         }
       }).catch(error => {
         console.log("Error en la consulta :-( " + error)
