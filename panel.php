@@ -927,7 +927,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <button v-else class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Guardar')"><i class="bi bi-floppy-fill"></i> Guardar</button>
                 </div>
                 <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
-
                     <div class="col-12 col-lg-6"><!--Inicio Scroll-->
                         <div class="row barra-gris d-flex align-content-center " style="height:80px;">
                             <h6 class="text-center pasos mt-2"> Compromisos <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
@@ -1282,8 +1281,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
 
                 <!-- Inicio Modal KPIS-->
-                <div class="modal fade" id="modalKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered  modal-xl modal-fullscreen-xl-down">
+                <div class="modal fade" id="modalKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                    <div class="modal-dialog modal-fullscreen">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h6 class="modal-title" id="exampleModalLabel">Seguimiento KPI's</b></h6>
@@ -1291,9 +1290,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                             <div class="modal-body">
                                 <div v-if="select_session_equipo.length>0">
-                                    <div class="row">
-                                        <div class="col-12 d-flex justify-content-center">
-                                            <div class="tarjeta_kpis col-8 my-2 mx-3 text-center">
+                                   <div class="row">
+                                       <div class="col-12 d-flex flex-column flex-lg-row justify-content-center align-items-center p-4">
+                                        <!-- TARJETA KPIS -->
+                                        <div class="tarjeta_kpis col-12 col-lg-4 text-center m-2">
                                                 <div class="input-group mb-3" style="min-width:270px;">
                                                     <label class="input-group-text w-25" style="font-size:0.8em">Nom. Indicador</label>
                                                     <input type="text" class="form-control" v-model="nombre_indicador" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='nombre_indicador'" />
@@ -1304,7 +1304,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </div>
                                                 </div>
                                                 <div class="input-group mb-3" style="min-width:270px">
-
                                                     <label class="input-group-text w-25" style="font-size:0.8em">Tipo Gráfica</label>
                                                     <select class="form-select" v-model="tGrafica" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='tipo'">
                                                         <option value="" disabled>Seleccione..</option>
@@ -1395,7 +1394,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-warning btn-boton py-0 mt-3" style="font-size: 0.9em;" @click="guardarActualizacionDatoKPI()"><i class="bi bi-floppy-fill"></i> Actualizar</button>
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-danger btn-boton py-0 ms-2 mt-3" style="font-size: 0.9em;" @click="cancelarDatosKPI()"><i class="bi bi-x-circle-fill"></i> Cancelar</button>
                                             </div>
-                                            <div class=" tarjeta_kpisPilares col-4 my-2 text-center">
+                                                    <!-- PILARES-->
+                                            <div class="tarjeta_kpisPilaresImpactos col-12 col-lg-8 text-center m-2 h-lg-100">
+                                                <div class=" text-center">
                                                 <span v-for="(pilar,index) in pilar_estrategico" :key="index">
                                                     <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model="pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID, pilar.pilarNombre)" /><label>{{ pilar.pilarNombre }}</label>
                                                 </span>
@@ -1407,38 +1408,197 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </ul>
                                                 </span>
                                                 <span v-if="banderaObjetivoGuardado" class="badge bg-success">Se guardaron los objetivo/s</span>
-                                            </div>
+                                                </div>
 
+
+                                                    <!-- IMPACTOS AMBIENTALES-->
+                                                    <div class="card shadow-sm border-0 rounded-3 mt-4">
+                                                        <!-- TÍTULO -->
+                                                        <div class="card-header bg-success text-white py-3">
+                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                <div>
+                                                                    <label class="mb-0 fw-bold text-sm ">
+                                                                        Impactos Ambientales
+                                                                    </label><br>
+                                                                    <small class="opacity-75">
+                                                                        Registro de emisiones y aspectos ambientales
+                                                                    </small>
+                                                                </div>
+                                                                <span class="badge bg-light text-success">
+                                                                    Ambiental
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <!-- CUERPO -->
+                                                        <div class="card-body p-0">
+                                                            <div class="table-responsive">
+                                                                <table class="table table-bordered table-hover align-middle mb-0">
+                                                                    <!-- ENCABEZADO -->
+                                                                    <thead class="table-success">
+                                                                        <tr class="text-center">
+                                                                            <th scope="col">
+                                                                                Diagrama de<br>Proceso Ambiental
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Tipo
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Concepto
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Alcance
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Cant.
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                UM
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                t CO₂/Año<br>evitadas
+                                                                            </th>
+                                                                            <th scope="col">
+                                                                                Referencia
+                                                                            </th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                        <tbody>
+                                                                            <tr class="text-center">
+                                                                                <!-- Diagrama -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        class="form-control form-control-sm text-center text-primary"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.diagrama"
+                                                                                        placeholder="E-DF-IP-RJ-A">
+                                                                                </td>
+                                                                                <!-- Tipo -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        class="form-control form-control-sm text-center text-primary"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.tipo"
+                                                                                        placeholder="Energía">
+                                                                                </td>
+                                                                                <!-- Concepto -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        class="form-control form-control-sm text-center"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.concepto"
+                                                                                        placeholder="Electricidad">
+                                                                                </td>
+                                                                                <td>
+                                                                                    <select
+                                                                                    class="form-control form-control-sm text-center"  
+                                                                                        style="
+                                                                                            border: 1px solid;
+                                                                                            border-color: rgba(110, 108, 108, 0.28);
+                                                                                            box-shadow: none;
+                                                                                            font-size: 0.9em;"
+                                                                                            v-model="emisiones_aspectos_ambientales_proyecto_ead.alcance">
+                                                                                        <option disabled value="">Seleccione...</option>
+                                                                                        <option value="1">1</option>
+                                                                                        <option value="2">2</option>
+                                                                                        <option value="3">3</option>
+                                                                                    </select>
+                                                                                <!-- Cantidad -->
+                                                                                </td>
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="number"
+                                                                                        class="form-control form-control-sm text-center  bg-white"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.cantidad"
+                                                                                        placeholder="0" style="font-size: 0.9em;">
+                                                                                </td>
+                                                                                <!-- UM -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        class="form-control form-control-sm text-center"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.um"
+                                                                                        placeholder="kWh/Año">
+                                                                                </td>
+                                                                                <!-- CO2 -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="number"
+                                                                                        step="0.01"
+                                                                                        class="form-control form-control-sm text-center"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.co2"
+                                                                                        style="background-color: rgba(144, 206, 177, 0.35);"
+                                                                                        placeholder="0.00" disabled>    
+                                                                                </td>
+                                                                                <!-- Referencia -->
+                                                                                <td>
+                                                                                    <input
+                                                                                        type="text"
+                                                                                        class="form-control form-control-sm"
+                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.referencia"
+                                                                                        placeholder="Referencia">
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    <!-- TOTALES -->
+                                                                    <tfoot>
+                                                                        <tr class="table-light">
+                                                                            <td colspan="6" class="text-end fw-bold">
+                                                                                Total emisiones evitadas:
+                                                                            </td>
+                                                                            <td class="text-center">
+                                                                                <span class="badge bg-success fs-6 px-3 py-2">
+                                                                                    {{ totalCO2 }} t CO₂
+                                                                                </span>
+                                                                            </td>
+                                                                            <td></td>
+                                                                        </tr>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                        <!-- PIE -->
+                                                        <div class="card-footer bg-light border-0">
+                                                            <div class="d-flex justify-content-end gap-2">
+                                                                <button 
+                                                                    type="button"
+                                                                    class="btn btn-success btn-sm"
+                                                                    @click="guardarImpactoDeProyecto()">
+                                                                    <i class="bi bi-floppy-fill me-1"></i>
+                                                                    Guardar impacto
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>    
+                                                    </div>  
                                         </div>
-                                    </div>
-                                    <!--Tabla registro KPIs-->
-                                    <div class="scroll2">
-                                        <table class="table table-bordered mt-2" style="font-size:0.7em">
-                                            <thead class="table-active">
-                                                <tr class="text-center">
-                                                    <th scope="col">#</th>
-                                                    <th scope="col">Año</th>
-                                                    <th scope="col">Mes Cierre</th>
-                                                    <th scope="col">Semana</th>
-                                                    <th scope="col">Dato</th>
-                                                    <th scope="col">Actualizar</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr class="align-middle" v-for="(seguimientokpi,index) in seguimientoKPIs.slice().reverse()">
-                                                    <th scope="row" class="text-center">{{index+1}}</th>
-                                                    <td class="text-center">{{seguimientokpi.anio}}</td>
-                                                    <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
-                                                    <td class="text-center">{{seguimientokpi.semana}}</td>
-                                                    <td>{{formatoNumero(seguimientokpi.dato_semanal)}}</td>
-                                                    <td class="text-center">
-                                                        <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar me-5" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
-                                                        <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-danger botones-eliminar me-5" v-if="actualizar_kpi==false" @click="eliminarDatoKPI(seguimientokpi.id,seguimientokpi.semana,parseFloat(seguimientokpi.dato_semanal).toFixed(2))">Eliminar</button>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                        <!--Tabla registro KPIs-->
+                                            <div class="scroll2">
+                                                <table class="table table-bordered mt-2" style="font-size:0.7em">
+                                                    <thead class="table-active">
+                                                        <tr class="text-center">
+                                                            <th scope="col">#</th>
+                                                            <th scope="col">Año</th>
+                                                            <th scope="col">Mes Cierre</th>
+                                                            <th scope="col">Semana</th>
+                                                            <th scope="col">Dato</th>
+                                                            <th scope="col">Actualizar</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="align-middle" v-for="(seguimientokpi,index) in seguimientoKPIs.slice().reverse()">
+                                                            <th scope="row" class="text-center">{{index+1}}</th>
+                                                            <td class="text-center">{{seguimientokpi.anio}}</td>
+                                                            <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
+                                                            <td class="text-center">{{seguimientokpi.semana}}</td>
+                                                            <td>{{formatoNumero(seguimientokpi.dato_semanal)}}</td>
+                                                            <td class="text-center">
+                                                                <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar me-5" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
+                                                                <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-danger botones-eliminar me-5" v-if="actualizar_kpi==false" @click="eliminarDatoKPI(seguimientokpi.id,seguimientokpi.semana,parseFloat(seguimientokpi.dato_semanal).toFixed(2))">Eliminar</button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                     <!--Tabla registro KPIs-->
                                 </div>
                             </div>
@@ -1468,9 +1628,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </div>
                     </div>
                 </div>
-                <!--Fin Modal GRAFICA KPIS VISTA FULL-->
             </div>
-
+        </div>
             <div v-if="ventana=='Capacitaciones'">
                 <!--<div class="col-12 text-center">
                         <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nuevaCapacitaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Capacitación</button>
@@ -1762,10 +1921,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </div>
                     </div>
                 </div>
-
-
-
             </div>
+        
 
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->

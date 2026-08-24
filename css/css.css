@@ -63,6 +63,7 @@ input[type],
 textarea[type]:focus,
 input[type]:focus,
 button[type]:focus,
+select:focus,
 select[type]:focus,
 .select:focus,
 .form-select:focus {
@@ -198,8 +199,9 @@ table,
 }
 
 .tarjeta_kpis {
+    justify-content: center;
     font-size: 13px;
-    width: 550px;
+    width: 400px;
     height: auto;
     /* Altura automática según el contenido */
     border-radius: 10px;
@@ -217,9 +219,17 @@ table,
     padding: 5px 5px 5px 10px;
 }
 
-.tarjeta_kpisPilares {
+
+.contendor_tarjeta_kpis {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    /* Espacio entre tarjetas */
+}
+
+.tarjeta_kpisPilaresImpactos {
     font-size: 13px;
-    width: 500px;
     height: auto;
     /* Altura automática según el contenido */
     border-radius: 10px;
@@ -233,7 +243,7 @@ table,
     color: #666666;
 }
 
-.tarjeta_kpisPilares .container {
+.tarjeta_kpisPilaresImpactos .container {
     padding: 5px 5px 5px 10px;
 }
 
@@ -998,6 +1008,15 @@ button {
     .btn-guardar {
         font-size: 0.9em;
     }
+
+    .h-lg-100 {
+        height: 100% !important;
+    }
+
+     .w-lg-50 {
+        width: 50% !important;
+    }
+
 
 }
 

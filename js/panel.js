@@ -182,6 +182,19 @@ const app = {
       extrajeIDSPilares: [],
       metodologia:'',
       tipo_equipo: '',
+     
+         emisiones_aspectos_ambientales_proyecto_ead : {
+            diagrama: '',
+            tipo: '',
+            concepto: '',
+            alcance: '',
+            cantidad: 0,
+            um: '',
+            co2: 0,
+            referencia: ''
+        },
+ 
+
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -2834,6 +2847,40 @@ const app = {
         }
       });
     },
+
+    ///REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL////////////////////////////////////////////////////////
+    guardarImpactoDeProyecto(){
+        const datos = {
+            diagrama: this.emisiones_aspectos_ambientales_proyecto_ead.diagrama,
+            tipo: this.emisiones_aspectos_ambientales_proyecto_ead.tipo,
+            concepto: this.emisiones_aspectos_ambientales_proyecto_ead.concepto,
+            alcance: this.emisiones_aspectos_ambientales_proyecto_ead.alcance,
+            cantidad: this.emisiones_aspectos_ambientales_proyecto_ead.cantidad,
+            um: this.emisiones_aspectos_ambientales_proyecto_ead.um,
+            co2: this.emisiones_aspectos_ambientales_proyecto_ead.co2,
+            referencia: this.emisiones_aspectos_ambientales_proyecto_ead.referencia
+        };
+
+        console.log('Datos a guardar:', datos);
+        axios.post('guardarImpactoProyectoController.php', datos)
+            .then(response => {
+                console.log('Guardado correctamente:', response.data);
+                // Aquí puedes limpiar el formulario
+                this.emisiones_aspectos_ambientales_proyecto_ead = {
+                    diagrama: '',
+                    tipo: '',
+                    concepto: '',
+                    alcance: '',
+                    cantidad: '',
+                    um: '',
+                    co2: '',
+                    referencia: ''
+                };
+            })
+            .catch(error => {
+                console.error('Error al guardar:', error);
+            });
+    },
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
       if (fecha == '') {
@@ -2843,7 +2890,6 @@ const app = {
         this.fecha_ruta = fecha
         this.areaDocumento = area/* 
         this.fechaFoto = fecha */
-
         console.log("Metodo foto");
         this.myModal = new bootstrap.Modal(document.getElementById('modalEvFoto'));
         this.myModal.show();
@@ -2993,8 +3039,6 @@ const app = {
     cancelarActualizarCompromiso()
     actualizandoCompromiso()
     eliminarCompromiso(*/
-
-
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////CREAR COMPETENCIAS/////////////////////////////////////////////////////////////////
