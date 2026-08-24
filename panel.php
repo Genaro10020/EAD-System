@@ -2073,9 +2073,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="input-group my-3">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
                             <select class="w-50" v-model="equipo_grafica" @change="consultarCriterios(),consultadoValoresGrafica()">
+                            <?php if ($_SESSION['tipo_acceso'] == 'ColaboradorLider') { ?>
+                                <option v-for="equipos in consultaEAD" :value="equipos.id+'<->'+equipos.nombre_ead+'<->'+equipos.planta+'<->'+equipos.area">{{equipos.nombre_ead}}</option>
+                            <?php } else { ?>
                                 <option value="" disabled>Seleccione...</option>
                                 <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
-                            </select>
+                            <?php } ?>
+                        </select>
                         </div>
                     </div>
                     <div class="col-12 col-sm-6 col-lg-3">
@@ -3067,7 +3071,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>-->
             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
         </div>
-        <script src="js/panel.js?<? echo time(); ?>"></script>
+        <script src="js/panel.js?<?php echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </body>
