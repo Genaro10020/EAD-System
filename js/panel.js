@@ -480,30 +480,46 @@ const app = {
       }).then(response => {
         document.getElementById('app').style = "display:block;"
         this.tipo_usuario = response.data[0]
-        if (response.data[0] == "Evaluador") {
-          this.ventanas('Evaluar');
-          this.consultarCompetenciaIDevaluador();
-        } else if (response.data[0] == "Coordinador") {
-          this.ventanas('Gestion Sesiones');
-          this.consultarEAD()
-          this.tomarDiaActual()
-          this.consultarCantidadFaseXEtapas()
-        } else if (response.data[0] == "Colaborador") {
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const vista = urlParams.get('vista');
+
+        if (vista === 'graficas') {
           this.ventanas('Graficas');
-          this.consultarEADColaborador()
-        } else if (response.data[0] == "ColaboradorLider") {
-          this.ventanas('ScoreCard');
-          this.consultarEADLider();
-          this.esLider = 'ColaboradorLider';
-          this.consultarSeguimientoAsistencia();
-          this.consultarScoreCard();
-        }else if(response.data[0] == "Consultor"){
-          this.ventanas('Gestion Sesiones');
-          this.consultarEAD()
-          this.tomarDiaActual()
-          this.consultarCantidadFaseXEtapas()
-        }else {
-          //Admin
+          this.consultarCriterios();
+          
+          if (response.data[0] == "ColaboradorLider") {
+              this.esLider = 'ColaboradorLider';
+              this.consultarEADLider(); 
+          } else {
+              this.consultarEAD();
+          }
+        } else {
+          if (response.data[0] == "Evaluador") {
+            this.ventanas('Evaluar');
+            this.consultarCompetenciaIDevaluador();
+          } else if (response.data[0] == "Coordinador") {
+            this.ventanas('Gestion Sesiones');
+            this.consultarEAD();
+            this.tomarDiaActual();
+            this.consultarCantidadFaseXEtapas();
+          } else if (response.data[0] == "Colaborador") {
+            this.ventanas('Graficas');
+            this.consultarEADColaborador();
+          } else if (response.data[0] == "ColaboradorLider") {
+            this.ventanas('ScoreCard');
+            this.consultarEADLider();
+            this.esLider = 'ColaboradorLider';
+            this.consultarSeguimientoAsistencia();
+            this.consultarScoreCard();
+          } else if(response.data[0] == "Consultor") {
+            this.ventanas('Gestion Sesiones');
+            this.consultarEAD();
+            this.tomarDiaActual();
+            this.consultarCantidadFaseXEtapas();
+          } else {
+            //Admin
+          }
         }
       }).catch(error => {
         console.log('Error en  axios tipoUser ' + error);
@@ -838,6 +854,9 @@ const app = {
           const equipo = this.consultaEAD[0];
           this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
 
+          this.equipo_grafica = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
+
+          this.consultarCriterios();
         }
       }).catch(error => {
         console.log("Error en la consulta :-( " + error)
