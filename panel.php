@@ -2185,7 +2185,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <!--Tabla compromisos-->
                             <?php include("tabla_compromisos.php") ?>
                             <!---->
-                        </div>
+                        </div>                        
+                    </div>                   
+                </div>
+                <div id="opciones" style="min-height:5vh; max-height:5vh;" class=" d-flex align-items-center justify-content-center ">
+                    <div class="row text-center mb-2 d-flex justify-content-center align-items-center">
+                        <div v-if="seguimiento==false" @click="redireccionar('Atras')" class="btn_principal_coloborador text-center col-12 d-flex align-items-center justify-content-center" style="cursor: pointer">
+                            <div> <img src="img/app_atras.png" class="img-fluid" alt="..." style=" width: 50px;"></div>
+                        </div>                                    
                     </div>
                 </div>
             </div>
