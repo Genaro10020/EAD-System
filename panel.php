@@ -19,7 +19,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <?php
                 if (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] != 'Evaluador') {
                 ?>
-                    <div v-show="verMenu=='Si'" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
+                    <div v-show="verMenu=='Si' && !(tipo_usuario == 'ColaboradorLider' && (ventana == 'Graficas' || ventana == 'ScoreCard'))" class="col-1 dropdown" style="width:180px;  z-index: 2000; ">
                         <button class="dropbtn text-white" style="max-height:10px;" @click="toggleMenu()">
                             <i class="bi bi-list me-5">Menú</i>
                         </button>
