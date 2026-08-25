@@ -1558,7 +1558,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         </div>
                                                         <!-- PIE -->
                                                         <div class="card-footer bg-light border-0">
-                                                            <div class="d-flex justify-content-end gap-2">
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
                                                                 <button 
                                                                     type="button"
                                                                     class="btn btn-success btn-sm"
