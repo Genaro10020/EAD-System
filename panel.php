@@ -1645,7 +1645,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 </div>
                                             </div>
                                             <!--Mostar los JPG y PNG-->
-                                            <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                            <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpeg'" class="col-12 text-center">
                                                 {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
                                                 <img :src="foto_capacitacion[index]" style="width:50%" class="mb-5"></img>
                                             </div>
