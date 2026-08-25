@@ -20,7 +20,7 @@
         
         if(!$stmt){ return $conexion->error; }
         
-        $stmt->bind_param("sssiiisi", $diagrama, $tipo, $concepto, $alcance, $cantidad, $um, $co2, $referencia);
+        $stmt->bind_param("sssiisis", $diagrama, $tipo, $concepto, $alcance, $cantidad, $um, $co2, $referencia);
         
         if(!$stmt->execute()){ return $stmt->error; }
         
