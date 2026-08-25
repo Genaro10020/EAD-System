@@ -1559,6 +1559,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         <!-- PIE -->
                                                         <div class="card-footer bg-light border-0">
                                                             <div class="d-flex align-items-center justify-content-between gap-2">
+
+                                                                <div>
+                                                                    <span v-if="banderaImpactoGuardado" class="badge bg-success p-2">
+                                                                        <i class="bi bi-check-circle-fill me-1"></i> Impacto guardado correctamente
+                                                                    </span>     
+                                                                </div>
+
                                                                 <button 
                                                                     type="button"
                                                                     class="btn btn-success btn-sm"
