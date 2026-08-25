@@ -2888,23 +2888,34 @@ const app = {
 
         console.log('Datos a guardar:', datos);
         axios.post('impactosAmbientalesController.php', datos)
-            .then(response => {
+        .then(response => {
+            if(response.data === true || response.data == 1) {
                 console.log('Guardado correctamente:', response.data);
-                // Aquí puedes limpiar el formulario
+                
+                this.banderaImpactoGuardado = true;
+                
                 this.emisiones_aspectos_ambientales_proyecto_ead = {
-                  diagrama: '',
-                  tipo: '',
-                  concepto: '',
-                  alcance: 0,
-                  cantidad: 0,
-                  um: '',
-                  co2: 0,
-                  referencia: ''
-              };
-            })
-            .catch(error => {
-                console.error('Error al guardar:', error);
-            });
+                    diagrama: '',
+                    tipo: '',
+                    concepto: '',
+                    alcance: 0,
+                    cantidad: 0,
+                    um: '',
+                    co2: 0,
+                    referencia: ''
+                };
+
+                setTimeout(() => {
+                  this.banderaImpactoGuardado = false;
+                }, 5000);
+                
+            } else {
+                console.error('Error en la base de datos:', response.data);
+            }
+        })
+        .catch(error => {
+            console.error('Error al guardar:', error);
+        });
     },
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
