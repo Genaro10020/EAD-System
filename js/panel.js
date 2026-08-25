@@ -2891,15 +2891,15 @@ const app = {
                 console.log('Guardado correctamente:', response.data);
                 // Aquí puedes limpiar el formulario
                 this.emisiones_aspectos_ambientales_proyecto_ead = {
-                    diagrama: '',
-                    tipo: '',
-                    concepto: '',
-                    alcance: '',
-                    cantidad: '',
-                    um: '',
-                    co2: '',
-                    referencia: ''
-                };
+                  diagrama: '',
+                  tipo: '',
+                  concepto: '',
+                  alcance: 0,
+                  cantidad: 0,
+                  um: '',
+                  co2: 0,
+                  referencia: ''
+              };
             })
             .catch(error => {
                 console.error('Error al guardar:', error);
