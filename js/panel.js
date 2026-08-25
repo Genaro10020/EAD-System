@@ -187,7 +187,7 @@ const app = {
             diagrama: '',
             tipo: '',
             concepto: '',
-            alcance: '',
+            alcance: 0,
             cantidad: 0,
             um: '',
             co2: 0,
