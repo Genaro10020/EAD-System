@@ -2886,7 +2886,7 @@ const app = {
         };
 
         console.log('Datos a guardar:', datos);
-        axios.post('guardarImpactoProyectoController.php', datos)
+        axios.post('impactosAmbientalesController.php', datos)
             .then(response => {
                 console.log('Guardado correctamente:', response.data);
                 // Aquí puedes limpiar el formulario
