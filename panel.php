@@ -1498,9 +1498,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                             font-size: 0.9em;"
                                                                                             v-model="emisiones_aspectos_ambientales_proyecto_ead.alcance">
                                                                                         <option disabled value="">Seleccione...</option>
-                                                                                        <option value="1">1</option>
-                                                                                        <option value="2">2</option>
-                                                                                        <option value="3">3</option>
+                                                                                        <option value=1>1</option>
+                                                                                        <option value=2>2</option>
+                                                                                        <option value=3>3</option>
                                                                                     </select>
                                                                                 <!-- Cantidad -->
                                                                                 </td>
