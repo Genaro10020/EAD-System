@@ -193,6 +193,7 @@ const app = {
             co2: 0,
             referencia: ''
         },
+      banderaImpactoGuardado: false,
  
 
       //nombresPilaresEncontrados: '',
