@@ -9,7 +9,49 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
     </head>
 
     <body class="container-fluid">
+        <style>
+            .card-impactos-ambientales {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+            }
 
+            .table-impactos-ambientales thead th {
+                background-color: #f9fafb !important;
+                color: #6b7280;
+                font-size: 0.75rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+                font-weight: 600;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 1rem 0.5rem
+            }
+
+            .table-impactos-ambientales tbody td {
+                vertical-aling: middle;
+                border-bottom: 1px solid #f3f4f6;
+                padding: 0.75rem 0.5rem;
+            }
+
+            .input-impactos-ambientales {
+                background-color: transparent;
+                border: 1px solid transparent;
+                border-radius: 0.375rem;
+                transition: all 0.2s;
+                box-shadow: none !important;
+            }
+
+            .input-impactos-ambientales:hover {
+                background-color: #ffffff;
+                border-color: #10b981;
+                outline: 0;
+                box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+            }
+
+            .input-disabled-impactos-ambientales {
+                background-color: #ecfdf5 !important;
+                color: #045857;
+                font-weight: 600;
+            }
+        </style>
         <header>
             <div id="header-app"></div>
         </header>
@@ -1498,9 +1540,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                             font-size: 0.9em;"
                                                                                             v-model="emisiones_aspectos_ambientales_proyecto_ead.alcance">
                                                                                         <option disabled value="">Seleccione...</option>
-                                                                                        <option value="1">1</option>
-                                                                                        <option value="2">2</option>
-                                                                                        <option value="3">3</option>
+                                                                                        <option value=1>1</option>
+                                                                                        <option value=2>2</option>
+                                                                                        <option value=3>3</option>
                                                                                     </select>
                                                                                 <!-- Cantidad -->
                                                                                 </td>
@@ -1558,7 +1600,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         </div>
                                                         <!-- PIE -->
                                                         <div class="card-footer bg-light border-0">
-                                                            <div class="d-flex justify-content-end gap-2">
+                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+
+                                                                <div>
+                                                                    <span v-if="banderaImpactoGuardado" class="badge bg-success p-2">
+                                                                        <i class="bi bi-check-circle-fill me-1"></i> Impacto guardado correctamente
+                                                                    </span>     
+                                                                </div>
+
                                                                 <button 
                                                                     type="button"
                                                                     class="btn btn-success btn-sm"
