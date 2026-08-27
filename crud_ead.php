@@ -176,28 +176,59 @@ if (isset($_SESSION['nombre'])) {
         }
     break;
     case 'consultarRegistroLider':
-       $id_equipo=$_SESSION['id_ead'];
-        $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
-        $stmt = $conexion->prepare($consulta);
-        if(!$stmt){
-                $validaciones = $conexion->error;
-            }else{
-            $stmt->bind_param("i", $id_equipo);
-            if($stmt->execute()){
-                $validaciones[0] = true;
-                    $result = $stmt->get_result();
-                    if($result){
-                            if($fila= $result->num_rows>0){
-                                $equipos[] = $result->fetch_assoc();
-                            }
+        if ((isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Supervisor') || 
+            (isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Supervisor') || 
+            (isset($_SESSION['tipo']) && $_SESSION['tipo'] == 'Supervisor')) {
+            
+            if (isset($_SESSION['idsEquipos']) && count($_SESSION['idsEquipos']) > 0) {
+                
+                $ids = implode(",", $_SESSION['idsEquipos']);
+                
+                $consulta = "SELECT * FROM equipos_ead WHERE id IN ($ids)";
+                $result = $conexion->query($consulta);
+                
+                if ($result) {
+                    $validaciones[0] = true;
+                    if ($result->num_rows > 0) {
+                        while ($fila = $result->fetch_assoc()) {
+                            $equipos[] = $fila;
+                        }
                     }
-            }else{
-                $validaciones[0] = $stmt->error;
+                } else {
+                    $validaciones[0] = $conexion->error;
+                }
+            } else {
+                $validaciones[0] = false;
+            }
+            
+        } 
+        else {
+            $id_equipo = isset($_SESSION['id_ead']) ? $_SESSION['id_ead'] : '';
+            if ($id_equipo != '') {
+                $consulta = "SELECT * FROM equipos_ead WHERE id = ?";
+                $stmt = $conexion->prepare($consulta);
+                if ($stmt) {
+                    $stmt->bind_param("i", $id_equipo);
+                    if ($stmt->execute()) {
+                        $validaciones[0] = true;
+                        $result = $stmt->get_result();
+                        if ($result && $result->num_rows > 0) {
+                            while ($fila = $result->fetch_assoc()) {
+                                $equipos[] = $fila;
+                            }
+                        }
+                    } else {
+                        $validaciones[0] = $stmt->error;
+                    }
+                    $stmt->close();
+                } else {
+                    $validaciones[0] = $conexion->error;
+                }
+            } else {
+                $validaciones[0] = false;
             }
         }
-        $stmt->close();
-        $result->close();
-    break;  
+    break;
     case 'consultarPlantasEADs':
           //$PlantasAreasEADs['areas'][] = $row['area'];
             //$PlantasAreasEADs['areas'] = array_unique($PlantasAreasEADs['areas']);

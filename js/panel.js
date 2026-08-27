@@ -549,7 +549,7 @@ const app = {
           this.ventanas('Graficas');
           this.consultarCriterios();
           
-          if (response.data[0] == "ColaboradorLider") {
+          if (response.data[0] == "ColaboradorLider" || response.data[0] == "Supervisor") {
               this.esLider = 'ColaboradorLider';
               this.consultarEADLider(); 
           } else {
@@ -566,8 +566,8 @@ const app = {
             this.consultarCantidadFaseXEtapas();
           } else if (response.data[0] == "Colaborador") {
             this.ventanas('Graficas');
-            this.consultarEADColaborador();
-          } else if (response.data[0] == "ColaboradorLider") {
+            this.consultarEADColaborador(); 
+          } else if (response.data[0] == "ColaboradorLider" || response.data[0] == "Supervisor") {
             this.ventanas('ScoreCard');
             this.consultarEADLider();
             this.esLider = 'ColaboradorLider';
@@ -912,10 +912,12 @@ const app = {
       axios.post("crud_ead.php", {
         accion: 'consultarRegistroLider'
       }).then(response => {
-        console.log("Consulta EAD", response.data)
-        if (response.data[0][0] == true) {
+        console.log("Consulta EAD Supervisor/Lider", response.data);
+        if (response.data[0][0] == true && response.data[1] && response.data[1].length > 0) {
+          
           this.consultaEAD = response.data[1];
           const equipo = this.consultaEAD[0];
+          
           this.equipo_score = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}<->${equipo.id_ponderacion}`;
           this.equipo_grafica = `${equipo.id}<->${equipo.nombre_ead}<->${equipo.planta}<->${equipo.area}`;
           
@@ -926,12 +928,16 @@ const app = {
               this.consultarSeguimientoAsistencia();
               this.consultarScoreCard();
           }
+          
+        } else {
+          this.consultaEAD = [];
+          this.equipo_score = '';
+          this.equipo_grafica = '';
+          console.warn("No se encontraron equipos en la BD para este supervisor.");
         }
       }).catch(error => {
-        console.log("Error en la consulta :-( " + error)
-      }).finally(() => {
-
-      })
+        console.log("Error en la consulta :-( " + error);
+      });
     },
     filtraLiderEquipo() {
       return this.usuarios.filter(usuario => usuario.tipo_usuario === 'Lider de Equipo');
@@ -4026,7 +4032,7 @@ const app = {
 
     },
     comprobando(dia) {
-    if (this.tipo_usuario === 'ColaboradorLider') {
+    if (this.tipo_usuario === 'ColaboradorLider' || this.tipo_usuario === "Supervisor") {
       return true; 
     }
 
