@@ -2435,7 +2435,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="input-group my-3">
                             <span class="input-group-text w-25" style="font-size: 0.9em;" style="width:100px">Equipo</span>
                             <select class="w-50" v-model="equipo_grafica" @change="consultarCriterios(),consultadoValoresGrafica()">
-                            <?php if ($_SESSION['tipo_acceso'] == 'ColaboradorLider') { ?>
+                            <?php if ($_SESSION['tipo_usuario'] == 'ColaboradorLider' || $_SESSION['tipo_usuario'] == 'Supervisor') { ?>
                                 <option v-for="equipos in consultaEAD" :value="equipos.id+'<->'+equipos.nombre_ead+'<->'+equipos.planta+'<->'+equipos.area">{{equipos.nombre_ead}}</option>
                             <?php } else { ?>
                                 <option value="" disabled>Seleccione...</option>
@@ -2567,7 +2567,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <select v-model="equipo_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
 
 
-                            <?php if ($_SESSION['tipo_acceso'] == 'ColaboradorLider') { ?>
+                            <?php if ($_SESSION['tipo_acceso'] == 'ColaboradorLider' || $_SESSION['tipo_acceso'] == 'Supervisor') { ?>
                                 <option v-for="equipos in consultaEAD" :value="equipos.id+'<->'+equipos.nombre_ead+'<->'+equipos.planta+'<->'+equipos.area+'<->'+equipos.id_ponderacion">{{equipos.nombre_ead}}</option><!-- :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area+'<->'+equipos[0].id_ponderacion" --><!-- {{equipos[0].nombre_ead}} -->
                             <?php } else { ?>
                                 <option value="" disabled>Seleccione...</option>
