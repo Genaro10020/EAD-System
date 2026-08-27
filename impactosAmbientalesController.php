@@ -1,36 +1,61 @@
 <?php
-    session_start();
 
-    if(isset($_SESSION['nombre'])) {
-        $arreglo = json_decode(file_get_contents('php://input'), true);
-        header('Content-Type: application/json');
+session_start();
 
-        include("impactosAmbientalesModel.php");
+if (isset($_SESSION['nombre'])) {
 
-        $resultado = "";
+    header('Content-Type: application/json; charset=utf-8');
+    // Obtener datos enviados desde Vue/Axios
+    $arreglo = json_decode(file_get_contents('php://input'), true);
+    include("impactosAmbientalesModel.php");
+    $resultado = null;
+    switch ($_SERVER['REQUEST_METHOD']) {
+        case 'GET':
+            $resultado = [
+                "status" => "error",
+                "message" => "Método GET no implementado."
+            ];
+            break;
+        case 'POST':
+            if (!empty($arreglo) &&is_array($arreglo) ) {
+                // En este punto $arreglo contiene
+                // uno o muchos impactos ambientales
+                $resultado = guardarImpacto($arreglo);
+            } else {
+                $resultado = [
+                    "status" => "error",
+                    "message" => "No se recibieron datos."
+                ];
+            }
+            break;
+        case 'PUT':
+            $resultado = [
+                "status" => "error",
+                "message" => "Método PUT no implementado."
+            ];
+            break;
+        case 'DELETE':
+            $resultado = [
+                "status" => "error",
+                "message" => "Método DELETE no implementado."
+            ];
+            break;
 
-        switch ($_SERVER['REQUEST_METHOD']) {
-            case 'GET':
-                break;
-            
-            case 'POST':
-                if(!empty($arreglo)) {
-                    $resultado = guardarImpacto($arreglo);
-                } else {
-                    $resultado = ["status" => "error", "message" => "No se recibieron datos."];
-                }
-                break;
-            
-            case 'PUT':
-                break;
-            
-            case 'DELETE':
-                break;
-        }
-
-        echo json_decode($resultado);
-    } else {
-        header("Location:index.php");
+        default:
+            $resultado = [
+                "status" => "error",
+                "message" => "Método HTTP no permitido."
+            ];
+            break;
     }
+
+    // Regresar respuesta JSON
+    echo json_encode($resultado);
+
+} else {
+    header("Location:index.php");
+    exit;
+
+}
 
 ?>

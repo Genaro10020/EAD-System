@@ -1119,13 +1119,36 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
 
                     <!--Serena, te quedaste aquí. ^^^ Agregar el checkbox con v-for y verificar que la consulta si te traiga los pilares.-->
-                    <div class="offset-4 col-4">
-                        <button class="btn btn-success btn-boton px-2 py-0" @click="abriModalKPI()" style="font-size:0.7em"><i class="bi bi-plus-circle"></i>Agregar/Actualizar Datos KPI</button><br>
+                  <div class="offset-4 col-4 rounded-bottom"  style="background: #e7f0e0;">
 
-                        <span class="badge bg-primary" style="font-size:0.5">{{this.pilaresGuardadosString}}</span><br>
-                        <span class="badge bg-dark" style="font-size:0.5">{{this.tGrafica}}</span>
-                    </div>
-                    <div class="col-4">
+                                <!-- Botón centrado -->
+                                <div class="text-center">
+                                    <button 
+                                        class="btn btn-success btn-boton px-2 py-0" 
+                                        @click="abriModalKPI()" 
+                                        style="font-size:0.7em">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Agregar/Actualizar Datos KPI
+                                    </button>
+                                </div>
+
+                                <!-- Información alineada a la derecha -->
+                                <div class="text-start pb-0 bt-2">
+                                    <span 
+                                        class="badge bg-primary" 
+                                        style="font-size:0.5em;">
+                                        {{ pilaresGuardadosString }}
+                                    </span>
+                                
+                                    <span 
+                                        class="badge bg-dark ms-3" 
+                                        style="font-size:0.5em;">
+                                        {{ tGrafica }}
+                                    </span>
+                                </div>
+
+                            </div>
+                    <div class="col-1">
                         <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button>
                     </div>
                     <canvas style="width:100%" id="canvaKPI"></canvas>
@@ -1452,173 +1475,306 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <span v-if="banderaObjetivoGuardado" class="badge bg-success">Se guardaron los objetivo/s</span>
                                                 </div>
 
+                                         <!-- IMPACTOS AMBIENTALES -->
+                                                <div class="card shadow-sm border-0 rounded-3 mt-4">
 
-                                                    <!-- IMPACTOS AMBIENTALES-->
-                                                    <div class="card shadow-sm border-0 rounded-3 mt-4">
-                                                        <!-- TÍTULO -->
-                                                        <div class="card-header bg-success text-white py-3">
-                                                            <div class="d-flex align-items-center justify-content-between">
-                                                                <div>
-                                                                    <label class="mb-0 fw-bold text-sm ">
-                                                                        Impactos Ambientales
-                                                                    </label><br>
-                                                                    <small class="opacity-75">
-                                                                        Registro de emisiones y aspectos ambientales
-                                                                    </small>
-                                                                </div>
-                                                                <span class="badge bg-light text-success">
-                                                                    Ambiental
-                                                                </span>
+                                                    <!-- TÍTULO -->
+                                                    <div class="card-header bg-success text-white py-1">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div>
+                                                                <label class="mb-0 fw-bold text-sm">
+                                                                    Impactos Ambientales
+                                                                </label><br>
+                                                                <small class="opacity-75">
+                                                                    Registro de emisiones y aspectos ambientales
+                                                                </small>
                                                             </div>
+                                                            <span class="badge bg-light text-success">
+                                                                Ambiental
+                                                            </span>
                                                         </div>
-                                                        <!-- CUERPO -->
-                                                        <div class="card-body p-0">
-                                                            <div class="table-responsive">
-                                                                <table class="table table-bordered table-hover align-middle mb-0">
-                                                                    <!-- ENCABEZADO -->
-                                                                    <thead class="table-success">
-                                                                        <tr class="text-center">
-                                                                            <th scope="col">
-                                                                                Diagrama de<br>Proceso Ambiental
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                Tipo
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                Concepto
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                Alcance
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                Cant.
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                UM
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                t CO₂/Año<br>evitadas
-                                                                            </th>
-                                                                            <th scope="col">
-                                                                                Referencia
-                                                                            </th>
-                                                                        </tr>
-                                                                    </thead>
-                                                                        <tbody>
-                                                                            <tr class="text-center">
-                                                                                <!-- Diagrama -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        class="form-control form-control-sm text-center text-primary"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.diagrama"
-                                                                                        placeholder="E-DF-IP-RJ-A">
-                                                                                </td>
-                                                                                <!-- Tipo -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        class="form-control form-control-sm text-center text-primary"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.tipo"
-                                                                                        placeholder="Energía">
-                                                                                </td>
-                                                                                <!-- Concepto -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        class="form-control form-control-sm text-center"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.concepto"
-                                                                                        placeholder="Electricidad">
-                                                                                </td>
-                                                                                <td>
-                                                                                    <select
-                                                                                    class="form-control form-control-sm text-center"  
-                                                                                        style="
-                                                                                            border: 1px solid;
-                                                                                            border-color: rgba(110, 108, 108, 0.28);
-                                                                                            box-shadow: none;
-                                                                                            font-size: 0.9em;"
-                                                                                            v-model="emisiones_aspectos_ambientales_proyecto_ead.alcance">
-                                                                                        <option disabled value="">Seleccione...</option>
-                                                                                        <option value=1>1</option>
-                                                                                        <option value=2>2</option>
-                                                                                        <option value=3>3</option>
-                                                                                    </select>
-                                                                                <!-- Cantidad -->
-                                                                                </td>
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="number"
-                                                                                        class="form-control form-control-sm text-center  bg-white"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.cantidad"
-                                                                                        placeholder="0" style="font-size: 0.9em;">
-                                                                                </td>
-                                                                                <!-- UM -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        class="form-control form-control-sm text-center"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.um"
-                                                                                        placeholder="kWh/Año">
-                                                                                </td>
-                                                                                <!-- CO2 -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="number"
-                                                                                        step="0.01"
-                                                                                        class="form-control form-control-sm text-center"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.co2"
-                                                                                        style="background-color: rgba(144, 206, 177, 0.35);"
-                                                                                        placeholder="0.00" disabled>    
-                                                                                </td>
-                                                                                <!-- Referencia -->
-                                                                                <td>
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        class="form-control form-control-sm"
-                                                                                        v-model="emisiones_aspectos_ambientales_proyecto_ead.referencia"
-                                                                                        placeholder="Referencia">
-                                                                                </td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    <!-- TOTALES -->
-                                                                    <tfoot>
-                                                                        <tr class="table-light">
-                                                                            <td colspan="6" class="text-end fw-bold">
-                                                                                Total emisiones evitadas:
-                                                                            </td>
-                                                                            <td class="text-center">
-                                                                                <span class="badge bg-success fs-6 px-3 py-2">
-                                                                                    {{ totalCO2 }} t CO₂
+                                                    </div>
+
+                                                    <!-- INFORMACIÓN -->
+                                                    <div class="d-flex align-items-center gap-3 py-2 px-3">
+                                                        <span class="text-muted">
+                                                            {{ select_session_equipo?.split('<->')[1] }} <b>-></b>
+                                                        </span>
+                                                        <span v-if="nombre_indicador">
+                                                            {{ nombre_indicador }}
+                                                        </span>
+                                                        <span
+                                                            v-else
+                                                            class="text-warning rounded rounded-2 bg-black my-1 px-2 py-1"
+                                                            style="font-size: 0.8em;"
+                                                        >
+                                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                                            Primero debes colocarle un nombre al indicador antes de añadir impactos.
+                                                        </span>
+                                                    </div>
+
+                                                    <!-- CUERPO -->
+                                                    <div class="card-body p-0">
+                                                        <div class="table-responsive">
+
+                                                            <table class="table table-bordered table-hover align-middle mb-0">
+
+                                                                <!-- ENCABEZADO -->
+                                                                <thead class="table-success">
+
+                                                                    <tr class="text-center">
+
+                                                                        <th scope="col">
+                                                                            #
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Diagrama de<br>
+                                                                            Proceso Ambiental
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Tipo
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Concepto
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Alcance
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Cant.
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            UM
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            t CO₂/Año<br>
+                                                                            evitadas
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Referencia
+                                                                        </th>
+
+                                                                        <th scope="col">
+                                                                            Acción
+                                                                        </th>
+
+                                                                    </tr>
+
+                                                                </thead>
+
+                                                                <!-- REGISTROS -->
+                                                                <tbody>
+
+                                                                    <tr
+                                                                        v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead"
+                                                                        :key="index"
+                                                                        class="text-center"
+                                                                    >
+
+                                                                        <!-- # -->
+                                                                        <td>
+                                                                            <span class="fw-bold text-muted">
+                                                                                {{ index + 1 }}
+                                                                            </span>
+                                                                        </td>
+
+                                                                        <!-- DIAGRAMA -->
+                                                                        <td>
+
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control form-control-sm text-center text-primary"
+                                                                                v-model="impacto.diagrama"
+                                                                                placeholder="E-DF-IP-RJ-A"
+                                                                            >
+
+                                                                        </td>
+
+                                                                        <!-- TIPO -->
+                                                                        <td>
+
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control form-control-sm text-center text-primary"
+                                                                                v-model="impacto.tipo"
+                                                                                placeholder="Energía"
+                                                                            >
+
+                                                                        </td>
+
+                                                                        <!-- CONCEPTO -->
+                                                                        <td>
+
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control form-control-sm text-center text-primary"
+                                                                                v-model="impacto.concepto"
+                                                                                placeholder="Electricidad"
+                                                                            >
+
+                                                                        </td>
+
+                                                                        <!-- ALCANCE -->
+                                                                        <td>
+
+                                                                            <select
+                                                                                class="form-control form-control-sm text-center"
+                                                                                :class="impacto.alcance === ''
+                                                                                    ? 'text-secondary'
+                                                                                    : 'text-primary'"
+                                                                                style="
+                                                                                    border: 1px solid;
+                                                                                    border-color: rgba(110, 108, 108, 0.28);
+                                                                                    box-shadow: none;
+                                                                                    font-size: 0.9em;
+                                                                                    background: #fffdfd;"
+                                                                                v-model="impacto.alcance" >
+                                                                                <option disabled value="">
+                                                                                    Seleccione...
+                                                                                </option>
+                                                                                <option value="1">
+                                                                                    1
+                                                                                </option>
+                                                                                <option value="2">
+                                                                                    2
+                                                                                </option>
+                                                                                <option value="3">
+                                                                                    3
+                                                                                </option>
+                                                                            </select>
+                                                                        </td>
+
+                                                                        <!-- CANTIDAD -->
+                                                                        <td>
+                                                                            <input
+                                                                                type="number"
+                                                                                step="0.000001"
+                                                                                class="form-control form-control-sm text-center text-primary bg-white"
+                                                                                v-model="impacto.cantidad"
+                                                                                placeholder="0"
+                                                                                style="font-size: 0.9em;" >
+                                                                        </td>
+
+                                                                        <!-- UM -->
+                                                                        <td>
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control form-control-sm text-center text-primary"
+                                                                                v-model="impacto.um"
+                                                                                placeholder="kWh/Año">
+                                                                        </td>
+                                                                        <!-- CO2 -->
+                                                                        <td>
+
+                                                                            <input
+                                                                                type="number"
+                                                                                step="0.000001"
+                                                                                class="form-control form-control-sm text-center fw-semibold"
+                                                                                v-model="impacto.co2"
+                                                                                style="
+                                                                                    background-color: rgba(144, 206, 177, 0.35);
+                                                                                    min-width: 100px;
+                                                                                "
+                                                                                placeholder="0.00"
+                                                                                disabled
+                                                                            >
+
+                                                                        </td>
+
+                                                                        <!-- REFERENCIA -->
+                                                                        <td>
+
+                                                                            <input
+                                                                                type="text"
+                                                                                class="form-control form-control-sm text-primary"
+                                                                                v-model="impacto.referencia"
+                                                                                placeholder="Referencia"
+                                                                            >
+
+                                                                        </td>
+
+                                                                        <!-- ACCIONES -->
+                                                                        <td>
+                                                                            <button
+                                                                                type="button"
+                                                                                class="btn btn-outline-danger btn-sm"
+                                                                                @click="eliminarImpacto(index)"
+                                                                                :disabled="emisiones_aspectos_ambientales_proyecto_ead.length === 1"
+                                                                                title="Eliminar impacto">
+                                                                                <i class="bi bi-trash-fill"></i>
+                                                                            </button>
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                </tbody>
+
+                                                                <!-- TOTALES -->
+                                                                <tfoot>
+
+                                                                    <tr class="table-light">
+                                                                        <td colspan="7" class="fw-bold">
+                                                                            <div class="d-flex align-items-center justify-content-between">
+                                                                                <button  class="btn btn-success btn-boton py-0" style="font-size: 0.9em;" @click="agregarImpacto()">
+                                                                                  <i class="bi bi-plus-circle-fill me-1"></i> Nueva fila
+                                                                                </button>
+                                                                                <!-- TOTAL -->
+                                                                                <span>
+                                                                                    Total emisiones evitadas:
                                                                                 </span>
-                                                                            </td>
-                                                                            <td></td>
-                                                                        </tr>
-                                                                    </tfoot>
-                                                                </table>
-                                                            </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td class="text-center">
+                                                                            <span class="text-success fw-bold fs-6 px-3">
+                                                                                {{ totalCO2 }} t CO₂
+                                                                            </span>
+                                                                        </td>
+                                                                        <td></td>
+                                                                         <td></td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
                                                         </div>
-                                                        <!-- PIE -->
-                                                        <div class="card-footer bg-light border-0">
-                                                            <div class="d-flex align-items-center justify-content-between gap-2">
+                                                    </div>
+                                                    <!-- PIE -->
+                                                    <div class="card-footer bg-light border-0">
 
-                                                                <div>
-                                                                    <span v-if="banderaImpactoGuardado" class="badge bg-success p-2">
-                                                                        <i class="bi bi-check-circle-fill me-1"></i> Impacto guardado correctamente
-                                                                    </span>     
-                                                                </div>
+                                                        <div class="d-flex align-items-center justify-content-between gap-2">
 
-                                                                <button 
+                                                            <div>
+
+                                                                <span
+                                                                    v-if="banderaImpactoGuardado"
+                                                                    class="badge bg-success p-2">
+                                                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                                                    Impacto(s) guardado(s) correctamente
+                                                                </span>
+
+                                                            </div>
+
+                                                            <div class="d-flex gap-2">
+                                                                <!-- GUARDAR -->
+                                                                <button
                                                                     type="button"
                                                                     class="btn btn-success btn-sm"
                                                                     @click="guardarImpactoDeProyecto()">
                                                                     <i class="bi bi-floppy-fill me-1"></i>
-                                                                    Guardar impacto
+                                                                    Guardar impacto(s)
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    </div>    
-                                                    </div>  
+                                                    </div>
+                                                </div>
+                                                <!-- FIN TABLA IMPACTOS AMBIENTALES -->
+                                             </div>  
                                         </div>
                                         <!--Tabla registro KPIs-->
                                             <div class="scroll2">

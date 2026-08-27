@@ -183,17 +183,19 @@ const app = {
       metodologia:'',
       tipo_equipo: '',
      
-         emisiones_aspectos_ambientales_proyecto_ead : {
-            diagrama: '',
-            tipo: '',
-            concepto: '',
-            alcance: 0,
-            cantidad: 0,
-            um: '',
-            co2: 0,
-            referencia: ''
-        },
-      banderaImpactoGuardado: false,
+         emisiones_aspectos_ambientales_proyecto_ead: [
+          {
+              diagrama: '',
+              tipo: '',
+              concepto: '',
+              alcance: '',
+              cantidad: 0,
+              um: '',
+              co2: 0,
+              referencia: ''
+          }
+      ],
+      banderaImpactoGuardado:false,
  
 
       //nombresPilaresEncontrados: '',
@@ -2378,11 +2380,11 @@ const app = {
     },
 
     abriModalKPI() {
-      this.actualizar_kpi = '';
-      this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
-      this.myModal.show();
-      this.semanasAnio()
-      this.consultarPilares()
+        this.actualizar_kpi = '';
+        this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
+        this.myModal.show();
+        this.semanasAnio()
+        this.consultarPilares()
 
     },
     abriModalGraficaFullKPI() {
@@ -2873,50 +2875,195 @@ const app = {
       });
     },
 
-    ///REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL////////////////////////////////////////////////////////
-    guardarImpactoDeProyecto(){
-        const datos = {
-            diagrama: this.emisiones_aspectos_ambientales_proyecto_ead.diagrama,
-            tipo: this.emisiones_aspectos_ambientales_proyecto_ead.tipo,
-            concepto: this.emisiones_aspectos_ambientales_proyecto_ead.concepto,
-            alcance: this.emisiones_aspectos_ambientales_proyecto_ead.alcance,
-            cantidad: this.emisiones_aspectos_ambientales_proyecto_ead.cantidad,
-            um: this.emisiones_aspectos_ambientales_proyecto_ead.um,
-            co2: this.emisiones_aspectos_ambientales_proyecto_ead.co2,
-            referencia: this.emisiones_aspectos_ambientales_proyecto_ead.referencia
+    agregarImpacto() {
+    this.emisiones_aspectos_ambientales_proyecto_ead.push({
+          diagrama: '',
+          tipo: '',
+          concepto: '',
+          alcance: '',
+          cantidad: 0,
+          um: '',
+          co2: 0,
+          referencia: ''
+      });
+   },
+   eliminarImpacto(index) {
+
+    // Evitar que se elimine la última fila
+    if (this.emisiones_aspectos_ambientales_proyecto_ead.length === 1) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'No se puede eliminar',
+            text: 'Debe existir al menos un impacto ambiental.',
+            confirmButtonText: 'Aceptar'
+        });
+
+        return;
+    }
+
+    this.emisiones_aspectos_ambientales_proyecto_ead.splice(index, 1);
+
+},
+
+    /// REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL /////////////////////////////////////////////////
+    guardarImpactoDeProyecto() {
+      if (this.nombre_indicador?.trim() == '') {
+            Swal.fire({
+                    icon: 'warning',
+                    title: `Sin nombre de indicador?`,
+                    text: `Agregue un nombre al indicador KPI en (Nom. Indicador) y despues podra registra los impactos.`,
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+    }
+
+        // Verificar que exista al menos un impacto
+        if (
+            !Array.isArray(this.emisiones_aspectos_ambientales_proyecto_ead) ||
+            this.emisiones_aspectos_ambientales_proyecto_ead.length === 0
+        ) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Sin impactos',
+                text: 'Debes agregar al menos un impacto ambiental.',
+                confirmButtonText: 'Aceptar'
+            });
+
+            return;
+        }
+        // Campos requeridos
+        const camposRequeridos = {
+            diagrama: 'Diagrama',
+            tipo: 'Tipo',
+            concepto: 'Concepto',
+            alcance: 'Alcance',
+            cantidad: 'Cantidad',
+            um: 'Unidad de medida',
+            co2: 'CO2',
+            referencia: 'Referencia'
         };
 
-        console.log('Datos a guardar:', datos);
-        axios.post('impactosAmbientalesController.php', datos)
-        .then(response => {
-            if(response.data === true || response.data == 1) {
-                console.log('Guardado correctamente:', response.data);
-                
-                this.banderaImpactoGuardado = true;
-                
-                this.emisiones_aspectos_ambientales_proyecto_ead = {
-                    diagrama: '',
-                    tipo: '',
-                    concepto: '',
-                    alcance: 0,
-                    cantidad: 0,
-                    um: '',
-                    co2: 0,
-                    referencia: ''
-                };
 
-                setTimeout(() => {
-                  this.banderaImpactoGuardado = false;
-                }, 5000);
-                
-            } else {
-                console.error('Error en la base de datos:', response.data);
+        // Validar TODOS los impactos
+        for (
+            let index = 0;
+            index < this.emisiones_aspectos_ambientales_proyecto_ead.length;
+            index++
+        ) {
+            const impacto =
+                this.emisiones_aspectos_ambientales_proyecto_ead[index];
+            for (const campo in camposRequeridos) {
+
+                const valor = impacto[campo];
+
+                if (
+                    valor === null ||
+                    valor === undefined ||
+                    (typeof valor === 'string' && valor.trim() === '')
+                ) {
+
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Campo requerido',
+                        text: `El campo "${camposRequeridos[campo]}" es requerido en el impacto #${index + 1}.`,
+                        confirmButtonText: 'Aceptar'
+                    });
+
+                    return;
+                }
+
             }
-        })
-        .catch(error => {
-            console.error('Error al guardar:', error);
+
+        }
+
+
+        // Crear arreglo con los datos que se enviarán
+       // Crear objeto con los datos que se enviarán
+        const datos = {
+
+            // Datos generales
+            nombre_indicador: this.nombre_indicador,
+            id_equipo: this.select_session_equipo?.split('<->')[0],
+
+            // Impactos ambientales
+            impactos: this.emisiones_aspectos_ambientales_proyecto_ead.map(
+                impacto => ({
+                    diagrama: impacto.diagrama,
+                    tipo: impacto.tipo,
+                    concepto: impacto.concepto,
+                    alcance: impacto.alcance,
+                    cantidad: impacto.cantidad,
+                    um: impacto.um,
+                    co2: impacto.co2,
+                    referencia: impacto.referencia
+                })
+            )
+
+        };
+
+        console.log('Impactos a guardar:', datos);
+        // Enviar TODOS los impactos en una sola petición
+        axios.post(
+            'impactosAmbientalesController.php',
+            datos
+        ).then(response => {
+             console.log('Respuesta del servidor:', response.data);
+            if (response.data.status === 'success') {
+              
+
+              Swal.fire({
+                  icon: 'success',
+                  title: '¡Guardado correctamente!',
+                  text: `${response.data.cantidad} impacto(s) ambiental(es) guardado(s) correctamente.`,
+                  showConfirmButton: false,
+                  timer: 5000,
+                  timerProgressBar: true
+              });
+                // Mostrar mensaje de éxito
+                this.banderaImpactoGuardado = true;
+                // Reiniciar la tabla dejando una fila nueva
+              /*   this.emisiones_aspectos_ambientales_proyecto_ead = [
+                    {
+                        diagrama: '',
+                        tipo: '',
+                        concepto: '',
+                        alcance: '',
+                        cantidad: 0,
+                        um: '',
+                        co2: 0,
+                        referencia: ''
+                    }
+                ]; */
+                // Ocultar mensaje después de 5 segundos
+                setTimeout(() => {
+                    this.banderaImpactoGuardado = false;
+                }, 3000);
+            } else {
+                console.error(
+                    'Error en la base de datos:',
+                    response.data
+                );
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudieron guardar los impactos ambientales.',
+                    confirmButtonText: 'Aceptar'
+                });
+            }
+        }).catch(error => {
+            console.error(
+                'Error al guardar los impactos:',
+                error
+            );
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: 'Ocurrió un error al intentar guardar los impactos ambientales.',
+                confirmButtonText: 'Aceptar'
+            });
         });
     },
+
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
       if (fecha == '') {
