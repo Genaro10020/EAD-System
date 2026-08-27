@@ -4032,7 +4032,7 @@ const app = {
 
     },
     comprobando(dia) {
-    if (this.tipo_usuario === 'ColaboradorLider') {
+    if (this.tipo_usuario === 'ColaboradorLider' || this.tipo_usuario === "Supervisor") {
       return true; 
     }
 
