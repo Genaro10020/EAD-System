@@ -175,9 +175,21 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="formulario col-12 mx-auto col-sm-112 col-lg-10  col-xl-8 col-xxl-6  pt-4 ps-2 pe-2 ps-lg-3  pe-lg-3  rounded shadow-sm">
                         <h6 class="text-center label-session "><b>{{titulo_formulario_usuarios}}</b></h6>
                         <form @submit.prevent="nuevoActualizarUsuario" method="POST">
-                            <div class="mb-2">
-                                <label class=" label-session">Nombre</label>
-                                <input type="text" class="form-control" v-model="nombre" required>
+                            <div class="mb-2 position-relative">
+                                <label class="label-session">Nombre</label>
+                                <input type="text" class="form-control" v-model="nombre" @input="buscarSugerencias" autocomplete="off" required>
+
+                                <ul v-if="sugerencias_colaboradores.length > 0" class="list-group position-absolute w-100 shadow-sm bg-white" style="z-index: 1000;">
+                                    <li
+                                        v-for="sugerencia in sugerencias_colaboradores"
+                                        :key="sugerencia.id"
+                                        class="list-group-item list-group-item-action"
+                                        style="cursor: pointer"
+                                        @click="seleccionarColaborador(sugerencia)"
+                                    >
+                                        {{ sugerencia.colaborador }} - <small class="text-muted">Nómina: {{ sugerencia.numero_nomina }}</small>
+                                    </li>
+                                </ul>
                             </div>
 
                             <div class="mb-2">
@@ -233,7 +245,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <div class="seccion2 col-12 col-lg-8 mt-2">
-                    <div class="scroll">
+                    <div class="scroll">    
                         <table class="table table-striped table-bordered border-dark ">
                             <thead class=" border-dark">
                                 <tr class="text-center ">
