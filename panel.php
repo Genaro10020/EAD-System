@@ -194,7 +194,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                             <div class="mb-2">
                                 <label class=" label-session ">Nómina (Usuario)</label>
-                                <input type="text" class="form-control" v-model="nomina" required>
+                                <input type="text" class="form-control" v-model="nomina" required disabled>
                             </div>
                             <div class="mb-2">
                                 <label class=" label-session ">Contraseña:</label>
