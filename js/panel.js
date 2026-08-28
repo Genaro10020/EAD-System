@@ -433,6 +433,9 @@ const app = {
       porcentajePorMes: [],
       minimoCumplimiento: 70,
       arraywhitDate: [],
+
+      sugerencias_colaboradores: [],
+      busquedaTimeout: null,
     }
   },
   watch: {
@@ -534,6 +537,33 @@ const app = {
         console.log("Error en axios:" + error);
       })
     },
+    buscarSugerencias() {
+      if (this.nombre.length === 0) {
+        this.sugerencias_colaboradores = [];
+
+        return;
+      }
+
+      clearTimeout(this.busquedaTimeout);
+
+      this.busquedaTimeout = setTimeout(() => {
+        fetch(`buscar_colaboradores.php?q=${encodeURIComponent(this.nombre)}`)
+          .then(response => response.json())
+          .then(data => {
+            this.sugerencias_colaboradores = data;
+          })
+          .catch(error => {
+            console.log("Error buscando colaboradores: ", error);
+          });
+      }, 300);
+    },
+    seleccionarColaborador(colaboradorSeleccionado) {
+      this.nombre = colaboradorSeleccionado.colaborador;
+      this.nomina = colaboradorSeleccionado.numero_nomina;
+
+      this.sugerencias_colaboradores = [];
+    },
+
     /*/////////////////////////////////////////////////////////////////////////////////TIPOS ACCESO*/
     ventanaSegunTipoUsuario() {
       document.getElementById('app').style = "display:none;"
