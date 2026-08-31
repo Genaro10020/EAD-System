@@ -1131,7 +1131,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
 
                     <!--Serena, te quedaste aquí. ^^^ Agregar el checkbox con v-for y verificar que la consulta si te traiga los pilares.-->
-                  <div class="offset-4 col-4 rounded-bottom"  style="background: #e7f0e0;">
+                  <div class="offset-4 col-4 rounded-bottom  py-2"  style="background: #e7f0e0;">
 
                                 <!-- Botón centrado -->
                                 <div class="text-center">
@@ -1505,11 +1505,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 Ambiental
                                                             </span>
                                                         </div>
-                                                    </div>
-
-                                                    <!-- INFORMACIÓN -->
+                                                         <!-- INFORMACIÓN -->
                                                     <div class="d-flex align-items-center gap-3 py-2 px-3">
-                                                        <span class="text-muted">
+                                                        <span>
                                                             {{ select_session_equipo?.split('<->')[1] }} <b>-></b>
                                                         </span>
                                                         <span v-if="nombre_indicador">
@@ -1524,6 +1522,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                             Primero debes colocarle un nombre al indicador antes de añadir impactos.
                                                         </span>
                                                     </div>
+                                                    </div>
+
+                                                   
 
                                                     <!-- CUERPO -->
                                                     <div class="card-body p-0">
