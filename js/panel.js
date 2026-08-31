@@ -185,6 +185,7 @@ const app = {
      
          emisiones_aspectos_ambientales_proyecto_ead: [
           {
+            id: null,
               diagrama: '',
               tipo: '',
               concepto: '',
@@ -196,7 +197,7 @@ const app = {
           }
       ],
       banderaImpactoGuardado:false,
- 
+      catalogoImpactosAmbientalesEAD: [],
 
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
@@ -456,6 +457,7 @@ const app = {
       },
   },
   computed: {
+    
     eadsForoOrdenados() {
       return [...this.eadsForo].sort((a, b) => Number(a.orden) - Number(b.orden));
     },
@@ -468,6 +470,13 @@ const app = {
       return this.evaluadores.filter(
         e => !idsConCalificacion.has(Number(e.id))
       );
+    },
+
+    totalCo2Sumar() {
+        return this.emisiones_aspectos_ambientales_proyecto_ead
+            .reduce((total, impacto) => {
+                return total + (parseFloat(impacto.co2) || 0);
+            }, 0);
     }
 
   },
@@ -2417,11 +2426,12 @@ const app = {
 
     abriModalKPI() {
         this.actualizar_kpi = '';
-        this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"));
-        this.myModal.show();
+        this.myModal = new bootstrap.Modal(document.getElementById("modalKPI"))
+        this.myModal.show()
         this.semanasAnio()
         this.consultarPilares()
-
+        this.consultarImpactoDeProyecto()//datos de registro de emisiones e impactos ambientales
+        this.consultarTodosImpactosProyectosEAD();//me ayuda a poder tener todas las emisiones y aspecctos existentes
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(document.getElementById("modalGraficaKPI"));
@@ -2736,369 +2746,712 @@ const app = {
       })
 
     },
-    guardarSeguimientoKPI() {
-      if (this.nombre_indicador == '' || this.unidad == '') { return this.alertaSweet('Nombre y Tipo unidad', 'Debe de colocar nombre del indicador o tipo de unidad', 'warning') }
-      if (this.semana_kpi == '') { return this.alertaSweet('Seleccione Semana', 'Seleccione la semana', 'warning') }
-      if (this.checkMes == true && this.mes_cierre == '') { return this.alertaSweet('Seleccione Mes', 'Seleccione el mes de cierre', 'warning') }
-      console.log("Semana Dato", this.dato_semanal)
-      axios.post("seguimientoKpiController.php", {
-        id_equipo: this.select_session_equipo.split('<->')[0],
-        nombre_indicador: this.nombre_indicador,
-        tGrafica: this.tGrafica,
-        unidad: this.tipo_unidad,
-        linea_base: this.linea_base,
-        entitlement: this.entitlement,
-        meta_calculada: this.meta_calculada,
-        meta_retadora: this.meta_retadora,
-        anio_kpi: this.anio_kpi,
-        semana_kpi: this.semana_kpi,
-        dato_semanal: this.dato_semanal,
-        mes_cierre: this.mes_cierre
-      }).then(response => {
-        if (response.data == true) {
-          this.linea_base = ''
-          this.entitlement = ''
-          this.meta_calculada = ''
-          this.meta_retadora = ''
-          this.dato_semanal = ''
-          this.mes_cierre = ''
-          //this.myModal.hide();
-          this.consultarSeguimientoKPI()
-          this.checkMes = false
-        } else {
-          console.log("Problema al guardar", response.data);
-        }
-      }).catch(error => {
-        console.log("Error en axios" + error)
-      })
-    },
-    updateBanderaKpi(input) {
-      this.actualizar_kpi = input
-    },
-    cancelarKpi() {//reasiganción de datos a los input correspondiente
-      if (this.actualizar_kpi == 'nombre_indicador') { this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador }
-      if (this.actualizar_kpi == 'unidad') { this.tipo_unidad = this.seguimientoKPIs[0].unidad }
-      if (this.actualizar_kpi == 'linea_base') { this.linea_base = this.seguimientoKPIs[0].linea_base }
-      if (this.actualizar_kpi == 'entitlement') { this.entitlement = this.seguimientoKPIs[0].entitlement }
-      if (this.actualizar_kpi == 'meta_calculada') { this.meta_calculada = this.seguimientoKPIs[0].meta_calculada }
-      if (this.actualizar_kpi == 'meta_retadora') { this.meta_retadora = this.seguimientoKPIs[0].meta_retadora }
-      this.actualizar_kpi = false
-    },
-    asignarDatosKPI(index) {
-      this.actualizar_datoKPI = true
-      var arregloKPI = this.seguimientoKPIs.slice().reverse()
-      this.idUpdateDatoKPI = arregloKPI[index].id
-      this.anio_kpi = arregloKPI[index].anio
-      this.mes_cierre = arregloKPI[index].mes_cierre
-      this.mes_cierre_anterior = arregloKPI[index].mes_cierre
-      this.dato_semanal = arregloKPI[index].dato_semanal
-      this.semana_kpi = arregloKPI[index].semana
-      console.log(this.idUpdateDatoKPI);
-    },
-    cancelarDatosKPI() {
-      this.idUpdateDatoKPI = ''
-      this.actualizar_datoKPI = false;
-      this.mes_cierre = ''
-      this.semana_kpi = ''
-      this.dato_semanal = ''
-      this.tomarAnioActual()
-    },
-    updateKpi() {
-      var new_valor = ''
-      if (this.actualizar_kpi == 'nombre_indicador') { if (this.nombre_indicador == '') { return "Coloque el nombre del indicador" } else { new_valor = this.nombre_indicador } }
-      if (this.actualizar_kpi == 'tipo') { if (this.tGrafica == '') { return "Coloque el nombre del indicador" } else { new_valor = this.tGrafica } }
-      if (this.actualizar_kpi == 'unidad') { if (this.tipo_unidad == '') { return "Coloque una unidad" } else { new_valor = this.tipo_unidad } }
-      if (this.actualizar_kpi == 'linea_base') { if (this.linea_base == '') { return "Coloque un valor en línea base" } else { new_valor = this.linea_base } }
-      if (this.actualizar_kpi == 'entitlement') { if (this.entitlement == '') { return "Coloque un valor en entitlement" } else { new_valor = this.entitlement } }
-      if (this.actualizar_kpi == 'meta_calculada') { if (this.meta_calculada == '') { return "Coloque un valor en meta calculada" } else { new_valor = this.meta_calculada } }
-      if (this.actualizar_kpi == 'meta_retadora') { if (this.meta_retadora == '') { return "Coloque un valor en meta retadora" } else { new_valor = this.meta_retadora } }
-      axios.put("seguimientoKpiController.php", {
-        accion: 'Bases',
-        id_equipo: this.select_session_equipo.split('<->')[0],
-        actualizar: this.actualizar_kpi,
-        nuevo_valor: new_valor
-      }).then(response => {
-        if (response.data == true) {
-          this.actualizar_kpi = ''
-          //this.myModal.hide();
-          this.consultarSeguimientoKPI()
-        } else {
-          console.log("algo salio mal");
-        }
-      }).catch(error => {
-        console.log("Error en axios ", error)
-      })
-    },
-    guardarActualizacionDatoKPI() {
-      axios.put("seguimientoKpiController.php", {
-        accion: 'Datos',
-        id_equipo: this.select_session_equipo.split('<->')[0],
-        id_registro: this.idUpdateDatoKPI,
-        anio: this.anio_kpi,
-        mes_cierre_anterior: this.mes_cierre_anterior,
-        mes_cierre: this.mes_cierre,
-        semana: this.semana_kpi,
-        dato_semanal: this.dato_semanal
-      }).then(response => {
-        console.log(response.data)
-        this.consultarSeguimientoKPI()
-        this.cancelarDatosKPI()//reseteo variables
-      }).catch(error => {
-        console.log("Error en axios ", error)
-      })
-    },
-    eliminarDatoKPI(id, semana, dato) {
-      if (!confirm("¿Desea eliminar el registro semana " + semana + " con dato " + dato + "?")) { return true }
-      axios.delete("seguimientoKpiController.php", {
-        params: {
-          id_dato: id
-        }
-      }).then(response => {
-        console.log(response.data)
-        if (response.data == true) {
-          this.consultarSeguimientoKPI()
-          this.cancelarDatosKPI()//reseteo variables
-        } else {
-          alert("Algo salio mal al eliminar el registro");
-        }
-      }).catch(error => {
-        console.log("Error en axios", error)
-      })
-
-    },
-    consultarJuntasArranque() {
-      axios.get("juntasArranqueController.php", {
-        params: {
-          id_equipo: this.select_session_equipo.split('<->')[0]
-        }
-      }).then(response => {
-        if (response.data[0]) {
-          this.justasArranque = response.data[1];
-        }
-      }).catch(error => {
-        console.log("Error en axios " + error);
-      })
-    },
-    cerrarProyecto() {
-      Swal.fire({
-        title: "Limpiar y guardar datos?",
-        html: "<label>¡Se limpiarán y guardarán los datos, de esta manera podrá iniciar a registrar datos de un nuevo proyecto! <br> - Cargue la presenteción (Puede tardar hasta 7 minutos en subirse por el peso)</label>",
-        icon: "info",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Si, guardar y limpiar!"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          axios.put("gestionSesionesController.php", {
-            accion: 'cerrarProyecto',
+        guardarSeguimientoKPI() {
+          if (this.nombre_indicador == '' || this.unidad == '') { return this.alertaSweet('Nombre y Tipo unidad', 'Debe de colocar nombre del indicador o tipo de unidad', 'warning') }
+          if (this.semana_kpi == '') { return this.alertaSweet('Seleccione Semana', 'Seleccione la semana', 'warning') }
+          if (this.checkMes == true && this.mes_cierre == '') { return this.alertaSweet('Seleccione Mes', 'Seleccione el mes de cierre', 'warning') }
+          console.log("Semana Dato", this.dato_semanal)
+          axios.post("seguimientoKpiController.php", {
             id_equipo: this.select_session_equipo.split('<->')[0],
+            nombre_indicador: this.nombre_indicador,
+            tGrafica: this.tGrafica,
+            unidad: this.tipo_unidad,
+            linea_base: this.linea_base,
+            entitlement: this.entitlement,
+            meta_calculada: this.meta_calculada,
+            meta_retadora: this.meta_retadora,
+            anio_kpi: this.anio_kpi,
+            semana_kpi: this.semana_kpi,
+            dato_semanal: this.dato_semanal,
+            mes_cierre: this.mes_cierre
           }).then(response => {
-            console.log("Respuesta Cerrar Proyecto", response);
-            if (response.data[0] == true && response.data[1] == true && response.data[2] == true && response.data[3] == true) {
-              this.consultarEADXID()
-              this.consultarCompromisos()
+            if (response.data == true) {
+              this.linea_base = ''
+              this.entitlement = ''
+              this.meta_calculada = ''
+              this.meta_retadora = ''
+              this.dato_semanal = ''
+              this.mes_cierre = ''
+              //this.myModal.hide();
+              this.consultarSeguimientoKPI()
+              this.checkMes = false
             } else {
-              Swal.fire("Algo salio mal al guardar y limpiar!");
+              console.log("Problema al guardar", response.data);
             }
+          }).catch(error => {
+            console.log("Error en axios" + error)
           })
+        },
+        updateBanderaKpi(input) {
+          this.actualizar_kpi = input
+        },
+        cancelarKpi() {//reasiganción de datos a los input correspondiente
+          if (this.actualizar_kpi == 'nombre_indicador') { this.nombre_indicador = this.seguimientoKPIs[0].nombre_indicador }
+          if (this.actualizar_kpi == 'unidad') { this.tipo_unidad = this.seguimientoKPIs[0].unidad }
+          if (this.actualizar_kpi == 'linea_base') { this.linea_base = this.seguimientoKPIs[0].linea_base }
+          if (this.actualizar_kpi == 'entitlement') { this.entitlement = this.seguimientoKPIs[0].entitlement }
+          if (this.actualizar_kpi == 'meta_calculada') { this.meta_calculada = this.seguimientoKPIs[0].meta_calculada }
+          if (this.actualizar_kpi == 'meta_retadora') { this.meta_retadora = this.seguimientoKPIs[0].meta_retadora }
+          this.actualizar_kpi = false
+        },
+        asignarDatosKPI(index) {
+          this.actualizar_datoKPI = true
+          var arregloKPI = this.seguimientoKPIs.slice().reverse()
+          this.idUpdateDatoKPI = arregloKPI[index].id
+          this.anio_kpi = arregloKPI[index].anio
+          this.mes_cierre = arregloKPI[index].mes_cierre
+          this.mes_cierre_anterior = arregloKPI[index].mes_cierre
+          this.dato_semanal = arregloKPI[index].dato_semanal
+          this.semana_kpi = arregloKPI[index].semana
+          console.log(this.idUpdateDatoKPI);
+        },
+        cancelarDatosKPI() {
+          this.idUpdateDatoKPI = ''
+          this.actualizar_datoKPI = false;
+          this.mes_cierre = ''
+          this.semana_kpi = ''
+          this.dato_semanal = ''
+          this.tomarAnioActual()
+        },
+        updateKpi() {
+          var new_valor = ''
+          if (this.actualizar_kpi == 'nombre_indicador') { if (this.nombre_indicador == '') { return "Coloque el nombre del indicador" } else { new_valor = this.nombre_indicador } }
+          if (this.actualizar_kpi == 'tipo') { if (this.tGrafica == '') { return "Coloque el nombre del indicador" } else { new_valor = this.tGrafica } }
+          if (this.actualizar_kpi == 'unidad') { if (this.tipo_unidad == '') { return "Coloque una unidad" } else { new_valor = this.tipo_unidad } }
+          if (this.actualizar_kpi == 'linea_base') { if (this.linea_base == '') { return "Coloque un valor en línea base" } else { new_valor = this.linea_base } }
+          if (this.actualizar_kpi == 'entitlement') { if (this.entitlement == '') { return "Coloque un valor en entitlement" } else { new_valor = this.entitlement } }
+          if (this.actualizar_kpi == 'meta_calculada') { if (this.meta_calculada == '') { return "Coloque un valor en meta calculada" } else { new_valor = this.meta_calculada } }
+          if (this.actualizar_kpi == 'meta_retadora') { if (this.meta_retadora == '') { return "Coloque un valor en meta retadora" } else { new_valor = this.meta_retadora } }
+          axios.put("seguimientoKpiController.php", {
+            accion: 'Bases',
+            id_equipo: this.select_session_equipo.split('<->')[0],
+            actualizar: this.actualizar_kpi,
+            nuevo_valor: new_valor
+          }).then(response => {
+            console.log("Respuesta updateKpi",response.data)
+            if (response.data == true) {
+              this.actualizar_kpi = ''
+              //this.myModal.hide();
+              this.consultarSeguimientoKPI()
+            } else {
+              console.log("algo salio mal");
+            }
+          }).catch(error => {
+            console.log("Error en axios ", error)
+          })
+        },
+        guardarActualizacionDatoKPI() {
+          axios.put("seguimientoKpiController.php", {
+            accion: 'Datos',
+            id_equipo: this.select_session_equipo.split('<->')[0],
+            id_registro: this.idUpdateDatoKPI,
+            anio: this.anio_kpi,
+            mes_cierre_anterior: this.mes_cierre_anterior,
+            mes_cierre: this.mes_cierre,
+            semana: this.semana_kpi,
+            dato_semanal: this.dato_semanal
+          }).then(response => {
+            console.log(response.data)
+            this.consultarSeguimientoKPI()
+            this.cancelarDatosKPI()//reseteo variables
+          }).catch(error => {
+            console.log("Error en axios ", error)
+          })
+        },
+        eliminarDatoKPI(id, semana, dato) {
+          if (!confirm("¿Desea eliminar el registro semana " + semana + " con dato " + dato + "?")) { return true }
+          axios.delete("seguimientoKpiController.php", {
+            params: {
+              id_dato: id
+            }
+          }).then(response => {
+            console.log(response.data)
+            if (response.data == true) {
+              this.consultarSeguimientoKPI()
+              this.cancelarDatosKPI()//reseteo variables
+            } else {
+              alert("Algo salio mal al eliminar el registro");
+            }
+          }).catch(error => {
+            console.log("Error en axios", error)
+          })
+
+        },
+        consultarJuntasArranque() {
+          axios.get("juntasArranqueController.php", {
+            params: {
+              id_equipo: this.select_session_equipo.split('<->')[0]
+            }
+          }).then(response => {
+            if (response.data[0]) {
+              this.justasArranque = response.data[1];
+            }
+          }).catch(error => {
+            console.log("Error en axios " + error);
+          })
+        },
+        cerrarProyecto() {
           Swal.fire({
-            title: "Se limpio correctamente!",
-            text: "Ya puede iniciar a registrar los datos del nuevo proyecto",
-            icon: "success"
+            title: "Limpiar y guardar datos?",
+            html: "<label>¡Se limpiarán y guardarán los datos, de esta manera podrá iniciar a registrar datos de un nuevo proyecto! <br> - Cargue la presenteción (Puede tardar hasta 7 minutos en subirse por el peso)</label>",
+            icon: "info",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, guardar y limpiar!"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              axios.put("gestionSesionesController.php", {
+                accion: 'cerrarProyecto',
+                id_equipo: this.select_session_equipo.split('<->')[0],
+              }).then(response => {
+                console.log("Respuesta Cerrar Proyecto", response);
+                if (response.data[0] == true && response.data[1] == true && response.data[2] == true && response.data[3] == true) {
+                  this.consultarEADXID()
+                  this.consultarCompromisos()
+                } else {
+                  Swal.fire("Algo salio mal al guardar y limpiar!");
+                }
+              })
+              Swal.fire({
+                title: "Se limpio correctamente!",
+                text: "Ya puede iniciar a registrar los datos del nuevo proyecto",
+                icon: "success"
+              });
+            }
           });
-        }
-      });
-    },
+        },
 
-    agregarImpacto() {
-    this.emisiones_aspectos_ambientales_proyecto_ead.push({
-          diagrama: '',
-          tipo: '',
-          concepto: '',
-          alcance: '',
-          cantidad: 0,
-          um: '',
-          co2: 0,
-          referencia: ''
-      });
-   },
-   eliminarImpacto(index) {
+        nuevaFilaEmision() {
+        this.emisiones_aspectos_ambientales_proyecto_ead.push({
+              id: null,
+              diagrama: '',
+              tipo: '',
+              concepto: '',
+              alcance: '',
+              cantidad: 0,
+              um: '',
+              co2: 0,
+              referencia: ''
+          });
+      },
+      eliminarImpacto(index) {
 
-    // Evitar que se elimine la última fila
-    if (this.emisiones_aspectos_ambientales_proyecto_ead.length === 1) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'No se puede eliminar',
-            text: 'Debe existir al menos un impacto ambiental.',
-            confirmButtonText: 'Aceptar'
-        });
+                  // No permitir eliminar la última fila
+                  if (
+                      this.emisiones_aspectos_ambientales_proyecto_ead.length === 1
+                  ) {
 
-        return;
-    }
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'No se puede eliminar',
+                          text: 'Debe existir al menos un impacto ambiental.',
+                          confirmButtonText: 'Aceptar'
+                      });
 
-    this.emisiones_aspectos_ambientales_proyecto_ead.splice(index, 1);
+                      return;
+                  }
 
-},
 
-    /// REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL /////////////////////////////////////////////////
-    guardarImpactoDeProyecto() {
-      if (this.nombre_indicador?.trim() == '') {
-            Swal.fire({
-                    icon: 'warning',
-                    title: `Sin nombre de indicador?`,
-                    text: `Agregue un nombre al indicador KPI en (Nom. Indicador) y despues podra registra los impactos.`,
-                    confirmButtonText: 'Aceptar'
-                });
-                return;
-    }
+                  const impacto =this.emisiones_aspectos_ambientales_proyecto_ead[index];
+                  // Si es un registro nuevo, solamente eliminarlo de Vue
+                  if (!impacto.id) {
 
-        // Verificar que exista al menos un impacto
-        if (
-            !Array.isArray(this.emisiones_aspectos_ambientales_proyecto_ead) ||
-            this.emisiones_aspectos_ambientales_proyecto_ead.length === 0
-        ) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Sin impactos',
-                text: 'Debes agregar al menos un impacto ambiental.',
-                confirmButtonText: 'Aceptar'
+                      this.emisiones_aspectos_ambientales_proyecto_ead.splice(
+                          index,
+                          1
+                      );
+                      return;
+                  }
+                  const id_equipo = this.select_session_equipo?.split('<->')[0];
+                  if (!id_equipo) {
+
+                      Swal.fire({
+                          icon: 'warning',
+                          title: 'Equipo no seleccionado',
+                          text: 'No se pudo identificar el equipo.',
+                          confirmButtonText: 'Aceptar'
+                      });
+                      return;
+                  }
+
+                  Swal.fire({
+                      icon: 'warning',
+                      title: '¿Eliminar impacto?',
+                      text: 'El impacto será eliminado permanentemente.',
+                      showCancelButton: true,
+                      confirmButtonText: 'Sí, eliminar',
+                      cancelButtonText: 'Cancelar',
+                      confirmButtonColor: '#d33'
+                  }).then(result => {
+
+                      if (!result.isConfirmed) {
+                          return;
+                      }
+
+
+                      const datos = {
+
+                          id: impacto.id,
+
+                          id_equipo: id_equipo,
+
+                          nombre_indicador: this.nombre_indicador
+
+                      };
+
+
+                      console.log(
+                          'Datos para eliminar:',
+                          datos
+                      );
+
+
+                      axios.delete(
+                          'impactosAmbientalesController.php',
+                          {
+                              data: datos
+                          }
+                      )
+                      .then(response => {
+
+                          console.log(
+                              'Respuesta DELETE:',
+                              response.data
+                          );
+
+
+                          if (
+                              response.data.status === 'success'
+                          ) {
+
+                              // Solo quitarlo de Vue si BD confirmó
+                              this.emisiones_aspectos_ambientales_proyecto_ead.splice(
+                                  index,
+                                  1
+                              );
+
+
+                              Swal.fire({
+                                  icon: 'success',
+                                  title: 'Eliminado',
+                                  text: 'El impacto ambiental fue eliminado correctamente.',
+                                  showConfirmButton: false,
+                                  timer: 2000
+                              });
+
+                          } else {
+
+                              Swal.fire({
+                                  icon: 'error',
+                                  title: 'Error',
+                                  text: response.data.message ||
+                                      'No se pudo eliminar el impacto.',
+                                  confirmButtonText: 'Aceptar'
+                              });
+
+                          }
+
+                      })
+                      .catch(error => {
+
+                          console.error(
+                              'Error al eliminar:',
+                              error
+                          );
+
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error de conexión',
+                              text: 'No se pudo eliminar el impacto ambiental.',
+                              confirmButtonText: 'Aceptar'
+                          });
+
+                      });
+
+                  });
+
+              },
+
+
+         consultarTodosImpactosProyectosEAD() {
+              axios.get('impactosAmbientalesController.php', {
+                  params: {
+                      accion: 'consultarTodos'
+                  }
+              })
+              .then(response => {
+
+                  console.log(
+                      'Respuesta todos los impactos:',
+                      response.data
+                  );
+
+                  if (response.data.status === 'success') {
+
+                      // Guardar en el catálogo, NO en la tabla de impactos
+                      this.catalogoImpactosAmbientalesEAD = response.data.impactos;
+
+                      console.log(
+                          'Catálogo de impactos cargado:',
+                          this.catalogoImpactosAmbientalesEAD
+                      );
+
+                  } else {
+
+                      Swal.fire({
+                          icon: 'error',
+                          title: 'Error',
+                          text: response.data.message ||
+                              'No se pudieron consultar los impactos ambientales.',
+                          confirmButtonText: 'Aceptar'
+                      });
+
+                  }
+
+              })
+              .catch(error => {
+
+                  console.error(
+                      'Error al consultar todos los impactos:',
+                      error
+                  );
+
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Error de conexión',
+                      text: 'Ocurrió un error al consultar los impactos ambientales.',
+                      confirmButtonText: 'Aceptar'
+                  });
+
+              });
+          },
+
+          obtenerOpcionesCatalogo(campo) {
+            const valores = this.catalogoImpactosAmbientalesEAD
+                .map(item => item[campo])
+                .filter(valor => valor !== null && valor !== undefined && valor !== '');
+
+            // Eliminar duplicados sin importar mayúsculas/minúsculas
+            const unicos = new Map();
+            valores.forEach(valor => {
+                const texto = String(valor).trim();
+                const clave = texto.toLowerCase();
+                if (!unicos.has(clave)) {
+                    unicos.set(clave, texto);
+                }
             });
-
-            return;
-        }
-        // Campos requeridos
-        const camposRequeridos = {
-            diagrama: 'Diagrama',
-            tipo: 'Tipo',
-            concepto: 'Concepto',
-            alcance: 'Alcance',
-            cantidad: 'Cantidad',
-            um: 'Unidad de medida',
-            co2: 'CO2',
-            referencia: 'Referencia'
-        };
+            return Array.from(unicos.values());
+        },
 
 
-        // Validar TODOS los impactos
-        for (
-            let index = 0;
-            index < this.emisiones_aspectos_ambientales_proyecto_ead.length;
-            index++
-        ) {
-            const impacto =
-                this.emisiones_aspectos_ambientales_proyecto_ead[index];
-            for (const campo in camposRequeridos) {
+      consultarImpactoDeProyecto() {
+                // Validar nombre del indicador
+                if (!this.nombre_indicador?.trim()) {
+                    console.log("Sin nombre del indicador");
+                    return;
+                }
 
-                const valor = impacto[campo];
-
-                if (
-                    valor === null ||
-                    valor === undefined ||
-                    (typeof valor === 'string' && valor.trim() === '')
-                ) {
+                // Obtener ID del equipo
+                const id_equipo =
+                    this.select_session_equipo?.split('<->')[0];
+                const indicador =
+                    this.nombre_indicador.trim();
+                // Validar equipo
+                if (!id_equipo) {
 
                     Swal.fire({
                         icon: 'warning',
-                        title: 'Campo requerido',
-                        text: `El campo "${camposRequeridos[campo]}" es requerido en el impacto #${index + 1}.`,
+                        title: 'Equipo no seleccionado',
+                        text: 'No se pudo identificar el equipo.',
                         confirmButtonText: 'Aceptar'
                     });
 
                     return;
                 }
 
-            }
 
-        }
+                const datos = {
+                    nombre_indicador: indicador,
+                    id_equipo: id_equipo,
+                    accion: "consultarImpactosProyectoEAD"
+                };
 
 
-        // Crear arreglo con los datos que se enviarán
-       // Crear objeto con los datos que se enviarán
-        const datos = {
-
-            // Datos generales
-            nombre_indicador: this.nombre_indicador,
-            id_equipo: this.select_session_equipo?.split('<->')[0],
-
-            // Impactos ambientales
-            impactos: this.emisiones_aspectos_ambientales_proyecto_ead.map(
-                impacto => ({
-                    diagrama: impacto.diagrama,
-                    tipo: impacto.tipo,
-                    concepto: impacto.concepto,
-                    alcance: impacto.alcance,
-                    cantidad: impacto.cantidad,
-                    um: impacto.um,
-                    co2: impacto.co2,
-                    referencia: impacto.referencia
-                })
-            )
-
-        };
-
-        console.log('Impactos a guardar:', datos);
-        // Enviar TODOS los impactos en una sola petición
-        axios.post(
-            'impactosAmbientalesController.php',
-            datos
-        ).then(response => {
-             console.log('Respuesta del servidor:', response.data);
-            if (response.data.status === 'success') {
-              
-
-              Swal.fire({
-                  icon: 'success',
-                  title: '¡Guardado correctamente!',
-                  text: `${response.data.cantidad} impacto(s) ambiental(es) guardado(s) correctamente.`,
-                  showConfirmButton: false,
-                  timer: 5000,
-                  timerProgressBar: true
-              });
-                // Mostrar mensaje de éxito
-                this.banderaImpactoGuardado = true;
-                // Reiniciar la tabla dejando una fila nueva
-              /*   this.emisiones_aspectos_ambientales_proyecto_ead = [
-                    {
-                        diagrama: '',
-                        tipo: '',
-                        concepto: '',
-                        alcance: '',
-                        cantidad: 0,
-                        um: '',
-                        co2: 0,
-                        referencia: ''
-                    }
-                ]; */
-                // Ocultar mensaje después de 5 segundos
-                setTimeout(() => {
-                    this.banderaImpactoGuardado = false;
-                }, 3000);
-            } else {
-                console.error(
-                    'Error en la base de datos:',
-                    response.data
+                console.log(
+                    'Datos para consultar impactos:',
+                    datos
                 );
+
+                axios.get(
+                    'impactosAmbientalesController.php',
+                    {
+                        params: datos
+                    }
+                )
+                .then(response => {
+                    console.log(
+                        'Respuesta de consulta:',
+                        response.data
+                    );
+
+                    if (response.data.status === 'success') {
+
+                        // Recuperar nombre del indicador
+                        if (
+                            response.data.nombre_indicador !== undefined
+                        ) {
+
+                            this.nombre_indicador =
+                                response.data.nombre_indicador;
+
+                        }
+
+
+                        // Verificar si existen impactos
+                        if (
+                            Array.isArray(response.data.impactos) &&
+                            response.data.impactos.length > 0
+                        ) {
+
+
+                            // Cargar impactos existentes
+                            this.emisiones_aspectos_ambientales_proyecto_ead =
+                                response.data.impactos.map(impacto => ({
+
+                                    // IMPORTANTE:
+                                    // ID del registro de BD
+                                    id: impacto.id ?? null,
+
+                                    diagrama: impacto.diagrama ?? '',
+                                    tipo: impacto.tipo ?? '',
+                                    concepto: impacto.concepto ?? '',
+                                    alcance: impacto.alcance ?? '',
+                                    cantidad: impacto.cantidad ?? 0,
+                                    um: impacto.um ?? '',
+                                    co2: impacto.co2 ?? 0,
+                                    referencia: impacto.referencia ?? ''
+
+                                }));
+
+
+                        } else {
+
+
+                            // No existen impactos
+                            // Crear una fila nueva
+                            this.emisiones_aspectos_ambientales_proyecto_ead = [
+
+                                {
+                                    id: null,
+
+                                    diagrama: '',
+                                    tipo: '',
+                                    concepto: '',
+                                    alcance: '',
+                                    cantidad: 0,
+                                    um: '',
+                                    co2: 0,
+                                    referencia: ''
+                                }
+
+                            ];
+
+                        }
+
+
+                    } else {
+
+
+                        console.error(
+                            'Error al consultar impactos:',
+                            response.data
+                        );
+
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: response.data.message ||
+                                'No se pudieron consultar los impactos ambientales.',
+                            confirmButtonText: 'Aceptar'
+                        });
+
+                    }
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        'Error al consultar los impactos:',
+                        error
+                    );
+
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error de conexión',
+                        text: 'Ocurrió un error al consultar los impactos ambientales.',
+                        confirmButtonText: 'Aceptar'
+                    });
+
+                });
+
+            },
+    
+
+
+    // REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL /////////////////////////////////////////////////
+        guardarImpactoDeProyecto() {
+
+            if (this.nombre_indicador?.trim() == '') {
+
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'No se pudieron guardar los impactos ambientales.',
+                    icon: 'warning',
+                    title: 'Sin nombre de indicador?',
+                    text: 'Agregue un nombre al indicador KPI en (Nom. Indicador) y después podría registra los impactos.',
                     confirmButtonText: 'Aceptar'
                 });
+
+                return;
             }
-        }).catch(error => {
-            console.error(
-                'Error al guardar los impactos:',
-                error
-            );
-            Swal.fire({
-                icon: 'error',
-                title: 'Error de conexión',
-                text: 'Ocurrió un error al intentar guardar los impactos ambientales.',
-                confirmButtonText: 'Aceptar'
-            });
-        });
-    },
+
+
+            // Verificar que exista al menos un impacto
+            if (
+                !Array.isArray(this.emisiones_aspectos_ambientales_proyecto_ead) ||
+                this.emisiones_aspectos_ambientales_proyecto_ead.length === 0
+            ) {
+
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Sin impactos',
+                    text: 'Debes agregar al menos un impacto ambiental.',
+                    confirmButtonText: 'Aceptar'
+                });
+
+                return;
+            }
+
+
+            // Campos requeridos
+            const camposRequeridos = {
+                diagrama: 'Diagrama',
+                tipo: 'Tipo',
+                concepto: 'Concepto',
+                alcance: 'Alcance',
+                cantidad: 'Cantidad',
+                um: 'Unidad de medida',
+                co2: 'CO2',
+                referencia: 'Referencia'
+            };
+
+
+            // Validar TODOS los impactos
+            for (let index = 0;index < this.emisiones_aspectos_ambientales_proyecto_ead.length;index++) {
+                const impacto =
+                    this.emisiones_aspectos_ambientales_proyecto_ead[index];
+
+                for (const campo in camposRequeridos) {
+                    const valor = impacto[campo];
+                    if (
+                        valor === null ||
+                        valor === undefined ||
+                        (typeof valor === 'string' && valor.trim() === '')
+                    ) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Campo requerido',
+                            text: `El campo "${camposRequeridos[campo]}" es requerido en el impacto #${index + 1}.`,
+                            confirmButtonText: 'Aceptar'
+                        });
+                        return;
+                    }
+                }
+            }
+
+
+                    // Datos que se enviarán
+                    const datos = {
+                        // Datos generales
+                        nombre_indicador: this.nombre_indicador,
+                        id_equipo: this.select_session_equipo?.split('<->')[0],
+                        // Impactos ambientales
+                        impactos:
+                            this.emisiones_aspectos_ambientales_proyecto_ead.map(
+                                impacto => ({
+                                    // ID del impacto
+                                    // Si existe = actualizar
+                                    // Si no existe = insertar
+                                    id: impacto.id ?? null,
+                                    diagrama: impacto.diagrama,
+                                    tipo: impacto.tipo,
+                                    concepto: impacto.concepto,
+                                    alcance: impacto.alcance,
+                                    cantidad: impacto.cantidad,
+                                    um: impacto.um,
+                                    co2: impacto.co2,
+                                    referencia: impacto.referencia
+
+                                })
+                            )
+                    };
+                    console.log(
+                        'Impactos a guardar/actualizar:',
+                        datos
+                    );
+                    // Enviar TODOS los impactos en una sola petición
+                    axios.post(
+                        'impactosAmbientalesController.php',
+                        datos
+                    ).then(response => {
+                        console.log(
+                            'Respuesta del servidor:',
+                            response.data
+                        );
+                        if (response.data.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '¡Guardado correctamente!',
+                                text: `${response.data.cantidad} impacto(s) ambiental(es) procesado(s) correctamente.`,
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                            this.banderaImpactoGuardado = true;
+                            setTimeout(() => {
+                                this.banderaImpactoGuardado = false;
+                            }, 3000);
+                            this.consultarTodosImpactosProyectosEAD();
+                        } else {
+
+                            console.error(
+                                'Error en la base de datos:',
+                                response.data
+                            );
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.data.message ||
+                                    'No se pudieron guardar los impactos ambientales.',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        }
+
+                    }).catch(error => {
+                        console.error(
+                            'Error al guardar los impactos:',
+                            error
+                        );
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error de conexión',
+                            text: 'Ocurrió un error al intentar guardar los impactos ambientales.',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    });
+                },
+
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {

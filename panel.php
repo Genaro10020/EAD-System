@@ -1600,68 +1600,90 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                                                                         <!-- DIAGRAMA -->
                                                                         <td>
-
-                                                                            <input
+                                                                           <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.diagrama"
                                                                                 placeholder="E-DF-IP-RJ-A"
-                                                                            >
-
+                                                                                list="catalogo-diagramas" >
+                                                                                <datalist id="catalogo-diagramas">
+                                                                                        <option
+                                                                                            v-for="valor in obtenerOpcionesCatalogo('diagrama')"
+                                                                                            :key="valor"
+                                                                                            :value="valor"
+                                                                                        ></option>
+                                                                                    </datalist>
                                                                         </td>
 
                                                                         <!-- TIPO -->
                                                                         <td>
-
                                                                             <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.tipo"
                                                                                 placeholder="Energía"
+                                                                                list="catalogo-tipos"
                                                                             >
+                                                                            <datalist id="catalogo-tipos">
+                                                                                <option
+                                                                                    v-for="valor in obtenerOpcionesCatalogo('tipo')"
+                                                                                    :key="valor"
+                                                                                    :value="valor"
+                                                                                ></option>
+
+                                                                            </datalist>
+
+
 
                                                                         </td>
 
                                                                         <!-- CONCEPTO -->
                                                                         <td>
 
-                                                                            <input
+                                                                          <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.concepto"
                                                                                 placeholder="Electricidad"
+                                                                                list="catalogo-conceptos"
                                                                             >
 
+                                                                            <datalist id="catalogo-conceptos">
+
+                                                                                <option
+                                                                                    v-for="valor in obtenerOpcionesCatalogo('concepto')"
+                                                                                    :key="valor"
+                                                                                    :value="valor"
+                                                                                ></option>
+
+                                                                            </datalist>
                                                                         </td>
 
                                                                         <!-- ALCANCE -->
                                                                         <td>
 
                                                                             <select
-                                                                                class="form-control form-control-sm text-center"
-                                                                                :class="impacto.alcance === ''
-                                                                                    ? 'text-secondary'
-                                                                                    : 'text-primary'"
-                                                                                style="
-                                                                                    border: 1px solid;
-                                                                                    border-color: rgba(110, 108, 108, 0.28);
-                                                                                    box-shadow: none;
-                                                                                    font-size: 0.9em;
-                                                                                    background: #fffdfd;"
-                                                                                v-model="impacto.alcance" >
-                                                                                <option disabled value="">
-                                                                                    Seleccione...
-                                                                                </option>
-                                                                                <option value="1">
-                                                                                    1
-                                                                                </option>
-                                                                                <option value="2">
-                                                                                    2
-                                                                                </option>
-                                                                                <option value="3">
-                                                                                    3
-                                                                                </option>
-                                                                            </select>
+                                                                                    class="form-select form-select-sm text-center"
+                                                                                    :class="impacto.alcance === ''
+                                                                                        ? 'text-secondary'
+                                                                                        : 'text-primary'"
+                                                                                    style="
+                                                                                        border: 1px solid rgba(110, 108, 108, 0.28);
+                                                                                        box-shadow: none;
+                                                                                        min-width: 130px;
+                                                                                        font-size: 0.9em;
+                                                                                        background-color: #fffdfd;
+                                                                                        cursor: pointer;"
+                                                                                    v-model="impacto.alcance"
+                                                                                >
+                                                                                    <option disabled value="">
+                                                                                        Seleccione...
+                                                                                    </option>
+
+                                                                                    <option value="1">1</option>
+                                                                                    <option value="2">2</option>
+                                                                                    <option value="3">3</option>
+                                                                                </select>
                                                                         </td>
 
                                                                         <!-- CANTIDAD -->
@@ -1677,11 +1699,22 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                                                                         <!-- UM -->
                                                                         <td>
-                                                                            <input
+                                                                           <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.um"
-                                                                                placeholder="kWh/Año">
+                                                                                placeholder="kWh/Año"
+                                                                                list="catalogo-um"
+                                                                            >
+                                                                            <datalist id="catalogo-um">
+
+                                                                                <option
+                                                                                    v-for="valor in obtenerOpcionesCatalogo('um')"
+                                                                                    :key="valor"
+                                                                                    :value="valor"
+                                                                                ></option>
+
+                                                                            </datalist>
                                                                         </td>
                                                                         <!-- CO2 -->
                                                                         <td>
@@ -1696,21 +1729,28 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                     min-width: 100px;
                                                                                 "
                                                                                 placeholder="0.00"
-                                                                                disabled
                                                                             >
 
                                                                         </td>
 
                                                                         <!-- REFERENCIA -->
                                                                         <td>
-
                                                                             <input
-                                                                                type="text"
-                                                                                class="form-control form-control-sm text-primary"
-                                                                                v-model="impacto.referencia"
-                                                                                placeholder="Referencia"
-                                                                            >
+                                                                                    type="text"
+                                                                                    class="form-control form-control-sm text-primary"
+                                                                                    v-model="impacto.referencia"
+                                                                                    placeholder="Referencia"
+                                                                                    list="catalogo-referencias"
+                                                                                >
+                                                                                <datalist id="catalogo-referencias">
 
+                                                                                    <option
+                                                                                        v-for="valor in obtenerOpcionesCatalogo('referencia')"
+                                                                                        :key="valor"
+                                                                                        :value="valor"
+                                                                                    ></option>
+
+                                                                                </datalist>
                                                                         </td>
 
                                                                         <!-- ACCIONES -->
@@ -1735,10 +1775,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                     <tr class="table-light">
                                                                         <td colspan="7" class="fw-bold">
                                                                             <div class="d-flex align-items-center justify-content-between">
-                                                                                <button  class="btn btn-success btn-boton py-0" style="font-size: 0.9em;" @click="agregarImpacto()">
-                                                                                  <i class="bi bi-plus-circle-fill me-1"></i> Nueva fila
-                                                                                </button>
-                                                                                <!-- TOTAL -->
+                                                                                    <button
+                                                                                        type="button"
+                                                                                        class="btn btn-outline-success rounded-pill px-3 py-1 shadow-sm"
+                                                                                        style="font-size: 0.9em;"
+                                                                                        @click="nuevaFilaEmision()">
+                                                                                        <i class="bi bi-plus-circle-fill me-1"></i>
+                                                                                        Agregar fila
+                                                                                    </button>
                                                                                 <span>
                                                                                     Total emisiones evitadas:
                                                                                 </span>
@@ -1746,7 +1790,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                         </td>
                                                                         <td class="text-center">
                                                                             <span class="text-success fw-bold fs-6 px-3">
-                                                                                {{ totalCO2 }} t CO₂
+                                                                                {{ totalCo2Sumar.toFixed(6) }} t CO₂
                                                                             </span>
                                                                         </td>
                                                                         <td></td>

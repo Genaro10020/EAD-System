@@ -2,15 +2,138 @@
 
 include("conexionGhoner.php");
 
-
-function guardarImpacto($datos) {
+function consultarTodosImpactosAmbientales() {
 
     global $conexion;
 
 
-    // Verificar que sea un arreglo
-    if (!is_array($datos) || empty($datos)) {
+    // ==========================================
+    // VERIFICAR CONEXIÓN
+    // ==========================================
 
+    if (!$conexion instanceof mysqli) {
+        throw new Exception(
+            "La conexión a la base de datos no está disponible."
+        );
+    }
+
+
+    // ==========================================
+    // CONSULTA
+    // ==========================================
+    $consulta = "
+        SELECT
+            id,
+            id_equipo,
+            nombre_indicador,
+            diagrama,
+            tipo,
+            concepto,
+            alcance,
+            cantidad,
+            um,
+            co2,
+            referencia
+        FROM reportes_impactos_ambientales_proyectos
+        ORDER BY id ASC
+    ";
+
+    // ==========================================
+    // PREPARAR CONSULTA
+    // ==========================================
+
+    $stmt = $conexion->prepare($consulta);
+    if (!$stmt) {
+        throw new Exception(
+            "Error al preparar la consulta: " .
+            $conexion->error
+        );
+    }
+
+
+    // ==========================================
+    // EJECUTAR
+    // ==========================================
+    if (!$stmt->execute()) {
+        throw new Exception(
+            "Error al consultar los impactos ambientales: " .
+            $stmt->error
+        );
+    }
+
+
+    // ==========================================
+    // OBTENER RESULTADOS
+    // ==========================================
+    $resultado = $stmt->get_result();
+    $impactos = $resultado->fetch_all(MYSQLI_ASSOC);
+    // ==========================================
+    // CERRAR
+    // ==========================================
+    $stmt->close();
+    return $impactos;
+}
+
+function consultarImpactosAmbientales($nombre_indicador, $id_equipo) {
+    global $conexion;
+    // Consulta
+    $consulta = "SELECT
+            id,
+            diagrama,
+            tipo,
+            concepto,
+            alcance,
+            cantidad,
+            um,
+            co2,
+            referencia
+        FROM reportes_impactos_ambientales_proyectos
+        WHERE nombre_indicador = ?
+        AND id_equipo = ?
+        ORDER BY id ASC
+    ";
+    $stmt = $conexion->prepare($consulta);
+
+    // Verificar preparación
+    if (!$stmt) {
+        throw new Exception(
+            "Error al preparar la consulta: " . $conexion->error
+        );
+
+    }
+    // Vincular parámetros
+    $stmt->bind_param(
+        "si",
+        $nombre_indicador,
+        $id_equipo
+    );
+    // Ejecutar
+    if (!$stmt->execute()) {
+        throw new Exception(
+            "Error al consultar los impactos: " . $stmt->error
+        );
+    }
+    // Obtener resultado
+    $resultado = $stmt->get_result();
+    // Convertir a arreglo
+    $impactos = $resultado->fetch_all(MYSQLI_ASSOC);
+    // Cerrar statement
+    $stmt->close();
+    return $impactos;
+}
+
+
+
+
+
+function guardarImpacto($datos) {
+
+    global $conexion;
+    // ============================================================
+    // VALIDAR DATOS GENERALES
+    // ============================================================
+
+    if (!is_array($datos) || empty($datos)) {
         return [
             "status" => "error",
             "message" => "No se recibieron datos."
@@ -18,34 +141,108 @@ function guardarImpacto($datos) {
 
     }
 
-
-    // Recuperar datos generales
-    $nombre_indicador = $datos['nombre_indicador'] ?? '';
+    $nombre_indicador = trim(
+        $datos['nombre_indicador'] ?? ''
+    );
     $id_equipo = $datos['id_equipo'] ?? '';
-
-
-    // Recuperar impactos
     $impactos = $datos['impactos'] ?? [];
 
-
-    // Verificar que existan impactos
-    if (empty($impactos)) {
-
+    // Validar datos generales
+    if ($nombre_indicador === '' || $id_equipo === '') {
         return [
             "status" => "error",
-            "message" => "No se recibieron impactos ambientales."
+            "message" => "Faltan datos del indicador o del equipo."
+        ];
+    }
+
+    // Validar impactos
+    if (!is_array($impactos)) {
+        return [
+            "status" => "error",
+            "message" => "Los impactos ambientales no tienen un formato válido."
         ];
 
     }
 
 
-    // Iniciar transacción
+    // ============================================================
+    // INICIAR TRANSACCIÓN
+    // ============================================================
+
     $conexion->begin_transaction();
-
-
     try {
+        // ========================================================
+        // 1. OBTENER LOS IDS ACTUALES DE LA BASE DE DATOS
+        // ========================================================
+        $consultaIds = "
+            SELECT id
+            FROM reportes_impactos_ambientales_proyectos
+            WHERE nombre_indicador = ?
+            AND id_equipo = ?
+        ";
+        $stmtIds = $conexion->prepare($consultaIds);
+        if (!$stmtIds) {
+            throw new Exception(
+                "Error al preparar consulta de IDs: " .
+                $conexion->error
+            );
+        }
+        $stmtIds->bind_param(
+            "si",
+            $nombre_indicador,
+            $id_equipo
+        );
 
-        $guardar = "
+        if (!$stmtIds->execute()) {
+            throw new Exception(
+                "Error al consultar IDs existentes: " .
+                $stmtIds->error
+            );
+        }
+
+
+        $resultadoIds = $stmtIds->get_result();
+
+        // Guardar IDs que actualmente existen en BD
+        $idsExistentes = [];
+        while ($fila = $resultadoIds->fetch_assoc()) {
+            $idsExistentes[] = (int)$fila['id'];
+        }
+        $stmtIds->close();
+
+        // ========================================================
+        // 2. PREPARAR UPDATE
+        // ========================================================
+
+        $actualizar = "
+            UPDATE reportes_impactos_ambientales_proyectos
+            SET
+                diagrama = ?,
+                tipo = ?,
+                concepto = ?,
+                alcance = ?,
+                cantidad = ?,
+                um = ?,
+                co2 = ?,
+                referencia = ?
+            WHERE id = ?
+            AND id_equipo = ?
+            AND nombre_indicador = ?
+        ";
+
+        $stmtUpdate = $conexion->prepare($actualizar);
+        if (!$stmtUpdate) {
+            throw new Exception(
+                "Error al preparar UPDATE: " .
+                $conexion->error
+            );
+        }
+
+
+        // ========================================================
+        // 3. PREPARAR INSERT
+        // ========================================================
+        $insertar = "
             INSERT INTO reportes_impactos_ambientales_proyectos
             (
                 id_equipo,
@@ -62,37 +259,48 @@ function guardarImpacto($datos) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ";
 
+        $stmtInsert = $conexion->prepare($insertar);
 
-        $stmt = $conexion->prepare($guardar);
-
-
-        if (!$stmt) {
-
+        if (!$stmtInsert) {
             throw new Exception(
-                "Error al preparar la consulta: " . $conexion->error
+                "Error al preparar INSERT: " .
+                $conexion->error
             );
 
         }
 
 
-        $cantidadGuardada = 0;
+        // ========================================================
+        // 4. RECORRER IMPACTOS RECIBIDOS
+        // ========================================================
+
+        $idsRecibidos = [];
+
+        $cantidadInsertados = 0;
+        $cantidadActualizados = 0;
 
 
-        // Recorrer todos los impactos
         foreach ($impactos as $impacto) {
 
+            // ----------------------------------------------------
+            // ID
+            // ----------------------------------------------------
 
-            $diagrama = $impacto['diagrama'] ?? '';
-
-            $tipo = $impacto['tipo'] ?? '';
-
-            $concepto = $impacto['concepto'] ?? '';
+            $id = ( isset($impacto['id']) && $impacto['id'] !== '' && $impacto['id'] !== null) ? (int)$impacto['id'] : null;
 
 
-            $alcance = (
-                isset($impacto['alcance']) &&
-                $impacto['alcance'] !== ''
-            )
+            // ----------------------------------------------------
+            // DATOS DEL IMPACTO
+            // ----------------------------------------------------
+
+            $diagrama =
+                $impacto['diagrama'] ?? '';
+            $tipo =
+                $impacto['tipo'] ?? '';
+            $concepto =
+                $impacto['concepto'] ?? '';
+
+            $alcance = (isset($impacto['alcance']) && $impacto['alcance'] !== '')
                 ? (int)$impacto['alcance']
                 : null;
 
@@ -105,7 +313,8 @@ function guardarImpacto($datos) {
                 : null;
 
 
-            $um = $impacto['um'] ?? '';
+            $um =
+                $impacto['um'] ?? '';
 
 
             $co2 = (
@@ -116,14 +325,20 @@ function guardarImpacto($datos) {
                 : null;
 
 
-            $referencia = $impacto['referencia'] ?? '';
+            $referencia =
+                $impacto['referencia'] ?? '';
 
 
-            // Vincular parámetros
-            $stmt->bind_param(
-                "issssidsds",
-                $id_equipo,
-                $nombre_indicador,
+            // ====================================================
+            // CASO 1: UPDATE
+            // ====================================================
+
+            if ($id !== null) {
+                // Guardar ID recibido
+                $idsRecibidos[] = $id;
+
+                $stmtUpdate->bind_param(
+                "sssidsdsiis",
                 $diagrama,
                 $tipo,
                 $concepto,
@@ -131,54 +346,249 @@ function guardarImpacto($datos) {
                 $cantidad,
                 $um,
                 $co2,
-                $referencia
+                $referencia,
+                $id,
+                $id_equipo,
+                $nombre_indicador
             );
+                if (!$stmtUpdate->execute()) {
+                    throw new Exception(
+                        "Error al actualizar el impacto ID " .
+                        $id . ": " .
+                        $stmtUpdate->error
+                    );
+                }
+                $cantidadActualizados++;
+            }
 
-
-            // Ejecutar INSERT
-            if (!$stmt->execute()) {
-
-                throw new Exception(
-                    "Error al guardar el impacto: " . $stmt->error
+            // ====================================================
+            // CASO 2: INSERT
+            // ====================================================
+            else {
+                $stmtInsert->bind_param(
+                    "issssidsds",
+                    $id_equipo,
+                    $nombre_indicador,
+                    $diagrama,
+                    $tipo,
+                    $concepto,
+                    $alcance,
+                    $cantidad,
+                    $um,
+                    $co2,
+                    $referencia
                 );
+
+
+                if (!$stmtInsert->execute()) {
+
+                    throw new Exception(
+                        "Error al insertar el impacto: " .
+                        $stmtInsert->error
+                    );
+
+                }
+                $cantidadInsertados++;
 
             }
 
+        }
 
-            $cantidadGuardada++;
+        // ========================================================
+        // 5. ELIMINAR IMPACTOS QUE YA NO VIENEN DEL FRONTEND
+        // ========================================================
+
+        foreach ($idsExistentes as $idExistente) {
+            if (!in_array(
+                $idExistente,
+                $idsRecibidos,
+                true
+            )) {
+                $eliminar = "
+                    DELETE FROM reportes_impactos_ambientales_proyectos
+                    WHERE id = ?
+                    AND id_equipo = ?
+                    AND nombre_indicador = ?
+                ";
+                $stmtDelete =$conexion->prepare($eliminar);
+
+
+                if (!$stmtDelete) {
+                    throw new Exception(
+                        "Error al preparar DELETE: " .
+                        $conexion->error
+                    );
+                }
+                $stmtDelete->bind_param(
+                    "iis",
+                    $idExistente,
+                    $id_equipo,
+                    $nombre_indicador
+                );
+                if (!$stmtDelete->execute()) {
+                    throw new Exception(
+                        "Error al eliminar el impacto ID " .
+                        $idExistente . ": " .
+                        $stmtDelete->error
+                    );
+                }
+                $stmtDelete->close();
+
+            }
 
         }
 
+        // ========================================================
+        // 6. CERRAR STATEMENTS
+        // ========================================================
+        $stmtUpdate->close();
+        $stmtInsert->close();
 
-        // Confirmar todos los INSERT
+        // ========================================================
+        // 7. CONFIRMAR TRANSACCIÓN
+        // ========================================================
         $conexion->commit();
 
-
-        // Cerrar statement
-        $stmt->close();
-
-
+        // ========================================================
+        // 8. RESPUESTA
+        // ========================================================
         return [
             "status" => "success",
-            "message" => "Impactos ambientales guardados correctamente.",
-            "cantidad" => $cantidadGuardada
+            "message" => "Impactos ambientales sincronizados correctamente.",
+            "insertados" => $cantidadInsertados,
+            "actualizados" => $cantidadActualizados,
+            "eliminados" => count(
+                array_diff(
+                    $idsExistentes,
+                    $idsRecibidos
+                )
+            ),
+            "cantidad" =>
+                $cantidadInsertados +
+                $cantidadActualizados
         ];
-
-
     } catch (Exception $e) {
-
-
-        // Deshacer todos los INSERT
+        // ========================================================
+        // DESHACER TODO SI OCURRE UN ERROR
+        // ========================================================
         $conexion->rollback();
-
-
         return [
             "status" => "error",
             "message" => $e->getMessage()
         ];
 
     }
+}
 
+
+function eliminarImpacto($datos) {
+    global $conexion;
+
+    $id = $datos['id'] ?? '';
+    $id_equipo = $datos['id_equipo'] ?? '';
+    $nombre_indicador = $datos['nombre_indicador'] ?? '';
+
+
+    // ==========================================
+    // VALIDAR DATOS
+    // ==========================================
+
+    if (empty($id) || empty($id_equipo) || empty($nombre_indicador)) {
+        return [
+            "status" => "error",
+            "message" => "Faltan datos para eliminar el impacto ambiental."
+        ];
+    }
+
+
+    // ==========================================
+    // CONSULTA DELETE
+    // ==========================================
+
+    $consulta = "
+        DELETE FROM reportes_impactos_ambientales_proyectos
+        WHERE id = ?
+        AND id_equipo = ?
+        AND nombre_indicador = ?
+    ";
+
+
+    // ==========================================
+    // PREPARAR
+    // ==========================================
+
+    $stmt = $conexion->prepare($consulta);
+
+
+    if (!$stmt) {
+
+        return [
+            "status" => "error",
+            "message" =>
+                "Error al preparar la eliminación: " .
+                $conexion->error
+        ];
+
+    }
+
+
+    // ==========================================
+    // VINCULAR
+    // ==========================================
+
+    $stmt->bind_param(
+        "iis",
+        $id,
+        $id_equipo,
+        $nombre_indicador
+    );
+
+
+    // ==========================================
+    // EJECUTAR
+    // ==========================================
+
+    if (!$stmt->execute()) {
+        $error = $stmt->error;
+        $stmt->close();
+        return [
+            "status" => "error",
+            "message" =>
+                "Error al eliminar el impacto: " .
+                $error
+        ];
+
+    }
+
+
+    // ==========================================
+    // VERIFICAR ELIMINACIÓN
+    // ==========================================
+    if ($stmt->affected_rows === 0) {
+        $stmt->close();
+        return [
+            "status" => "error",
+            "message" =>
+                "No se encontró el impacto ambiental con ID " .
+                $id . "."
+        ];
+    }
+
+
+    // ==========================================
+    // CERRAR
+    // ==========================================
+    $stmt->close();
+
+
+    // ==========================================
+    // RESPUESTA
+    // ==========================================
+    return [
+        "status" => "success",
+        "message" => "Impacto ambiental eliminado correctamente.",
+        "id" => $id
+    ];
 }
 
 ?>
