@@ -1038,3 +1038,32 @@ button {
     }
 
 }
+
+select,
+select option,
+.form-select,
+.form-select option,
+.select,
+.select option,
+.custom-select,
+.custom-select option {
+    color-scheme: light !important;
+    color: #212529 !important;
+    background-color: #ffffff !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    select,
+    select option,
+    .form-select,
+    .form-select option,
+    .select,
+    .select option,
+    .custom-select,
+    .custom-select option {
+        color-scheme: light !important;
+        color: #212529 !important;
+        background-color: #ffffff !important;
+        -webkit-text-fill-color: #212529 !important;
+    }
+}
