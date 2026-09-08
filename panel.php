@@ -1498,7 +1498,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                     Impactos Ambientales
                                                                 </label><br>
                                                                 <small class="opacity-75">
-                                                                    Registro de emisiones y aspectos ambientales
+                                                                    <!--Registro de emisiones y aspectos ambientales-->
                                                                 </small>
                                                             </div>
                                                             <span class="badge bg-light text-success">
