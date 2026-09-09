@@ -198,7 +198,8 @@ const app = {
       ],
       banderaImpactoGuardado:false,
       catalogoImpactosAmbientalesEAD: [],
-
+      catalogoImpactosAmbientalesOTS: [],
+      catalogoUnidadesOTS: [],
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -2432,6 +2433,7 @@ const app = {
         this.consultarPilares()
         this.consultarImpactoDeProyecto()//datos de registro de emisiones e impactos ambientales
         this.consultarTodosImpactosProyectosEAD();//me ayuda a poder tener todas las emisiones y aspecctos existentes
+        this.consultarImpactosAmbientalesOTS();
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(document.getElementById("modalGraficaKPI"));
@@ -3127,22 +3129,160 @@ const app = {
               });
           },
 
-          obtenerOpcionesCatalogo(campo) {
-            const valores = this.catalogoImpactosAmbientalesEAD
-                .map(item => item[campo])
-                .filter(valor => valor !== null && valor !== undefined && valor !== '');
+         consultarImpactosAmbientalesOTS() {
+          axios.get('impactosAmbientalesControllerOTS.php', {
+              params: {
+                  accion: 'impactosAmbientalesOTS'
+              }
+          })
+          .then(response => {
+             console.log('response.data:', response.data);
+              console.log('response.data.status:', response.data.status);
+              console.log('typeof:', typeof response.data);
 
+             if (response.data.status == 'success') {
+                      this.catalogoImpactosAmbientalesOTS = response.data.impactos
+                          .map(item => {
+                              const nombre = item.nombre;
+                              const posicion = nombre.lastIndexOf('(');
+                              if (posicion !== -1) {
+                                  return nombre.substring(0, posicion).trim();
+                              }
+                              return nombre.trim();
+                          })
+                          .filter(nombre => nombre);
+
+                      // ==========================================
+                      // UNIDADES OTS
+                      // ==========================================
+                      this.catalogoUnidadesOTS = response.data.impactos
+                          .map(item => item.unidad)
+                          .filter(unidad =>
+                              unidad !== null &&
+                              unidad !== undefined &&
+                              unidad !== ''
+                          )
+                          .map(unidad => String(unidad).trim());
+
+                      console.log(
+                          'Catálogo impactos OTS:',
+                          this.catalogoImpactosAmbientalesOTS
+                      );
+
+                      console.log(
+                          'Catálogo unidades OTS:',
+                          this.catalogoUnidadesOTS
+                      );
+                  }
+
+          }).catch(error => {
+
+              console.error(
+                  'Error al consultar impactos ambientales OTS:',
+                  error
+              );
+          });
+      } ,
+
+      obtenerOpcionesConceptos() {
+                  const valores = [];
+                  this.catalogoImpactosAmbientalesEAD.forEach(item => {
+                      const valor = item.concepto;
+                      if (valor !== null && valor !== undefined && valor !== '') {
+                          // EAD puede traer varios conceptos separados por coma
+                          const conceptos = String(valor)
+                              .split(',')
+                              .map(concepto => concepto.trim())
+                              .filter(concepto => concepto !== '');
+
+                          valores.push(...conceptos);
+                      }
+                  });
+
+                  if (Array.isArray(this.catalogoImpactosAmbientalesOTS)) {
+                      this.catalogoImpactosAmbientalesOTS.forEach(valor => {
+                          if (valor !== null && valor !== undefined && valor !== '') {
+                              const texto = String(valor).trim();
+                              if (texto !== '') {
+                                  valores.push(texto);
+                              }
+                          }
+                      });
+                  }
+
+                  // ==========================================
+                  // ELIMINAR DUPLICADOS
+                  // ==========================================
+                  const unicos = new Map();
+                  valores.forEach(valor => {
+                      const texto = String(valor).trim();
+                      const clave = texto.toLowerCase();
+                      if (!unicos.has(clave)) {
+                          unicos.set(clave, texto);
+                      }
+                  });
+                  return Array.from(unicos.values());
+          },
+
+         obtenerOpcionesUM() {
+                    const valores = [];
+                    // ==========================================
+                    // UNIDADES DEL CATÁLOGO EAD
+                    // ==========================================
+                    this.catalogoImpactosAmbientalesEAD.forEach(item => {
+                        const valor = item.um;
+                        if (valor !== null && valor !== undefined && valor !== ''
+                        ) {
+                            const texto = String(valor).trim();
+                            if (texto !== '') {
+                                valores.push(texto);
+                            }
+                        }
+                    });
+
+                    // ==========================================
+                    // UNIDADES DEL CATÁLOGO OTS
+                    // ==========================================
+                    if (Array.isArray(this.catalogoUnidadesOTS)) {
+                        this.catalogoUnidadesOTS.forEach(unidad => {
+                            if ( unidad !== null && unidad !== undefined && unidad !== ''
+                            ) {
+                                const texto = String(unidad).trim();
+                                if (texto !== '') {
+                                    valores.push(texto);
+                                }
+                            }
+                        });
+                    }
+
+                    // ==========================================
+                    // ELIMINAR DUPLICADOS
+                    // ==========================================
+                    const unicos = new Map();
+                    valores.forEach(valor => {
+                        const texto = String(valor).trim();
+                        const clave = texto.toLowerCase();
+                        if (!unicos.has(clave)) {
+                            unicos.set(clave, texto);
+                        }
+                    });
+                    return Array.from(unicos.values());
+                },
+
+
+          obtenerOpcionesCatalogo(campo) {
+            const valores = this.catalogoImpactosAmbientalesEAD.map(item => item[campo]).filter(valor => valor !== null && valor !== undefined && valor !== '');
             // Eliminar duplicados sin importar mayúsculas/minúsculas
-            const unicos = new Map();
-            valores.forEach(valor => {
-                const texto = String(valor).trim();
-                const clave = texto.toLowerCase();
-                if (!unicos.has(clave)) {
-                    unicos.set(clave, texto);
-                }
-            });
-            return Array.from(unicos.values());
-        },
+              const unicos = new Map();
+              valores.forEach(valor => {
+                  const texto = String(valor).trim();
+                  const clave = texto.toLowerCase();
+                  if (!unicos.has(clave)) {
+                      unicos.set(clave, texto);
+                  }
+              });
+              return Array.from(unicos.values());
+          },
 
 
       consultarImpactoDeProyecto() {
@@ -3196,24 +3336,14 @@ const app = {
                     );
 
                     if (response.data.status === 'success') {
-
                         // Recuperar nombre del indicador
-                        if (
-                            response.data.nombre_indicador !== undefined
-                        ) {
-
+                        if (response.data.nombre_indicador !== undefined) {
                             this.nombre_indicador =
                                 response.data.nombre_indicador;
-
                         }
 
-
                         // Verificar si existen impactos
-                        if (
-                            Array.isArray(response.data.impactos) &&
-                            response.data.impactos.length > 0
-                        ) {
-
+                        if (Array.isArray(response.data.impactos) && response.data.impactos.length > 0) {
 
                             // Cargar impactos existentes
                             this.emisiones_aspectos_ambientales_proyecto_ead =
@@ -3222,7 +3352,6 @@ const app = {
                                     // IMPORTANTE:
                                     // ID del registro de BD
                                     id: impacto.id ?? null,
-
                                     diagrama: impacto.diagrama ?? '',
                                     tipo: impacto.tipo ?? '',
                                     concepto: impacto.concepto ?? '',
@@ -3231,20 +3360,14 @@ const app = {
                                     um: impacto.um ?? '',
                                     co2: impacto.co2 ?? 0,
                                     referencia: impacto.referencia ?? ''
-
                                 }));
-
-
                         } else {
-
-
                             // No existen impactos
                             // Crear una fila nueva
                             this.emisiones_aspectos_ambientales_proyecto_ead = [
 
                                 {
                                     id: null,
-
                                     diagrama: '',
                                     tipo: '',
                                     concepto: '',
@@ -3258,17 +3381,11 @@ const app = {
                             ];
 
                         }
-
-
                     } else {
-
-
                         console.error(
                             'Error al consultar impactos:',
                             response.data
                         );
-
-
                         Swal.fire({
                             icon: 'error',
                             title: 'Error',
@@ -3281,13 +3398,10 @@ const app = {
 
                 })
                 .catch(error => {
-
                     console.error(
                         'Error al consultar los impactos:',
                         error
                     );
-
-
                     Swal.fire({
                         icon: 'error',
                         title: 'Error de conexión',

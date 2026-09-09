@@ -1368,9 +1368,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="modal-body">
                                 <div v-if="select_session_equipo.length>0">
                                    <div class="row">
-                                       <div class="col-12 d-flex flex-column flex-lg-row justify-content-center align-items-center p-4">
+                                       <div class="col-12 d-flex flex-column  justify-content-center align-items-center p-4">
                                         <!-- TARJETA KPIS -->
-                                        <div class="tarjeta_kpis col-12 col-lg-4 text-center m-2">
+                                        <div class="tarjeta_kpis col-12  text-center m-2">
                                                 <div class="input-group mb-3" style="min-width:270px;">
                                                     <label class="input-group-text w-25" style="font-size:0.8em">Nom. Indicador</label>
                                                     <input type="text" class="form-control" v-model="nombre_indicador" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='nombre_indicador'" />
@@ -1472,7 +1472,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-danger btn-boton py-0 ms-2 mt-3" style="font-size: 0.9em;" @click="cancelarDatosKPI()"><i class="bi bi-x-circle-fill"></i> Cancelar</button>
                                             </div>
                                                     <!-- PILARES-->
-                                            <div class="tarjeta_kpisPilaresImpactos col-12 col-lg-8 text-center m-2 h-lg-100">
+                                            <div class="tarjeta_kpisPilaresImpactos col-12 text-center m-2">
                                                 <div class=" text-center">
                                                 <span v-for="(pilar,index) in pilar_estrategico" :key="index">
                                                     <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model="pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID, pilar.pilarNombre)" /><label>{{ pilar.pilarNombre }}</label>
@@ -1529,7 +1529,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <!-- CUERPO -->
                                                     <div class="card-body p-0">
                                                         <div class="table-responsive">
-
                                                             <table class="table table-bordered table-hover align-middle mb-0">
 
                                                                 <!-- ENCABEZADO -->
@@ -1631,16 +1630,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                     :key="valor"
                                                                                     :value="valor"
                                                                                 ></option>
-
                                                                             </datalist>
-
-
-
                                                                         </td>
 
                                                                         <!-- CONCEPTO -->
                                                                         <td>
-
                                                                           <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
@@ -1649,15 +1643,15 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                 list="catalogo-conceptos"
                                                                             >
 
-                                                                            <datalist id="catalogo-conceptos">
+                                                                           <datalist id="catalogo-conceptos">
+                                                                                    <option
+                                                                                        v-for="valor in obtenerOpcionesConceptos()"
+                                                                                        :key="valor"
+                                                                                        :value="valor"
+                                                                                    ></option>
 
-                                                                                <option
-                                                                                    v-for="valor in obtenerOpcionesCatalogo('concepto')"
-                                                                                    :key="valor"
-                                                                                    :value="valor"
-                                                                                ></option>
+                                                                                </datalist>
 
-                                                                            </datalist>
                                                                         </td>
 
                                                                         <!-- ALCANCE -->
@@ -1699,18 +1693,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                         </td>
 
                                                                         <!-- UM -->
-                                                                        <td>
-                                                                           <input
+                                                                       <td>
+                                                                            <input
                                                                                 type="text"
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.um"
                                                                                 placeholder="kWh/Año"
-                                                                                list="catalogo-um"
-                                                                            >
+                                                                                list="catalogo-um">
+
                                                                             <datalist id="catalogo-um">
 
                                                                                 <option
-                                                                                    v-for="valor in obtenerOpcionesCatalogo('um')"
+                                                                                    v-for="valor in obtenerOpcionesUM()"
                                                                                     :key="valor"
                                                                                     :value="valor"
                                                                                 ></option>

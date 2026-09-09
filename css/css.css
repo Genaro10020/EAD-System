@@ -229,8 +229,7 @@ table,
 }
 
 .tarjeta_kpisPilaresImpactos {
-    font-size: 13px;
-    height: auto;
+  
     /* Altura automática según el contenido */
     border-radius: 10px;
     /* Borde redondeado */
@@ -1012,6 +1011,7 @@ button {
     .h-lg-100 {
         height: 100% !important;
     }
+   
 
      .w-lg-50 {
         width: 50% !important;
@@ -1035,6 +1035,9 @@ button {
 
     .text-ezquierdo-form {
         font-size: 0.9em;
+    }
+     .h-xxl-100 {
+        height: 100% !important;
     }
 
 }
