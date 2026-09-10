@@ -5117,8 +5117,7 @@ const app = {
     },
 
     graficaCumplimientoProyectos() {
-      console.log("Iniciando grafica cumplimiento", this.totalCumplieron)
-      const canvas = document.getElementById('canvaCumplimientoProyectos');totalCumplieron
+      const canvas = document.getElementById('canvaCumplimientoProyectos');
       if (!canvas) {
         console.error("No se pudo obtener la referencia al elemento canvas.");
         return;
@@ -5127,34 +5126,31 @@ const app = {
       if (existingChart) {
         existingChart.destroy();
       }
-      var nombreArea = this.areas.map(element => {
-        if (element.id === this.select_area) {
-          return element.nombre
-        }
-      }).filter(nombre => nombre !== undefined)[0];
 
-      var totalCumplimiento = this.totalCumplieron;
+      const areaObj = this.areas.find(element => element.id === this.select_area);
+      const nombreArea = areaObj ? areaObj.nombre : '';
+
       new Chart(canvas, {
         type: 'bar',
         data: {
-          labels: this.meses,
+          labels: this.etiquetasCumplimientoProyectos,
           datasets: [{
             label: '%',
             data: this.porcentajePorMes,
             borderWidth: 1,
-            backgroundColor: this.porcentajePorMes.map((valor, index) => {
+            backgroundColor: this.porcentajePorMes.map((valor) => {
               if (valor >= this.minimoCumplimiento) {
-                return 'rgba(31, 128, 29, 0.8)'  // Color Verde
-              } else if (valor < this.minimoCumplimiento) {
-                return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
+                return 'rgba(31, 128, 29, 0.8)';
+              } else {
+                return 'rgba(227, 18, 18, 0.8)';
               }
             }),
-            borderColor: 'rgba(107, 154, 204, 0.6)' // Borde del mismo color sin opacidad
+            borderColor: 'rgba(107, 154, 204, 0.6)'
           }],
         },
         options: {
           plugins: {
-            legend: { //legend es para eliminar el boton que oculta y aparece las barras
+            legend: {
               display: false
             },
             title: {
@@ -5169,13 +5165,14 @@ const app = {
             x: {
               ticks: {
                 font: {
-                  size: 20, // Cambia el tamaño de la fuente aquí
+                  size: 16,
                   weight: ''
                 }
               }
             },
             y: {
-              beginAtZero: true
+              beginAtZero: true,
+              max: 100
             }
           }
         },
@@ -5183,10 +5180,14 @@ const app = {
           afterDatasetsDraw: (chart) => {
             this.porcentajePorMes.forEach((data, index) => {
               chart.ctx.fillStyle = 'black';
-              chart.ctx.font = '22px Arial';
+              chart.ctx.font = '18px Arial';
               chart.ctx.textAlign = 'center';
               chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data) + '%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
+              chart.ctx.fillText(
+                this.formatoNumero(data) + '%', 
+                chart.getDatasetMeta(0).data[index].x, 
+                chart.getDatasetMeta(0).data[index].y - 25
+              );
             });
           }
         }]
