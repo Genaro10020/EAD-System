@@ -129,26 +129,44 @@ function consultarImpactosAmbientales($nombre_indicador, $id_equipo) {
 function guardarImpacto($datos) {
 
     global $conexion;
+
+    // ============================================================
+    // INCLUIR CONEXIÓN OTS
+    // ============================================================
+
+    include("conexionOTS.php");
+
+    // Guardamos la conexión OTS en una variable independiente
+    $conexionOTS = $conexion;
+
+    // Restauramos la conexión de Ghonher
+    include("conexionGhoner.php");
+
+
     // ============================================================
     // VALIDAR DATOS GENERALES
     // ============================================================
 
     if (!is_array($datos) || empty($datos)) {
+        $conexionOTS->close();
+
         return [
             "status" => "error",
             "message" => "No se recibieron datos."
         ];
-
     }
 
     $nombre_indicador = trim(
         $datos['nombre_indicador'] ?? ''
     );
+
     $id_equipo = $datos['id_equipo'] ?? '';
     $impactos = $datos['impactos'] ?? [];
 
     // Validar datos generales
     if ($nombre_indicador === '' || $id_equipo === '') {
+        $conexionOTS->close();
+
         return [
             "status" => "error",
             "message" => "Faltan datos del indicador o del equipo."
@@ -157,11 +175,12 @@ function guardarImpacto($datos) {
 
     // Validar impactos
     if (!is_array($impactos)) {
+        $conexionOTS->close();
+
         return [
             "status" => "error",
             "message" => "Los impactos ambientales no tienen un formato válido."
         ];
-
     }
 
 
@@ -170,23 +189,29 @@ function guardarImpacto($datos) {
     // ============================================================
 
     $conexion->begin_transaction();
+
     try {
+
         // ========================================================
         // 1. OBTENER LOS IDS ACTUALES DE LA BASE DE DATOS
         // ========================================================
+
         $consultaIds = "
             SELECT id
             FROM reportes_impactos_ambientales_proyectos
             WHERE nombre_indicador = ?
             AND id_equipo = ?
         ";
+
         $stmtIds = $conexion->prepare($consultaIds);
+
         if (!$stmtIds) {
             throw new Exception(
                 "Error al preparar consulta de IDs: " .
                 $conexion->error
             );
         }
+
         $stmtIds->bind_param(
             "si",
             $nombre_indicador,
@@ -200,15 +225,16 @@ function guardarImpacto($datos) {
             );
         }
 
-
         $resultadoIds = $stmtIds->get_result();
 
-        // Guardar IDs que actualmente existen en BD
         $idsExistentes = [];
+
         while ($fila = $resultadoIds->fetch_assoc()) {
             $idsExistentes[] = (int)$fila['id'];
         }
+
         $stmtIds->close();
+
 
         // ========================================================
         // 2. PREPARAR UPDATE
@@ -231,6 +257,7 @@ function guardarImpacto($datos) {
         ";
 
         $stmtUpdate = $conexion->prepare($actualizar);
+
         if (!$stmtUpdate) {
             throw new Exception(
                 "Error al preparar UPDATE: " .
@@ -242,6 +269,7 @@ function guardarImpacto($datos) {
         // ========================================================
         // 3. PREPARAR INSERT
         // ========================================================
+
         $insertar = "
             INSERT INTO reportes_impactos_ambientales_proyectos
             (
@@ -266,18 +294,63 @@ function guardarImpacto($datos) {
                 "Error al preparar INSERT: " .
                 $conexion->error
             );
-
         }
 
 
         // ========================================================
-        // 4. RECORRER IMPACTOS RECIBIDOS
+        // 4. PREPARAR CONSULTA OTS
+        // ========================================================
+
+        $consultaOTS = "
+            SELECT id
+            FROM impacto_ambiental
+            WHERE nombre = ?
+            AND unidad = ?
+            LIMIT 1
+        ";
+
+        $stmtOTS = $conexionOTS->prepare($consultaOTS);
+
+        if (!$stmtOTS) {
+            throw new Exception(
+                "Error al preparar consulta OTS: " .
+                $conexionOTS->error
+            );
+        }
+
+
+        // ========================================================
+        // 5. PREPARAR INSERT OTS
+        // ========================================================
+
+        $insertarOTS = "
+            INSERT INTO impacto_ambiental
+            (
+                nombre,
+                unidad
+            )
+            VALUES (?, ?)
+        ";
+
+        $stmtInsertOTS = $conexionOTS->prepare($insertarOTS);
+
+        if (!$stmtInsertOTS) {
+            throw new Exception(
+                "Error al preparar INSERT OTS: " .
+                $conexionOTS->error
+            );
+        }
+
+
+        // ========================================================
+        // 6. RECORRER IMPACTOS RECIBIDOS
         // ========================================================
 
         $idsRecibidos = [];
 
         $cantidadInsertados = 0;
         $cantidadActualizados = 0;
+        $cantidadOTSInsertados = 0;
 
 
         foreach ($impactos as $impacto) {
@@ -286,7 +359,13 @@ function guardarImpacto($datos) {
             // ID
             // ----------------------------------------------------
 
-            $id = ( isset($impacto['id']) && $impacto['id'] !== '' && $impacto['id'] !== null) ? (int)$impacto['id'] : null;
+            $id = (
+                isset($impacto['id']) &&
+                $impacto['id'] !== '' &&
+                $impacto['id'] !== null
+            )
+                ? (int)$impacto['id']
+                : null;
 
 
             // ----------------------------------------------------
@@ -295,15 +374,19 @@ function guardarImpacto($datos) {
 
             $diagrama =
                 $impacto['diagrama'] ?? '';
+
             $tipo =
                 $impacto['tipo'] ?? '';
+
             $concepto =
                 $impacto['concepto'] ?? '';
 
-            $alcance = (isset($impacto['alcance']) && $impacto['alcance'] !== '')
+            $alcance = (
+                isset($impacto['alcance']) &&
+                $impacto['alcance'] !== ''
+            )
                 ? (int)$impacto['alcance']
                 : null;
-
 
             $cantidad = (
                 isset($impacto['cantidad']) &&
@@ -312,10 +395,8 @@ function guardarImpacto($datos) {
                 ? (float)$impacto['cantidad']
                 : null;
 
-
             $um =
                 $impacto['um'] ?? '';
-
 
             $co2 = (
                 isset($impacto['co2']) &&
@@ -324,9 +405,68 @@ function guardarImpacto($datos) {
                 ? (float)$impacto['co2']
                 : null;
 
-
             $referencia =
                 $impacto['referencia'] ?? '';
+
+
+            // ====================================================
+            // REGISTRAR EN impacto_ambiental DE OTS
+            // ====================================================
+
+            if (
+                trim($concepto) !== '' &&
+                trim($um) !== ''
+            ) {
+
+                $nombreOTS =
+                    trim($concepto) .
+                    " (" .
+                    trim($um) .
+                    ")";
+
+
+                // ------------------------------------------------
+                // VERIFICAR SI YA EXISTE
+                // ------------------------------------------------
+
+                $stmtOTS->bind_param(
+                    "ss",
+                    $nombreOTS,
+                    $um
+                );
+
+                if (!$stmtOTS->execute()) {
+                    throw new Exception(
+                        "Error al verificar impacto ambiental OTS: " .
+                        $stmtOTS->error
+                    );
+                }
+
+                $resultadoOTS = $stmtOTS->get_result();
+
+
+                // ------------------------------------------------
+                // SI NO EXISTE, INSERTAR
+                // ------------------------------------------------
+
+                if ($resultadoOTS->num_rows === 0) {
+
+                    $stmtInsertOTS->bind_param(
+                        "ss",
+                        $nombreOTS,
+                        $um
+                    );
+
+                    if (!$stmtInsertOTS->execute()) {
+                        throw new Exception(
+                            "Error al insertar impacto ambiental OTS: " .
+                            $stmtInsertOTS->error
+                        );
+                    }
+
+                    $cantidadOTSInsertados++;
+                }
+            }
 
 
             // ====================================================
@@ -334,23 +474,24 @@ function guardarImpacto($datos) {
             // ====================================================
 
             if ($id !== null) {
-                // Guardar ID recibido
+
                 $idsRecibidos[] = $id;
 
                 $stmtUpdate->bind_param(
-                "sssidsdsiis",
-                $diagrama,
-                $tipo,
-                $concepto,
-                $alcance,
-                $cantidad,
-                $um,
-                $co2,
-                $referencia,
-                $id,
-                $id_equipo,
-                $nombre_indicador
-            );
+                    "sssidsdsiis",
+                    $diagrama,
+                    $tipo,
+                    $concepto,
+                    $alcance,
+                    $cantidad,
+                    $um,
+                    $co2,
+                    $referencia,
+                    $id,
+                    $id_equipo,
+                    $nombre_indicador
+                );
+
                 if (!$stmtUpdate->execute()) {
                     throw new Exception(
                         "Error al actualizar el impacto ID " .
@@ -358,13 +499,17 @@ function guardarImpacto($datos) {
                         $stmtUpdate->error
                     );
                 }
+
                 $cantidadActualizados++;
             }
+
 
             // ====================================================
             // CASO 2: INSERT
             // ====================================================
+
             else {
+
                 $stmtInsert->bind_param(
                     "issssidsds",
                     $id_equipo,
@@ -379,39 +524,38 @@ function guardarImpacto($datos) {
                     $referencia
                 );
 
-
                 if (!$stmtInsert->execute()) {
-
                     throw new Exception(
                         "Error al insertar el impacto: " .
                         $stmtInsert->error
                     );
-
                 }
+
                 $cantidadInsertados++;
-
             }
-
         }
 
+
         // ========================================================
-        // 5. ELIMINAR IMPACTOS QUE YA NO VIENEN DEL FRONTEND
+        // 7. ELIMINAR IMPACTOS QUE YA NO VIENEN DEL FRONTEND
         // ========================================================
 
         foreach ($idsExistentes as $idExistente) {
+
             if (!in_array(
                 $idExistente,
                 $idsRecibidos,
                 true
             )) {
+
                 $eliminar = "
                     DELETE FROM reportes_impactos_ambientales_proyectos
                     WHERE id = ?
                     AND id_equipo = ?
                     AND nombre_indicador = ?
                 ";
-                $stmtDelete =$conexion->prepare($eliminar);
 
+                $stmtDelete = $conexion->prepare($eliminar);
 
                 if (!$stmtDelete) {
                     throw new Exception(
@@ -419,12 +563,14 @@ function guardarImpacto($datos) {
                         $conexion->error
                     );
                 }
+
                 $stmtDelete->bind_param(
                     "iis",
                     $idExistente,
                     $id_equipo,
                     $nombre_indicador
                 );
+
                 if (!$stmtDelete->execute()) {
                     throw new Exception(
                         "Error al eliminar el impacto ID " .
@@ -432,53 +578,83 @@ function guardarImpacto($datos) {
                         $stmtDelete->error
                     );
                 }
+
                 $stmtDelete->close();
-
             }
-
         }
 
+
         // ========================================================
-        // 6. CERRAR STATEMENTS
+        // 8. CERRAR STATEMENTS
         // ========================================================
+
         $stmtUpdate->close();
         $stmtInsert->close();
+        $stmtOTS->close();
+        $stmtInsertOTS->close();
+
 
         // ========================================================
-        // 7. CONFIRMAR TRANSACCIÓN
+        // 9. CONFIRMAR TRANSACCIÓN GHONER
         // ========================================================
+
         $conexion->commit();
 
+
         // ========================================================
-        // 8. RESPUESTA
+        // 10. CERRAR CONEXIÓN OTS
         // ========================================================
+
+        $conexionOTS->close();
+
+
+        // ========================================================
+        // 11. RESPUESTA
+        // ========================================================
+
         return [
             "status" => "success",
-            "message" => "Impactos ambientales sincronizados correctamente.",
-            "insertados" => $cantidadInsertados,
-            "actualizados" => $cantidadActualizados,
-            "eliminados" => count(
-                array_diff(
-                    $idsExistentes,
-                    $idsRecibidos
-                )
-            ),
+            "message" =>
+                "Impactos ambientales sincronizados correctamente.",
+
+            "insertados" =>
+                $cantidadInsertados,
+
+            "actualizados" =>
+                $cantidadActualizados,
+
+            "eliminados" =>
+                count(
+                    array_diff(
+                        $idsExistentes,
+                        $idsRecibidos
+                    )
+                ),
+
+            "impactos_ots_insertados" =>
+                $cantidadOTSInsertados,
+
             "cantidad" =>
                 $cantidadInsertados +
                 $cantidadActualizados
         ];
+
+
     } catch (Exception $e) {
-        // ========================================================
-        // DESHACER TODO SI OCURRE UN ERROR
-        // ========================================================
+
         $conexion->rollback();
+
+        if ($conexionOTS) {
+            $conexionOTS->close();
+        }
+
         return [
             "status" => "error",
             "message" => $e->getMessage()
         ];
-
     }
 }
+
 
 
 function eliminarImpacto($datos) {
