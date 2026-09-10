@@ -431,6 +431,7 @@ const app = {
       idsEquipo: [],
       totalCumplieron: [],
       porcentajePorMes: [],
+      etiquetasCumplimientoProyectos: [],
       minimoCumplimiento: 70,
       arraywhitDate: [],
 
@@ -5130,7 +5131,7 @@ const app = {
 
     graficaCumplimientoProyectos() {
       console.log("Iniciando grafica cumplimiento", this.totalCumplieron)
-      const canvas = document.getElementById('canvaCumplimientoProyectos');
+      const canvas = document.getElementById('canvaCumplimientoProyectos');totalCumplieron
       if (!canvas) {
         console.error("No se pudo obtener la referencia al elemento canvas.");
         return;
