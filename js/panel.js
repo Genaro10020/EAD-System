@@ -5003,130 +5003,117 @@ const app = {
       }, 50);// sin animación
     },
     consultarCumplimientoProyectos() {
-       /* let stringIdsEq = JSON.parse(this.idsEquipo)
-       console.log("Equipos ids string",stringIdsEq) */;
       axios.post("cumplimientoProyectosController.php", {
-        /* parámetros de consulta */
         accion: "Consultar",
         area: this.select_area,
         anio: this.anio_bateo,
-        idsEquipos: this.idsEquipo,/* 
-          proyectos: this.cumplimiento_scorecard, */
-
+        idsEquipos: this.idsEquipo,
       }).then(response => {
-        // Manejar la respuesta exitosa
+        const proyectos = response.data || [];
 
-        /* var  dcreOincre = response.data.map(element => element.tipo);
-        console.log("jjejej", dcreOincre); */
-        // Los datos que se retornan del servidor
-        console.log("Respuesta consulta proyectos kpis", response.data);
-        const proyectos = response.data;
-
-        /* if(response.data!=''){ */
-        var proyectoMasReciente = Object.values(
-          proyectos.reduce((acc, item) => {
-            const clave = `${item.id_equipo}-${item.mes_cierre}`;
-            if (!acc[clave] || parseInt(item.semana) > parseInt(acc[clave].semana)) {
-              acc[clave] = item; // guarda solo el de mayor semana
-            }
-            return acc;
-          }, {})
-        )
-
-
-          this.meses.forEach((mes) => {
-            let cumplidos = 0;
-            let proyectos = []; 
-
-            proyectoMasReciente.forEach(items => {
-
-              if (items.mes_cierre == mes) {
-                let datoMetaCalculada = parseFloat(items.meta_calculada);
-                let datoMensual = parseFloat(items.dato_semanal);
-
-                if (items.tipo == 'Decremento' || items.tipo == '') {
-
-                  if (datoMensual <= datoMetaCalculada) {
-                    items.cumplio = 1;
-                    cumplidos++;
-                    items.proyectos_cumplieron = items.nombre_indicador;
-                    proyectos.push(items.nombre_indicador); 
-                  } else {
-                    items.cumplio = 0;
-                  }
-
-                } else if (items.tipo == 'Incremento') {
-
-                  if (datoMensual >= datoMetaCalculada) {
-                    items.cumplio = 1;
-                    cumplidos++;
-                    items.proyectos_cumplieron = items.nombre_indicador;
-                    proyectos.push(items.nombre_indicador); 
-                  } else {
-                    items.cumplio = 0;
-                  }
-                }
-
-                items.cumplidos = cumplidos;
-              }
-            });
-
-            console.log(mes, cumplidos, proyectos); 
-          });
-        let ultimoPorMes = {};
-        let totalCumplieron = [];
-        proyectoMasReciente.forEach(item => {
-          let mes = item.mes_cierre;
-          ultimoPorMes[mes] = {
-            mes_cierre: mes,
-            cumplidos: item.cumplidos,
-            proyectos: item.proyectos_cumplieron  // ya viene sumado en tu dato
-          }; // siempre sobrescribe → queda el último
-        });
-        console.log("HOLAA", proyectoMasReciente);
-
-
-
-        console.log("ultimodeMes??", ultimoPorMes);
-        /* this.meses.forEach((mes) => {
-          totalCumplieron = Object.values(ultimoPorMes).filter(item=>item.mes_cierre == mes)
-        });  */
-
-        totalCumplieron = this.meses.map(mes => {
-          return ultimoPorMes[mes]?.cumplidos || 0;
-        });
-        console.log("totalCumplieron: ", totalCumplieron);
-        let cantProyectos = Object.keys(this.cumplimiento_scorecard).length
-        console.log("Cantidad de proyectos:", cantProyectos);
-
-        this.porcentajePorMes = this.meses.map((mes, index) => {
-          return +((totalCumplieron[index] / cantProyectos) * 100).toFixed(2)
-        });
-
-
-        /* this.porcentajePorMes = [...new Set(this.porcentajePorMes)]; */
-        console.log("porcentaje ", this.porcentajePorMes);
-        /* let porcentajeMes = [...this.porcentajePorMes]
-        console.log("porcentajeMes ",porcentajeMes); */
-
-        console.log("TOTAL CUMPLIERON", totalCumplieron);
-        this.totalCumplieron = totalCumplieron;
-        console.log("proyectos??", this.cumplimiento_scorecard);
-        console.log("sjsjsj", this.minimoCumplimiento);
-        this.graficaCumplimientoProyectos();
-
-        /* }else{ */
-        /* const canvas = document.getElementById('canvaCumplimientoProyectos');
-        let existingChart = Chart.getChart(canvas);
-        if (existingChart) {
-          existingChart.destroy();
+        if (!Array.isArray(proyectos) || proyectos.length === 0) {
+          this.etiquetasCumplimientoProyectos = [];
+          this.totalCumplieron = [];
+          this.porcentajePorMes = [];
+          this.graficaCumplimientoProyectos();
+          return;
         }
-      } */
-      })
-        .catch(error => {
-          // Manejar cualquier error
-          console.error('Hubo un error al realizar la solicitud GET:', error);
+
+        const cantProyectos = Object.keys(this.cumplimiento_scorecard).length || this.idsEquipo.length || 1;
+
+        const mesesCerrados = [];
+        this.meses.forEach(mes => {
+          const existeMes = proyectos.some(item => item.mes_cierre === mes);
+          if (existeMes) {
+            mesesCerrados.push(mes);
+          }
         });
+
+        const semanasAbiertasSet = new Set();
+        proyectos.forEach(item => {
+          if (!item.mes_cierre || item.mes_cierre.trim() === '') {
+            if (item.semana !== null && item.semana !== undefined && item.semana !== '') {
+              semanasAbiertasSet.add(parseInt(item.semana));
+            }
+          }
+        });
+
+        const semanasAbiertas = Array.from(semanasAbiertasSet).sort((a, b) => a - b);
+
+        const evaluarCumplimiento = (item) => {
+          const meta = parseFloat(item.meta_calculada);
+          const dato = parseFloat(item.dato_semanal);
+          if (isNaN(meta) || isNaN(dato)) return false;
+
+          if (item.tipo === 'Incremento') {
+            return dato >= meta;
+          } else {
+            return dato <= meta;
+          }
+        };
+
+        const etiquetas = [];
+        const totalCumplieron = [];
+        const porcentajePorPeriodo = [];
+
+        mesesCerrados.forEach(mes => {
+          etiquetas.push('Mes ' + mes);
+
+          const proyectosMes = proyectos.filter(item => item.mes_cierre === mes);
+          const corteMesPorEquipo = Object.values(
+            proyectosMes.reduce((acc, item) => {
+              const id = item.id_equipo;
+              if (!acc[id] || parseInt(item.semana) > parseInt(acc[id].semana)) {
+                acc[id] = item;
+              }
+              return acc;
+            }, {})
+          );
+
+          let cumplidos = 0;
+          corteMesPorEquipo.forEach(item => {
+            if (evaluarCumplimiento(item)) {
+              cumplidos++;
+            }
+          });
+
+          totalCumplieron.push(cumplidos);
+          porcentajePorPeriodo.push(+((cumplidos / cantProyectos) * 100).toFixed(2));
+        });
+
+        semanasAbiertas.forEach(semana => {
+          etiquetas.push('Semana ' + semana);
+
+          const proyectosSemana = proyectos.filter(item => 
+            (!item.mes_cierre || item.mes_cierre.trim() === '') && parseInt(item.semana) === semana
+          );
+
+          const registrosPorEquipo = Object.values(
+            proyectosSemana.reduce((acc, item) => {
+              acc[item.id_equipo] = item;
+              return acc;
+            }, {})
+          );
+
+          let cumplidos = 0;
+          registrosPorEquipo.forEach(item => {
+            if (evaluarCumplimiento(item)) {
+              cumplidos++;
+            }
+          });
+
+          totalCumplieron.push(cumplidos);
+          porcentajePorPeriodo.push(+((cumplidos / cantProyectos) * 100).toFixed(2));
+        });
+
+        this.etiquetasCumplimientoProyectos = etiquetas;
+        this.totalCumplieron = totalCumplieron;
+        this.porcentajePorMes = porcentajePorPeriodo;
+
+        this.graficaCumplimientoProyectos();
+      }).catch(error => {
+        console.error('Hubo un error al realizar la consulta de proyectos:', error);
+      });
     },
 
     graficaCumplimientoProyectos() {
