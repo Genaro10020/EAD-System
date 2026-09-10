@@ -4910,88 +4910,70 @@ const app = {
       return mesData ? mesData.puntos : '';
     },
     graficaBateo() {
-      console.log("Iniciando grafica bateo")
+      this.$nextTick(() => {
+        const canvas = document.getElementById('canvaBateo');
+        if (!canvas) {
+          console.error("No se pudo obtener la referencia al elemento canvas.");
+          return;
+        }
+        let existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+          existingChart.destroy();
+        }
+        const porcentajeArribaDe850 = this.porcentajeArribaDe850 || [];
 
-      const canvas = document.getElementById('canvaBateo');
-      if (!canvas) {
-        console.error("No se pudo obtener la referencia al elemento canvas.");
-        return;
-      }
-      let existingChart = Chart.getChart(canvas);
-      if (existingChart) {
-        existingChart.destroy();
-      }
-      porcentajeArribaDe850 = this.porcentajeArribaDe850 || [];
+        const data = this.meses.map((mes, index) => {
+          const mesKey = (index + 1).toString();
+          return porcentajeArribaDe850[mesKey] ? parseFloat(porcentajeArribaDe850[mesKey]) : null;
+        });
+        console.log("Datos para la gráfica de BATEO:", data);
 
-      // Crear un arreglo de datos que tenga el mismo orden que this.meses
-      const data = this.meses.map((mes, index) => {
-        // Los meses en porcentajeArribaDe850 empiezan desde 2 (Febrero)
-        const mesKey = (index + 1).toString(); // porque los keys están como strings "2", "3", etc.
-        return porcentajeArribaDe850[mesKey] ? parseFloat(porcentajeArribaDe850[mesKey]) : null;
-      });
-      console.log("Datos para la gráfica de BATEO:", data);
-
-      new Chart(canvas, {
-        type: 'bar',
-        data: {
-          labels: this.meses,
-          datasets: [{
-            label: '%',
-            data: data,
-            borderWidth: 1,
-            backgroundColor: data.map((valor, index) => {
-              if (valor > 50) {
-                return 'rgba(31, 128, 29, 0.8)'  // Color Verde
-              } else if (valor < 50) {
-                return 'rgba(227, 18, 18, 0.8)' // Color rojo con opacidad
-              } else if (valor == 50) {
-                return 'rgba(242, 206, 68, 0.8)' // Color amarillo con opacidad
+        new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: this.meses,
+            datasets: [{
+              label: '%',
+              data: data,
+              borderWidth: 1,
+              backgroundColor: data.map((valor) => {
+                if (valor > 50) return 'rgba(31, 128, 29, 0.8)';
+                if (valor < 50) return 'rgba(227, 18, 18, 0.8)';
+                return 'rgba(242, 206, 68, 0.8)';
+              }),
+              borderColor: 'rgba(8, 80, 158, 0.6)'
+            }],
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: `Indicador del éxito ScoreCard ${this.anio_bateo}`,
+                font: { size: 18 }
               }
-            }), // Color azul con opacidad
-            borderColor: 'rgba(8, 80, 158, 0.6)' // Borde del mismo color sin opacidad
-          }],
-        },
-        options: {
-          plugins: {
-            legend: { //legend es para eliminar el boton que oculta y aparece las barras
-              display: false
             },
-            title: {
-              display: true,
-              text: `Indicador del éxito ScoreCard ${this.anio_bateo}`,
-              font: {
-                size: 18
-              },
+            scales: {
+              x: { ticks: { font: { size: 20 } } },
+              y: { beginAtZero: true }
             }
           },
-          scales: {
-            x: {
-              ticks: {
-                font: {
-                  size: 20, // Cambia el tamaño de la fuente aquí
-                  weight: ''
+          plugins: [{
+            afterDatasetsDraw: (chart) => {
+              data.forEach((val, index) => {
+                if (val !== null && val !== undefined) {
+                  chart.ctx.fillStyle = 'black';
+                  chart.ctx.font = '22px Arial';
+                  chart.ctx.textAlign = 'center';
+                  chart.ctx.textBaseline = 'top';
+                  chart.ctx.fillText(this.formatoNumero(val) + '%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
                 }
-              }
-            },
-            y: {
-              beginAtZero: true
+              });
             }
-          }
-        },
-        plugins: [{
-          afterDatasetsDraw: (chart) => {
-            data.forEach((data, index) => {
-              chart.ctx.fillStyle = 'black';
-              chart.ctx.font = '22px Arial';
-              chart.ctx.textAlign = 'center';
-              chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(this.formatoNumero(data) + '%', chart.getDatasetMeta(0).data[index].x, chart.getDatasetMeta(0).data[index].y - 25);
-            });
-          }
-        }]
+          }]
+        });
       });
     },
-
 
     consultarAlFondo() {
       this.irAlFondo();
@@ -5117,84 +5099,69 @@ const app = {
     },
 
     graficaCumplimientoProyectos() {
-      const canvas = document.getElementById('canvaCumplimientoProyectos');
-      if (!canvas) {
-        console.error("No se pudo obtener la referencia al elemento canvas.");
-        return;
-      }
-      let existingChart = Chart.getChart(canvas);
-      if (existingChart) {
-        existingChart.destroy();
-      }
+      this.$nextTick(() => {
+        const canvas = document.getElementById('canvaCumplimientoProyectos');
+        if (!canvas) {
+          console.error("No se pudo obtener la referencia al elemento canvas.");
+          return;
+        }
+        let existingChart = Chart.getChart(canvas);
+        if (existingChart) {
+          existingChart.destroy();
+        }
 
-      const areaObj = this.areas.find(element => element.id === this.select_area);
-      const nombreArea = areaObj ? areaObj.nombre : '';
+        const areaObj = this.areas.find(element => element.id === this.select_area);
+        const nombreArea = areaObj ? areaObj.nombre : '';
 
-      new Chart(canvas, {
-        type: 'bar',
-        data: {
-          labels: this.etiquetasCumplimientoProyectos,
-          datasets: [{
-            label: '%',
-            data: this.porcentajePorMes,
-            borderWidth: 1,
-            backgroundColor: this.porcentajePorMes.map((valor) => {
-              if (valor >= this.minimoCumplimiento) {
-                return 'rgba(31, 128, 29, 0.8)';
-              } else {
-                return 'rgba(227, 18, 18, 0.8)';
+        new Chart(canvas, {
+          type: 'bar',
+          data: {
+            labels: this.etiquetasCumplimientoProyectos,
+            datasets: [{
+              label: '%',
+              data: this.porcentajePorMes,
+              borderWidth: 1,
+              backgroundColor: this.porcentajePorMes.map((valor) => {
+                if (valor >= this.minimoCumplimiento) {
+                  return 'rgba(31, 128, 29, 0.8)';
+                } else {
+                  return 'rgba(227, 18, 18, 0.8)';
+                }
+              }),
+              borderColor: 'rgba(107, 154, 204, 0.6)'
+            }],
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              title: {
+                display: true,
+                text: 'Porcentaje de bateo por proyecto ' + nombreArea + ` ${this.anio_bateo}`,
+                font: { size: 18 }
               }
-            }),
-            borderColor: 'rgba(107, 154, 204, 0.6)'
-          }],
-        },
-        options: {
-          plugins: {
-            legend: {
-              display: false
             },
-            title: {
-              display: true,
-              text: 'Porcentaje de bateo por proyecto ' + nombreArea + ` ${this.anio_bateo}`,
-              font: {
-                size: 18
-              },
+            scales: {
+              x: { ticks: { font: { size: 16 } } },
+              y: { beginAtZero: true, max: 100 }
             }
           },
-          scales: {
-            x: {
-              ticks: {
-                font: {
-                  size: 16,
-                  weight: ''
-                }
-              }
-            },
-            y: {
-              beginAtZero: true,
-              max: 100
+          plugins: [{
+            afterDatasetsDraw: (chart) => {
+              this.porcentajePorMes.forEach((data, index) => {
+                chart.ctx.fillStyle = 'black';
+                chart.ctx.font = '18px Arial';
+                chart.ctx.textAlign = 'center';
+                chart.ctx.textBaseline = 'top';
+                chart.ctx.fillText(
+                  this.formatoNumero(data) + '%', 
+                  chart.getDatasetMeta(0).data[index].x, 
+                  chart.getDatasetMeta(0).data[index].y - 25
+                );
+              });
             }
-          }
-        },
-        plugins: [{
-          afterDatasetsDraw: (chart) => {
-            this.porcentajePorMes.forEach((data, index) => {
-              chart.ctx.fillStyle = 'black';
-              chart.ctx.font = '18px Arial';
-              chart.ctx.textAlign = 'center';
-              chart.ctx.textBaseline = 'top';
-              chart.ctx.fillText(
-                this.formatoNumero(data) + '%', 
-                chart.getDatasetMeta(0).data[index].x, 
-                chart.getDatasetMeta(0).data[index].y - 25
-              );
-            });
-          }
-        }]
+          }]
+        });
       });
-    },
-    consultarNombresEquipos() {
-
     },
 
     consultarDatosPonderacionID() {
