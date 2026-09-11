@@ -109,7 +109,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Ponderación'),consultarCriterio(),consultarPonderaciones(),consultarEAD(), toggleMenu()"><b>Ponderación</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios(), toggleMenu()"><b>Graficas</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
-                                    <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(),graficaBateo(), graficaCumplimientoProyectos(), toggleMenu()"><b>Puntos</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(), toggleMenu()"><b>Puntos</b></button></a>
                                 <?php } 
                             }
                             ?>
