@@ -2696,7 +2696,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <label v-else-if="criterio.tipo!='Input' && criterio.id_criterios!=10 ">
                                             <span class="badge bg-danger text-white">Sin valores en gráfica</span>
                                         </label>
-                                        <input class="text-center" v-show="criterio.tipo=='Input'" v-model="inputValorActual[criterio.id_criterios]" @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" :disabled="esLider == 'ColaboradorLider'" :class="esLider == 'ColaboradorLider' ? 'color-disabled':'' "></input>
+                                        <input 
+                                            class="text-center" 
+                                            v-show="criterio.tipo=='Input'" 
+                                            v-model="inputValorActual[criterio.id_criterios]" 
+                                            @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
+                                            :disabled="esLider == 'ColaboradorLider' || hayPonderacion" 
+                                            :class="(esLider == 'ColaboradorLider' || hayPonderacion) ? 'color-disabled' : ''">
+                                        </input>
                                         <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                     </td>
                                     <!--Columna Puntos Obtenidos-->
@@ -2732,7 +2739,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <td :class="puntosEvaluacion[criterio.id_criterios] || puntosEvaluacion[criterio.id_criterios]===0 ? 'columna-color-una':''">
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
                                             <!--<button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input" :disabled = "esLider == 'ColaboradorLider'" :class = "esLider == 'ColaboradorLider' ? 'color-disabled':'' ">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>-->
-                                            <input @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" v-model="inputColumnaPonderacion[criterio.id_criterios]" class=" text-center" :disabled="esLider == 'ColaboradorLider'" :class="esLider == 'ColaboradorLider' ? 'color-disabled':'' "></input>
+                                            <input 
+                                                @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
+                                                v-model="inputColumnaPonderacion[criterio.id_criterios]" 
+                                                class="text-center" 
+                                                :disabled="esLider == 'ColaboradorLider' || hayPonderacion" 
+                                                :class="(esLider == 'ColaboradorLider' || hayPonderacion) ? 'color-disabled' : ''">
+                                            </input>
                                         </label>
                                     </td>
                                     <td :class="puntosEvaluacion[criterio.id_criterios]>=0 ? 'columna-color-cuatro':''"><!--Puntos Evaluados-->
