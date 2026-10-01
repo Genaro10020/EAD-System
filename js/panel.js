@@ -6239,6 +6239,11 @@ const app = {
           console.log("Error en el axios", error);
         });
     },
+    cambiarPonderacionScore() {
+      if (this.ponderacion_score) {
+        this.consultarScoreCard(true);
+      }
+    },
     guardarDatoScoreCard(id_criterio, event) {
       this.guardoNuevoDato = true; // lo utilizo para ejecutar el metodo guardarTotalScoreCard(), despues de ejecutar todos los metodos desencadenados por this.consultarScoreCard()
       if (event && event.target) {
