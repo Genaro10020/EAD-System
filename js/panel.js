@@ -567,6 +567,7 @@ const app = {
 
       sugerencias_colaboradores: [],
       busquedaTimeout: null,
+      hayPonderacion: false,
     };
   },
   watch: {
@@ -6144,9 +6145,9 @@ const app = {
           console.log("Error en axios :-( ", error);
         });
     },
-    async consultarScoreCard(mantenerPonderacion = false) {
+    async consultarScoreCard() {
       if (!this.equipo_score || !this.anio_score || !this.mes_score) {
-        this.ponderacion_score = "";
+        this.hayPonderacion = false;
         this.nombrePonderacionAsignada = "";
         this.criteriosDinamicasSC = [];
         this.puntosEvaluacion = [];
@@ -6159,47 +6160,40 @@ const app = {
       const mes = this.mes_score;
       const mes_numero = this.mesesNumeros(mes);
 
-      if (this.listaPonderaciones.length === 0) {
-        await this.consultarNombrePonderaciones();
-      }
+      let id_ponderacion = null;
 
-      if (!mantenerPonderacion) {
-        try {
-          const resHistorial = await axios.get("scoreCardController.php", {
-            params: {
-              accion: "obtenerPonderacionPeriodo",
-              id_equipo: id_equipo,
-              anio: anio,
-              mes: mes_numero,
-            },
-          });
+      try {
+        const res = await axios.get("scoreCardController.php", {
+          params: {
+            accion: "obtenerPonderacionPeriodo",
+            id_equipo: id_equipo,
+            anio: anio,
+            mes: mes_numero,
+          },
+        });
 
-          if (
-            resHistorial.data &&
-            resHistorial.data[0] === true &&
-            resHistorial.data[1]
-          ) {
-            this.ponderacion_score = resHistorial.data[1];
-          } else {
-            const ponderacionPorAnio = this.ponderacionesFiltradas.find(
-              (p) => p.ponderacion && p.ponderacion.includes(String(anio)),
-            );
-
-            if (ponderacionPorAnio) {
-              this.ponderacion_score = ponderacionPorAnio.id;
-            } else {
-              this.ponderacion_score = this.equipo_score.split("<->")[4] || "";
-            }
-          }
-        } catch (e) {
-          console.error("Error al determinar ponderación del periodo:", e);
-          this.ponderacion_score = this.equipo_score.split("<->")[4] || "";
+        if (res.data && res.data[0] === true && res.data[1]) {
+          const info = res.data[1];
+          this.hayPonderacion = info.hay_ponderacion;
+          id_ponderacion = info.id_ponderacion;
+          this.nombrePonderacionAsignada = info.nombre_ponderacion || "";
+        } else {
+          this.hayPonderacion = false;
         }
+      } catch (error) {
+        console.error("Error al obtener ponderación del periodo:", error);
+        this.hayPonderacion = false;
       }
 
-      const id_ponderacion = this.ponderacion_score;
-      if (!id_ponderacion) {
+      if (!this.hayPonderacion || !id_ponderacion) {
+        this.hayPonderacion = false;
         this.nombrePonderacionAsignada = "";
+        id_ponderacion = this.equipo_score.split("<->")[4] || "";
+      }
+
+      this.ponderacion_score = id_ponderacion;
+
+      if (!id_ponderacion) {
         this.criteriosDinamicasSC = [];
         this.puntosEvaluacion = [];
         this.totalSC = "";
