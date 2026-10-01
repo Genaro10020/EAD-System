@@ -196,21 +196,37 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
                                 $id_ponderacion = (int)$cand["id"];
                                 $nombre_ponderacion = $nombre;
                                 $hay_ponderacion = true;
-                                
+                                break;
+                            }
+                        }
+                    }
+                    else if (preg_match('/([A-Za-z]{3,10})\s*[-–]\s*([A-Za-z]{3,10})\s+(\d{2,4})/i', $nombre, $m)) {
+                        $mInicio = parsearMesTexto($m[1]);
+                        $mFin    = parsearMesTexto($m[2]);
+                        $y       = normalizarAnioInt($m[3]);
+
+                        if ($mInicio && $mFin) {
+                            $idxInicio = ($y * 12) + $mInicio;
+                            $idxFin    = ($y * 12) + $mFin;
+
+                            if ($indiceMesSeleccionado >= $idxInicio && $indiceMesSeleccionado <= $idxFin) {
+                                $id_ponderacion = (int)$cand['id'];
+                                $nombre_ponderacion = $nombre;
+                                $hay_ponderacion = true;
                                 break;
                             }
                         }
                     }
                 }
             }
+            $stmtPond->close();
         }
     }
 
-    $estado = true;
-    return array($estado, array(
-        'hay_ponderacion' => $hay_ponderacion,
-        'id_ponderacion' => $id_ponderacion,
-        'nombre_ponderacion' => $nombre_ponderacion
+    return array(true, array(
+        'hay_ponderacion'     => $hay_ponderacion,
+        'id_ponderacion'      => $id_ponderacion,
+        'nombre_ponderacion'  => $nombre_ponderacion
     ));
 } 
 
