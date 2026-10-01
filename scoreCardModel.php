@@ -157,50 +157,52 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
     }
 
     if (!$hay_ponderacion) {
-        $queryArea = "SELECT area FROM equipos_ead WHERE id = ? LIMIT 1";
-        $stmtArea = $conexion->prepare($queryArea);
-        $nombreArea = "";
-        $idArea = 0;
-        if ($stmtArea) {
-            $stmtArea->bind_param("i", $id_equipo);
-            $stmtArea->execute();
-            $resArea = $stmtArea->get_result();
-            if ($filaArea = $resArea->fetch_assoc()) {
-                $nombreArea = $filaArea['area'] ?? "";
-            }
-            $stmtArea->close();
-        }
+        $qPond = "SELECT p.id, p.ponderacion
+        FROM ponderaciones p
+        INNER JOIN equipos_ead e ON (
+            p.area = e.area
+            OR p.area = (SELECT id FROM areas WHERE nombre = e.area LIMIT 1)
+            OR p.area = 0
+        )
+        WHERE e.id = ?
+        ORDER BY p.id DESC";
 
-        if (!empty($nombreArea)) {
-            $qIdArea = "SELECT id FROM areas WHERE nombre = ? LIMIT 1";
-            $stmtIdArea = $conexion->prepare($qIdArea);
-            if ($stmtIdArea) {
-                $stmtIdArea->bind_param("s", $nombreArea);
-                $stmtIdArea->execute();
-                $resId = $stmtIdArea->get_result();
-                if ($filaId = $resId->fetch_assoc()) {
-                    $idArea = (int)$filaId['id'];
-                }
-                $stmtIdArea->close();
-            }
-        }
-
-        $buscarAnio = "%" . $anio . "%";
-        $qPond = "SELECT id, ponderacion FROM ponderaciones 
-                    WHERE (area = ? OR area = 0) AND ponderacion LIKE ? 
-                    ORDER BY id DESC LIMIT 1";
         $stmtPond = $conexion->prepare($qPond);
         if ($stmtPond) {
-            $stmtPond->bind_param("is", $idArea, $buscarAnio);
+            $stmtPond->bind_param("i", $id_equipo);
             if ($stmtPond->execute()) {
                 $resPond = $stmtPond->get_result();
-                if ($filaPond = $resPond->fetch_assoc()) {
-                    $id_ponderacion = (int)$filaPond['id'];
-                    $nombre_ponderacion = $filaPond['ponderacion'];
-                    $hay_ponderacion = true;
+                $candidatas = [];
+                while ($f = $resPond->fetch_assoc()) {
+                    $candidatas[] = $f;
+                }
+
+                $indiceMesSeleccionado = ($anio * 12) + $mes;
+
+                foreach ($candidatas as $cand) {
+                    $nombre = $cand["ponderacion"];
+
+                    if (preg_match("/([A-Za-z]{3,4})[\/\s]+(\d{2,4})\s*[-–]\s*([A-Za-z]{3,4})[\/\s]+(\d{2,4})/i", $nombre, $m)) {
+                        $mInicio = parsearMexTexto($m[1]);
+                        $yInicio = normalizarAnioInt($m[2]);
+                        $mFin    = parsearMexTexto($m[3]);
+                        $yFin    = normalizarAnioInt($m[4]);
+
+                        if ($mInicio && $mFin) {
+                            $idxInicio = ($yInicio * 12) + $mInicio;
+                            $idxFin    = ($yFin * 12) + $mFin;
+
+                            if ($indiceMesSeleccionado >= $idxInicio && $indiceMesSeleccionado <= $idxFin) {
+                                $id_ponderacion = (int)$cand["id"];
+                                $nombre_ponderacion = $nombre;
+                                $hay_ponderacion = true;
+                                
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-            $stmtPond->close();
         }
     }
 
