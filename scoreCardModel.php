@@ -93,6 +93,28 @@ function consultarInsertarActualizar($id_equipo, $id_ponderacion, $id_criterio, 
     //return "llegue al modelo".$id_equipo.$id_ponderacion.$id_criterio.$input_valor_actual.$input_ponderacion.$mes;
 }
 
+function parsearMexTexto($mesStr)
+{
+    $meses = [
+        "ENE" => 1, "ENERO" => 1,
+        "FEB" => 2, "FEBRERO" => 2,
+        "MAR" => 3, "MARZO" => 3,
+        "ABR" => 4, "ABRIL" => 4,
+        "MAY" => 5, "MAYO" => 5,
+        "JUN" => 6, "JUNIO" => 6,
+        "JUL" => 7, "JULIO" => 7,
+        "AGO" => 8, "AGOSTO" => 8,
+        "SEP" => 9, "SEPTIEMBRE" => 9,
+        "OCTUBRE" => 10, "OCTUBRE" => 10,
+        "NOV" => 11, "NOVIEMBRE" => 11,
+        "DIC" => 12, "DICIEMBRE" => 12,        
+    ];
+
+    $clave = strtoupper(trim($mesStr));
+
+    return $meses[$clave] ?? null;
+}
+
 function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
 {
     global $conexion;
