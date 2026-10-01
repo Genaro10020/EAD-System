@@ -6144,59 +6144,100 @@ const app = {
           console.log("Error en axios :-( ", error);
         });
     },
-    consultarScoreCard() {
+    async consultarScoreCard(mantenerPonderacion = false) {
       if (
         this.equipo_score != "" &&
         this.anio_score != "" &&
         this.mes_score != ""
       ) {
         let id_equipo = this.equipo_score.split("<->")[0];
-        let id_ponderacion = this.equipo_score.split("<->")[4];
         let anio = this.anio_score;
         let mes = this.mes_score;
         let mes_numero = this.mesesNumeros(mes);
+      }
 
-        axios
-          .get("scoreCardController.php", {
+      if (this.listaPonderaciones.length === 0) {
+        await this.consultarNombrePonderaciones();
+      }
+
+      if (!mantenerPonderacion) {
+        try {
+          const resHistorial = await axios.get("scoreCardController.php", {
             params: {
+              accion: "obtenerPonderacionPeriodo",
               id_equipo: id_equipo,
-              id_ponderacion: id_ponderacion,
               anio: anio,
               mes: mes_numero,
             },
-          })
-          .then((response) => {
-            if (response.data[0] === true) {
-              //Para cambiar el css
-              this.inputPonderacionSC = "";
-              //Valor Actual sumas y input dinamicos
-              this.sumasDinamicasSC = [];
-              this.inputValorActual = [];
-              //Puntos Obtenidos Reseteando Columna
-              this.puntosObtenidos = [];
-              //Ponderacion Reseteando Inputs
-              this.inputColumnaPonderacion = [];
-              //puntosEvaluacion Reseteando columna
-              this.puntosEvaluacion = [];
-              //Reseteando dato TOTAL
-              this.totalSC = "";
-              console.log("");
-              //Tomo los datos existentes guardados
-              response.data[1].forEach((elemento) => {
-                this.inputValorActual[elemento.id_criterio] =
-                  elemento.input_valor_actual;
-                this.inputColumnaPonderacion[elemento.id_criterio] =
-                  elemento.input_ponderacion;
-              });
-              this.consultarGraficasParaScoreCard();
-            } else {
-              console.log("sin éxito consulta ScoreCard,response.data");
-            }
-          })
-          .catch((error) => {
-            console.log("Error en el axios", error);
           });
+
+          if (
+            resHistorial.data &&
+            resHistorial.data[0] === true &&
+            resHistorial.data[1]
+          ) {
+            this.ponderacion_score = resHistorial.data[1];
+          } else {
+            const ponderacionPorAnio = this.ponderacionesFiltradas.find(
+              (p) => p.ponderacion && p.ponderacion.includes(String(anio)),
+            );
+
+            if (ponderacionPorAnio) {
+              this.ponderacion_score = ponderacionPorAnio.id;
+            } else {
+              this.ponderacion_score = this.equipo_score.split("<->")[4] || "";
+            }
+          }
+        } catch (e) {
+          console.error("Error al determinar ponderación del periodo: ", e);
+          this.ponderacion_score = this.equipo_score.split("<->")[4] || "";
+        }
       }
+
+      let id_ponderacion = this.ponderacion_score;
+
+      if (!id_ponderacion) {
+        this.nombrePonderacionAsignada = "";
+        this.criteriosDinamicasSC = [];
+        this.puntosEvaluacion = [];
+        this.totalSC = "";
+
+        return;
+      }
+
+      axios
+        .get("scoreCardController.php", {
+          params: {
+            id_equipo: id_equipo,
+            id_ponderacion: id_ponderacion,
+            anio: anio,
+            mes: mes_numero,
+          },
+        })
+        .then((response) => {
+          if (response.data[0] === true) {
+            this.inputPonderacionSC = "";
+            this.sumasDinamicasSC = [];
+            this.inputValorActual = [];
+            this.puntosObtenidos = [];
+            this.inputColumnaPonderacion = [];
+            this.puntosEvaluacion = [];
+            this.totalSC = "";
+
+            response.data[1].forEach((elemento) => {
+              this.inputValorActual[elemento.id_criterio] =
+                elemento.input_valor_actual;
+              this.inputColumnaPonderacion[elemento.id_criterio] =
+                elemento.input_ponderacion;
+            });
+            this.consultarGraficasParaScoreCard();
+          } else {
+            console.log("Sin exito consulta ScoreCard", response.data);
+          }
+        })
+        .catch((error) => {
+          console.log("Error en el axios", error);
+        });
     },
     guardarDatoScoreCard(id_criterio, event) {
       this.guardoNuevoDato = true; // lo utilizo para ejecutar el metodo guardarTotalScoreCard(), despues de ejecutar todos los metodos desencadenados por this.consultarScoreCard()
