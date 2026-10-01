@@ -6255,7 +6255,8 @@ const app = {
       console.log("TOTAL PARA GUARDAR:",total);*/
       let total = 0;
       let id_equipo = this.equipo_score.split("<->")[0];
-      let id_ponderacion = this.equipo_score.split("<->")[4];
+      let id_ponderacion =
+        this.ponderacion_score || this.equipo_score.split("<->")[4];
       let input_valor_actual = this.inputValorActual[id_criterio] ?? ""; //si es null o undefined, se asigna una cadena vacía "".
       let puntos_obtenidos = this.puntosObtenidos[id_criterio] ?? "";
       let input_ponderacion = this.inputColumnaPonderacion[id_criterio] ?? "";
