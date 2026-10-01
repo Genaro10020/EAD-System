@@ -115,6 +115,16 @@ function parsearMexTexto($mesStr)
     return $meses[$clave] ?? null;
 }
 
+function normalizarAnioInt($anioStr)
+{
+    $a = (int)$anioStr;
+    if ($a < 100) {
+        return 2000 + $a;        
+    }
+
+    return $a;
+}
+
 function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
 {
     global $conexion;
