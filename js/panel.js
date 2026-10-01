@@ -6848,7 +6848,8 @@ const app = {
     },
 
     consultarDatosPonderacionID() {
-      let id_ponderacion = this.equipo_score.split("<->")[4];
+      let id_ponderacion =
+        this.ponderacion_score || this.equipo_score.split("<->")[4];
       if (id_ponderacion == "") {
         return Swal.fire({
           title: "Equipo sin ponderacion",
