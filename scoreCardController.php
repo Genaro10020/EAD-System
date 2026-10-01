@@ -7,7 +7,12 @@ if (isset($_SESSION['nombre'])) {
     $resultado = "";
     switch ($_SERVER['REQUEST_METHOD']) {
         case 'GET':
-            if (isset($_GET['id_equipo']) && isset($_GET['id_ponderacion']) && isset($_GET['anio']) && isset($_GET['mes'])) {
+            if (isset($_GET['accion']) && $_GET['accion'] == 'obtenerPonderacionPeriodo' && isset($_GET['id_equipo']) && isset($_GET['anio']) && isset($_GET['mes'])) {
+                $id_equipo = $_GET['id_equipo'];
+                $anio = $_GET['anio'];
+                $mes = $_GET['mes'];
+                $resultado = obtenerPonderacionPeriodo($id_equipo, $anio, $mes);
+            } else if (isset($_GET['id_equipo']) && isset($_GET['id_ponderacion']) && isset($_GET['anio']) && isset($_GET['mes'])) {
                 $id_equipo = $_GET['id_equipo'];
                 $id_ponderacion = $_GET['id_ponderacion'];
                 $anio = $_GET['anio'];
@@ -16,7 +21,6 @@ if (isset($_SESSION['nombre'])) {
             } else {
                 $resultado = "No llegaron las variables para la consulta";
             }
-
             break;
         case 'POST':
             if (isset($arreglo['id_equipo']) && isset($arreglo['id_ponderacion']) && isset($arreglo['id_criterio']) && isset($arreglo['input_valor_actual']) && isset($arreglo['puntos_obtenidos']) && isset($arreglo['input_ponderacion']) && isset($arreglo['anio']) && isset($arreglo['mes'])) {
