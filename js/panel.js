@@ -609,6 +609,23 @@ const app = {
         0,
       );
     },
+    ponderacionesFiltradas() {
+      if (!this.equipo_score) {
+        return this.listaPonderaciones;
+      }
+
+      const areaEquipo = this.equipo_score.split("<->")[3];
+
+      if (!areaEquipo) {
+        return this.listaPonderaciones;
+      }
+
+      const filtradas = this.listaPonderaciones.filter((p) => {
+        return p.nombreArea === areaEquipo || p.area === 0 || !p.nombreArea;
+      });
+
+      return filtradas.length > 0 ? filtradas : this.listaPonderaciones;
+    },
   },
   mounted() {
     this.consultarUsuarios();
