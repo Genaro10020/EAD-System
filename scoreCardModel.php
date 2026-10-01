@@ -135,12 +135,13 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
     $anio = (int)$anio;
     $mes = (int)$mes;
 
-    $consulta = "SELECT sc.id_ponderacion, p.ponderacion 
-                    FROM scorecard sc
-                    LEFT JOIN ponderaciones p ON p.id = sc.id_ponderacion
-                    WHERE sc.id_equipo = ? AND sc.anio = ? AND sc.mes = ? 
-                    AND sc.id_ponderacion IS NOT NULL AND sc.id_ponderacion != 0 
-                    LIMIT 1";
+    $consulta = "SELECT sc.id_ponderacion, p.ponderacion
+                FROM scorecard sc
+                LEFT JOIN ponderaciones p ON p.id = sc.id_ponderacion
+                WHERE sc.id_equipo = ? AND sc.anio = ? AND sc.mes = ?
+                    AND sc.id_ponderacion IS NOT NULL AND sc.id_ponderacion != 0
+                LIMIT 1";
+
     $stmt = $conexion->prepare($consulta);
     if ($stmt) {
         $stmt->bind_param("iii", $id_equipo, $anio, $mes);
