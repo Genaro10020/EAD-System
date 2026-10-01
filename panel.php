@@ -2641,13 +2641,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <option v-for="mes in meses" :value="mes">{{mes}}</option>
                         </select>
                     </div>
-                    <!--<div>
-                            <span class="mx-2">Ponderacion: </span>
-                            <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
-                                <option disabled default value="">Seleccione...</option>
-                                <option v-for="ponderacion in listaPonderaciones" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
-                            </select>
-                        </div>-->
+                    <!-- <div>
+                        <span class="mx-2">Ponderacion: </span>
+                        <select v-model="ponderacion_score" @change="consultarSeguimientoAsistencia(), consultarScoreCard()">
+                            <option disabled default value="">Seleccione...</option>
+                            <option v-for="ponderacion in ponderacionesFiltradas" :value="ponderacion.id">{{ponderacion.ponderacion}}</option>
+                        </select>
+                    </div> -->
                 </div>
                 <div class="col-12  d-flex justify-content-center mt-2">
                     <span v-show="equipo_score.split('<->')[4]==''" class="badge rounded-pill bg-warning text-dark">Equipo sin ponderacion asignada</span>
