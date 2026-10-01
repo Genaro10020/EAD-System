@@ -6129,7 +6129,7 @@ const app = {
       }
     },
     consultarNombrePonderaciones() {
-      axios
+      return axios
         .get("ponderacionesController.php", {
           params: {
             accion: "nombrePonderaciones",
