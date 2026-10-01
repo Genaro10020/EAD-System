@@ -132,6 +132,8 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
     $id_ponderacion = null;
     $nombre_ponderacion = "";
     $hay_ponderacion = false;
+    $anio = (int)$anio;
+    $mes = (int)$mes;
 
     $consulta = "SELECT sc.id_ponderacion, p.ponderacion 
                     FROM scorecard sc
