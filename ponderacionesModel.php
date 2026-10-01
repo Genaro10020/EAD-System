@@ -6,11 +6,15 @@ function consultarTablaPonderaciones()
     global $conexion;
     $estado = false;
     $resultado = array();
-    $consulta = "SELECT * FROM ponderaciones";
+    $consulta = "SELECT ponderaciones.*, areas.nombre AS nombreArea
+                FROM ponderaciones
+                LEFT JOIN areas ON areas.id = ponderaciones.area
+                ORDER BY ponderaciones.id DESC";
+    
     $query = $conexion->query($consulta);
     if ($query) {
         $estado = true;
-        while ($datos = $query->fetch_array()) {
+        while ($datos = $query->fetch_assoc()) {
             $resultado[] = $datos;
         }
     } else {
