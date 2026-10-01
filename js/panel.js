@@ -635,6 +635,7 @@ const app = {
       this.cerrarModalHistorial();
     });
     this.obtenerFecha();
+    this.consultarNombrePonderaciones();
   },
   methods: {
     toggleMenu() {
