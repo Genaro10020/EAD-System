@@ -6145,16 +6145,19 @@ const app = {
         });
     },
     async consultarScoreCard(mantenerPonderacion = false) {
-      if (
-        this.equipo_score != "" &&
-        this.anio_score != "" &&
-        this.mes_score != ""
-      ) {
-        let id_equipo = this.equipo_score.split("<->")[0];
-        let anio = this.anio_score;
-        let mes = this.mes_score;
-        let mes_numero = this.mesesNumeros(mes);
+      if (!this.equipo_score || !this.anio_score || !this.mes_score) {
+        this.ponderacion_score = "";
+        this.nombrePonderacionAsignada = "";
+        this.criteriosDinamicasSC = [];
+        this.puntosEvaluacion = [];
+        this.totalSC = "";
+        return;
       }
+
+      const id_equipo = this.equipo_score.split("<->")[0];
+      const anio = this.anio_score;
+      const mes = this.mes_score;
+      const mes_numero = this.mesesNumeros(mes);
 
       if (this.listaPonderaciones.length === 0) {
         await this.consultarNombrePonderaciones();
@@ -6189,19 +6192,17 @@ const app = {
             }
           }
         } catch (e) {
-          console.error("Error al determinar ponderación del periodo: ", e);
+          console.error("Error al determinar ponderación del periodo:", e);
           this.ponderacion_score = this.equipo_score.split("<->")[4] || "";
         }
       }
 
-      let id_ponderacion = this.ponderacion_score;
-
+      const id_ponderacion = this.ponderacion_score;
       if (!id_ponderacion) {
         this.nombrePonderacionAsignada = "";
         this.criteriosDinamicasSC = [];
         this.puntosEvaluacion = [];
         this.totalSC = "";
-
         return;
       }
 
@@ -6232,7 +6233,7 @@ const app = {
             });
             this.consultarGraficasParaScoreCard();
           } else {
-            console.log("Sin exito consulta ScoreCard", response.data);
+            console.log("Sin éxito consulta ScoreCard", response.data);
           }
         })
         .catch((error) => {
