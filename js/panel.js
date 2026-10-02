@@ -7558,6 +7558,7 @@ const app = {
 
     cancelarPonderacion() {
       this.nueva_ponderacion = false;
+      this.nombre_ponderacion = "";
     },
     inputNuevoNombre(nombre) {
       if (this.inputNewName == nombre) {
