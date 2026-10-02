@@ -2341,8 +2341,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <span v-if="inputNewName!==tablaPonderacion.id_ponderacion" class="badge bg-light text-dark ms-2" @click="inputNuevoNombre(tablaPonderacion.id_ponderacion)">{{tablaPonderacion.ponderacion}} </span>
                                         </div>
                                         <div class="col-3 w-auto p-2">
-                                            <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id!=tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Mostrar',tablaPonderacion.id_ponderacion)">Mostrar</button>
-                                            <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white" v-if="mostrar_ponderacion_id==tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Ocultar',tablaPonderacion.id_ponderacion)">Ocultar</button>
+                                            <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white me-2" v-if="mostrar_ponderacion_id!=tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Mostrar',tablaPonderacion.id_ponderacion)">Mostrar</button>
+                                            <button class="bg-secondary border border-dark-subtle rounded rounded-sm text-white me-2" v-if="mostrar_ponderacion_id==tablaPonderacion.id_ponderacion" type="button" @click="MostrarOcultarPonderacion('Ocultar',tablaPonderacion.id_ponderacion)">Ocultar</button>
+                                            <button class="btn btn-primary btn-sm py-0 px-2 text-white border-0" type="button" @click="copiarPonderacion(tablaPonderacion.id_ponderacion, tablaPonderacion.ponderacion)" title="Copiar y cargar en Nueva Ponderación">
+                                                <i class="bi bi-copy"></i> Copiar
+                                            </button>
                                         </div>
                                         <div v-if="tablaPonderacion.area == 0">
                                             <select v-model="selector_area" @change="insertarArea(tablaPonderacion.id_ponderacion)" style="width:150px;" class=" d-inline form-control select ms-3">
