@@ -880,6 +880,86 @@ const app = {
           //console.log('Axios Erro :-(' + error)
         });
     },
+    copiarPonderacion(id_ponderacion, nombre_ponderacion) {
+      this.nueva_ponderacion = true;
+      this.nombre_ponderacion = "Copia de" + nombre_ponderacion;
+
+      const datosPond = this.ponderaciones.filter(
+        (p) => p.id_ponderacion == id_ponderacion,
+      );
+      const criteriosUnicos = [];
+      const idsVistos = new Set();
+
+      datosPond.forEach((p) => {
+        if (!idsVistos.add(p.id_criterios)) {
+          idsVistos.add(p.id_criterios);
+          criteriosUnicos.push({
+            id: p.id_criterios,
+            nombre: p.criterio,
+          });
+        }
+      });
+
+      this.filasSC = criteriosUnicos;
+
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        for (let i = 0; i < this.filasSC.length; i++) {
+          const criterioNombre = this.filasSC[i].nombre;
+          const datosCriterio =
+            this.datosTablaPonderacion[id_ponderacion]?.[criterioNombre];
+
+          if (datosCriterio) {
+            for (let j = 0; j <= 4; j++) {
+              if (datosCriterio[j]) {
+                const deInput = document.getElementById(
+                  "DeFila" + i + "Columna" + j,
+                );
+                const hastaInput = document.getElementById(
+                  "HastaFila" + i + "Columna" + j,
+                );
+                const puntosInput = document.getElementById(
+                  "PuntosFila" + i + "Column" + j,
+                );
+
+                if (deInput) {
+                  deInput.value =
+                    datosCriterio[j].desde !== null &&
+                    datosCriterio[j].desde !== undefined
+                      ? datosCriterio[j].hasta
+                      : "";
+                }
+
+                if (hastaInput) {
+                  hastaInput.value =
+                    datosCriterio[j].hasta !== null &&
+                    datosCriterio[j].hasta !== undefined
+                      ? datosCriterio[j].hasta
+                      : "";
+                }
+
+                if (puntosInput) {
+                  puntosInput.value =
+                    datosCriterio[j].puntos !== null &&
+                    datosCriterio[j].puntos !== undefined
+                      ? datosCriterio[j].puntos
+                      : "";
+                }
+              }
+            }
+          }
+        }
+
+        Swal.fire({
+          title: "¡Ponderación Copiada!",
+          text: "Se cargaron los criterios",
+          icon: "info",
+          timer: 2500,
+          showConfirmButton: false,
+        });
+      });
+    },
 
     insertarArea(id_actual) {
       //para las ponderaciones anteriores que no se les insertaba automaticamente el area
