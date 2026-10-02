@@ -881,84 +881,124 @@ const app = {
         });
     },
     copiarPonderacion(id_ponderacion, nombre_ponderacion) {
-      this.nueva_ponderacion = true;
-      this.nombre_ponderacion = "Copia de" + nombre_ponderacion;
+      try {
+        this.nombre_ponderacion =
+          "Copia de " + (nombre_ponderacion ? nombre_ponderacion.trim() : "");
 
-      const datosPond = this.ponderaciones.filter(
-        (p) => p.id_ponderacion == id_ponderacion,
-      );
-      const criteriosUnicos = [];
-      const idsVistos = new Set();
-
-      datosPond.forEach((p) => {
-        if (!idsVistos.add(p.id_criterios)) {
-          idsVistos.add(p.id_criterios);
-          criteriosUnicos.push({
-            id: p.id_criterios,
-            nombre: p.criterio,
+        const criteriosMap = new Map();
+        if (this.ponderaciones && Array.isArray(this.ponderaciones)) {
+          this.ponderaciones.forEach((item) => {
+            if (
+              item.id_ponderacion == id_ponderacion &&
+              !criteriosMap.has(item.criterio)
+            ) {
+              criteriosMap.set(item.criterio, {
+                id: item.id_criterios,
+                nombre: item.criterio,
+              });
+            }
           });
         }
-      });
 
-      this.filasSC = criteriosUnicos;
+        let criteriosAUsar = Array.from(criteriosMap.values());
+        if (
+          criteriosAUsar.length === 0 &&
+          this.datosTablaPonderacion &&
+          this.datosTablaPonderacion[id_ponderacion]
+        ) {
+          const nombres = Object.keys(
+            this.datosTablaPonderacion[id_ponderacion],
+          );
+          criteriosAUsar = nombres.map((nom, idx) => ({
+            id: idx + 1,
+            nombre: nom,
+          }));
+        }
 
-      this.$nextTick(() => {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (criteriosAUsar.length === 0) {
+          return Swal.fire({
+            title: "Aviso",
+            text: "No se encontraron criterios para esta ponderación.",
+            icon: "warning",
+          });
+        }
 
-        for (let i = 0; i < this.filasSC.length; i++) {
-          const criterioNombre = this.filasSC[i].nombre;
-          const datosCriterio =
-            this.datosTablaPonderacion[id_ponderacion]?.[criterioNombre];
+        this.filasSC = criteriosAUsar;
+        this.nueva_ponderacion = true;
 
-          if (datosCriterio) {
-            for (let j = 0; j <= 4; j++) {
-              if (datosCriterio[j]) {
-                const deInput = document.getElementById(
-                  "DeFila" + i + "Columna" + j,
-                );
-                const hastaInput = document.getElementById(
-                  "HastaFila" + i + "Columna" + j,
-                );
-                const puntosInput = document.getElementById(
-                  "PuntosFila" + i + "Column" + j,
-                );
+        this.$nextTick(() => {
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
 
-                if (deInput) {
-                  deInput.value =
-                    datosCriterio[j].desde !== null &&
-                    datosCriterio[j].desde !== undefined
-                      ? datosCriterio[j].hasta
-                      : "";
-                }
+            const tablaPond = this.datosTablaPonderacion
+              ? this.datosTablaPonderacion[id_ponderacion]
+              : null;
 
-                if (hastaInput) {
-                  hastaInput.value =
-                    datosCriterio[j].hasta !== null &&
-                    datosCriterio[j].hasta !== undefined
-                      ? datosCriterio[j].hasta
-                      : "";
-                }
+            for (let i = 0; i < this.filasSC.length; i++) {
+              const criterioNombre = this.filasSC[i].nombre;
+              const datosCriterio = tablaPond
+                ? tablaPond[criterioNombre]
+                : null;
 
-                if (puntosInput) {
-                  puntosInput.value =
-                    datosCriterio[j].puntos !== null &&
-                    datosCriterio[j].puntos !== undefined
-                      ? datosCriterio[j].puntos
-                      : "";
+              if (datosCriterio && Array.isArray(datosCriterio)) {
+                for (let j = 0; j <= 4; j++) {
+                  if (datosCriterio[j]) {
+                    const deInput = document.getElementById(
+                      "DeFila" + i + "Columna" + j,
+                    );
+                    const hastaInput = document.getElementById(
+                      "HastaFila" + i + "Columna" + j,
+                    );
+                    const puntosInput = document.getElementById(
+                      "PuntosFila" + i + "Columna" + j,
+                    );
+
+                    if (deInput) {
+                      deInput.value =
+                        datosCriterio[j].desde !== null &&
+                        datosCriterio[j].desde !== undefined &&
+                        datosCriterio[j].desde !== ""
+                          ? datosCriterio[j].desde
+                          : "";
+                    }
+                    if (hastaInput) {
+                      hastaInput.value =
+                        datosCriterio[j].hasta !== null &&
+                        datosCriterio[j].hasta !== undefined &&
+                        datosCriterio[j].hasta !== ""
+                          ? datosCriterio[j].hasta
+                          : "";
+                    }
+                    if (puntosInput) {
+                      puntosInput.value =
+                        datosCriterio[j].puntos !== null &&
+                        datosCriterio[j].puntos !== undefined &&
+                        datosCriterio[j].puntos !== ""
+                          ? datosCriterio[j].puntos
+                          : "";
+                    }
+                  }
                 }
               }
             }
-          }
-        }
 
-        Swal.fire({
-          title: "¡Ponderación Copiada!",
-          text: "Se cargaron los criterios",
-          icon: "info",
-          timer: 2500,
-          showConfirmButton: false,
+            Swal.fire({
+              title: "¡Ponderación Copiada!",
+              text: "Se cargaron los criterios y valores. Escribe el nuevo nombre y presiona Guardar.",
+              icon: "success",
+              timer: 2000,
+              showConfirmButton: false,
+            });
+          }, 100);
         });
-      });
+      } catch (error) {
+        console.error("Error al copiar ponderación:", error);
+        Swal.fire({
+          title: "Error",
+          text: "Ocurrió un error al cargar los datos.",
+          icon: "error",
+        });
+      }
     },
 
     insertarArea(id_actual) {
