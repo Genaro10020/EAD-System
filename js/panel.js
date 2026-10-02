@@ -7423,9 +7423,11 @@ const app = {
     },
     refrescarNuevaPonderaciones() {
       this.nueva_ponderacion = true;
+      this.nombre_ponderacion = "";
       this.consultarCriterio();
-      //this.consultarPonderaciones()
-      //this.consultarEAD()
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
     },
     modalNuevoCriterio() {
       this.myModal = new bootstrap.Modal(
