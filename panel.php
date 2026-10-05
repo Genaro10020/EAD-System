@@ -26,7 +26,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             }
 
             .table-impactos-ambientales tbody td {
-                vertical-aling: middle;
+                vertical-align: middle;
                 border-bottom: 1px solid #f3f4f6;
                 padding: 0.75rem 0.5rem;
             }

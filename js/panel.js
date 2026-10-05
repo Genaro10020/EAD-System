@@ -956,24 +956,24 @@ const app = {
                     if (deInput) {
                       deInput.value =
                         datosCriterio[j].desde !== null &&
-                        datosCriterio[j].desde !== undefined &&
-                        datosCriterio[j].desde !== ""
+                          datosCriterio[j].desde !== undefined &&
+                          datosCriterio[j].desde !== ""
                           ? datosCriterio[j].desde
                           : "";
                     }
                     if (hastaInput) {
                       hastaInput.value =
                         datosCriterio[j].hasta !== null &&
-                        datosCriterio[j].hasta !== undefined &&
-                        datosCriterio[j].hasta !== ""
+                          datosCriterio[j].hasta !== undefined &&
+                          datosCriterio[j].hasta !== ""
                           ? datosCriterio[j].hasta
                           : "";
                     }
                     if (puntosInput) {
                       puntosInput.value =
                         datosCriterio[j].puntos !== null &&
-                        datosCriterio[j].puntos !== undefined &&
-                        datosCriterio[j].puntos !== ""
+                          datosCriterio[j].puntos !== undefined &&
+                          datosCriterio[j].puntos !== ""
                           ? datosCriterio[j].puntos
                           : "";
                     }
@@ -1281,7 +1281,7 @@ const app = {
         .catch((error) => {
           console.log("Error en la consulta :-( " + error);
         })
-        .finally(() => {});
+        .finally(() => { });
     },
     consultarEADLider() {
       axios
@@ -1724,7 +1724,7 @@ const app = {
       console.log("extrajeIDSPilares: ", this.extrajeIDSPilares);
       /*       this.extrajeIDSPilares
        */ /* this.nombresPilaresEncontrados = [...new Set(this.objetivosEncontrados.map(item => item.pilarNombre))].join(", ");
-   console.log("nombres: ", this.nombresPilaresEncontrados) */
+  console.log("nombres: ", this.nombresPilaresEncontrados) */
     },
     buscarObjetivosDePilar(event, pilarID) {
       if (event.target.checked) {
@@ -1821,7 +1821,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => {});
+        .finally(() => { });
     },
     uniqueAreas() {
       // Usamos Set para eliminar los duplicados
@@ -3595,10 +3595,10 @@ const app = {
       if (
         !confirm(
           "¿Desea eliminar el registro semana " +
-            semana +
-            " con dato " +
-            dato +
-            "?",
+          semana +
+          " con dato " +
+          dato +
+          "?",
         )
       ) {
         return true;
@@ -4754,13 +4754,13 @@ const app = {
                 } else {
                   console.log(
                     "error en la consulta de calificacion por evaluador" +
-                      response.data[4],
+                    response.data[4],
                   );
                 }
               } else {
                 console.log(
                   "error en la consulta de evaluadores por foro" +
-                    response.data[3],
+                  response.data[3],
                 );
               }
             } else {
@@ -5552,34 +5552,48 @@ const app = {
       console.log(this.diaActual);
     },
     comprobando(dia) {
-      if (
-        this.tipo_usuario === "ColaboradorLider" ||
-        this.tipo_usuario === "Supervisor"
-      ) {
+      if (this.tipo_usuario === 'ColaboradorLider' || this.tipo_usuario === "Supervisor") {
         return true;
       }
 
-      if (this.tipo_usuario == "Colaborador") {
+      if (this.tipo_usuario == 'Colaborador') {
         if (this.habilitar == false) {
-          console.log("FALSE ");
-          return false;
+          console.log("FALSE ")
+          return false
         } else {
-          let fechaLimite = this.diaActual - 7;
-          if (
-            this.anioActual == this.anio_grafica &&
-            this.mesActual == this.mesEntero
-          ) {
+          let fechaLimite = this.diaActual - 3
+          const fechaLimiteAntes = this.diaActual - 2;
+          const mesAnterior = this.mesActual - 1
+          var ultimoDiaMes = new Date(this.anioActual, mesAnterior, 0);
+          var mes = ultimoDiaMes.getMonth() + 1;
+
+          if (this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero) {
             if (dia > fechaLimite) {
-              return false;
+              return false
             } else {
-              return true;
+              return true
+            }
+          } else if (this.anioActual === this.anio_grafica && this.mesEntero === mes) {
+            if (fechaLimiteAntes <= 0) {
+
+              var diasDelMes = ultimoDiaMes.getDate();
+              var totalFechasAnteriores = diasDelMes + fechaLimiteAntes;
+
+              if (dia < totalFechasAnteriores) {
+                return true;
+              } else {
+                return false;
+              }
+
+            } else {
+              return true
             }
           } else {
-            return true;
+            return true
           }
         }
       } else {
-        return false;
+        return false
       }
     },
     consultadoValoresGrafica() {
@@ -5927,7 +5941,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => {});
+        .finally(() => { });
     },
     consultarCausas() {
       var mes;
@@ -6095,7 +6109,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => {});
+        .finally(() => { });
     },
     editarCausa(index) {
       this.actualizar_causa = index + 1;
@@ -6986,7 +7000,7 @@ const app = {
             console.log("Ponderacion Equipo", this.datosIDPonderacion);
             this.nombrePonderacionAsignada =
               this.datosIDPonderacion[0] &&
-              this.datosIDPonderacion[0].nombre_ponderacion
+                this.datosIDPonderacion[0].nombre_ponderacion
                 ? this.datosIDPonderacion[0].nombre_ponderacion
                 : "";
             this.criteriosDinamicasSC = Object.values(
@@ -7077,7 +7091,7 @@ const app = {
                 elementos.puntos != null &&
                 this.inputColumnaPonderacion[elementos.id_criterios] != null &&
                 this.inputColumnaPonderacion[elementos.id_criterios] !=
-                  undefined
+                undefined
               ) {
                 console.log(
                   elementos.puntos,
@@ -7200,11 +7214,11 @@ const app = {
             this.puntosCriterios
               .filter((items) => items.id_criterios == id_criterios)
               .map((items) => items.puntos) &&
-              !isNaN(
-                this.puntosCriterios
-                  .filter((items) => items.id_criterios == id_criterios)
-                  .map((items) => items.puntos).length > 0,
-              ),
+            !isNaN(
+              this.puntosCriterios
+                .filter((items) => items.id_criterios == id_criterios)
+                .map((items) => items.puntos).length > 0,
+            ),
           )
         ) {
           if (
@@ -7293,7 +7307,7 @@ const app = {
         .catch((error) => {
           console.log("Error en la consulta :-( " + error);
         })
-        .finally(() => {});
+        .finally(() => { });
     },
     consultarCriterioColaborador() {
       this.idCriterioGrafica = "";
@@ -7350,9 +7364,9 @@ const app = {
     MostrarOcultarPonderacion(ocultarOmostrar, id_ponderacion) {
       console.log(
         "Quiero: " +
-          ocultarOmostrar +
-          "La ponderación con ID: " +
-          id_ponderacion,
+        ocultarOmostrar +
+        "La ponderación con ID: " +
+        id_ponderacion,
       );
       if (ocultarOmostrar == "Mostrar") {
         this.mostrar_ponderacion_id = id_ponderacion;
