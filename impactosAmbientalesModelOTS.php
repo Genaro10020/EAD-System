@@ -1,7 +1,8 @@
 <?php
 include("conexionOTS.php");
 
-function consultarImpactoAmbiental(){
+function consultarImpactoAmbiental()
+{
 
     global $conexion;
 
@@ -19,6 +20,52 @@ function consultarImpactoAmbiental(){
         }
         $estado = true;
     }
+    return [$resultado, $estado];
+}
+
+function consultarCatalogoImpactoAspectoAmbiental()
+{
+    global $conexion;
+
+    $resultado = [];
+    $estado = false;
+
+    $consulta = $conexion->prepare("SELECT * FROM catalogo_impactos_y_aspectos_ambientales ORDER BY id DESC;");
+    $consulta->execute();
+    $result = $consulta->get_result();
+
+    if (!$consulta) {
+        return;
+    }
+
+    while ($dato = $result->fetch_assoc()) {
+        $resultado[] = $dato;
+    }
+    $estado = true;
+
+    return [$resultado, $estado];
+}
+
+function consultarFactoresConversion()
+{
+    global $conexion;
+    $resultado = [];
+    $estado = false;
+
+    $consulta = $conexion->prepare("SELECT * FROM factores_conversion ORDER BY id DESC;");
+    $consulta->execute();
+    $result = $consulta->get_result();
+
+    if (!$consulta) {
+        return;
+    }
+
+    while ($dato = $result->fetch_assoc()) {
+        $resultado[] = $dato;
+    }
+
+    $estado = true;
+
     return [$resultado, $estado];
 }
 

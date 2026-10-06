@@ -199,6 +199,8 @@ const app = {
       banderaImpactoGuardado: false,
       catalogoImpactosAmbientalesEAD: [],
       catalogoImpactosAmbientalesOTS: [],
+      catalogoAspectosImpactosAmbientalesOTS: [],
+      factoresConversion: [],
       catalogoUnidadesOTS: [],
       //nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
@@ -3007,6 +3009,8 @@ const app = {
       this.consultarImpactoDeProyecto(); //datos de registro de emisiones e impactos ambientales
       this.consultarTodosImpactosProyectosEAD(); //me ayuda a poder tener todas las emisiones y aspecctos existentes
       this.consultarImpactosAmbientalesOTS();
+      this.consultarCatalogoImpactosyAspOTS();
+      this.consultarFactoresConversionOTS();
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(
@@ -3871,6 +3875,37 @@ const app = {
         .catch((error) => {
           console.error("Error al consultar impactos ambientales OTS:", error);
         });
+    },
+    consultarCatalogoImpactosyAspOTS() {
+      axios.get("impactosAmbientalesControllerOTS.php", {
+        params: {
+          accion: "catalogoImpactosyaspectosOTS"
+        }
+      }).then(response => {
+        if(response.data.status === "success"){
+          this.catalogoAspectosImpactosAmbientalesOTS = response.data.catImpAsp
+        } else{
+          console.log("Ocurrió un error inesperado")
+        }          
+      }).catch(error => {
+        console.log("Error al consultar catalogo impactos y aspectos OTS: ", error);
+      })
+    },
+    consultarFactoresConversionOTS() {
+      axios.get("impactosAmbientalesControllerOTS.php", {
+        params: {
+          accion: "factoresConversion"
+        }
+      }).then(response => {
+
+        if(response.data.status === "success"){ 
+          this.factoresConversion = response.data.factoresConversion
+        } else {
+          console.log("Ocurrió un error inesperado");
+        }
+      }).catch(error => {
+        console.log("Error al consultar factores conversión ots: ", error);
+      })
     },
 
     obtenerOpcionesConceptos() {

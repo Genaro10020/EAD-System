@@ -20,6 +20,23 @@ if (isset($_SESSION['nombre'])) {
                 ]);
                 exit;
             }
+            if (isset($_GET['accion']) && $_GET['accion'] === 'catalogoImpactosyaspectosOTS') {
+                $resultado = consultarCatalogoImpactoAspectoAmbiental();
+                echo json_encode([
+                    'status' => $resultado[1] ? 'success' : 'error',
+                    'catImpAsp' => $resultado[0]
+                ]);
+                exit;
+            }
+            if (isset($_GET['accion']) && $_GET['accion'] === 'factoresConversion') {
+                $resultado = consultarFactoresConversion();
+                echo json_encode([
+                    'status' => $resultado[1] ? 'success' : 'error',
+                    'factoresConversion' => $resultado[0]
+                ]);
+                exit;
+            }
+
             $val[] = [
                 'status' => 'error',
                 'message' => 'No existe la variable accion'
