@@ -128,98 +128,67 @@ function normalizarAnioInt($anioStr)
 function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
 {
     global $conexion;
-    $estado = false;
     $id_ponderacion = null;
     $nombre_ponderacion = "";
     $hay_ponderacion = false;
     $anio = (int)$anio;
     $mes = (int)$mes;
 
-    $consulta = "SELECT sc.id_ponderacion, p.ponderacion
-                FROM scorecard sc
-                LEFT JOIN ponderaciones p ON p.id = sc.id_ponderacion
-                WHERE sc.id_equipo = ? AND sc.anio = ? AND sc.mes = ?
-                    AND sc.id_ponderacion IS NOT NULL AND sc.id_ponderacion != 0
-                LIMIT 1";
-
-    $stmt = $conexion->prepare($consulta);
-    if ($stmt) {
-        $stmt->bind_param("iii", $id_equipo, $anio, $mes);
-        if ($stmt->execute()) {
-            $res = $stmt->get_result();
-            if ($fila = $res->fetch_assoc()) {
-                $id_ponderacion = (int)$fila['id_ponderacion'];
-                $nombre_ponderacion = $fila['ponderacion'] ?? "";
-                $hay_ponderacion = true;
-            }
-        }
-        $stmt->close();
+    $anio_actual = (int)date('Y');
+    $mes_actual = (int)date('n');
+    
+    $mes_limite = $mes_actual - 1;
+    $anio_limite = $anio_actual;
+    
+    if ($mes_limite < 1) {
+        $mes_limite = 12;
+        $anio_limite--;
     }
 
-    if (!$hay_ponderacion) {
-        $qPond = "SELECT p.id, p.ponderacion
-        FROM ponderaciones p
-        INNER JOIN equipos_ead e ON (
-            p.area = e.area
-            OR p.area = (SELECT id FROM areas WHERE nombre = e.area LIMIT 1)
-            OR p.area = 0
-        )
-        WHERE e.id = ?
-        ORDER BY p.id DESC";
+    $es_reciente = false;
+    if ($anio > $anio_limite || ($anio == $anio_limite && $mes >= $mes_limite)) {
+        $es_reciente = true;
+    }
 
-        $stmtPond = $conexion->prepare($qPond);
-        if ($stmtPond) {
-            $stmtPond->bind_param("i", $id_equipo);
-            if ($stmtPond->execute()) {
-                $resPond = $stmtPond->get_result();
-                $candidatas = [];
-                while ($f = $resPond->fetch_assoc()) {
-                    $candidatas[] = $f;
-                }
-
-                $indiceMesSeleccionado = ($anio * 12) + $mes;
-
-                foreach ($candidatas as $cand) {
-                    $nombre = $cand["ponderacion"];
-
-                    if (preg_match("/([A-Za-z]{3,4})[\/\s]+(\d{2,4})\s*[-–]\s*([A-Za-z]{3,4})[\/\s]+(\d{2,4})/i", $nombre, $m)) {
-                        $mInicio = parsearMexTexto($m[1]);
-                        $yInicio = normalizarAnioInt($m[2]);
-                        $mFin    = parsearMexTexto($m[3]);
-                        $yFin    = normalizarAnioInt($m[4]);
-
-                        if ($mInicio && $mFin) {
-                            $idxInicio = ($yInicio * 12) + $mInicio;
-                            $idxFin    = ($yFin * 12) + $mFin;
-
-                            if ($indiceMesSeleccionado >= $idxInicio && $indiceMesSeleccionado <= $idxFin) {
-                                $id_ponderacion = (int)$cand["id"];
-                                $nombre_ponderacion = $nombre;
-                                $hay_ponderacion = true;
-                                break;
-                            }
-                        }
-                    }
-                    else if (preg_match('/([A-Za-z]{3,10})\s*[-–]\s*([A-Za-z]{3,10})\s+(\d{2,4})/i', $nombre, $m)) {
-                        $mInicio = parsearMesTexto($m[1]);
-                        $mFin    = parsearMesTexto($m[2]);
-                        $y       = normalizarAnioInt($m[3]);
-
-                        if ($mInicio && $mFin) {
-                            $idxInicio = ($y * 12) + $mInicio;
-                            $idxFin    = ($y * 12) + $mFin;
-
-                            if ($indiceMesSeleccionado >= $idxInicio && $indiceMesSeleccionado <= $idxFin) {
-                                $id_ponderacion = (int)$cand['id'];
-                                $nombre_ponderacion = $nombre;
-                                $hay_ponderacion = true;
-                                break;
-                            }
-                        }
+    if ($es_reciente) {        
+        $consulta = "SELECT e.id_ponderacion, p.ponderacion 
+                    FROM equipos_ead e 
+                    LEFT JOIN ponderaciones p ON p.id = e.id_ponderacion 
+                    WHERE e.id = ? LIMIT 1";
+        $stmt = $conexion->prepare($consulta);
+        if ($stmt) {
+            $stmt->bind_param("i", $id_equipo);
+            if ($stmt->execute()) {
+                $res = $stmt->get_result();
+                if ($fila = $res->fetch_assoc()) {
+                    if (!empty($fila['id_ponderacion']) && $fila['id_ponderacion'] != 0) {
+                        $id_ponderacion = (int)$fila['id_ponderacion'];
+                        $nombre_ponderacion = $fila['ponderacion'] ?? "";
+                        $hay_ponderacion = true;
                     }
                 }
             }
-            $stmtPond->close();
+            $stmt->close();
+        }
+    } else {
+        $consulta = "SELECT sc.id_ponderacion, p.ponderacion 
+                    FROM scorecard sc
+                    LEFT JOIN ponderaciones p ON p.id = sc.id_ponderacion
+                    WHERE sc.id_equipo = ? AND sc.anio = ? AND sc.mes = ? 
+                    AND sc.id_ponderacion IS NOT NULL AND sc.id_ponderacion != 0 
+                    LIMIT 1";
+        $stmt = $conexion->prepare($consulta);
+        if ($stmt) {
+            $stmt->bind_param("iii", $id_equipo, $anio, $mes);
+            if ($stmt->execute()) {
+                $res = $stmt->get_result();
+                if ($fila = $res->fetch_assoc()) {
+                    $id_ponderacion = (int)$fila['id_ponderacion'];
+                    $nombre_ponderacion = $fila['ponderacion'] ?? "";
+                    $hay_ponderacion = true;
+                }
+            }
+            $stmt->close();
         }
     }
 
@@ -228,7 +197,7 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
         'id_ponderacion'      => $id_ponderacion,
         'nombre_ponderacion'  => $nombre_ponderacion
     ));
-} 
+}
 
 function actualizarTotal($total)
 {
