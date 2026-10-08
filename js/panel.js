@@ -6299,21 +6299,22 @@ const app = {
           this.nombrePonderacionAsignada = info.nombre_ponderacion || "";
         } else {
           this.hayPonderacion = false;
+          id_ponderacion = null;
+          this.nombrePonderacionAsignada = "";
         }
       } catch (error) {
         console.error("Error al obtener ponderación del periodo:", error);
         this.hayPonderacion = false;
-      }
+        id_ponderacion = null;
 
-      if (!this.hayPonderacion || !id_ponderacion) {
-        this.hayPonderacion = false;
         this.nombrePonderacionAsignada = "";
-        id_ponderacion = this.equipo_score.split("<->")[4] || "";
       }
 
       this.ponderacion_score = id_ponderacion;
 
       if (!id_ponderacion) {
+        this.hayPonderacion = false;
+        this.nombrePonderacionAsignada = "";
         this.criteriosDinamicasSC = [];
         this.puntosEvaluacion = [];
         this.totalSC = "";
