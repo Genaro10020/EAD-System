@@ -6265,6 +6265,29 @@ const app = {
           console.log("Error en axios :-( ", error);
         });
     },
+    esMesAnteriorEditable() {
+      if (!this.anio_score || !this.mes_score) return false;
+
+      const fecha = new Date();
+      let mesActual = fecha.getMonth() + 1;
+      let anioActual = fecha.getFullYear();
+
+      let mesAnterior = mesActual - 1;
+      let anioMesAnterior = anioActual;
+
+      if (mesAnterior === 0) {
+        mesAnterior = 12;
+        anioMesAnterior--;
+      }
+
+      const mesSeleccionadoNum = this.mesesNumeros(this.mes_score);
+      const anioSeleccionadoNum = parseInt(this.anio_score);
+
+      return (
+        anioSeleccionadoNum === anioMesAnterior &&
+        mesSeleccionadoNum === mesAnterior
+      );
+    },
     async consultarScoreCard() {
       if (!this.equipo_score || !this.anio_score || !this.mes_score) {
         this.hayPonderacion = false;
