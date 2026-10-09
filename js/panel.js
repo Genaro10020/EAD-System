@@ -199,10 +199,11 @@ const app = {
       banderaImpactoGuardado: false,
       catalogoImpactosAmbientalesEAD: [],
       catalogoImpactosAmbientalesOTS: [],
-      catalogoAspectosImpactosAmbientalesOTS: [],
+      calculadoraFeCombustibles: [],
       factoresConversion: [],
       catalogoUnidadesOTS: [],
-      //nombresPilaresEncontrados: '',
+      catalogoImpactosAmbientalesOTSCompleto: [],
+      nombresPilaresEncontrados: '',
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
       fecha_capacitacion: "",
@@ -586,8 +587,82 @@ const app = {
       console.log("id nuevo: ", nuevo);
       console.log();
     },
+    emisiones_aspectos_ambientales_proyecto_ead: {
+        deep: true,
+
+            handler(impactos) {
+            if (!Array.isArray(impactos)) return;
+
+            try {
+                impactos.forEach((impacto) => {
+                    if (!impacto) return;
+
+                    const concepto = impacto.concepto;
+
+                    if (concepto === '' || concepto === null || concepto === undefined) {
+                        if (impacto.um !== '') impacto.um = '';
+                        return;
+                    }
+                    const existeEnFe = this.umConceptoFe && Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
+
+                    if (existeEnFe) {
+                        const datos = this.umConceptoFe[concepto];
+                        const um = datos?.da_um ?? '';
+                        const referencia = datos?.fuente_oficial ?? '';
+
+                        if (impacto.um !== um) {
+                            impacto.um = um;
+                        }
+
+                        if (impacto.referencia !== referencia) {
+                            impacto.referencia = referencia;
+                        }
+
+
+                        const tco2e = this.calculartco2(impacto);
+
+                        if (tco2e !== null && tco2e !== undefined && impacto.co2 !== tco2e) {
+                            impacto.co2 = tco2e;
+                        }
+                    } else if (this.umConceptoImpactoAmbiental && Object.prototype.hasOwnProperty.call(this.umConceptoImpactoAmbiental, concepto)) {
+                        const um = this.umConceptoImpactoAmbiental[concepto];
+                        if (impacto.um !== um) {
+                            impacto.um = um
+                        }
+                    }
+
+                });
+            } catch (error) {
+                console.error('Error en el watcher de impactos:', error);
+            }
+        }
+    }
   },
   computed: {
+    umConceptoFe() {
+      return this.calculadoraFeCombustibles.reduce((resultado, item) => {
+        resultado[item.combustible_energetico] = {
+          da_um: item.da_um,
+          fuente_oficial: item.fuente_oficial
+        }
+        
+        return resultado;
+      }, {});
+    },
+    umConceptoImpactoAmbiental() {
+      return this.catalogoImpactosAmbientalesOTS.reduce((resultado, item) => {
+        const conceptoEncontrado = this.catalogoImpactosAmbientalesOTSCompleto.find(itemCompleto =>
+          itemCompleto.nombre.toLowerCase().startsWith(item.toLowerCase())
+        );
+
+        if(conceptoEncontrado) {
+          resultado[item] = conceptoEncontrado.unidad
+        }
+        
+        return resultado;
+      }, {});
+      
+    },
     eadsForoOrdenados() {
       return [...this.eadsForo].sort(
         (a, b) => Number(a.orden) - Number(b.orden),
@@ -3009,7 +3084,7 @@ const app = {
       this.consultarImpactoDeProyecto(); //datos de registro de emisiones e impactos ambientales
       this.consultarTodosImpactosProyectosEAD(); //me ayuda a poder tener todas las emisiones y aspecctos existentes
       this.consultarImpactosAmbientalesOTS();
-      this.consultarCatalogoImpactosyAspOTS();
+      this.consultarCalculadorafeOTS();
       this.consultarFactoresConversionOTS();
     },
     abriModalGraficaFullKPI() {
@@ -3842,6 +3917,8 @@ const app = {
           console.log("typeof:", typeof response.data);
 
           if (response.data.status == "success") {
+            this.catalogoImpactosAmbientalesOTSCompleto = response.data.impactos;
+            
             this.catalogoImpactosAmbientalesOTS = response.data.impactos
               .map((item) => {
                 const nombre = item.nombre;
@@ -3876,19 +3953,19 @@ const app = {
           console.error("Error al consultar impactos ambientales OTS:", error);
         });
     },
-    consultarCatalogoImpactosyAspOTS() {
+    consultarCalculadorafeOTS() {
       axios.get("impactosAmbientalesControllerOTS.php", {
         params: {
-          accion: "catalogoImpactosyaspectosOTS"
+          accion: "calculadorafe"
         }
       }).then(response => {
-        if(response.data.status === "success"){
-          this.catalogoAspectosImpactosAmbientalesOTS = response.data.catImpAsp
-        } else{
+        if (response.data.status === "success") {
+          this.calculadoraFeCombustibles = response.data.calcFe
+        } else {
           console.log("Ocurrió un error inesperado")
-        }          
+        }
       }).catch(error => {
-        console.log("Error al consultar catalogo impactos y aspectos OTS: ", error);
+        console.log("Error al consultar calculadora fe combustibles energéticos: ", error);
       })
     },
     consultarFactoresConversionOTS() {
@@ -3898,7 +3975,7 @@ const app = {
         }
       }).then(response => {
 
-        if(response.data.status === "success"){ 
+        if (response.data.status === "success") {
           this.factoresConversion = response.data.factoresConversion
         } else {
           console.log("Ocurrió un error inesperado");
@@ -3933,6 +4010,16 @@ const app = {
           }
         });
       }
+
+      this.calculadoraFeCombustibles.forEach((valor) => {
+        if (valor !== null && valor !== undefined && valor !== "") {
+          const titulo = String(valor.combustible_energetico ?? "").trim();
+
+          if (titulo !== "") {
+            valores.push(titulo);
+          }
+        }
+      })
 
       // ==========================================
       // ELIMINAR DUPLICADOS
@@ -4110,6 +4197,52 @@ const app = {
             confirmButtonText: "Aceptar",
           });
         });
+    },
+    calculartco2(impacto) {
+
+      const conceptoImpacto = impacto.concepto;
+      const datos = this.calculadoraFeCombustibles.find(item => item.combustible_energetico === conceptoImpacto);
+
+      if (impacto.concepto === 'Electricidad') {
+
+        const tco2e = (Number(impacto.cantidad) || 0) * (Number(datos.factor_emision) || 0) / 1000;
+
+        return Number(tco2e.toFixed(6));
+
+      } else {
+
+        let datoConversion;
+        if (impacto.concepto === 'Gasolina' || impacto.concepto === 'Diésel') {
+          const buscarValor = this.factoresConversion.find(item => item.unidad_medida === 'GJ' && item.um_poder_calorifico === 'MG');
+
+          datoConversion = buscarValor ? buscarValor.valor : 0
+
+        } else {
+          datoConversion = 1000
+        }
+
+        let poderCalorificoConver
+        if (impacto.concepto === 'Gas Natural') {
+          poderCalorificoConver = (
+            datos.poder_calorifico / 1000000
+          ).toFixed(5)
+
+        } else {
+          poderCalorificoConver = (
+            datos.poder_calorifico / 1000 / 158.9873
+          ).toFixed(9);
+        }
+
+        const co2t_gj = (datos.factor_emision_co2_t_mj * datoConversion).toFixed(4)
+        const co2_tco2e = impacto.cantidad * poderCalorificoConver * co2t_gj * datos.potencial_calentamiento_c02
+        const ch4_tco2eq = impacto.cantidad * poderCalorificoConver * datos.factor_emision_ch4_kg_mj * datos.potencial_calentamiento_ch4;
+        const n20_tco2eq = impacto.cantidad * poderCalorificoConver * datos.factor_emision_n2o_kg_mj * datos.potencial_calentamiento_n2o;
+        const tco2e = co2_tco2e + ch4_tco2eq + n20_tco2eq;
+
+        return Number(tco2e.toFixed(6));
+
+      }
+
     },
 
     // REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL /////////////////////////////////////////////////

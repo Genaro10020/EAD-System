@@ -23,14 +23,14 @@ function consultarImpactoAmbiental()
     return [$resultado, $estado];
 }
 
-function consultarCatalogoImpactoAspectoAmbiental()
+function consultarCalculadorafe()
 {
     global $conexion;
 
     $resultado = [];
     $estado = false;
 
-    $consulta = $conexion->prepare("SELECT * FROM catalogo_impactos_y_aspectos_ambientales ORDER BY id DESC;");
+    $consulta = $conexion->prepare("SELECT * FROM calculadora_fe_combustibles_energeticos ORDER BY id DESC;");
     $consulta->execute();
     $result = $consulta->get_result();
 

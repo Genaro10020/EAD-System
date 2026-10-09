@@ -1686,10 +1686,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                             <input
                                                                                 type="number"
                                                                                 step="0.000001"
-                                                                                class="form-control form-control-sm text-center text-primary bg-white"
+                                                                                class="form-control form-control-sm text-center text-primary bg-white w-100"
                                                                                 v-model="impacto.cantidad"
                                                                                 placeholder="0"
-                                                                                style="font-size: 0.9em;" >
+                                                                                style="font-size: 0.9em;">
                                                                         </td>
 
                                                                         <!-- UM -->
@@ -1699,10 +1699,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                 class="form-control form-control-sm text-center text-primary"
                                                                                 v-model="impacto.um"
                                                                                 placeholder="kWh/Año"
-                                                                                list="catalogo-um">
+                                                                                list="catalogo-um"
+                                                                                :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
 
                                                                             <datalist id="catalogo-um">
-
                                                                                 <option
                                                                                     v-for="valor in obtenerOpcionesUM()"
                                                                                     :key="valor"
@@ -1717,13 +1717,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                             <input
                                                                                 type="number"
                                                                                 step="0.000001"
-                                                                                class="form-control form-control-sm text-center fw-semibold"
+                                                                                class="form-control form-control-sm text-center fw-semibold w-100"
+                                                                                :style="{backgroundColor:!!umConceptoFe[impacto.concepto] ? '#E9ECEF'  : 'rgba(144, 206, 177, 0.35)'} "
                                                                                 v-model="impacto.co2"
-                                                                                style="
-                                                                                    background-color: rgba(144, 206, 177, 0.35);
-                                                                                    min-width: 100px;
-                                                                                "
+                                                                                style="min-width: 100px;"  
                                                                                 placeholder="0.00"
+                                                                                :disabled="!!umConceptoFe[impacto.concepto]"
                                                                             >
 
                                                                         </td>
@@ -1736,6 +1735,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                     v-model="impacto.referencia"
                                                                                     placeholder="Referencia"
                                                                                     list="catalogo-referencias"
+                                                                                    :disabled="!!umConceptoFe[impacto.concepto]"
                                                                                 >
                                                                                 <datalist id="catalogo-referencias">
 
