@@ -2704,8 +2704,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             v-show="criterio.tipo=='Input'" 
                                             v-model="inputValorActual[criterio.id_criterios]" 
                                             @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
-                                            :disabled="esLider == 'ColaboradorLider' || hayPonderacion" 
-                                            :class="(esLider == 'ColaboradorLider' || hayPonderacion) ? 'color-disabled' : ''">
+                                            :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable" 
+                                            :class="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable ? 'color-disabled' : ''">
                                         </input>
                                         <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
                                     </td>
@@ -2746,8 +2746,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
                                                 v-model="inputColumnaPonderacion[criterio.id_criterios]" 
                                                 class="text-center" 
-                                                :disabled="esLider == 'ColaboradorLider' || hayPonderacion" 
-                                                :class="(esLider == 'ColaboradorLider' || hayPonderacion) ? 'color-disabled' : ''">
+                                                :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable" 
+                                                :class="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable ? 'color-disabled' : ''">
                                             </input>
                                         </label>
                                     </td>

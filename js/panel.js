@@ -6447,6 +6447,29 @@ const app = {
           console.log("Error en axios :-( ", error);
         });
     },
+    esMesAnteriorEditable() {
+      if (!this.anio_score || !this.mes_score) return false;
+
+      const fecha = new Date();
+      let mesActual = fecha.getMonth() + 1;
+      let anioActual = fecha.getFullYear();
+
+      let mesAnterior = mesActual - 1;
+      let anioMesAnterior = anioActual;
+
+      if (mesAnterior === 0) {
+        mesAnterior = 12;
+        anioMesAnterior--;
+      }
+
+      const mesSeleccionadoNum = this.mesesNumeros(this.mes_score);
+      const anioSeleccionadoNum = parseInt(this.anio_score);
+
+      return (
+        anioSeleccionadoNum === anioMesAnterior &&
+        mesSeleccionadoNum === mesAnterior
+      );
+    },
     async consultarScoreCard() {
       if (!this.equipo_score || !this.anio_score || !this.mes_score) {
         this.hayPonderacion = false;
@@ -6481,21 +6504,22 @@ const app = {
           this.nombrePonderacionAsignada = info.nombre_ponderacion || "";
         } else {
           this.hayPonderacion = false;
+          id_ponderacion = null;
+          this.nombrePonderacionAsignada = "";
         }
       } catch (error) {
         console.error("Error al obtener ponderación del periodo:", error);
         this.hayPonderacion = false;
-      }
+        id_ponderacion = null;
 
-      if (!this.hayPonderacion || !id_ponderacion) {
-        this.hayPonderacion = false;
         this.nombrePonderacionAsignada = "";
-        id_ponderacion = this.equipo_score.split("<->")[4] || "";
       }
 
       this.ponderacion_score = id_ponderacion;
 
       if (!id_ponderacion) {
+        this.hayPonderacion = false;
+        this.nombrePonderacionAsignada = "";
         this.criteriosDinamicasSC = [];
         this.puntosEvaluacion = [];
         this.totalSC = "";
