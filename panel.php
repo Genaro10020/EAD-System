@@ -3729,6 +3729,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
         <script src="js/panel.js?<?php echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     </body>
 
     </html>
