@@ -3836,6 +3836,18 @@ const app = {
         });
     },
 
+    agregarFilaImpactosNuevos() {
+      this.filasImpactosNuevos({
+        diagrama: "",
+        tipo: "",
+        concepto: "",
+        alcance: "",
+        cantidad: 0,
+        um: "",
+        tco2: 0,
+        referencia: "",
+      });
+    },
     consultarImpactosAmbientalesOTS() {
       axios
         .get("impactosAmbientalesControllerOTS.php", {
