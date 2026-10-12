@@ -206,7 +206,7 @@ const app = {
       catalogoUnidadesOTS: [],
       catalogoImpactosAmbientalesOTSCompleto: [],
       alcanceAyudaVisible: false,
-      textoAyudaAlcance: '',
+      textoAyudaAlcance: "",
       
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
@@ -592,80 +592,94 @@ const app = {
       console.log();
     },
     emisiones_aspectos_ambientales_proyecto_ead: {
-        deep: true,
+      deep: true,
 
-            handler(impactos) {
-            if (!Array.isArray(impactos)) return;
+      handler(impactos) {
+        if (!Array.isArray(impactos)) return;
 
-            try {
-                impactos.forEach((impacto) => {
-                    if (!impacto) return;
+        try {
+          impactos.forEach((impacto) => {
+            if (!impacto) return;
 
-                    const concepto = impacto.concepto;
+            const concepto = impacto.concepto;
 
-                    if (concepto === '' || concepto === null || concepto === undefined) {
-                        if (impacto.um !== '') impacto.um = '';
-                        return;
-                    }
-                    const existeEnFe = this.umConceptoFe && Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
-
-                    if (existeEnFe) {
-                        const datos = this.umConceptoFe[concepto];
-                        const um = datos?.da_um ?? '';
-                        const referencia = datos?.fuente_oficial ?? '';
-
-                        if (impacto.um !== um) {
-                            impacto.um = um;
-                        }
-
-                        if (impacto.referencia !== referencia) {
-                            impacto.referencia = referencia;
-                        }
-
-
-                        const tco2e = this.calculartco2(impacto);
-
-                        if (tco2e !== null && tco2e !== undefined && impacto.co2 !== tco2e) {
-                            impacto.co2 = tco2e;
-                        }
-                    } else if (this.umConceptoImpactoAmbiental && Object.prototype.hasOwnProperty.call(this.umConceptoImpactoAmbiental, concepto)) {
-                        const um = this.umConceptoImpactoAmbiental[concepto];
-                        if (impacto.um !== um) {
-                            impacto.um = um
-                        }
-                    }
-
-                });
-            } catch (error) {
-                console.error('Error en el watcher de impactos:', error);
+            if (
+              concepto === "" ||
+              concepto === null ||
+              concepto === undefined
+            ) {
+              if (impacto.um !== "") impacto.um = "";
+              return;
             }
+            const existeEnFe =
+              this.umConceptoFe &&
+              Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
+
+            if (existeEnFe) {
+              const datos = this.umConceptoFe[concepto];
+              const um = datos?.da_um ?? "";
+              const referencia = datos?.fuente_oficial ?? "";
+
+              if (impacto.um !== um) {
+                impacto.um = um;
+              }
+
+              if (impacto.referencia !== referencia) {
+                impacto.referencia = referencia;
+              }
+
+              const tco2e = this.calculartco2(impacto);
+
+              if (
+                tco2e !== null &&
+                tco2e !== undefined &&
+                impacto.co2 !== tco2e
+              ) {
+                impacto.co2 = tco2e;
+              }
+            } else if (
+              this.umConceptoImpactoAmbiental &&
+              Object.prototype.hasOwnProperty.call(
+                this.umConceptoImpactoAmbiental,
+                concepto,
+              )
+            ) {
+              const um = this.umConceptoImpactoAmbiental[concepto];
+              if (impacto.um !== um) {
+                impacto.um = um;
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Error en el watcher de impactos:", error);
         }
-    }
+      },
+    },
   },
   computed: {
     umConceptoFe() {
       return this.calculadoraFeCombustibles.reduce((resultado, item) => {
         resultado[item.combustible_energetico] = {
           da_um: item.da_um,
-          fuente_oficial: item.fuente_oficial
-        }
-        
+          fuente_oficial: item.fuente_oficial,
+        };
+
         return resultado;
       }, {});
     },
     umConceptoImpactoAmbiental() {
       return this.catalogoImpactosAmbientalesOTS.reduce((resultado, item) => {
-        const conceptoEncontrado = this.catalogoImpactosAmbientalesOTSCompleto.find(itemCompleto =>
-          itemCompleto.nombre.toLowerCase().startsWith(item.toLowerCase())
-        );
+        const conceptoEncontrado =
+          this.catalogoImpactosAmbientalesOTSCompleto.find((itemCompleto) =>
+            itemCompleto.nombre.toLowerCase().startsWith(item.toLowerCase()),
+          );
 
-        if(conceptoEncontrado) {
-          resultado[item] = conceptoEncontrado.unidad
+        if (conceptoEncontrado) {
+          resultado[item] = conceptoEncontrado.unidad;
         }
-        
+
         return resultado;
       }, {});
-      
     },
     eadsForoOrdenados() {
       return [...this.eadsForo].sort(
@@ -731,6 +745,89 @@ const app = {
       } else {
         menu.style.display = "block";
       }
+    },
+    descargarImagenTabla() {
+      const elementoTabla = document.getElementById("tablaImpactosAmbientales");
+
+      if (!elementoTabla) {
+        return Swal.fire(
+          "Error",
+          "No se encontró la tabla en la vista",
+          "error",
+        );
+      }
+
+      const inputsOriginales = elementoTabla.querySelectorAll("input, select");
+      const valoresOriginales = Array.from(inputsOriginales).map((el) => {
+        if (el.tagName === "SELECT") {
+          return el.options[el.selectedIndex]
+            ? el.options[el.selectedIndex].text
+            : "";
+        }
+
+        return el.value || "";
+      });
+
+      Swal.fire({
+        title: "Generando imagen...",
+        text: "Por favor espere un momento",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      html2canvas(elementoTabla, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        onclone: (documentoClonado) => {
+          const tablaClonada = documentoClonado.getElementById(
+            "tablaImpactosAmbientales",
+          );
+          const inputsClonados = tablaClonada.querySelectorAll("input, select");
+
+          inputsClonados.forEach((input, index) => {
+            const divTexto = documentoClonado.createElement("div");
+
+            divTexto.innerText = valoresOriginales[index];
+
+            divTexto.className = input.className;
+
+            divTexto.style.border = "1px solid #dee2e6";
+            divTexto.style.borderRadius = "0.375rem";
+            divTexto.style.padding = "0.25rem 0.5rem";
+            divTexto.style.display = "flex";
+            divTexto.style.alignItems = "center";
+            divTexto.style.justifyContent = "center";
+            divTexto.style.minHeight = "31px";
+            divTexto.style.width = "100%";
+            divTexto.style.whiteSpace = "normal";
+            divTexto.style.wordBreak = "break-word";
+
+            divTexto.style.backgroundColor =
+              input.style.backgroundColor ||
+              (input.disabled ? "#e9ecef" : "#ffffff");
+
+            input.parentNode.replaceChild(divTexto, input);
+          });
+        },
+      })
+        .then((canvas) => {
+          let enlaceTemporal = document.createElement("a");
+          let nombreArchivo = this.nombre_indicador
+            ? this.nombre_indicador.replace(/\s+/g, "_")
+            : "EAD";
+
+          enlaceTemporal.download = `Impactos_Ambientales_${nombreArchivo}.png`;
+          enlaceTemporal.href = canvas.toDataURL("image/png");
+          enlaceTemporal.click();
+          Swal.close();
+        })
+        .catch((error) => {
+          console.error("Error al generar la imagen: ", error);
+          Swal.fire("Error", "Hubo un problema al generar la captura", "error");
+        });
     },
     verificarSesion() {
       axios
@@ -1038,24 +1135,24 @@ const app = {
                     if (deInput) {
                       deInput.value =
                         datosCriterio[j].desde !== null &&
-                          datosCriterio[j].desde !== undefined &&
-                          datosCriterio[j].desde !== ""
+                        datosCriterio[j].desde !== undefined &&
+                        datosCriterio[j].desde !== ""
                           ? datosCriterio[j].desde
                           : "";
                     }
                     if (hastaInput) {
                       hastaInput.value =
                         datosCriterio[j].hasta !== null &&
-                          datosCriterio[j].hasta !== undefined &&
-                          datosCriterio[j].hasta !== ""
+                        datosCriterio[j].hasta !== undefined &&
+                        datosCriterio[j].hasta !== ""
                           ? datosCriterio[j].hasta
                           : "";
                     }
                     if (puntosInput) {
                       puntosInput.value =
                         datosCriterio[j].puntos !== null &&
-                          datosCriterio[j].puntos !== undefined &&
-                          datosCriterio[j].puntos !== ""
+                        datosCriterio[j].puntos !== undefined &&
+                        datosCriterio[j].puntos !== ""
                           ? datosCriterio[j].puntos
                           : "";
                     }
@@ -1363,7 +1460,7 @@ const app = {
         .catch((error) => {
           console.log("Error en la consulta :-( " + error);
         })
-        .finally(() => { });
+        .finally(() => {});
     },
     consultarEADLider() {
       axios
@@ -1903,7 +2000,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => { });
+        .finally(() => {});
     },
     uniqueAreas() {
       // Usamos Set para eliminar los duplicados
@@ -2514,9 +2611,9 @@ const app = {
               this.consultarJuntasArranque();
 
               //Consultas de tabla impactos ambientales
-                this.consultarImpactosAmbientalesOTS();
-                this.consultarCalculadorafeOTS();
-                this.consultarFactoresConversionOTS();
+              this.consultarImpactosAmbientalesOTS();
+              this.consultarCalculadorafeOTS();
+              this.consultarFactoresConversionOTS();
             }
           })
           .catch((error) => {
@@ -3093,7 +3190,6 @@ const app = {
       this.consultarPilares();
       this.consultarImpactoDeProyecto(); //datos de registro de emisiones e impactos ambientales
       this.consultarTodosImpactosProyectosEAD(); //me ayuda a poder tener todas las emisiones y aspecctos existentes
-     
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(
@@ -3682,10 +3778,10 @@ const app = {
       if (
         !confirm(
           "¿Desea eliminar el registro semana " +
-          semana +
-          " con dato " +
-          dato +
-          "?",
+            semana +
+            " con dato " +
+            dato +
+            "?",
         )
       ) {
         return true;
@@ -3923,8 +4019,9 @@ const app = {
           console.log("typeof:", typeof response.data);
 
           if (response.data.status == "success") {
-            this.catalogoImpactosAmbientalesOTSCompleto = response.data.impactos;
-            
+            this.catalogoImpactosAmbientalesOTSCompleto =
+              response.data.impactos;
+
             this.catalogoImpactosAmbientalesOTS = response.data.impactos
               .map((item) => {
                 const nombre = item.nombre;
@@ -3960,35 +4057,43 @@ const app = {
         });
     },
     consultarCalculadorafeOTS() {
-      axios.get("impactosAmbientalesControllerOTS.php", {
-        params: {
-          accion: "calculadorafe"
-        }
-      }).then(response => {
-        if (response.data.status === "success") {
-          this.calculadoraFeCombustibles = response.data.calcFe
-        } else {
-          console.log("Ocurrió un error inesperado")
-        }
-      }).catch(error => {
-        console.log("Error al consultar calculadora fe combustibles energéticos: ", error);
-      })
+      axios
+        .get("impactosAmbientalesControllerOTS.php", {
+          params: {
+            accion: "calculadorafe",
+          },
+        })
+        .then((response) => {
+          if (response.data.status === "success") {
+            this.calculadoraFeCombustibles = response.data.calcFe;
+          } else {
+            console.log("Ocurrió un error inesperado");
+          }
+        })
+        .catch((error) => {
+          console.log(
+            "Error al consultar calculadora fe combustibles energéticos: ",
+            error,
+          );
+        });
     },
     consultarFactoresConversionOTS() {
-      axios.get("impactosAmbientalesControllerOTS.php", {
-        params: {
-          accion: "factoresConversion"
-        }
-      }).then(response => {
-
-        if (response.data.status === "success") {
-          this.factoresConversion = response.data.factoresConversion
-        } else {
-          console.log("Ocurrió un error inesperado");
-        }
-      }).catch(error => {
-        console.log("Error al consultar factores conversión ots: ", error);
-      })
+      axios
+        .get("impactosAmbientalesControllerOTS.php", {
+          params: {
+            accion: "factoresConversion",
+          },
+        })
+        .then((response) => {
+          if (response.data.status === "success") {
+            this.factoresConversion = response.data.factoresConversion;
+          } else {
+            console.log("Ocurrió un error inesperado");
+          }
+        })
+        .catch((error) => {
+          console.log("Error al consultar factores conversión ots: ", error);
+        });
     },
 
     obtenerOpcionesConceptos() {
@@ -4025,7 +4130,7 @@ const app = {
             valores.push(titulo);
           }
         }
-      })
+      });
 
       // ==========================================
       // ELIMINAR DUPLICADOS
@@ -4205,50 +4310,64 @@ const app = {
         });
     },
     calculartco2(impacto) {
-
       const conceptoImpacto = impacto.concepto;
-      const datos = this.calculadoraFeCombustibles.find(item => item.combustible_energetico === conceptoImpacto);
+      const datos = this.calculadoraFeCombustibles.find(
+        (item) => item.combustible_energetico === conceptoImpacto,
+      );
 
-      if (impacto.concepto === 'Electricidad') {
-
-        const tco2e = (Number(impacto.cantidad) || 0) * (Number(datos.factor_emision) || 0) / 1000;
+      if (impacto.concepto === "Electricidad") {
+        const tco2e =
+          ((Number(impacto.cantidad) || 0) *
+            (Number(datos.factor_emision) || 0)) /
+          1000;
 
         return Number(tco2e.toFixed(6));
-
       } else {
-
         let datoConversion;
-        if (impacto.concepto === 'Gasolina' || impacto.concepto === 'Diésel') {
-          const buscarValor = this.factoresConversion.find(item => item.unidad_medida === 'GJ' && item.um_poder_calorifico === 'MG');
+        if (impacto.concepto === "Gasolina" || impacto.concepto === "Diésel") {
+          const buscarValor = this.factoresConversion.find(
+            (item) =>
+              item.unidad_medida === "GJ" && item.um_poder_calorifico === "MG",
+          );
 
-          datoConversion = buscarValor ? buscarValor.valor : 0
-
+          datoConversion = buscarValor ? buscarValor.valor : 0;
         } else {
-          datoConversion = 1000
+          datoConversion = 1000;
         }
 
-        let poderCalorificoConver
-        if (impacto.concepto === 'Gas Natural') {
-          poderCalorificoConver = (
-            datos.poder_calorifico / 1000000
-          ).toFixed(5)
-
+        let poderCalorificoConver;
+        if (impacto.concepto === "Gas Natural") {
+          poderCalorificoConver = (datos.poder_calorifico / 1000000).toFixed(5);
         } else {
           poderCalorificoConver = (
-            datos.poder_calorifico / 1000 / 158.9873
+            datos.poder_calorifico /
+            1000 /
+            158.9873
           ).toFixed(9);
         }
 
-        const co2t_gj = (datos.factor_emision_co2_t_mj * datoConversion).toFixed(4)
-        const co2_tco2e = impacto.cantidad * poderCalorificoConver * co2t_gj * datos.potencial_calentamiento_c02
-        const ch4_tco2eq = impacto.cantidad * poderCalorificoConver * datos.factor_emision_ch4_kg_mj * datos.potencial_calentamiento_ch4;
-        const n20_tco2eq = impacto.cantidad * poderCalorificoConver * datos.factor_emision_n2o_kg_mj * datos.potencial_calentamiento_n2o;
+        const co2t_gj = (
+          datos.factor_emision_co2_t_mj * datoConversion
+        ).toFixed(4);
+        const co2_tco2e =
+          impacto.cantidad *
+          poderCalorificoConver *
+          co2t_gj *
+          datos.potencial_calentamiento_c02;
+        const ch4_tco2eq =
+          impacto.cantidad *
+          poderCalorificoConver *
+          datos.factor_emision_ch4_kg_mj *
+          datos.potencial_calentamiento_ch4;
+        const n20_tco2eq =
+          impacto.cantidad *
+          poderCalorificoConver *
+          datos.factor_emision_n2o_kg_mj *
+          datos.potencial_calentamiento_n2o;
         const tco2e = co2_tco2e + ch4_tco2eq + n20_tco2eq;
 
         return Number(tco2e.toFixed(6));
-
       }
-
     },
 
     // REGISTRO DE EMISIONES Y ASPECTO AMBIENTAL /////////////////////////////////////////////////
@@ -4943,13 +5062,13 @@ const app = {
                 } else {
                   console.log(
                     "error en la consulta de calificacion por evaluador" +
-                    response.data[4],
+                      response.data[4],
                   );
                 }
               } else {
                 console.log(
                   "error en la consulta de evaluadores por foro" +
-                  response.data[3],
+                    response.data[3],
                 );
               }
             } else {
@@ -5741,30 +5860,38 @@ const app = {
       console.log(this.diaActual);
     },
     comprobando(dia) {
-      if (this.tipo_usuario === 'ColaboradorLider' || this.tipo_usuario === "Supervisor") {
+      if (
+        this.tipo_usuario === "ColaboradorLider" ||
+        this.tipo_usuario === "Supervisor"
+      ) {
         return true;
       }
 
-      if (this.tipo_usuario == 'Colaborador') {
+      if (this.tipo_usuario == "Colaborador") {
         if (this.habilitar == false) {
-          console.log("FALSE ")
-          return false
+          console.log("FALSE ");
+          return false;
         } else {
-          let fechaLimite = this.diaActual - 3
+          let fechaLimite = this.diaActual - 3;
           const fechaLimiteAntes = this.diaActual - 2;
-          const mesAnterior = this.mesActual - 1
+          const mesAnterior = this.mesActual - 1;
           var ultimoDiaMes = new Date(this.anioActual, mesAnterior, 0);
           var mes = ultimoDiaMes.getMonth() + 1;
 
-          if (this.anioActual == this.anio_grafica && this.mesActual == this.mesEntero) {
+          if (
+            this.anioActual == this.anio_grafica &&
+            this.mesActual == this.mesEntero
+          ) {
             if (dia > fechaLimite) {
-              return false
+              return false;
             } else {
-              return true
+              return true;
             }
-          } else if (this.anioActual === this.anio_grafica && this.mesEntero === mes) {
+          } else if (
+            this.anioActual === this.anio_grafica &&
+            this.mesEntero === mes
+          ) {
             if (fechaLimiteAntes <= 0) {
-
               var diasDelMes = ultimoDiaMes.getDate();
               var totalFechasAnteriores = diasDelMes + fechaLimiteAntes;
 
@@ -5773,16 +5900,15 @@ const app = {
               } else {
                 return false;
               }
-
             } else {
-              return true
+              return true;
             }
           } else {
-            return true
+            return true;
           }
         }
       } else {
-        return false
+        return false;
       }
     },
     consultadoValoresGrafica() {
@@ -6130,7 +6256,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => { });
+        .finally(() => {});
     },
     consultarCausas() {
       var mes;
@@ -6298,7 +6424,7 @@ const app = {
         .catch((error) => {
           console.log(error);
         })
-        .finally(() => { });
+        .finally(() => {});
     },
     editarCausa(index) {
       this.actualizar_causa = index + 1;
@@ -7213,7 +7339,7 @@ const app = {
             console.log("Ponderacion Equipo", this.datosIDPonderacion);
             this.nombrePonderacionAsignada =
               this.datosIDPonderacion[0] &&
-                this.datosIDPonderacion[0].nombre_ponderacion
+              this.datosIDPonderacion[0].nombre_ponderacion
                 ? this.datosIDPonderacion[0].nombre_ponderacion
                 : "";
             this.criteriosDinamicasSC = Object.values(
@@ -7304,7 +7430,7 @@ const app = {
                 elementos.puntos != null &&
                 this.inputColumnaPonderacion[elementos.id_criterios] != null &&
                 this.inputColumnaPonderacion[elementos.id_criterios] !=
-                undefined
+                  undefined
               ) {
                 console.log(
                   elementos.puntos,
@@ -7427,11 +7553,11 @@ const app = {
             this.puntosCriterios
               .filter((items) => items.id_criterios == id_criterios)
               .map((items) => items.puntos) &&
-            !isNaN(
-              this.puntosCriterios
-                .filter((items) => items.id_criterios == id_criterios)
-                .map((items) => items.puntos).length > 0,
-            ),
+              !isNaN(
+                this.puntosCriterios
+                  .filter((items) => items.id_criterios == id_criterios)
+                  .map((items) => items.puntos).length > 0,
+              ),
           )
         ) {
           if (
@@ -7520,7 +7646,7 @@ const app = {
         .catch((error) => {
           console.log("Error en la consulta :-( " + error);
         })
-        .finally(() => { });
+        .finally(() => {});
     },
     consultarCriterioColaborador() {
       this.idCriterioGrafica = "";
@@ -7577,9 +7703,9 @@ const app = {
     MostrarOcultarPonderacion(ocultarOmostrar, id_ponderacion) {
       console.log(
         "Quiero: " +
-        ocultarOmostrar +
-        "La ponderación con ID: " +
-        id_ponderacion,
+          ocultarOmostrar +
+          "La ponderación con ID: " +
+          id_ponderacion,
       );
       if (ocultarOmostrar == "Mostrar") {
         this.mostrar_ponderacion_id = id_ponderacion;

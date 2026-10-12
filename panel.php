@@ -1156,7 +1156,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!-- CUERPO -->
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
+                            <table id="tablaImpactosAmbientales" class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
                                 <!-- ENCABEZADO -->
                                 <thead class="table-success">
                                     <tr class="text-center">
@@ -1471,7 +1471,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </span>
 
                             </div>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2 mt-1">
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    @click="descargarImagenTabla()"
+                                >
+                                    <i class="bi bi-image me-1"></i> Descargar
+                                </button>
                                 <!-- GUARDAR -->
                                 <button
                                     type="button"
@@ -3804,6 +3811,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
         <script src="js/panel.js?<?php echo time(); ?>"></script>
         <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     </body>
 
     </html>
