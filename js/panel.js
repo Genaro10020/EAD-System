@@ -747,19 +747,82 @@ const app = {
       if (!elementoTabla) {
         return Swal.fire(
           "Error",
-          "No se encontró la tabla en la vista.",
+          "No se encontró la tabla en la vista",
           "error",
         );
       }
 
+      const inputsOriginales = elementoTabla.querySelectorAll("input, select");
+      const valoresOriginales = Array.from(inputsOriginales).map((el) => {
+        if (el.tagName === "SELECT") {
+          return el.options[el.selectedIndex]
+            ? el.options[el.selectedIndex].text
+            : "";
+        }
+
+        return el.value || "";
+      });
+
       Swal.fire({
         title: "Generando imagen...",
-        text: "Por favor espere un momento.",
+        text: "Por favor espere un momento",
         allowOutsideClick: false,
         didOpen: () => {
           Swal.showLoading();
         },
       });
+
+      html2canvas(elementoTabla, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        onclone: (documentoClonado) => {
+          const tablaClonada = documentoClonado.getElementById(
+            "tablaImpactosAmbientales",
+          );
+          const inputsClonados = tablaClonada.querySelectorAll("input, select");
+
+          inputsClonados.forEach((input, index) => {
+            const divTexto = documentoClonado.createElement("div");
+
+            divTexto.innerText = valoresOriginales[index];
+
+            divTexto.className = input.className;
+
+            divTexto.style.border = "1px solid #dee2e6";
+            divTexto.style.borderRadius = "0.375rem";
+            divTexto.style.padding = "0.25rem 0.5rem";
+            divTexto.style.display = "flex";
+            divTexto.style.alignItems = "center";
+            divTexto.style.justifyContent = "center";
+            divTexto.style.minHeight = "31px";
+            divTexto.style.width = "100%";
+            divTexto.style.whiteSpace = "normal";
+            divTexto.style.wordBreak = "break-word";
+
+            divTexto.style.backgroundColor =
+              input.style.backgroundColor ||
+              (input.disabled ? "#e9ecef" : "#ffffff");
+
+            input.parentNode.replaceChild(divTexto, input);
+          });
+        },
+      })
+        .then((canvas) => {
+          let enlaceTemporal = document.createElement("a");
+          let nombreArchivo = this.nombre_indicador
+            ? this.nombre_indicador.replace(/\s+/g, "_")
+            : "EAD";
+
+          enlaceTemporal.download = `Impactos_Ambientales_${nombreArchivo}.png`;
+          enlaceTemporal.href = canvas.toDataURL("image/png");
+          enlaceTemporal.click();
+          Swal.close();
+        })
+        .catch((error) => {
+          console.error("Error al generar la imagen: ", error);
+          Swal.fire("Error", "Hubo un problema al generar la captura", "error");
+        });
     },
     verificarSesion() {
       axios
