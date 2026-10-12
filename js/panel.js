@@ -3848,6 +3848,22 @@ const app = {
         referencia: "",
       });
     },
+    eliminarFilaImpactosNuevos(index) {
+      if (this.filasImpactosNuevos.length > 1) {
+        this.filasImpactosNuevos.splice(index, 1);
+      } else {
+        this.filasImpactosNuevos[0] = {
+          diagrama: "",
+          tipo: "",
+          concepto: "",
+          alcance: "",
+          cantidad: 0,
+          um: "",
+          tco2: 0,
+          referencia: "",
+        };
+      }
+    },
     consultarImpactosAmbientalesOTS() {
       axios
         .get("impactosAmbientalesControllerOTS.php", {
