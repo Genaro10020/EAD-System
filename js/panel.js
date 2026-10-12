@@ -568,18 +568,6 @@ const app = {
       sugerencias_colaboradores: [],
       busquedaTimeout: null,
       hayPonderacion: false,
-      filasImpactosNuevos: [
-        {
-          diagrama: "",
-          tipo: "",
-          concepto: "",
-          alcance: "",
-          cantidad: 0,
-          um: "",
-          tco2: 0,
-          referencia: "",
-        },
-      ],
     };
   },
   watch: {
@@ -3834,35 +3822,6 @@ const app = {
             confirmButtonText: "Aceptar",
           });
         });
-    },
-
-    agregarFilaImpactosNuevos() {
-      this.filasImpactosNuevos({
-        diagrama: "",
-        tipo: "",
-        concepto: "",
-        alcance: "",
-        cantidad: 0,
-        um: "",
-        tco2: 0,
-        referencia: "",
-      });
-    },
-    eliminarFilaImpactosNuevos(index) {
-      if (this.filasImpactosNuevos.length > 1) {
-        this.filasImpactosNuevos.splice(index, 1);
-      } else {
-        this.filasImpactosNuevos[0] = {
-          diagrama: "",
-          tipo: "",
-          concepto: "",
-          alcance: "",
-          cantidad: 0,
-          um: "",
-          tco2: 0,
-          referencia: "",
-        };
-      }
     },
     consultarImpactosAmbientalesOTS() {
       axios
