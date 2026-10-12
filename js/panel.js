@@ -3862,7 +3862,6 @@ const app = {
           });
       });
     },
-
     consultarTodosImpactosProyectosEAD() {
       axios
         .get("impactosAmbientalesController.php", {
@@ -3903,7 +3902,6 @@ const app = {
           });
         });
     },
-
     consultarImpactosAmbientalesOTS() {
       axios
         .get("impactosAmbientalesControllerOTS.php", {
