@@ -568,14 +568,18 @@ const app = {
       sugerencias_colaboradores: [],
       busquedaTimeout: null,
       hayPonderacion: false,
-      diagrama: "",
-      tipo: "",
-      concepto: "",
-      alcane: "",
-      cantidad: 0,
-      um: "",
-      tco2: 0,
-      referencia: "",
+      filasImpactosNuevos: [
+        {
+          diagrama: "",
+          tipo: "",
+          concepto: "",
+          alcance: "",
+          cantidad: 0,
+          um: "",
+          tco2: 0,
+          referencia: "",
+        },
+      ],
     };
   },
   watch: {
@@ -3791,7 +3795,6 @@ const app = {
           });
       });
     },
-
     consultarTodosImpactosProyectosEAD() {
       axios
         .get("impactosAmbientalesController.php", {
