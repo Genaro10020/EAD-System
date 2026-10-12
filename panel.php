@@ -1397,6 +1397,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                             </div>
                             <div class="d-flex gap-2">
+                                <button 
+                                    type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    @click="descargarImagenTabla()"
+                                >
+                                    <i class="bi bi-image me-1"></i> Descargar
+                                </button>
                                 <!-- GUARDAR -->
                                 <button
                                     type="button"
