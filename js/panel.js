@@ -196,6 +196,8 @@ const app = {
           referencia: "",
         },
       ],
+      nombresPilaresEncontrados: '',
+      ///////////////////////////////////IMPACTOS AMBIENTALES
       banderaImpactoGuardado: false,
       catalogoImpactosAmbientalesEAD: [],
       catalogoImpactosAmbientalesOTS: [],
@@ -203,7 +205,9 @@ const app = {
       factoresConversion: [],
       catalogoUnidadesOTS: [],
       catalogoImpactosAmbientalesOTSCompleto: [],
-      nombresPilaresEncontrados: '',
+      alcanceAyudaVisible: false,
+      textoAyudaAlcance: '',
+      
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
       fecha_capacitacion: "",
@@ -714,6 +718,7 @@ const app = {
     });
     this.obtenerFecha();
     this.consultarNombrePonderaciones();
+    
   },
   methods: {
     toggleMenu() {
@@ -4377,6 +4382,21 @@ const app = {
           });
         });
     },
+
+       mostrarAyuda(alcance) {
+            const descripciones = {
+                1: 'Impacto bajo: afecta únicamente una tarea o actividad específica.',
+                2: 'Impacto medio: afecta a un área o equipo de trabajo.',
+                3: 'Impacto alto: afecta a varias áreas o a toda la organización.'
+            };
+
+            this.textoAyudaAlcance = descripciones[alcance];
+            this.alcanceAyudaVisible = true;
+        },
+
+        ocultarAyuda() {
+            this.alcanceAyudaVisible = false;
+        },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {

@@ -61,6 +61,7 @@ input[type],
 }
 
 textarea[type]:focus,
+textarea.form-control:focus,
 input[type]:focus,
 button[type]:focus,
 select:focus,
@@ -69,11 +70,8 @@ select[type]:focus,
 .form-select:focus {
     border: 1px solid;
     border-color: rgba(115, 14, 14, 0.579);
-    box-shadow: none;
-    /* Elimina la sombra al enfocar */
-    /*box-shadow: 0 0px 0px rgba(0, 133, 180, 1)inset, 0 0 4px rgba( 187, 16, 16, 1);*/
-    outline: 0 none;
-
+    box-shadow: 0 0 1px rgba(187, 16, 16, 0.5);
+    outline: 1px solid rgba(187, 16, 16, 0.5);
 }
 
 table,
