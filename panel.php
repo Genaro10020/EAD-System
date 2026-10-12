@@ -1156,7 +1156,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <!-- CUERPO -->
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover align-middle mb-0">
+                            <table id="tablaImpactosAmbientales" class="table table-bordered table-hover align-middle mb-0">
                                 <!-- ENCABEZADO -->
                                 <thead class="table-success">
                                     <tr class="text-center">
