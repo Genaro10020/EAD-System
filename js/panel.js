@@ -2507,6 +2507,11 @@ const app = {
               this.tomarDiaActual();
               this.consultarSeguimientoKPI();
               this.consultarJuntasArranque();
+
+              //Consultas de tabla impactos ambientales
+                this.consultarImpactosAmbientalesOTS();
+                this.consultarCalculadorafeOTS();
+                this.consultarFactoresConversionOTS();
             }
           })
           .catch((error) => {
@@ -3083,9 +3088,7 @@ const app = {
       this.consultarPilares();
       this.consultarImpactoDeProyecto(); //datos de registro de emisiones e impactos ambientales
       this.consultarTodosImpactosProyectosEAD(); //me ayuda a poder tener todas las emisiones y aspecctos existentes
-      this.consultarImpactosAmbientalesOTS();
-      this.consultarCalculadorafeOTS();
-      this.consultarFactoresConversionOTS();
+     
     },
     abriModalGraficaFullKPI() {
       this.myModal = new bootstrap.Modal(
