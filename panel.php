@@ -67,23 +67,23 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </button>
                         <div class="dropdown-content" id="menuEAD"><!-- class="dropdown-content"  :class="{ 'show': menuAbierto }" -->
                             <?php
-                            if (isset($_SESSION['tipo_acceso'])){
-                                
+                            if (isset($_SESSION['tipo_acceso'])) {
+
                                 if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                             ?>
                                     <a><i class="bi bi-gear-fill">Configuracion</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Departamentos'), toggleMenu()"><b>Departamentos</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Usuarios'), toggleMenu()"><b>Usuarios</b></button></a>
                                 <?php }
-                
-                                if(isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') || isset( $_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Consultor' ){?>
+
+                                if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador') || isset($_SESSION['tipo_acceso']) && $_SESSION['tipo_acceso'] == 'Consultor') { ?>
                                     <a><i class="bi bi-diagram-3-fill"> Equipos alto desempeño</i></a>
-                                     <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
-                                     <a><i class="bi bi-people-fill"></i>Gestión</a>
-                                     <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
+                                    <a> <button class="btn_menu" @click="ventanas('Crear EAD'), toggleMenu(), consultarColaboradores(),consultarEAD()"><b>Crear EAD</b></button></a>
+                                    <a><i class="bi bi-people-fill"></i>Gestión</a>
+                                    <a> <button class="btn_menu" @click="ventanas('Gestion Sesiones'),consultarEADXID(),consultarEAD(),tomarDiaActual(),consultarCantidadFaseXEtapas(),tomarAnioActual(),semanasAnio(), toggleMenu()"><b> Gestion de Sesiones</b></button></a>
                                 <?php }
 
-                                if(isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')){
+                                if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                                 ?>
                                     <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
                                 <?php
@@ -92,7 +92,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <?php
                                 if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') {
                                 ?>
-                                   
+
                                     <a><i class="bi bi-question-circle-fill">Preguntas</i></a>
                                     <a><button class="btn_menu" @click="ventanas('Preguntas'),consultarPreguntas(), toggleMenu()"><b> Preguntas</b></button></a>
                                     <a><i class="bi bi-trophy-fill"> Competencias</i></a>
@@ -101,7 +101,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <!--<a><button class="btn_menu" @click="ventanas('Competencias')"><b>Competencia</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('CompetenciaPlanta')"><b>Competencia de planta</b></button></a>-->
                                     <!--<a><button class="btn_menu" @click="ventanas('Evaluar')"><b>Evaluar</b></button></a>-->
-                                   
+
                                 <?php }
                                 if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                                 ?>
@@ -110,7 +110,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <a><button class="btn_menu" @click="ventanas('Graficas'),consultarEAD(),consultarCriterios(), toggleMenu()"><b>Graficas</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('ScoreCard'),consultarEAD(),consultarSeguimientoAsistencia(),consultarScoreCard(), toggleMenu()"><b>Scorecard</b></button></a>
                                     <a><button class="btn_menu" @click="ventanas('Puntos'), consultarCumplimientoScorecard(), toggleMenu()"><b>Puntos</b></button></a>
-                                <?php } 
+                            <?php }
                             }
                             ?>
                         </div>
@@ -185,8 +185,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         :key="sugerencia.id"
                                         class="list-group-item list-group-item-action"
                                         style="cursor: pointer"
-                                        @click="seleccionarColaborador(sugerencia)"
-                                    >
+                                        @click="seleccionarColaborador(sugerencia)">
                                         {{ sugerencia.colaborador }} - <small class="text-muted">Nómina: {{ sugerencia.numero_nomina }}</small>
                                     </li>
                                 </ul>
@@ -245,7 +244,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
                 <div class="seccion2 col-12 col-lg-8 mt-2">
-                    <div class="scroll">    
+                    <div class="scroll">
                         <table class="table table-striped table-bordered border-dark ">
                             <thead class=" border-dark">
                                 <tr class="text-center ">
@@ -477,7 +476,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraCordinador()">
                                             {{usuario.nombre}}
                                         </option>
-                                         <option value="No aplica">No aplica</option>
+                                        <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -489,7 +488,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraJefeArea()">
                                             {{usuario.nombre}}
                                         </option>
-                                         <option value="No aplica">No aplica</option>
+                                        <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -501,7 +500,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraIngenieroProceso()">
                                             {{usuario.nombre}}
                                         </option>
-                                         <option value="No aplica">No aplica</option>
+                                        <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -513,7 +512,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <option v-for="usuario in filtraIngenieroCalidad()">
                                             {{usuario.nombre}}
                                         </option>
-                                         <option value="No aplica">No aplica</option>
+                                        <option value="No aplica">No aplica</option>
                                     </select>
                                 </div>
                             </div>
@@ -529,7 +528,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </select>
                                 </div>
                             </div>
-                             <div class="col-12">
+                            <div class="col-12">
                                 <div class="input-group mt-3">
                                     <span class="text-ezquierdo-form input-group-text">Tipo de Equipo</span>
                                     <select v-model="select_tipo_ead" class="form-control select" aria-label="With textarea">
@@ -718,9 +717,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
                 <div class="row barra-gris">
                     <div class="col-12 ">
-                            <div class="row g-2 mt-2 mb-2 align-items-center justify-content-center">
+                        <div class="row g-2 mt-2 mb-2 align-items-center justify-content-center">
 
-                                <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') { ?>
+                            <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') { ?>
 
                                 <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center">
                                     <button class="btn py-1 w-100"
@@ -733,7 +732,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </button>
                                 </div>
 
-                               <div class="col-12 col-md-6 col-xl-2">
+                                <div class="col-12 col-md-6 col-xl-2">
                                     <div class="input-group  d-flex justify-content-center">
                                         <label class="input-group-text" style="font-size:0.8em">Área</label>
                                         <select class="form-select"
@@ -743,36 +742,36 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             style="font-size:0.8em">
                                             <option value="">Todas las áreas..</option>
                                             <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
-                                            </select>
+                                        </select>
                                     </div>
                                 </div>
 
-                                <?php } ?>
+                            <?php } ?>
 
-                                <div class="col-12 col-md-6 col-xl-2 d-flex justify-content-center">
-                                    <button class="btn py-1 w-100"
+                            <div class="col-12 col-md-6 col-xl-2 d-flex justify-content-center">
+                                <button class="btn py-1 w-100"
+                                    style="font-size:12px; max-width:200px;"
+                                    :class="{'btn-success': documento_session.length > 0, 'btn-primary': documento_session.length <= 0}"
+                                    @click="modalDocumentoGestionSession()"
+                                    :disabled="!select_session_equipo.length">
+                                    <i class="bi bi-folder-plus"></i>
+                                    Documento ({{documento_session.length}})
+                                </button>
+                            </div>
+
+                            <div class="col-12 col-md-6 col-xl-2">
+                                <div class="input-group d-flex justify-content-center">
+                                    <label class="input-group-text" style="font-size:0.7em">Fecha</label>
+                                    <input v-model="fecha_session"
                                         style="font-size:12px; max-width:200px;"
-                                        :class="{'btn-success': documento_session.length > 0, 'btn-primary': documento_session.length <= 0}"
-                                        @click="modalDocumentoGestionSession()"
-                                        :disabled="!select_session_equipo.length">
-                                        <i class="bi bi-folder-plus"></i>
-                                        Documento ({{documento_session.length}})
-                                    </button>
+                                        type="date"
+                                        class="form-control"
+                                        style="font-size:0.7em"
+                                        @change="buscarDocumentos('Presentacion')">
                                 </div>
+                            </div>
 
-                                <div class="col-12 col-md-6 col-xl-2">
-                                    <div class="input-group d-flex justify-content-center">
-                                        <label class="input-group-text" style="font-size:0.7em">Fecha</label>
-                                        <input v-model="fecha_session"
-                                         style="font-size:12px; max-width:200px;"
-                                            type="date"
-                                            class="form-control"
-                                            style="font-size:0.7em"
-                                            @change="buscarDocumentos('Presentacion')">
-                                    </div>
-                                </div>
-
-                                <!--<div class="col-12 col-md-6 col-xl-3">
+                            <!--<div class="col-12 col-md-6 col-xl-3">
                                     <div class="input-group d-flex justify-content-center">
                                         <label class="input-group-text" style="font-size:0.8em">Metodología</label>
                                         <select class="form-select"
@@ -788,8 +787,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </div>
                                 </div>-->
 
-                            </div>
                         </div>
+                    </div>
                     <div class="col-12  d-flex justify-content-center align-items-center">
                         <div v-if="metodologia=='PDCA'" class="d-flex justify-content-center">
                             <div class="col-3 col-sm-3 d-flex justify-content-center">
@@ -813,7 +812,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <label style="margin-top:30px;font-size:0.7em">{{llevaA}}%</label>
                             </div>
                         </div>
-                         <div v-if="metodologia=='DMAIC'" class="d-flex justify-content-center">
+                        <div v-if="metodologia=='DMAIC'" class="d-flex justify-content-center">
                             <div class="col-3 col-sm-3 d-flex justify-content-center">
                                 <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">D</label></div>
                                 <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicD"></canvas><br>
@@ -834,7 +833,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicI"></canvas>
                                 <label style="margin-top:30px;font-size:0.7em">{{llevaMI}}%</label>
                             </div>
-                             <div class="col-3 col-sm-3 d-flex justify-content-center">
+                            <div class="col-3 col-sm-3 d-flex justify-content-center">
                                 <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">C</label></div>
                                 <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicC"></canvas>
                                 <label style="margin-top:30px;font-size:0.7em">{{llevaMC}}%</label>
@@ -860,7 +859,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </label>
                                 <br>
                                 <b class="letrasCard">Planta:</b> {{planta_ead}}
-                                <b class="letrasCard">Area:</b> {{area_ead}} 
+                                <b class="letrasCard">Area:</b> {{area_ead}}
                                 <b class="letrasCard">Tipo:</b> {{tipo_equipo}}<br>
                                 <div class="row">
                                     <div class="col-12">
@@ -883,23 +882,23 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
                             <h6 class="text-center pasos">2. Metodología</h6>
                             <div class="input-group" style="min-width:270px">
-                                        <label class="input-group-text" style="font-size:0.8em">Metodología</label>
-                                        <select class="form-select"
-                                            :disabled="tipo_equipo=='EAD' || existenDatosSesion==true"
-                                            v-model="metodologia"
-                                            @change="consultarAvanceEtapas()"
-                                            style="font-size:0.8em">
-                                            <option value="">Seleccione...</option>
-                                            <option value="PDCA">PDCA</option>
-                                            <option value="DMAIC">DMAIC</option>
-                                        </select>
+                                <label class="input-group-text" style="font-size:0.8em">Metodología</label>
+                                <select class="form-select"
+                                    :disabled="tipo_equipo=='EAD' || existenDatosSesion==true"
+                                    v-model="metodologia"
+                                    @change="consultarAvanceEtapas()"
+                                    style="font-size:0.8em">
+                                    <option value="">Seleccione...</option>
+                                    <option value="PDCA">PDCA</option>
+                                    <option value="DMAIC">DMAIC</option>
+                                </select>
                             </div>
                             <h6 class="text-center pasos mt-2">3. Etapa y fases</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Etapa </label>
                                 <select
-                                :disabled="metodologia==''" 
-                                class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
+                                    :disabled="metodologia==''"
+                                    class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
                                     <option value="">Seleccione..</option>
                                     <option v-for="etapa in etapas" :value="etapa.id+'<->'+etapa.etapa">{{etapa.etapa}}</option>
                                 </select>
@@ -1114,387 +1113,381 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                         </div>
                     </div>
 
-                <!-- IMPACTOS AMBIENTALES -->
-                 <div class="col-12">
-                    <div class="row barra-gris d-flex align-content-center mb-2">
-                        <h6 class="text-center pasos mt-2">Impactos Ambientales <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
-                    </div>
-                    <div class="col-12"><!--Inicio Scroll-->
-                    <div class="scroll5 col-12" style="font-size:0.8em">
-                    <!-- TÍTULO -->
-                    <div class="card-header bg-success text-white py-1">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <label class="mb-0 fw-bold text-sm">
-                                    Impactos Ambientales
-                                </label><br>
-                                <small class="opacity-75">
-                                    <!--Registro de emisiones y aspectos ambientales-->
-                                </small>
-                            </div>
-                            <span class="badge bg-light text-success">
-                                Ambiental
-                            </span>
-                            </div>
-                            <!-- INFORMACIÓN -->
-                            <div class="d-flex align-items-center gap-3 py-2 px-3">
-                                <span>
-                                    {{ select_session_equipo?.split('<->')[1] }} <b>-></b>
-                                </span>
-                                <span v-if="nombre_indicador">
-                                    {{ nombre_indicador }}
-                                </span>
-                                <span
-                                    v-else
-                                    class="text-warning rounded rounded-2 bg-black my-1 px-2 py-1"
-                                    style="font-size: 0.8em;">
-                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>
-                                    Primero debes colocarle un nombre al indicador antes de añadir impactos.
-                                </span>
-                            </div>
-                    </div>
-                    <!-- CUERPO -->
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table id="tablaImpactosAmbientales" class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
-                                <!-- ENCABEZADO -->
-                                <thead class="table-success">
-                                    <tr class="text-center">
-
-                                        <th scope="col">
-                                            #
-                                        </th>
-                                        <th scope="col">
-                                            Diagrama de<br>
-                                            Proceso Ambiental
-                                        </th>
-                                        <th scope="col">
-                                            Tipo
-                                        </th>
-                                        <th scope="col">
-                                            Concepto
-                                        </th>
-                                        <th scope="col">
-                                            Alcance
-                                        </th>
-                                        <th scope="col">
-                                            Cant.
-                                        </th>
-                                        <th scope="col">
-                                            UM
-                                        </th>
-                                        <th scope="col">
-                                            t CO₂/Año<br>
-                                            evitadas
-                                        </th>
-                                        <th scope="col">
-                                            Referencia
-                                        </th>
-                                        <th scope="col">
-                                            Acción
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <!-- REGISTROS -->
-                                <tbody>
-                                    <tr
-                                        v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead"
-                                        :key="index"
-                                        class="text-center">
-                                        <!-- # -->
-                                        <td>
-                                            <span class="fw-bold text-muted">
-                                                {{ index + 1 }}
-                                            </span>
-                                        </td>
-
-                                       <!-- DIAGRAMA -->
-                                        <td>
-                                            <input
-                                                type="text"
-                                                class="form-control form-control-sm text-center text-primary"
-                                                v-model="impacto.diagrama"
-                                                list="catalogo-diagramas"
-                                                 style="font-size: 1em;"
-                                                aria-label="Diagrama"
-                                            >
-                                            <small class="text-muted d-block mt-1 text-start">
-                                                Ejem.: E-DF-IP-RJ-A
+                    <!-- IMPACTOS AMBIENTALES -->
+                    <div class="col-12">
+                        <div class="row barra-gris d-flex align-content-center mb-2">
+                            <h6 class="text-center pasos mt-2">Impactos Ambientales <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
+                        </div>
+                        <div class="col-12"><!--Inicio Scroll-->
+                            <div class="scroll5 col-12" style="font-size:0.8em">
+                                <!-- TÍTULO -->
+                                <div class="card-header bg-success text-white py-1">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <label class="mb-0 fw-bold text-sm">
+                                                Impactos Ambientales
+                                            </label><br>
+                                            <small class="opacity-75">
+                                                <!--Registro de emisiones y aspectos ambientales-->
                                             </small>
-                                            <datalist id="catalogo-diagramas">
-                                                <option
-                                                    v-for="valor in obtenerOpcionesCatalogo('diagrama')"
-                                                    :key="valor"
-                                                    :value="valor">
-                                                </option>
-                                            </datalist>
-                                        </td>
-                                        <!-- TIPO -->
-                                        <td>
-                                            <input
-                                                type="text"
-                                                class="form-control form-control-sm text-center text-primary"
-                                                v-model="impacto.tipo"
-                                                list="catalogo-tipos"
-                                                 aria-label="Tipo"
-                                                style="font-size: 1em;"
-                                            >
-                                            <small class="text-muted d-block mt-1 text-start">
-                                                Ej.: Energía
-                                            </small>
-                                            <datalist id="catalogo-tipos">
-                                                <option
-                                                    v-for="valor in obtenerOpcionesCatalogo('tipo')"
-                                                    :key="valor"
-                                                    :value="valor"
-                                                ></option>
-                                            </datalist>
-                                        </td>
-                                        <!-- CONCEPTO -->
-                                        <td>
-                                        <input
-                                            type="text"
-                                            class="form-control form-control-sm text-center text-primary"
-                                            v-model="impacto.concepto"
-                                             style="font-size: 1em;"
-                                            list="catalogo-conceptos">
-                                            <small class="text-muted d-block mt-1 text-start">
-                                                Ej.: Electricidad
-                                            </small>
-                                        <datalist id="catalogo-conceptos">
-                                                <option
-                                                    v-for="valor in obtenerOpcionesConceptos()"
-                                                    :key="valor"
-                                                    :value="valor"
-                                                ></option>
-                                        </datalist>
-                                        </td>
-                                        <!-- ALCANCE -->
-                                       <td class="text-center">
-                                            <div class="d-flex flex-column align-items-center position-relative">
+                                        </div>
+                                        <span class="badge bg-light text-success">
+                                            Ambiental
+                                        </span>
+                                    </div>
+                                    <!-- INFORMACIÓN -->
+                                    <div class="d-flex align-items-center gap-3 py-2 px-3">
+                                        <span>
+                                            {{ select_session_equipo?.split('<->')[1] }} <b>-></b>
+                                        </span>
+                                        <span v-if="nombre_indicador">
+                                            {{ nombre_indicador }}
+                                        </span>
+                                        <span
+                                            v-else
+                                            class="text-warning rounded rounded-2 bg-black my-1 px-2 py-1"
+                                            style="font-size: 0.8em;">
+                                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                            Primero debes colocarle un nombre al indicador antes de añadir impactos.
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- CUERPO -->
+                                <div class="card-body p-0">
+                                    <div class="table-responsive">
+                                        <table id="tablaImpactosAmbientales" class="table table-bordered table-hover align-middle mb-0" style="min-width: 1000px;">
+                                            <!-- ENCABEZADO -->
+                                            <thead class="table-success">
+                                                <tr class="text-center">
 
-                                                <!-- Selector -->
-                                                <select
-                                                    class="form-select form-select-sm text-center w-full my-1"
-                                                    :class="impacto.alcance === ''
+                                                    <th scope="col">
+                                                        #
+                                                    </th>
+                                                    <th scope="col">
+                                                        Diagrama de<br>
+                                                        Proceso Ambiental
+                                                    </th>
+                                                    <th scope="col">
+                                                        Tipo
+                                                    </th>
+                                                    <th scope="col">
+                                                        Concepto
+                                                    </th>
+                                                    <th scope="col">
+                                                        Alcance
+                                                    </th>
+                                                    <th scope="col">
+                                                        Cant.
+                                                    </th>
+                                                    <th scope="col">
+                                                        UM
+                                                    </th>
+                                                    <th scope="col">
+                                                        t CO₂/Año<br>
+                                                        evitadas
+                                                    </th>
+                                                    <th scope="col">
+                                                        Referencia
+                                                    </th>
+                                                    <th scope="col">
+                                                        Acción
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <!-- REGISTROS -->
+                                            <tbody>
+                                                <tr
+                                                    v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead"
+                                                    :key="index"
+                                                    class="text-center">
+                                                    <!-- # -->
+                                                    <td>
+                                                        <span class="fw-bold text-muted">
+                                                            {{ index + 1 }}
+                                                        </span>
+                                                    </td>
+
+                                                    <!-- DIAGRAMA -->
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control form-control-sm text-center text-primary"
+                                                            v-model="impacto.diagrama"
+                                                            list="catalogo-diagramas"
+                                                            style="font-size: 1em;"
+                                                            aria-label="Diagrama">
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            Ejem.: E-DF-IP-RJ-A
+                                                        </small>
+                                                        <datalist id="catalogo-diagramas">
+                                                            <option
+                                                                v-for="valor in obtenerOpcionesCatalogo('diagrama')"
+                                                                :key="valor"
+                                                                :value="valor">
+                                                            </option>
+                                                        </datalist>
+                                                    </td>
+                                                    <!-- TIPO -->
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control form-control-sm text-center text-primary"
+                                                            v-model="impacto.tipo"
+                                                            list="catalogo-tipos"
+                                                            aria-label="Tipo"
+                                                            style="font-size: 1em;">
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            Ej.: Energía
+                                                        </small>
+                                                        <datalist id="catalogo-tipos">
+                                                            <option
+                                                                v-for="valor in obtenerOpcionesCatalogo('tipo')"
+                                                                :key="valor"
+                                                                :value="valor"></option>
+                                                        </datalist>
+                                                    </td>
+                                                    <!-- CONCEPTO -->
+                                                    <td>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control form-control-sm text-center text-primary"
+                                                            v-model="impacto.concepto"
+                                                            style="font-size: 1em;"
+                                                            list="catalogo-conceptos">
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            Ej.: Electricidad
+                                                        </small>
+                                                        <datalist id="catalogo-conceptos">
+                                                            <option
+                                                                v-for="valor in obtenerOpcionesConceptos()"
+                                                                :key="valor"
+                                                                :value="valor"></option>
+                                                        </datalist>
+                                                    </td>
+                                                    <!-- ALCANCE -->
+                                                    <td class="text-center">
+                                                        <div class="d-flex flex-column align-items-center position-relative">
+
+                                                            <!-- Selector -->
+                                                            <select
+                                                                class="form-select form-select-sm text-center w-full my-1"
+                                                                :class="impacto.alcance === ''
                                                         ? 'text-secondary'
                                                         : 'text-primary'"
-                                                    style="font-size: 1em;"
-                                                    v-model="impacto.alcance">
+                                                                style="font-size: 1em;"
+                                                                v-model="impacto.alcance">
 
-                                                    <option disabled value="">Alcance...</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                </select>
+                                                                <option disabled value="">Alcance...</option>
+                                                                <option value="1">1</option>
+                                                                <option value="2">2</option>
+                                                                <option value="3">3</option>
+                                                            </select>
 
-                                                <!-- Alcances y botones de ayuda -->
-                                                <div class="d-flex justify-content-between gap-2 ">
+                                                            <!-- Alcances y botones de ayuda -->
+                                                            <div class="d-flex justify-content-between gap-2 ">
 
-                                                    <!-- Alcance 1 -->
-                                                    <div class="d-flex flex-column align-items-center">
+                                                                <!-- Alcance 1 -->
+                                                                <div class="d-flex flex-column align-items-center">
 
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-outline-secondary btn-sm rounded-circle p-0"
-                                                            style="width: 20px; height: 20px;"
-                                                            @mouseenter="mostrarAyuda(1)"
-                                                            @mouseleave="ocultarAyuda">
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-outline-secondary btn-sm rounded-circle p-0"
+                                                                        style="width: 20px; height: 20px;"
+                                                                        @mouseenter="mostrarAyuda(1)"
+                                                                        @mouseleave="ocultarAyuda">
 
-                                                            <span class="small">?</span>
-                                                        </button>
-                                                    </div>
+                                                                        <span class="small">?</span>
+                                                                    </button>
+                                                                </div>
 
-                                                    <!-- Alcance 2 -->
-                                                    <div class="d-flex flex-column align-items-center">
+                                                                <!-- Alcance 2 -->
+                                                                <div class="d-flex flex-column align-items-center">
 
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-outline-secondary btn-sm rounded-circle p-0"
-                                                            style="width: 20px; height: 20px;"
-                                                            @mouseenter="mostrarAyuda(2)"
-                                                            @mouseleave="ocultarAyuda">
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-outline-secondary btn-sm rounded-circle p-0"
+                                                                        style="width: 20px; height: 20px;"
+                                                                        @mouseenter="mostrarAyuda(2)"
+                                                                        @mouseleave="ocultarAyuda">
 
-                                                            <span class="small">?</span>
-                                                        </button>
-                                                    </div>
+                                                                        <span class="small">?</span>
+                                                                    </button>
+                                                                </div>
 
-                                                    <!-- Alcance 3 -->
-                                                    <div class="d-flex flex-column align-items-center">
+                                                                <!-- Alcance 3 -->
+                                                                <div class="d-flex flex-column align-items-center">
 
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-outline-secondary btn-sm rounded-circle p-0"
-                                                            style="width: 20px; height: 20px;"
-                                                            @mouseenter="mostrarAyuda(3)"
-                                                            @mouseleave="ocultarAyuda">
-                                                            <span class="small">?</span>
-                                                        </button>
-                                                    </div>
+                                                                    <button
+                                                                        type="button"
+                                                                        class="btn btn-outline-secondary btn-sm rounded-circle p-0"
+                                                                        style="width: 20px; height: 20px;"
+                                                                        @mouseenter="mostrarAyuda(3)"
+                                                                        @mouseleave="ocultarAyuda">
+                                                                        <span class="small">?</span>
+                                                                    </button>
+                                                                </div>
 
-                                                </div>
-                                            <!-- Tooltip flotante -->
-                                            <div
-                                                v-if="alcanceAyudaVisible"
-                                                class="position-absolute start-50 translate-middle-x
+                                                            </div>
+                                                            <!-- Tooltip flotante -->
+                                                            <div
+                                                                v-if="alcanceAyudaVisible"
+                                                                class="position-absolute start-50 translate-middle-x
                                                     bg-dark text-white rounded shadow p-2 small"
-                                                role="tooltip"
-                                                style="
+                                                                role="tooltip"
+                                                                style="
                                                     z-index: 9999;
                                                     width: 230px;
                                                     top: 50px;
                                                     transform: translate(-50%, -100%) !important;
                                                     pointer-events: none;">
-                                                {{ textoAyudaAlcance }}
-                                            </div>
+                                                                {{ textoAyudaAlcance }}
+                                                            </div>
 
-                                            </div>
-                                        </td>
-                                        <!-- CANTIDAD -->
-                                        <td>
-                                            <input
-                                                type="number"
-                                                step="0.000001"
-                                                class="form-control form-control-sm text-center text-primary bg-white w-100"
-                                                v-model="impacto.cantidad"
-                                                placeholder="0"
-                                                style="width: 100px; font-size: 1em;">
-                                                <small class="text-muted d-block mt-1 text-start font-white">
-                                                    <br>
-                                                </small>
-                                        </td>
-                                        <!-- UM -->
-                                        <td>
-                                            
-                                            <input
-                                                type="text"
-                                                class="form-control form-control-sm text-center text-primary bg-white w-100"
-                                                v-model="impacto.um"
-                                                list="catalogo-um"
-                                                style="width: 100px; font-size: 1em;"
-                                                :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
-                                                 <small class="text-muted d-block mt-1 text-start">
-                                                 Ej.: kWh/Año
-                                                </small>
+                                                        </div>
+                                                    </td>
+                                                    <!-- CANTIDAD -->
+                                                    <td>
+                                                        <input
+                                                            type="number"
+                                                            step="0.000001"
+                                                            class="form-control form-control-sm text-center text-primary bg-white w-100"
+                                                            v-model="impacto.cantidad"
+                                                            placeholder="0"
+                                                            style="width: 100px; font-size: 1em;">
+                                                        <small class="text-muted d-block mt-1 text-start font-white">
+                                                            <br>
+                                                        </small>
+                                                    </td>
+                                                    <!-- UM -->
+                                                    <td>
 
-                                            <datalist id="catalogo-um">
-                                                <option
-                                                    v-for="valor in obtenerOpcionesUM()"
-                                                    :key="valor"
-                                                    :value="valor"
-                                                ></option>
-                                            </datalist>
-                                        </td>
-                                        <!-- CO2 -->
-                                        <td>
-                                            <input
-                                                type="number"
-                                                step="0.000001"
-                                                class="form-control form-control-sm text-center fw-semibold w-100"
-                                                :style="{backgroundColor:!!umConceptoFe[impacto.concepto] ? '#E9ECEF'  : 'rgba(144, 206, 177, 0.35)'} "
-                                                v-model="impacto.co2"
-                                                style="min-width: 100px;"  
-                                                placeholder="0.00"
-                                                :disabled="!!umConceptoFe[impacto.concepto]">
-                                                 <small class="text-muted d-block mt-1 text-start">
-                                                 Nota.: Cálculo automático.
-                                                </small>
+                                                        <input
+                                                            type="text"
+                                                            class="form-control form-control-sm text-center text-primary bg-white w-100"
+                                                            v-model="impacto.um"
+                                                            list="catalogo-um"
+                                                            style="width: 100px; font-size: 1em;"
+                                                            :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            Ej.: kWh/Año
+                                                        </small>
 
-                                        </td>
-                                        <!-- REFERENCIA -->
-                                        <td>
-                                           <textarea
-                                                class="form-control form-control-sm text-center text-primary bg-red mt-1.5"
-                                                v-model="impacto.referencia"
-                                                placeholder="Referencia"
-                                                rows="2"
-                                                style="font-size: 1em;"
-                                                :disabled="!!umConceptoFe[impacto.concepto]">
+                                                        <datalist id="catalogo-um">
+                                                            <option
+                                                                v-for="valor in obtenerOpcionesUM()"
+                                                                :key="valor"
+                                                                :value="valor"></option>
+                                                        </datalist>
+                                                    </td>
+                                                    <!-- CO2 -->
+                                                    <td>
+                                                        <input
+                                                            type="number"
+                                                            step="0.000001"
+                                                            class="form-control form-control-sm text-center fw-semibold w-100"
+                                                            :style="{backgroundColor:!!umConceptoFe[impacto.concepto] ? '#E9ECEF'  : 'rgba(144, 206, 177, 0.35)'} "
+                                                            v-model="impacto.co2"
+                                                            style="min-width: 100px;"
+                                                            placeholder="0.00"
+                                                            :disabled="!!umConceptoFe[impacto.concepto]">
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            Nota.: Cálculo automático.
+                                                        </small>
+
+                                                    </td>
+                                                    <!-- REFERENCIA -->
+                                                    <td>
+                                                        <textarea
+                                                            class="form-control form-control-sm text-center text-primary bg-red mt-1.5"
+                                                            v-model="impacto.referencia"
+                                                            placeholder="Referencia"
+                                                            rows="2"
+                                                            style="font-size: 1em;"
+                                                            :disabled="!!umConceptoFe[impacto.concepto]">
                                             </textarea>
-                                            <small class="text-muted d-block mt-1 text-start">
-                                                 <br>
-                                                </small>
-                                        </td>
-                                        <!-- ACCIONES -->
-                                        <td>
+                                                        <small class="text-muted d-block mt-1 text-start">
+                                                            <br>
+                                                        </small>
+                                                    </td>
+                                                    <!-- ACCIONES -->
+                                                    <td>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-outline-danger btn-sm"
+                                                            @click="eliminarImpacto(index)"
+                                                            :disabled="emisiones_aspectos_ambientales_proyecto_ead.length === 1"
+                                                            title="Eliminar impacto">
+                                                            <i class="bi bi-trash-fill"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+
+                                            <!-- TOTALES -->
+                                            <tfoot>
+                                                <tr class="table-light">
+                                                    <td colspan="7" class="fw-bold">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <button
+                                                                type="button"
+                                                                class="btn btn-outline-success rounded-pill px-3 py-1 shadow-sm"
+                                                                style="font-size: 0.9em;"
+                                                                @click="nuevaFilaEmision()">
+                                                                <i class="bi bi-plus-circle-fill me-1"></i>
+                                                                Agregar fila
+                                                            </button>
+                                                            <span>
+                                                                Total emisiones evitadas:
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <span class="text-success fw-bold fs-6 px-3">
+                                                            {{ totalCo2Sumar.toFixed(6) }} t CO₂
+                                                        </span>
+                                                    </td>
+                                                    <td></td>
+                                                    <td></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- PIE -->
+                                <div class="card-footer bg-light border-0">
+                                    <div class="d-flex align-items-center justify-content-between gap-2">
+                                        <div>
+                                            <span
+                                                v-if="banderaImpactoGuardado"
+                                                class="badge bg-success p-2">
+                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                                Impacto(s) guardado(s) correctamente
+                                            </span>
+
+                                        </div>
+                                        <div class="d-flex gap-2 mt-1">
                                             <button
                                                 type="button"
-                                                class="btn btn-outline-danger btn-sm"
-                                                @click="eliminarImpacto(index)"
-                                                :disabled="emisiones_aspectos_ambientales_proyecto_ead.length === 1"
-                                                title="Eliminar impacto">
-                                                <i class="bi bi-trash-fill"></i>
+                                                class="btn btn-outline-primary btn-sm"
+                                                @click="descargarImagenTabla()">
+                                                <i class="bi bi-image me-1"></i> Descargar
                                             </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-
-                                <!-- TOTALES -->
-                                <tfoot>
-                                    <tr class="table-light">
-                                        <td colspan="7" class="fw-bold">
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-outline-success rounded-pill px-3 py-1 shadow-sm"
-                                                        style="font-size: 0.9em;"
-                                                        @click="nuevaFilaEmision()">
-                                                        <i class="bi bi-plus-circle-fill me-1"></i>
-                                                        Agregar fila
-                                                    </button>
-                                                <span>
-                                                    Total emisiones evitadas:
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <span class="text-success fw-bold fs-6 px-3">
-                                                {{ totalCo2Sumar.toFixed(6) }} t CO₂
-                                            </span>
-                                        </td>
-                                        <td></td>
-                                            <td></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                    </div>
-                    <!-- PIE -->
-                    <div class="card-footer bg-light border-0">
-                        <div class="d-flex align-items-center justify-content-between gap-2">
-                            <div>
-                                <span
-                                    v-if="banderaImpactoGuardado"
-                                    class="badge bg-success p-2">
-                                    <i class="bi bi-check-circle-fill me-1"></i>
-                                    Impacto(s) guardado(s) correctamente
-                                </span>
-
-                            </div>
-                            <div class="d-flex gap-2 mt-1">
-                                <button 
-                                    type="button"
-                                    class="btn btn-outline-primary btn-sm"
-                                    @click="descargarImagenTabla()"
-                                >
-                                    <i class="bi bi-image me-1"></i> Descargar
-                                </button>
-                                <!-- GUARDAR -->
-                                <button
-                                    type="button"
-                                    class="btn btn-success btn-sm"
-                                    @click="guardarImpactoDeProyecto()">
-                                    <i class="bi bi-floppy-fill me-1"></i>
-                                    Guardar impacto(s)
-                                </button>
+                                            <!-- GUARDAR -->
+                                            <button
+                                                type="button"
+                                                class="btn btn-success btn-sm"
+                                                @click="guardarImpactoDeProyecto()">
+                                                <i class="bi bi-floppy-fill me-1"></i>
+                                                Guardar impacto(s)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                </div>
-            </div>
-                <!-- FIN TABLA IMPACTOS AMBIENTALES -->
-                <!---->
+                    <!-- FIN TABLA IMPACTOS AMBIENTALES -->
+                    <!---->
                 </div>
                 <!--KPI Inicio-->
                 <div class="col-12 text-center" v-if="select_session_equipo.length>0">
@@ -1512,42 +1505,42 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>-->
                     </div>
                     <!--Serena, te quedaste aquí. ^^^ Agregar el checkbox con v-for y verificar que la consulta si te traiga los pilares.-->
-                  <div class="offset-4 col-4 rounded-bottom  py-2"  style="background: #e7f0e0;">
+                    <div class="offset-4 col-4 rounded-bottom  py-2" style="background: #e7f0e0;">
 
-                                <!-- Botón centrado -->
-                                <div class="text-center">
-                                    <button 
-                                        class="btn btn-success btn-boton px-2 py-0" 
-                                        @click="abriModalKPI()" 
-                                        style="font-size:0.7em">
-                                        <i class="bi bi-plus-circle"></i>
-                                        Agregar/Actualizar Datos KPI
-                                    </button>
-                                </div>
+                        <!-- Botón centrado -->
+                        <div class="text-center">
+                            <button
+                                class="btn btn-success btn-boton px-2 py-0"
+                                @click="abriModalKPI()"
+                                style="font-size:0.7em">
+                                <i class="bi bi-plus-circle"></i>
+                                Agregar/Actualizar Datos KPI
+                            </button>
+                        </div>
 
-                                <!-- Información alineada a la derecha -->
-                                <div class="text-start pb-0 bt-2">
-                                    <span 
-                                        class="badge bg-primary" 
-                                        style="font-size:0.5em;">
-                                        {{ pilaresGuardadosString }}
-                                    </span>
-                    
-                                    <span 
-                                        class="badge bg-dark ms-3" 
-                                        style="font-size:0.5em;">
-                                        {{ tGrafica }}
-                                    </span>
-                                </div>
+                        <!-- Información alineada a la derecha -->
+                        <div class="text-start pb-0 bt-2">
+                            <span
+                                class="badge bg-primary"
+                                style="font-size:0.5em;">
+                                {{ pilaresGuardadosString }}
+                            </span>
 
-                            </div>
+                            <span
+                                class="badge bg-dark ms-3"
+                                style="font-size:0.5em;">
+                                {{ tGrafica }}
+                            </span>
+                        </div>
+
+                    </div>
                     <div class="col-1">
                         <button class="btn btn-primary" @click="abriModalGraficaFullKPI()" title="Grafica en toda la pantalla"><i class="bi bi-arrows-angle-expand"></i></button>
                     </div>
                     <canvas style="width:100%" id="canvaKPI"></canvas>
                 </div>
                 <!--KPI Final-->
-                
+
                 <!--MODAL DOCUMENTO--->
                 <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
                 <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -1643,7 +1636,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
                 <!--Fin Modal subir seguimiento-->
 
-                 <!--MODAL DEFINICION DE PROYECTOS--->
+                <!--MODAL DEFINICION DE PROYECTOS--->
                 <!-- Modal Eliminar/Actualizar Documento del Definición de Proyectos-->
                 <div class="modal fade" id="modalDefinicionProyectos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -1748,10 +1741,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>
                             <div class="modal-body">
                                 <div v-if="select_session_equipo.length>0">
-                                   <div class="row">
-                                       <div class="col-12 d-flex flex-column  justify-content-center align-items-center p-4">
-                                        <!-- TARJETA KPIS -->
-                                        <div class="tarjeta_kpis col-12  text-center m-2">
+                                    <div class="row">
+                                        <div class="col-12 d-flex flex-column  justify-content-center align-items-center p-4">
+                                            <!-- TARJETA KPIS -->
+                                            <div class="tarjeta_kpis col-12  text-center m-2">
                                                 <div class="input-group mb-3" style="min-width:270px;">
                                                     <label class="input-group-text w-25" style="font-size:0.8em">Nom. Indicador</label>
                                                     <input type="text" class="form-control" v-model="nombre_indicador" style="font-size:0.8em" :disabled="seguimientoKPIs.length>0  && actualizar_kpi!='nombre_indicador'" />
@@ -1852,62 +1845,64 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-warning btn-boton py-0 mt-3" style="font-size: 0.9em;" @click="guardarActualizacionDatoKPI()"><i class="bi bi-floppy-fill"></i> Actualizar</button>
                                                 <button v-if="actualizar_kpi==false && actualizar_datoKPI==true" class="btn btn-danger btn-boton py-0 ms-2 mt-3" style="font-size: 0.9em;" @click="cancelarDatosKPI()"><i class="bi bi-x-circle-fill"></i> Cancelar</button>
                                             </div>
-                                                    <!-- PILARES-->
+                                            <!-- PILARES-->
                                             <div class="tarjeta_kpisPilaresImpactos col-12 text-center m-2">
                                                 <div class=" text-center">
-                                                <span v-for="(pilar,index) in pilar_estrategico" :key="index">
-                                                    <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model="pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID, pilar.pilarNombre)" /><label>{{ pilar.pilarNombre }}</label>
-                                                </span>
-                                                <span>
-                                                    <ul class="text-start">
-                                                        <li style="list-style: none; background-color: white" v-for="objetivo in objetivosEncontrados">
-                                                            <input type="checkbox" :id="objetivo.objetivoID" :value="objetivo.objetivoID" v-model="objetivoSeleccionado" @change="guardarSeleccionados()" /><label>{{objetivo.objetivoNombre}}</label>
-                                                        </li>
-                                                    </ul>
-                                                </span>
-                                                <span v-if="banderaObjetivoGuardado" class="badge bg-success">Se guardaron los objetivo/s</span>
+                                                    <span v-for="(pilar,index) in pilar_estrategico" :key="index">
+                                                        <input type="checkbox" :id="pilar.pilarID" :value="pilar.pilarID" v-model="pilarSeleccionado" @change="buscarObjetivosDePilar($event, pilar.pilarID, pilar.pilarNombre)" /><label>{{ pilar.pilarNombre }}</label>
+                                                    </span>
+                                                    <span>
+                                                        <ul class="text-start">
+                                                            <li style="list-style: none; background-color: white" v-for="objetivo in objetivosEncontrados">
+                                                                <input type="checkbox" :id="objetivo.objetivoID" :value="objetivo.objetivoID" v-model="objetivoSeleccionado" @change="guardarSeleccionados()" /><label>{{objetivo.objetivoNombre}}</label>
+                                                            </li>
+                                                        </ul>
+                                                    </span>
+                                                    <span v-if="banderaObjetivoGuardado" class="badge bg-success">Se guardaron los objetivo/s</span>
                                                 </div>
-                                             </div>  
+                                            </div>
                                         </div>
                                         <!--Tabla registro KPIs-->
-                                            <div class="scroll2">
-                                                <table class="table table-bordered mt-2" style="font-size:0.7em">
-                                                    <thead class="table-active">
-                                                        <tr class="text-center">
-                                                            <th scope="col">#</th>
-                                                            <th scope="col">Año</th>
-                                                            <th scope="col">Mes Cierre</th>
-                                                            <th scope="col">Semana</th>
-                                                            <th scope="col">Dato</th>
-                                                            <th scope="col">Actualizar</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr class="align-middle" v-for="(seguimientokpi,index) in seguimientoKPIs.slice().reverse()">
-                                                            <th scope="row" class="text-center">{{index+1}}</th>
-                                                            <td class="text-center">{{seguimientokpi.anio}}</td>
-                                                            <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
-                                                            <td class="text-center">{{seguimientokpi.semana}}</td>
-                                                            <td>{{formatoNumero(seguimientokpi.dato_semanal)}}</td>
-                                                            <td class="text-center">
-                                                                <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar me-5" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
-                                                                <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-danger botones-eliminar me-5" v-if="actualizar_kpi==false" @click="eliminarDatoKPI(seguimientokpi.id,seguimientokpi.semana,parseFloat(seguimientokpi.dato_semanal).toFixed(2))">Eliminar</button>
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                    <!--Tabla registro KPIs-->
+                                        <div class="scroll2">
+                                            <table class="table table-bordered mt-2" style="font-size:0.7em">
+                                                <thead class="table-active">
+                                                    <tr class="text-center">
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Año</th>
+                                                        <th scope="col">Mes Cierre</th>
+                                                        <th scope="col">Semana</th>
+                                                        <th scope="col">Dato</th>
+                                                        <th scope="col">Actualizar</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr class="align-middle" v-for="(seguimientokpi,index) in seguimientoKPIs.slice().reverse()">
+                                                        <th scope="row" class="text-center">{{index+1}}</th>
+                                                        <td class="text-center">{{seguimientokpi.anio}}</td>
+                                                        <td class="text-center">{{seguimientokpi.mes_cierre}}</td>
+                                                        <td class="text-center">{{seguimientokpi.semana}}</td>
+                                                        <td>{{formatoNumero(seguimientokpi.dato_semanal)}}</td>
+                                                        <td class="text-center">
+                                                            <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-warning botones-actualizar me-5" v-if="actualizar_kpi==false" @click="asignarDatosKPI(index)">Actualizar</button>
+                                                            <button v-if="actualizar_datoKPI==false && actualizar_kpi==false" class="btn btn-danger botones-eliminar me-5" v-if="actualizar_kpi==false" @click="eliminarDatoKPI(seguimientokpi.id,seguimientokpi.semana,parseFloat(seguimientokpi.dato_semanal).toFixed(2))">Eliminar</button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <!--Tabla registro KPIs-->
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" @click="comparaPilares()" data-bs-dismiss="modal">Cerrar</button>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" @click="comparaPilares()" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <!--Fin Modal KPIS-->
+                    <!-- Inicio Modal GRAFICA KPIS VISTA FULL-->
+
                 </div>
-                <!--Fin Modal KPIS-->
-                <!-- Inicio Modal GRAFICA KPIS VISTA FULL-->
                 <div class="modal fade" id="modalGraficaKPI" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-fullscreen p-5">
                         <div class="modal-content">
@@ -1916,7 +1911,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <div class="offset-1 col-10">
+                                <div id="contenedorGraficaKPI"
+                                    style="position: relative; width: 100%; height: 70vh;">
                                     <canvas id="canvaKPIFull"></canvas>
                                 </div>
                             </div>
@@ -1927,7 +1923,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
             </div>
-        </div>
+
             <div v-if="ventana=='Capacitaciones'">
                 <!--<div class="col-12 text-center">
                         <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nuevaCapacitaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Capacitación</button>
@@ -2220,7 +2216,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     </div>
                 </div>
             </div>
-        
+
 
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
@@ -2643,14 +2639,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <!--Tabla compromisos-->
                             <?php include("tabla_compromisos.php") ?>
                             <!---->
-                        </div>                        
-                    </div>                   
+                        </div>
+                    </div>
                 </div>
                 <div id="opciones" style="min-height:5vh; max-height:5vh;" class=" d-flex align-items-center justify-content-center ">
                     <div class="row text-center mb-2 d-flex justify-content-center align-items-center">
                         <div v-if="seguimiento==false" @click="redireccionar('Atras')" class="btn_principal_coloborador text-center col-12 d-flex align-items-center justify-content-center" style="cursor: pointer">
                             <div> <img src="img/app_atras.png" class="img-fluid" alt="..." style=" width: 50px;"></div>
-                        </div>                                    
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2741,12 +2737,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <label v-else-if="criterio.tipo!='Input' && criterio.id_criterios!=10 ">
                                             <span class="badge bg-danger text-white">Sin valores en gráfica</span>
                                         </label>
-                                        <input 
-                                            class="text-center" 
-                                            v-show="criterio.tipo=='Input'" 
-                                            v-model="inputValorActual[criterio.id_criterios]" 
-                                            @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
-                                            :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable" 
+                                        <input
+                                            class="text-center"
+                                            v-show="criterio.tipo=='Input'"
+                                            v-model="inputValorActual[criterio.id_criterios]"
+                                            @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)"
+                                            :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable"
                                             :class="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable ? 'color-disabled' : ''">
                                         </input>
                                         <label v-if="criterio.id_criterios==10">{{asistenciaSC}}</label><!--10 es el id cumplimiento de proyecto en la tabla de la BD-->
@@ -2784,11 +2780,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <td :class="puntosEvaluacion[criterio.id_criterios] || puntosEvaluacion[criterio.id_criterios]===0 ? 'columna-color-una':''">
                                         <label v-show="fila==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" class="text-primary">
                                             <!--<button v-show="inputPonderacionSC!==(criteriosDinamicasSC.length-1)-((criteriosDinamicasSC.length-1)-fila)" @click="activarInput(fila)" class="btn-input" :disabled = "esLider == 'ColaboradorLider'" :class = "esLider == 'ColaboradorLider' ? 'color-disabled':'' ">{{inputColumnaPonderacion[criterio.id_criterios]}}</button>-->
-                                            <input 
-                                                @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)" 
-                                                v-model="inputColumnaPonderacion[criterio.id_criterios]" 
-                                                class="text-center" 
-                                                :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable" 
+                                            <input
+                                                @keyup.enter="guardarDatoScoreCard(criterio.id_criterios, $event)"
+                                                v-model="inputColumnaPonderacion[criterio.id_criterios]"
+                                                class="text-center"
+                                                :disabled="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable"
                                                 :class="(esLider == 'ColaboradorLider' || hayPonderacion) && !esMesAnteriorEditable ? 'color-disabled' : ''">
                                             </input>
                                         </label>
@@ -3385,14 +3381,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 </th>
                                                                 <th style="background-color: #343a40 !important; color: white !important; width: 45%; ">
                                                                     EAD'S
-                                                                    
+
                                                                     <button v-if="actualizarEquipoEAD != true" class="btn btn-success btn-sm px-3 fw-semibold shadow-sm ms-4"
-                                                                    @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
+                                                                        @click="modalForoAgregarEquipoEAD(), consultarEquiposEnAgregar()">
                                                                         <i class="bi bi-plus-lg me-1"></i> Agregar Equipo
                                                                     </button>
                                                                 </th>
                                                                 <th style="background-color: #343a40 !important; color: white !important;width: 40%;">
-                                                                        Opciones
+                                                                    Opciones
                                                                 </th>
                                                             </tr>
                                                         </thead>
@@ -3504,13 +3500,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <!-- Cambiar evaluador -->
                                                 <div v-if="EvaluadoresEvaluaron == true" class="card shadow-sm p-3 border-0 bg-light mx-auto mt-5"
                                                     style="max-width: 500px">
-                                                    
+
                                                     <!-- Sección de selección para ordenar -->
                                                     <div class="mb-3">
                                                         <label class="form-label small text-muted fw-bold d-block text-center mb-2">
                                                             Reemplazar evaluador (con evaluación previa)
                                                         </label>
-                                                        
+
                                                         <div class="row g-2 align-items-center">
                                                             <!-- Primer Selector: Evaluador actual -->
                                                             <div class="col-md-5">
@@ -3573,8 +3569,8 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </div>
                                 </div>
                             </div>
-                                <!-- Fin modal para actualizar foro -->
-                                 
+                            <!-- Fin modal para actualizar foro -->
+
                             <!--/////////////////////////////////////////////// MODAL VISUALIZAR FORO //////////////////// -->
                             <div id="modal_foros_detalles" class="modal fade" id="exampleModal" tabindex="-1" data-bs-keyboard="false">
                                 <div class="modal-dialog modal-dialog-centered modal-fullscreen p-lg-4">
@@ -3615,7 +3611,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                                         'table-success bg-opacity-10 fw-semibold': index === 0, 
                                                                                         'table-warning bg-opacity-10': index === 1, 
                                                                                         'table-active': index === 2}">
-                                                                                        
+
                                                             <!-- Columna de Puesto con Iconos para el Podio -->
                                                             <td class="text-center fw-bold">
                                                                 <span v-if="index === 0" class="fs-6" title="Primer Lugar">👑 1 </span>
@@ -3693,7 +3689,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </div>
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </div>
