@@ -1381,19 +1381,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </td>
                                                     <!-- CO2 -->
                                                     <td>
-                                                        <input
-                                                            type="number"
-                                                            step="0.000001"
-                                                            class="form-control form-control-sm text-center fw-semibold w-100"
-                                                            :style="{backgroundColor:!!umConceptoFe[impacto.concepto] ? '#E9ECEF'  : 'rgba(144, 206, 177, 0.35)'} "
-                                                            v-model="impacto.co2"
-                                                            style="min-width: 100px;"
-                                                            placeholder="0.00"
-                                                            :disabled="!!umConceptoFe[impacto.concepto]">
-                                                        <small class="text-muted d-block mt-1 text-start">
-                                                            Nota.: Cálculo automático.
-                                                        </small>
-
+                                                         <template v-if="['Gasolina', 'Diésel', 'Gas Natural', 'Electricidad'].includes((impacto.concepto || '').trim())">
+                                                            <input type="number" step="0.000001" class="form-control form-control-sm text-center fw-semibold w-100" :style="{ backgroundColor: !!umConceptoFe[impacto.concepto] ? '#E9ECEF' : 'rgba(144, 206, 177, 0.35)' }" v-model="impacto.co2" style="min-width: 100px;" placeholder="0.00" :disabled="!!umConceptoFe[impacto.concepto]">
+                                                            <small class="text-muted d-block mt-1 text-start">Nota.: Cálculo automático.</small>
+                                                        </template>
                                                     </td>
                                                     <!-- REFERENCIA -->
                                                     <td>
