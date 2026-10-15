@@ -207,7 +207,7 @@ const app = {
       catalogoImpactosAmbientalesOTSCompleto: [],
       alcanceAyudaVisible: false,
       textoAyudaAlcance: "",
-      
+      mostrarColumnaCo2: false,
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       nueva_capacitacion: false,
       fecha_capacitacion: "",
@@ -603,17 +603,13 @@ const app = {
 
             const concepto = impacto.concepto;
 
-            if (
-              concepto === "" ||
-              concepto === null ||
-              concepto === undefined
-            ) {
-              if (impacto.um !== "") impacto.um = "";
+            if (concepto === "" || concepto === null || concepto === undefined) {
+              if (impacto.um !== "") impacto.um = ""; 
+              if (impacto.referencia !== "") impacto.referencia = ""; 
+              
               return;
             }
-            const existeEnFe =
-              this.umConceptoFe &&
-              Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
+            const existeEnFe =this.umConceptoFe && Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
 
             if (existeEnFe) {
               const datos = this.umConceptoFe[concepto];
@@ -4504,9 +4500,9 @@ const app = {
 
        mostrarAyuda(alcance) {
             const descripciones = {
-                1: 'Impacto bajo: afecta únicamente una tarea o actividad específica.',
-                2: 'Impacto medio: afecta a un área o equipo de trabajo.',
-                3: 'Impacto alto: afecta a varias áreas o a toda la organización.'
+                1: 'Alcance 1: Emisiones directas de GEI provenientes de fuentes que son propiedad o están bajo control de la organización.',
+                2: 'Alcance 2: Emisiones indirectas asociadas a la generación de electricidad, vapor, calefacción o enfriamiento adquiridos y consumidos por la organización.',
+                3: 'Alcance 3: Otras emisiones indirectas generadas a lo largo de la cadena de valor de la organización que ocurren fuera de sus límites operacionales.'
             };
 
             this.textoAyudaAlcance = descripciones[alcance];
@@ -4516,6 +4512,8 @@ const app = {
         ocultarAyuda() {
             this.alcanceAyudaVisible = false;
         },
+
+      
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
