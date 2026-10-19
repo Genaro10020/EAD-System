@@ -39,10 +39,12 @@
                     </tr>
                 </thead>
                 
+                <!-- REGISTROS -->
                 <tbody>
                     <tr v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead" :key="index">
-                        <!-- # -->
-                        <td class="ia-index">{{ index + 1 }}</td>
+                        <td class="ia-index-col">
+                            <span class="fw-bold text-muted">{{ index + 1 }}</span>
+                        </td>
 
                         <!-- DIAGRAMA -->
                         <td>
@@ -68,8 +70,8 @@
                             </datalist>
                         </td>
 
-                        <!-- ALCANCE -->
-                        <td>
+                        <!-- ALCANCE (Tooltip corregido) -->
+                        <td class="ia-col-alcance">
                             <div class="ia-scope-container">
                                 <select class="ia-select" v-model="impacto.alcance" :class="{'ia-text-muted': impacto.alcance === ''}">
                                     <option disabled value="">Alcance...</option>
@@ -79,12 +81,13 @@
                                 </select>
                                 
                                 <div class="ia-help-buttons">
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3)" @mouseleave="ocultarAyuda">?</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1, index)" @mouseleave="ocultarAyuda">?</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2, index)" @mouseleave="ocultarAyuda">?</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3, index)" @mouseleave="ocultarAyuda">?</button>
                                 </div>
                                 
-                                <div v-if="alcanceAyudaVisible" class="ia-tooltip">
+                                <!-- Tooltip anclado a la celda activa -->
+                                <div v-if="filaAyudaActiva === index" class="ia-tooltip-mejorado">
                                     {{ textoAyudaAlcance }}
                                 </div>
                             </div>
@@ -145,17 +148,17 @@
     </div>
 
     <!-- PIE DE TARJETA -->
-    <div class="ia-footer">
+    <div class="ia-footer ia-footer-delgado">
         <div class="ia-status">
-            <span v-if="banderaImpactoGuardado" class="ia-badge-success">
+            <span v-if="banderaImpactoGuardado" class="ia-badge-success py-1">
                 <i class="bi bi-check-circle-fill"></i> Impacto(s) guardado(s) correctamente
             </span>
         </div>
         <div class="ia-actions">
-            <button type="button" class="ia-btn ia-btn-outline-primary" @click="descargarImagenTabla()">
+            <button type="button" class="ia-btn ia-btn-outline-primary py-1" @click="descargarImagenTabla()">
                 <i class="bi bi-image"></i> Descargar
             </button>
-            <button type="button" class="ia-btn ia-btn-success" @click="guardarImpactoDeProyecto()">
+            <button type="button" class="ia-btn ia-btn-success py-1" @click="guardarImpactoDeProyecto()">
                 <i class="bi bi-floppy-fill"></i> Guardar impacto(s)
             </button>
         </div>
