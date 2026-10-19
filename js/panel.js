@@ -4505,7 +4505,7 @@ const app = {
         });
     },
 
-    mostrarAyuda(alcance) {
+    mostrarAyuda(alcance, index) {
       const descripciones = {
         1: "Alcance 1: Emisiones directas de GEI provenientes de fuentes que son propiedad o están bajo control de la organización.",
         2: "Alcance 2: Emisiones indirectas asociadas a la generación de electricidad, vapor, calefacción o enfriamiento adquiridos y consumidos por la organización.",
