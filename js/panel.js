@@ -196,7 +196,7 @@ const app = {
           referencia: "",
         },
       ],
-      nombresPilaresEncontrados: '',
+      nombresPilaresEncontrados: "",
       ///////////////////////////////////IMPACTOS AMBIENTALES
       banderaImpactoGuardado: false,
       catalogoImpactosAmbientalesEAD: [],
@@ -575,6 +575,8 @@ const app = {
       sugerencias_colaboradores: [],
       busquedaTimeout: null,
       hayPonderacion: false,
+
+      filaAyudaActiva: null,
     };
   },
   watch: {
@@ -603,13 +605,19 @@ const app = {
 
             const concepto = impacto.concepto;
 
-            if (concepto === "" || concepto === null || concepto === undefined) {
-              if (impacto.um !== "") impacto.um = ""; 
-              if (impacto.referencia !== "") impacto.referencia = ""; 
-              
+            if (
+              concepto === "" ||
+              concepto === null ||
+              concepto === undefined
+            ) {
+              if (impacto.um !== "") impacto.um = "";
+              if (impacto.referencia !== "") impacto.referencia = "";
+
               return;
             }
-            const existeEnFe =this.umConceptoFe && Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
+            const existeEnFe =
+              this.umConceptoFe &&
+              Object.prototype.hasOwnProperty.call(this.umConceptoFe, concepto);
 
             if (existeEnFe) {
               const datos = this.umConceptoFe[concepto];
@@ -728,7 +736,6 @@ const app = {
     });
     this.obtenerFecha();
     this.consultarNombrePonderaciones();
-    
   },
   methods: {
     toggleMenu() {
@@ -4498,22 +4505,20 @@ const app = {
         });
     },
 
-       mostrarAyuda(alcance) {
-            const descripciones = {
-                1: 'Alcance 1: Emisiones directas de GEI provenientes de fuentes que son propiedad o están bajo control de la organización.',
-                2: 'Alcance 2: Emisiones indirectas asociadas a la generación de electricidad, vapor, calefacción o enfriamiento adquiridos y consumidos por la organización.',
-                3: 'Alcance 3: Otras emisiones indirectas generadas a lo largo de la cadena de valor de la organización que ocurren fuera de sus límites operacionales.'
-            };
+    mostrarAyuda(alcance) {
+      const descripciones = {
+        1: "Alcance 1: Emisiones directas de GEI provenientes de fuentes que son propiedad o están bajo control de la organización.",
+        2: "Alcance 2: Emisiones indirectas asociadas a la generación de electricidad, vapor, calefacción o enfriamiento adquiridos y consumidos por la organización.",
+        3: "Alcance 3: Otras emisiones indirectas generadas a lo largo de la cadena de valor de la organización que ocurren fuera de sus límites operacionales.",
+      };
 
-            this.textoAyudaAlcance = descripciones[alcance];
-            this.alcanceAyudaVisible = true;
-        },
+      this.textoAyudaAlcance = descripciones[alcance];
+      this.alcanceAyudaVisible = true;
+    },
 
-        ocultarAyuda() {
-            this.alcanceAyudaVisible = false;
-        },
-
-      
+    ocultarAyuda() {
+      this.alcanceAyudaVisible = false;
+    },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
