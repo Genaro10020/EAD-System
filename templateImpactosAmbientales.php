@@ -131,15 +131,15 @@
                 <!-- TOTALES -->
                 <tfoot>
                     <tr>
-                        <td colspan="7" class="ia-footer-actions">
-                            <button type="button" class="ia-btn ia-btn-outline-success" @click="nuevaFilaEmision()">
-                                <i class="bi bi-plus-circle-fill"></i> Agregar fila
-                            </button>
-                            <span class="ia-total-label">Total emisiones evitadas:</span>
+                        <td colspan="7">
+                            <div class="ia-footer-actions">
+                                <button type="button" class="ia-btn ia-btn-outline-success" @click="nuevaFilaEmision()">
+                                    <i class="bi bi-plus-circle-fill"></i> Agregar fila
+                                </button>
+                                <span class="ia-total-label">Total emisiones evitadas:</span>
+                            </div>
                         </td>
-                        <td class="ia-total-value">
-                            {{ totalCo2Sumar.toFixed(6) }} t CO₂
-                        </td>
+                        <td class="ia-total-value">...</td>
                         <td colspan="2"></td>
                     </tr>
                 </tfoot>
