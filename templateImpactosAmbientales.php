@@ -110,7 +110,6 @@
                         <td>
                             <template v-if="['Gasolina', 'Diésel', 'Gas Natural', 'Electricidad'].includes((impacto.concepto || '').trim())">
                                 <input type="number" step="0.000001" class="ia-input ia-input-calc" v-model="impacto.co2" placeholder="0.00" :disabled="!!umConceptoFe[impacto.concepto]">
-                                <small class="ia-hint">Automático</small>
                             </template>
                         </td>
 
