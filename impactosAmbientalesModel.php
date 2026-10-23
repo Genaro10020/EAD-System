@@ -77,16 +77,7 @@ function consultarTodosImpactosAmbientales() {
 function consultarImpactosAmbientales($nombre_indicador, $id_equipo) {
     global $conexion;
     // Consulta
-    $consulta = "SELECT
-            id,
-            diagrama,
-            tipo,
-            concepto,
-            alcance,
-            cantidad,
-            um,
-            co2,
-            referencia
+    $consulta = "SELECT *
         FROM reportes_impactos_ambientales_proyectos
         WHERE nombre_indicador = ?
         AND id_equipo = ?
