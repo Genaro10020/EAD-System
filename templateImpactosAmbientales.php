@@ -1,29 +1,28 @@
 <div class="ia-container">
-    <!-- TÍTULO Y ENCABEZADO -->
-    <div class="ia-header">
-        <div class="ia-header-top">
-            <div class="ia-title-group">
-                <label class="ia-title">Impactos Ambientales</label>
-                <small class="ia-subtitle">Registro de emisiones y aspectos ambientales</small>
+    <div class="ia-body" id="tablaImpactosAmbientales">
+         <!-- TÍTULO Y ENCABEZADO -->
+            <div class="ia-header">
+                <div class="ia-header-top">
+                    <div class="ia-title-group">
+                        <label class="ia-title">Impactos Ambientales</label>
+                        <small class="ia-subtitle">Registro de emisiones y aspectos ambientales</small>
+                    </div>
+                    <span class="ia-badge">Ambiental</span>
+                </div>
+                
+                <!-- INFORMACIÓN / ALERTAS -->
+                <div class="ia-info-bar">
+                    <span v-if="nombre_indicador" class="ia-indicator-name">
+                        {{ nombre_indicador }}
+                    </span>
+                    <span v-else class="ia-alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Primero debes colocarle un nombre al indicador antes de añadir impactos.
+                    </span>
+                </div>
             </div>
-            <span class="ia-badge">Ambiental</span>
-        </div>
-        
-        <!-- INFORMACIÓN / ALERTAS -->
-        <div class="ia-info-bar">
-            <span v-if="nombre_indicador" class="ia-indicator-name">
-                {{ nombre_indicador }}
-            </span>
-            <span v-else class="ia-alert-warning">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                Primero debes colocarle un nombre al indicador antes de añadir impactos.
-            </span>
-        </div>
-    </div>
-
-    <div class="ia-body">
         <div class="ia-table-responsive">
-            <table id="tablaImpactosAmbientales" class="ia-table">
+            <table  class="ia-table">
                 <thead>
                     <tr>
                         <th>#</th>
