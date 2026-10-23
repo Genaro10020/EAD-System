@@ -39,93 +39,113 @@
                     </tr>
                 </thead>
                 
-                <!-- REGISTROS -->
-                <tbody>
-                    <tr v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead" :key="index">
-                        <td class="ia-index-col">
-                            <span class="fw-bold text-muted">{{ index + 1 }}</span>
-                        </td>
+                        <!-- REGISTROS -->
+                            <tbody>
+                                <tr v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead" :key="index">
+                                    <td class="ia-index-col">
+                                        <span class="fw-bold text-muted">{{ index + 1 }}</span>
+                                    </td>
 
-                        <!-- DIAGRAMA -->
-                        <td>
-                            <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas" placeholder="Ejem.: E-DF-IP-RJ-A">
-                            <datalist id="catalogo-diagramas">
-                                <option v-for="valor in obtenerOpcionesCatalogo('diagrama')" :key="valor" :value="valor"></option>
-                            </datalist>
-                        </td>
+                                    <!-- DIAGRAMA -->
+                                    <td>
+                                        <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas">
+                                        <small class="form-text text-muted d-block mt-1 opacity-50">E-DF-IP-RJ-A</small>
+                                        <datalist id="catalogo-diagramas">
+                                            <option v-for="valor in obtenerOpcionesCatalogo('diagrama')" :key="valor" :value="valor"></option>
+                                        </datalist>
+                                    </td>
 
-                        <!-- TIPO -->
-                        <td>
-                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos" placeholder="Ej.: Energía">
-                            <datalist id="catalogo-tipos">
-                                <option v-for="valor in obtenerOpcionesCatalogo('tipo')" :key="valor" :value="valor"></option>
-                            </datalist>
-                        </td>
+                                    <!-- TIPO -->
+                                    <td>
+                                        <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos">
+                                        <small class="form-text text-muted d-block mt-1 opacity-50">Energía</small>
+                                        <datalist id="catalogo-tipos">
+                                            <option v-for="valor in obtenerOpcionesCatalogo('tipo')" :key="valor" :value="valor"></option>
+                                        </datalist>
+                                    </td>
 
-                        <!-- CONCEPTO -->
-                        <td>
-                            <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos" placeholder="Ej.: Electricidad">
-                            <datalist id="catalogo-conceptos">
-                                <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
-                            </datalist>
-                        </td>
+                                    <!-- CONCEPTO -->
+                                    <td>
+                                        <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos">
+                                        <small class="form-text text-muted d-block mt-1 opacity-50">Electricidad</small>
+                                        <datalist id="catalogo-conceptos">
+                                            <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
+                                        </datalist>
+                                    </td>
 
-                        <!-- ALCANCE (Tooltip corregido) -->
-                        <td class="ia-col-alcance">
-                            <div class="ia-scope-container">
-                                <select class="ia-select" v-model="impacto.alcance" :class="{'ia-text-muted': impacto.alcance === ''}">
-                                    <option disabled value="">Alcance...</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                </select>
-                                
-                                <div class="ia-help-buttons">
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1, index)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2, index)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3, index)" @mouseleave="ocultarAyuda">?</button>
-                                </div>
-                                
-                                <!-- Tooltip anclado a la celda activa -->
-                                <div v-if="filaAyudaActiva === index" class="ia-tooltip-mejorado">
-                                    {{ textoAyudaAlcance }}
-                                </div>
-                            </div>
-                        </td>
+                                    <!-- ALCANCE (Tooltip corregido) -->
+                                    <td class="ia-col-alcance">
+                                        <div class="ia-scope-container mt-1">
+                                            <select class="ia-select" v-model="impacto.alcance" :class="{'ia-text-muted': impacto.alcance === ''}">
+                                                <option disabled value="">Alcance...</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                            </select>
 
-                        <!-- CANTIDAD -->
-                        <td>
-                            <input type="number" step="0.000001" class="ia-input ia-input-number" v-model="impacto.cantidad" placeholder="0">
-                        </td>
+                                            <div class="ia-help-buttons">
+                                                <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1, index)" @mouseleave="ocultarAyuda">?</button>
+                                                <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2, index)" @mouseleave="ocultarAyuda">?</button>
+                                                <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3, index)" @mouseleave="ocultarAyuda">?</button>
+                                            </div>
 
-                        <!-- UM -->
-                        <td>
-                            <input type="text" class="ia-input ia-input-small" v-model="impacto.um" list="catalogo-um" placeholder="Ej.: kWh/Año" :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
-                            <datalist id="catalogo-um">
-                                <option v-for="valor in obtenerOpcionesUM()" :key="valor" :value="valor"></option>
-                            </datalist>
-                        </td>
+                                            <!-- Tooltip anclado a la celda activa -->
+                                            <div v-if="filaAyudaActiva === index" class="ia-tooltip-mejorado">
+                                                {{ textoAyudaAlcance }}
+                                            </div>
+                                        </div>
+                                    </td>
 
-                        <!-- CO2 -->
-                        <td>
-                            <template v-if="['Gasolina', 'Diésel', 'Gas Natural', 'Electricidad'].includes((impacto.concepto || '').trim())">
-                                <input type="number" step="0.000001" class="ia-input ia-input-calc" v-model="impacto.co2" placeholder="0.00" :disabled="!!umConceptoFe[impacto.concepto]">
-                            </template>
-                        </td>
+                                  <!-- CANTIDAD -->
+                                    <td style="min-width: 86px;">
+                                        <div v-if="['Gasolina', 'Diésel', 'Gas Natural', 'Electricidad'].includes((impacto.concepto || '').trim())">
+                                            <input type="number" step="0.000001" class="ia-input ia-input-number" v-model="impacto.cantidad">
+                                            <small class="form-text text-muted d-block mt-1 opacity-50">12.535</small>
+                                        </div>
 
-                        <!-- REFERENCIA -->
-                        <td>
-                            <textarea class="ia-textarea" v-model="impacto.referencia" placeholder="Referencia" rows="1" :disabled="!!umConceptoFe[impacto.concepto]"></textarea>
-                        </td>
+                                        <div v-else>
+                                            <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
+                                                No Aplica
+                                            </small>
+                                        </div>
+                                    </td>
 
-                        <!-- ACCIONES -->
-                        <td>
-                            <button type="button" class="ia-btn-icon ia-btn-danger" @click="eliminarImpacto(index)" :disabled="emisiones_aspectos_ambientales_proyecto_ead.length === 1" title="Eliminar impacto">
-                                <i class="bi bi-trash-fill"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
+                                    <!-- UM -->
+                                    <td>
+                                        <input type="text" class="ia-input ia-input-small" v-model="impacto.um" list="catalogo-um" :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
+                                        <small class="form-text text-muted d-block mt-1 opacity-50">kWh/Año</small>
+                                        <datalist id="catalogo-um">
+                                            <option v-for="valor in obtenerOpcionesUM()" :key="valor" :value="valor"></option>
+                                        </datalist>
+                                    </td>
+
+                                  <!-- CO2 -->
+                                    <td>
+                                        <div v-if="['Gasolina', 'Diésel', 'Gas Natural', 'Electricidad'].includes((impacto.concepto || '').trim())">
+                                            <input type="number" step="0.000001" class="ia-input-calc" v-model="impacto.co2" placeholder="0.00" :disabled="!!umConceptoFe[impacto.concepto]">
+                                            <small class="form-text text-muted d-block mt-1 opacity-50">Calculo automatico</small>
+                                        </div>
+
+                                        <div v-else>
+                                            <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
+                                                No Aplica
+                                            </small>
+                                        </div>
+                                    </td>
+                                    <!-- REFERENCIA -->
+                                    <td>
+                                        <textarea class="ia-textarea" v-model="impacto.referencia" rows="2" :disabled="!!umConceptoFe[impacto.concepto]"></textarea>
+                                        <small class="form-text text-muted d-block mt-1 opacity-50">Referencia documental</small>
+                                    </td>
+
+                                    <!-- ACCIONES -->
+                                    <td>
+                                        <button type="button" class="ia-btn-icon ia-btn-danger" @click="eliminarImpacto(index)" :disabled="emisiones_aspectos_ambientales_proyecto_ead.length === 1" title="Eliminar impacto">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
 
                 <!-- TOTALES -->
                 <tfoot>
