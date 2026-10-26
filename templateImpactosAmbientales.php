@@ -23,8 +23,13 @@
                         </div>
 
                         <ul class="ia-ead-list">
-                            <li v-for="proyecto in proyectosFiltradosEAD" :key="proyecto.id" @click="seleccionarProyectoEAD(proyecto)" class="ia-ead-item">
-                                {{ proyecto.nombre_indicador }}
+                            <li v-for="proyecto in proyectosFiltradosEAD" :key="proyecto.id_equipo" 
+                                @click="!proyecto.cargado ? seleccionarProyectoEAD(proyecto) : null" 
+                                class="ia-ead-item d-flex justify-content-between"
+                                :class="{'text-muted bg-light': proyecto.cargado}"
+                                :style="proyecto.cargado ? 'cursor: not-allowed; opacity: 0.6;' : ''">
+                                <span>{{ proyecto.nombre_indicador }}</span>
+                                <span v-if="proyecto.cargado" class="badge bg-secondary">Ya cargado</span>
                             </li>
                             <li v-if="proyectosFiltradosEAD.length === 0" class="ia-ead-empty">
                                 No se encontraron proyectos.
