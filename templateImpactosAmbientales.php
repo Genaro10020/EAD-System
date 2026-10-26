@@ -9,18 +9,6 @@
                     </div>
                     <span class="ia-badge">Ambiental</span>
                 </div>
-                
-                <!-- INFORMACIÓN / ALERTAS -->
-                <div class="ia-info-bar">
-                    <span v-if="nombre_indicador" class="ia-indicator-name">
-                        {{ nombre_indicador }}
-                    </span>
-                    <span v-else class="ia-alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        Primero debes colocarle un nombre al indicador antes de añadir impactos.
-                    </span>
-                </div>
-            </div>
             
             <?php if (isset($origenOPEX) && $origenOPEX === true): ?>
                 <div class="ia-ead-container">
