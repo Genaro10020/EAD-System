@@ -26,10 +26,17 @@
                             <ul class="ia-ead-list">
                                 <li v-for="proyecto in proyectosFiltradosEAD" :key="proyecto.id_equipo" 
                                     @click="!proyecto.cargado ? seleccionarProyectoEAD(proyecto) : null" 
-                                    class="ia-ead-item d-flex justify-content-between"
+                                    class="ia-ead-item d-flex justify-content-between align-items-center"
                                     :class="{'text-muted bg-light': proyecto.cargado}"
                                     :style="proyecto.cargado ? 'cursor: not-allowed; opacity: 0.6;' : ''">
-                                    <span>{{ proyecto.nombre_indicador }}</span>
+                                    
+                                    <span>
+                                        {{ proyecto.nombre_indicador }}
+                                        <span v-if="proyecto.nombre_equipo" class="badge bg-info text-dark ms-2" style="font-size: 0.75rem;">
+                                            {{ proyecto.nombre_equipo }}
+                                        </span>
+                                    </span>
+
                                     <span v-if="proyecto.cargado" class="badge bg-secondary">Ya cargado</span>
                                 </li>
                                 <li v-if="proyectosFiltradosEAD.length === 0" class="ia-ead-empty">
