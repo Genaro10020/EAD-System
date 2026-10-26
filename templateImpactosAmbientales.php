@@ -1,5 +1,6 @@
 <div class="ia-container">
-    <div class="ia-body" id="tablaImpactosAmbientales">
+    <div id="tablaImpactosAmbientales">
+    <div class="ia-body" >
         <!-- TÍTULO Y ENCABEZADO -->
         <div class="ia-header">
             <div class="ia-header-top">
@@ -206,7 +207,7 @@
             </table>
         </div>
     </div>
-
+</div>
     <!-- PIE DE TARJETA -->
     <div class="ia-footer ia-footer-delgado">
         <div class="ia-status">
