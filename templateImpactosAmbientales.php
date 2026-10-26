@@ -220,9 +220,11 @@
             <button type="button" class="ia-btn ia-btn-outline-primary py-1" @click="descargarImagenTabla()">
                 <i class="bi bi-image"></i> Descargar
             </button>
-            <button type="button" class="ia-btn ia-btn-success py-1" @click="guardarImpactoDeProyecto()">
-                <i class="bi bi-floppy-fill"></i> Guardar impacto(s)
-            </button>
+            <?php if (!isset($origenOPEX)): ?>
+                <button type="button" class="ia-btn ia-btn-success py-1" @click="guardarImpactoDeProyecto()">
+                    <i class="bi bi-floppy-fill"></i> Guardar impacto(s)
+                </button>
+            <?php endif; ?>
         </div>
     </div>
 </div>
