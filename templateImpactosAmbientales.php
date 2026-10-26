@@ -13,6 +13,10 @@
                         <i class="bi bi-cloud-download-fill"></i> Proyectos EAD's
                     </button>
 
+                    <button type="button" class="ia-btn ia-btn-outline-secondary gap-2" @click="limpiarProyectoEAD()" title="Limpiar datos cargados">
+                        <i class="bi bi-eraser-fill"></i>
+                    </button>
+
                     <div v-show="mostrarListaEAD" class="ia-ead-dropdown shadow">
                         <div class="ia-ead-search">
                             <input type="text" v-model="filtroEAD" placeholder="Buscar proyecto EAD..." class="ia-input ia-input-small w-100">
