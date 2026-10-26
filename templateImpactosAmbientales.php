@@ -107,11 +107,12 @@
                             </datalist>
                         </td>
 
-                        <!-- TIPO -->
+                        <!-- CONCEPTO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos" placeholder="Ej.: Energía">
-                            <datalist id="catalogo-tipos">
-                                <option v-for="valor in obtenerOpcionesCatalogo('tipo')" :key="valor" :value="valor"></option>
+                            <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos">
+                            <small class="form-text text-muted d-block mt-1 opacity-50">Electricidad</small>
+                            <datalist id="catalogo-conceptos">
+                                <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
                             </datalist>
                         </td>
 
