@@ -20,8 +20,9 @@
                         </button>
 
                         <div v-show="mostrarListaEAD" class="ia-ead-dropdown shadow">
-                            <div class="ia-ead-search">
+                            <div class="ia-ead-search d-flex align-items-center">
                                 <input type="text" v-model="filtroEAD" placeholder="Buscar proyecto EAD..." class="ia-input ia-input-small w-100">
+                                <button type="button" class="btn-close ms-2" @click="mostrarListaEAD = false" style="font-size: 0.75rem;" title="Cerrar lista"></button>
                             </div>
 
                             <ul class="ia-ead-list">
