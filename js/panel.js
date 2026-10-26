@@ -2612,7 +2612,7 @@ const app = {
               this.tomarDiaActual();
               this.consultarSeguimientoKPI();
               this.consultarJuntasArranque();
-
+             
               //Consultas de tabla impactos ambientales
               this.consultarImpactosAmbientalesOTS();
               this.consultarCalculadorafeOTS();
@@ -3191,7 +3191,6 @@ const app = {
       this.myModal.show();
       this.semanasAnio();
       this.consultarPilares();
-      this.consultarImpactoDeProyecto(); //datos de registro de emisiones e impactos ambientales
       this.consultarTodosImpactosProyectosEAD(); //me ayuda a poder tener todas las emisiones y aspecctos existentes
     },
     abriModalGraficaFullKPI() {
@@ -3485,6 +3484,7 @@ const app = {
                 this.seguimientoKPIs[0].meta_retadora;
               this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
 
+            
               if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
                 try {
                   this.pilarSeleccionado = JSON.parse(
@@ -3578,6 +3578,8 @@ const app = {
           } else {
             console.log("Error en consulta", response.data);
           }
+              //lo coloco aqui, ya que para poder verificar registro de los impacto del proyecto necesito el nombre del indicador.
+              this.consultarImpactoDeProyecto()
         })
         .catch((error) => {
           console.log(error);

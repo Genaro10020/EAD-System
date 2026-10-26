@@ -1119,9 +1119,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <h6 class="text-center pasos mt-2">Impactos Ambientales <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
                         </div>
                         <div class="col-12"><!--Inicio Scroll-->
-                            <div class="scroll5 col-12" style="font-size:0.8em">
+                            <div class="col-12" style="font-size:0.8em">
                                 <?php include("templateImpactosAmbientales.php") ?>
-                        </div>
+                            </div>
                         </div>
                     </div>
                     <!-- FIN TABLA IMPACTOS AMBIENTALES -->
