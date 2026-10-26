@@ -33,7 +33,7 @@
                                     
                                     <span>
                                         {{ proyecto.nombre_indicador }}
-                                        <span v-if="proyecto.nombre_equipo" class="badge bg-info text-dark ms-2" style="font-size: 0.75rem;">
+                                        <span v-if="proyecto.nombre_equipo" class="badge bg-light text-secondary border ms-2" style="font-size: 0.70rem; font-weight: 500;">
                                             {{ proyecto.nombre_equipo }}
                                         </span>
                                     </span>
