@@ -6,6 +6,29 @@
                 <label class="ia-title">Impactos Ambientales</label>
                 <small class="ia-subtitle">Registro de emisiones y aspectos ambientales</small>
             </div>
+            
+            <?php if (isset($origenOPEX) && $origenOPEX === true): ?>
+                <div class="ia-ead-container">
+                    <button type="button" class="ia-btn ia-btn-outline-primary" @click="mostrarListaEAD = !mostrarListaEAD">
+                        <i class="bi bi-cloud-download-fill"></i> Proyectos EAD's
+                    </button>
+
+                    <div v-show="mostrarListaEAD" class="ia-ead-dropdown shadow">
+                        <div class="ia-ead-search">
+                            <input type="text" v-model="filtroEAD" placeholder="Buscar proyecto EAD..." class="ia-input ia-input-small w-100">
+                        </div>
+
+                        <ul class="ia-ead-list">
+                            <li v-for="proyecto in proyectosFiltradosEAD" :key="proyecto.id" @click="seleccionarProyectoEAD(proyecto)" class="ia-ead-item">
+                                {{ proyecto.nombre_indicador }}
+                            </li>
+                            <li v-if="proyectosFiltradosEAD.length === 0" class="ia-ead-empty">
+                                No se encontraron proyectos.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            <?php endif; ?>
             <span class="ia-badge">Ambiental</span>
         </div>
         
