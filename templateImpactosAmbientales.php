@@ -53,6 +53,7 @@
             </div>
         
             <!-- INFORMACIÓN / ALERTAS -->
+              <?php if (!isset($origenOPEX)): ?>
             <div class="ia-info-bar">
                 <span v-if="nombre_indicador" class="ia-indicator-name">
                     {{ nombre_indicador }}
@@ -62,6 +63,7 @@
                     Primero debes colocarle un nombre al indicador antes de añadir impactos.
                 </span>
             </div>
+            <?php endif; ?>
         </div>
     </div>
 
