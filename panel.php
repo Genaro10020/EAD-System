@@ -1566,25 +1566,100 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!--<div class="col-12 text-center">
                         <button class="btn btn-success btn-boton px-2 py-0 me-2 " @click="nuevaCapacitaciones()"><i class="bi bi-plus-circle-fill"></i>Nueva Capacitación</button>
                     </div>-->
+                 <?php 
+                    if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") {
+                    ?>
+                    <div class="card shadow-sm mb-3">
+                            <div class="card-body">
+                                <div class="d-flex flex-column flex-lg-row
+                                            justify-content-between align-items-lg-center gap-3">
+                                    <div>
+                                        <p class="text-body-secondary small mb-0">
+                                            Selecciona un área para consultar sus capacitaciones.
+                                        </p>
+                                          <div class="d-flex flex-wrap gap-2">
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm"
+                                            :class="areaSeleccionada === 'Todas'
+                                                ? 'btn-danger'
+                                                : 'btn-outline-danger'"
+                                            @click="areaSeleccionada = 'Todas'">
+
+                                            <i class="bi bi-grid me-1"></i>
+                                            Todas
+                                        </button>
+
+                                        <button
+                                            v-for="area in areasCapacitaciones"
+                                            :key="area"
+                                            type="button"
+                                            class="btn btn-sm"
+                                            :class="areaSeleccionada === area
+                                                ? 'btn-danger'
+                                                : 'btn-outline-danger'"
+                                            @click="areaSeleccionada = area">
+
+                                            {{ area }}
+                                        </button>
+                                    </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-start align-items-center">
+                                    <span class="text-body-secondary small">
+                                        Área seleccionada:
+                                        <strong>{{ areaSeleccionada }}</strong>
+                                    </span>
+
+                                    <span class="badge text-bg-primary ms-2">
+                                        {{ capacitacionesFiltradas.length }} registros
+                                    </span>
+                                </div>
+                            </div>
+                    </div>
+                     <?php }else{?>
+                     <div class="card shadow-sm my-1">
+                            <div class="card-body">
+                            <div class="d-flex justify-content-start align-items-center">
+                                    <span class="text-body-secondary small">
+                                        Área:
+                                        <strong><?php echo $_SESSION['area']; ?></strong>
+                                    </span>
+
+                                    <span class="badge text-bg-primary ms-2">
+                                        {{ capacitacionesFiltradas.length }} registros
+                                    </span>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                     } ?>
                 <div class="row">
                     <div class="col-12">
                         <div class="scroll6 col-12" style="font-size:0.8em">
-                            <table class="table mt-2 ">
+                          <table class="table table-bordered table-striped table-sm align-middle mt-2">
                                 <thead>
-                                    <tr class="table-secondary">
-                                        <th scope="col" class="text-center"><button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="nuevaCapacitaciones()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nueva Capacitacion</button></th>
-                                        <th scope="col" class="text-center">Área</th>
+                                    <tr class="table-secondary sticky-top">
+                                        <th scope="col" class="text-center">
+                                            <button
+                                                class="btn btn-success btn-boton px-2 py-0 ms-2"
+                                                @click="nuevaCapacitaciones()"
+                                                style="font-size: 0.9em;">
+                                                <i class="bi bi-plus-circle"></i> Nueva Capacitación
+                                            </button>
+                                        </th>
 
-                                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") {
-                                        ?>
-                                            <th scope="col" class="text-center">Fecha de capacitacion</th>
-                                        <?php
-                                        }
-                                        ?>
+                                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") { ?>
+                                            <th scope="col" class="text-center">Área</th>
+                                           
+                                        <?php } ?>
+                                        <th scope="col" class="text-center">Fecha de capacitación</th>
                                         <th scope="col" class="text-center">Nuevos ingresos</th>
                                         <th scope="col" class="text-center">Evidencia</th>
                                         <th scope="col" class="text-center">Fotografía</th>
-                                        <th scope="col" class="text-center">¿Se impartió? (Si/No)</th>
+                                        <th scope="col" class="text-center">¿Se impartió? (Sí/No)</th>
                                         <th scope="col" class="text-center">Comentarios</th>
                                     </tr>
                                 </thead>
@@ -1593,11 +1668,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                                         <td class="text-center" style="width: 200px;">
                                             <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCapacitacion()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                            <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo','','')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
+                                            <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCapacitacion('Nuevo')"> <i class="bi bi-floppy-fill"></i> Guardar</button>
                                         </td>
                                         <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") {
                                         ?>
-                                            <td></td>
+                                            <td><?php echo $_SESSION['area'];?></td>
                                         <?php
                                         }
                                         ?>
@@ -1620,86 +1695,108 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                             <input v-model="comentarios_capacitacion" type="text" class="form-control" />
                                         </td>
                                     </tr>
-                                    <tr v-for="(capacitacion,index) in capacitaciones " :class="editarCapacitacion === index ? 'table-warning' : ''">
-                                        <td class="text-center">
-                                            <button v-if="editarCapacitacion===index" @click="cancelarEditar()" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"><i class="bi bi-x-lg"></i> Cancelar </button>
-                                            <button v-if="editarCapacitacion!==index" @click="editCap(index, capacitacion)" class="btn btn-warning btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"><i class="bi bi-pencil-fill"></i> Editar </button>
-                                            <button v-if="editarCapacitacion===index" @click="guardarCapacitacion('Actualizar',index,capacitacion.id)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;"><i class="bi bi-floppy-fill"></i> Guardar </button>
-                                        </td>
-                                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") {
-                                        ?>
-                                            <td>
-                                                <label>{{capacitacion.area}}</label>
-                                            </td>
-                                        <?php
-                                        }
-                                        ?>
-                                        <td class="text-center">
-                                            <input v-if="editarCapacitacion===index" :id="'capacitacionFecha'+index" :value="capacitacion.fecha" type="date" class="form-control w-50 mx-auto"></input>
-                                            <label v-else>{{capacitacion.fecha}}</label>
+                                    <tr v-for="capacitacion in capacitacionesFiltradas"
+                                        :key="capacitacion.id"
+                                        :class="editarCapacitacion === capacitacion.id ? 'table-warning' : ''">
+                                            <td class="text-center">
+                                                <button
+                                                    v-if="editarCapacitacion !== capacitacion.id"
+                                                    @click="editCap(capacitacion)"
+                                                    class="btn btn-warning btn-boton px-2 py-0 ms-2"
+                                                    style="font-size: 0.9em;">
+                                                    <i class="bi bi-pencil-fill"></i> Editar
+                                                </button>
 
-                                        </td>
-                                        <td class="text-center">
-                                            <input v-if="editarCapacitacion===index" :id="'capacitacionIngreso'+index" :value="capacitacion.ingresos" type="text" class="form-control w-50 mx-auto"></input>
-                                            <label v-else>{{capacitacion.ingresos}}</label>
+                                                <button
+                                                    v-if="editarCapacitacion === capacitacion.id"
+                                                    @click="cancelarEditar()"
+                                                    class="btn btn-danger btn-boton px-2 py-0 ms-2"
+                                                    style="font-size: 0.9em;">
+                                                    <i class="bi bi-x-lg"></i> Cancelar
+                                                </button>
 
-                                        </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" :class="cantidadDocumentos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalDocumentoCapacitacion(capacitacion.fecha,index,capacitacion.area)">
-                                                <i class="bi bi-file-earmark-arrow-up"></i> Documento/s ({{cantidadDocumentos[index]}})
-                                            </button>
-                                        </td>
-                                        <td class="text-center">
-                                            <button class="btn btn-primary btn-boton px-2 py-0 ms-2" title="Foto evidencia de capacitacion." :class="cantidadFotos[index]>0 ? 'bg-success': ''" style="font-size: 0.9em;" @click="modalEvFoto(capacitacion.fecha,index,capacitacion.area)">
-                                                <i class="bi bi-upload"></i> Foto/s ({{cantidadFotos[index]}})</button>
-                                        </td>
-                                        <td class="text-center">
-                                            <label v-if="cantidadDocumentos[index]>0 || cantidadFotos[index]>0" class="text-success">Si</label>
-                                            <label v-else="cantidadDocumentos[index]<=0 || cantidadFotos[index]<=0" class="text-danger">No</label>
-                                        </td>
-                                        <td>
-                                            <input v-if="editarCapacitacion===index" :id="'capacitacionComentario'+index" :value="capacitacion.comentario" type="text" class="form-control"></input>
-                                            <label v-else> {{capacitacion.comentario}}</label>
+                                                <button
+                                                    v-if="editarCapacitacion === capacitacion.id"
+                                                    @click="guardarCapacitacion('Actualizar', capacitacion.id)"
+                                                    class="btn btn-success btn-boton px-2 py-0 ms-2"
+                                                    style="font-size: 0.9em;">
+                                                    <i class="bi bi-floppy-fill"></i> Guardar
+                                                </button>
+                                            </td>
 
-                                        </td>
-                                    </tr>
-                                    <!--<tr v-if="compromisos.length>0" v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
-                                            <th scope="row" style="width: 200px;">{{index+1}}
-                                                <button v-if="!actualizar_compromiso" class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                            </th>
-                                            <td>
-                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control" />
-                                                <label v-else> {{commitment.compromiso}}</label>
+                                            <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == "Admin") { ?>
+                                                <td>
+                                                    <label>{{ capacitacion.area }}</label>
+                                                </td>
+                                            <?php } ?>
+
+                                            <td class="text-center">
+                                                <input
+                                                    v-if="editarCapacitacion === capacitacion.id"
+                                                    :id="'capacitacionFecha' + capacitacion.id"
+                                                    :value="capacitacion.fecha"
+                                                    type="date"
+                                                    class="form-control w-50 mx-auto">
+
+                                                <label v-else>{{ capacitacion.fecha }}</label>
                                             </td>
-                                            <td>
-                                                <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                    <option value="" disabled>Seleccione responsable</option>
-                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                </select>
-                                                <label v-else>{{commitment.nombre_responsable}}</label>
+
+                                            <td class="text-start">
+                                                <input
+                                                    v-if="editarCapacitacion === capacitacion.id"
+                                                    :id="'capacitacionIngreso' + capacitacion.id"
+                                                    :value="capacitacion.ingresos"
+                                                    type="text"
+                                                    class="form-control w-50 mx-auto">
+
+                                                <label v-else>{{ capacitacion.ingresos }}</label>
                                             </td>
-                                            <td style="width:200px">
-                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date" class="form-control" />
-                                                <label v-else>{{cambiarformato(commitment.fecha)}}</label>
+
+                                            <td class="text-center">
+                                                <button
+                                                    class="btn btn-primary btn-boton px-2 py-0 ms-2"
+                                                    :class="cantidadDocumentos[capacitacion.id] > 0 ? 'bg-success' : ''"
+                                                    style="font-size: 0.9em;"
+                                                    @click="modalDocumentoCapacitacion(capacitacion.fecha, capacitacion.id, capacitacion.area)">
+                                                    <i class="bi bi-file-earmark-arrow-up"></i>
+                                                    Documento/s ({{ cantidadDocumentos[capacitacion.id] ?? 0 }})
+                                                </button>
                                             </td>
-                                            <td>
-                                                <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
-                                                <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                    <option value="0" disabled>0 %</option>
-                                                    <option v-for="valor in porcentaje" :value="valor" ="valor == commitment.estatus">{{valor}} %</option>
-                                                </select>
+
+                                            <td class="text-center">
+                                                <button
+                                                    class="btn btn-primary btn-boton px-2 py-0 ms-2"
+                                                    title="Foto evidencia de capacitacion."
+                                                    :class="cantidadFotos[capacitacion.id] > 0 ? 'bg-success' : ''"
+                                                    style="font-size: 0.9em;"
+                                                    @click="modalEvFoto(capacitacion.fecha, capacitacion.id, capacitacion.area)">
+                                                    <i class="bi bi-upload"></i>
+                                                    Foto/s ({{ cantidadFotos[capacitacion.id] ?? 0 }})
+                                                </button>
                                             </td>
+
+                                            <td class="text-center">
+                                                <label
+                                                    v-if="cantidadDocumentos[capacitacion.id] > 0 || cantidadFotos[capacitacion.id] > 0"
+                                                    class="text-success">
+                                                    Sí
+                                                </label>
+
+                                                <label v-else class="text-danger">
+                                                    No
+                                                </label>
+                                            </td>
+
                                             <td>
-                                                <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
+                                                <input
+                                                    v-if="editarCapacitacion === capacitacion.id"
+                                                    :id="'capacitacionComentario' + capacitacion.id"
+                                                    :value="capacitacion.comentario"
+                                                    type="text"
+                                                    class="form-control">
+                                                <label v-else>{{ capacitacion.comentario }}</label>
                                             </td>
                                         </tr>
-                                        <tr v-else>
-                                            <td colspan="6" class="text-center" style="background:#FBF7C7">
-                                                Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con compromisos
-                                            </td>
-                                        </tr>-->
                                 </tbody>
                             </table>
                         </div>

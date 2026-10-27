@@ -209,6 +209,9 @@ const app = {
       textoAyudaAlcance: "",
       mostrarColumnaCo2: false,
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
+      cantidadDocumentos: {},
+      cantidadFotos: {},
+      areaSeleccionada: "Todas",
       nueva_capacitacion: false,
       fecha_capacitacion: "",
       nuevos_ingresos: "",
@@ -221,9 +224,7 @@ const app = {
       foto_capacitacion: [],
       pdf_capacitacion: [],
       existeImagenSeleccionadaCapacitacion: false,
-      cantidadDocumentos: [],
-      cantidadFotos: [],
-      editarCapacitacion: false,
+      editarCapacitacion: null, 
       posicion_canti_doc: "",
       posicion_inicial: 0,
       cantNewDoc: 0,
@@ -726,6 +727,27 @@ const app = {
 
       return filtradas.length > 0 ? filtradas : this.listaPonderaciones;
     },
+    //CAPACITACIONES
+    areasCapacitaciones() {
+        const areas = this.capacitaciones
+            .map(capacitacion => capacitacion.area)
+            .filter(area => area != null && String(area).trim() !== "");
+
+        return [...new Set(areas)].sort((a, b) =>
+            String(a).localeCompare(String(b), "es")
+        );
+    },
+
+    capacitacionesFiltradas() {
+        if (this.areaSeleccionada === "Todas") {
+            return this.capacitaciones;
+        }
+
+        return this.capacitaciones.filter(
+            capacitacion =>
+                capacitacion.area === this.areaSeleccionada
+        );
+    },
   },
   mounted() {
     this.consultarUsuarios();
@@ -849,12 +871,13 @@ const app = {
     cerrarModalHistorial() {
       this.myModal.hide();
     },
-    editCap(index) {
-      this.editarCapacitacion = index;
-    },
-    cancelarEditar() {
-      this.editarCapacitacion = false;
-    },
+        editCap(capacitacion) {
+          this.editarCapacitacion = capacitacion.id;
+      },
+
+      cancelarEditar() {
+          this.editarCapacitacion = null;
+      },
     guardarEditar(index) {
       let comentario = document.getElementById(
         "capacitacionComentario" + index,
@@ -2043,13 +2066,14 @@ const app = {
       );
       this.myModal.show();
     },
-    buscarDocumentos(
-      tipo_archivo,
-      fecha_por_capacitacion,
-      area,
-      llenado,
-      index,
-    ) {
+   buscarDocumentos(
+          tipo_archivo,
+          fecha_por_capacitacion,
+          area,
+          llenado,
+          index,
+          idCapacitacion
+      ) {
       console.log("Tipo archivo" + tipo_archivo, "Area: " + area);
       var id_equipo = "";
       var fecha_ruta = "";
@@ -2120,10 +2144,8 @@ const app = {
               //console.log(this.documento_capacitacion + "Sin imagen encontrada.")
             }
 
-            if (this.posicion_canti_doc || this.posicion_canti_doc === 0) {
-              console.log("Entrando por capacitacion e index");
-              this.cantidadDocumentos[this.posicion_canti_doc] =
-                this.documento_capacitacion.length;
+            if (this.posicion_canti_doc !== null && this.posicion_canti_doc !== undefined) {
+                    this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length;
             }
 
             if (this.nueva_capacitacion === true) {
@@ -2132,42 +2154,56 @@ const app = {
             }
             //////////////////////////////////////////  ***
           } else if (tipo_archivo === "Por Fecha") {
-            if (this.nueva_capacitacion === true) {
-              //buscar documentos al seleccionar una fecha en nueva capacitacion
-              this.cantNewDoc = response.data.length;
-            } else {
-              if (llenado == "llenadoInicial") {
-                this.pdf_capacitacion = response.data;
-                this.cantidadDocumentos[index] = this.pdf_capacitacion.length;
-                //console.log("hola llenado inicial", this.cantidadFotos)
-              } /* else if (llenado == 'ActualizaPosicion') {
-              this.cantidadDocumentos[this.posicion] = this.foto_capacitacion.length
-            } */
-              //this.cantidadDocumentos.push(response.data.length)
-              //console.log("Cantidad docs",this.cantidadDocumentos)
-            }
-          } else if (tipo_archivo === "EvidenciaFoto") {
-            ///////////////////////////////////////////////////
-            this.foto_capacitacion = response.data;
-            if (this.foto_capacitacion.length > 0) {
-              //console.log(this.foto_capacitacion + "Archivos encontrados.")
-              this.random = Math.random();
-            } else {
-              //console.log(this.foto_capacitacion + "Sin imagen encontrada.")
-            }
+                  if (this.nueva_capacitacion === true) {
+                      // Documentos de una capacitación nueva
+                      this.cantNewDoc = response.data.length;
+                  } else {
+                      if (llenado === "llenadoInicial") {
+                          this.pdf_capacitacion = response.data;
 
-            if (llenado == "llenadoInicial") {
-              this.cantidadFotos[index] = this.foto_capacitacion.length;
-              //console.log("hola llenado inicial", this.cantidadFotos)
-            } else if (llenado == "ActualizaPosicion") {
-              this.cantidadFotos[this.posicion] = this.foto_capacitacion.length;
-            }
+                          if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                              if (typeof this.$set === "function") {
+                                  this.$set(
+                                      this.cantidadDocumentos,
+                                      idCapacitacion,
+                                      this.pdf_capacitacion.length
+                                  );
+                              } else {
+                                  this.cantidadDocumentos[idCapacitacion] =
+                                      this.pdf_capacitacion.length;
+                              }
+                          }
+                      }
+                  }
+              } else if (tipo_archivo === "EvidenciaFoto") {
+                  this.foto_capacitacion = response.data;
 
-            if (this.nueva_capacitacion === true) {
-              //buscar documentos al seleccionar una fecha en nueva capacitacion
-              this.cantNewFoto = this.foto_capacitacion.length; //response.data.length
-            }
-          }
+                  if (this.foto_capacitacion.length > 0) {
+                      this.random = Math.random();
+                  }
+
+                  if (llenado === "llenadoInicial") {
+                      if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                          if (typeof this.$set === "function") {
+                              this.$set(
+                                  this.cantidadFotos,
+                                  idCapacitacion,
+                                  this.foto_capacitacion.length
+                              );
+                          } else {
+                              this.cantidadFotos[idCapacitacion] =
+                                  this.foto_capacitacion.length;
+                          }
+                      }
+                  } else if (llenado === "ActualizaPosicion") {
+                      this.cantidadFotos[this.posicion] =
+                          this.foto_capacitacion.length;
+                  }
+
+                  if (this.nueva_capacitacion === true) {
+                      this.cantNewFoto = this.foto_capacitacion.length;
+                  }
+              }
         })
         .catch((error) => {
           console.log(error);
@@ -4570,18 +4606,24 @@ const app = {
 
 
     }, */
-    modalDocumentoCapacitacion(fecha, index, area) {
+    modalDocumentoCapacitacion(fecha, idCapacitacion = null, area = "") {
       if (fecha == "") {
-        alert("Favor de seleccionar una fecha antes de subir su documento.");
-      } else {
-        this.posicion_canti_doc = index;
-        this.fecha_ruta = fecha;
-        this.areaDocumento = area;
-        this.myModal = new bootstrap.Modal(document.getElementById("modal"));
-        this.myModal.show();
-        this.buscarDocumentos("Capacitacion");
+          alert("Favor de seleccionar una fecha antes de subir su documento.");
+          return;
       }
-    },
+
+      this.posicion_canti_doc = idCapacitacion;
+      this.fecha_ruta = fecha;
+      this.areaDocumento = area;
+
+      this.myModal = new bootstrap.Modal(
+          document.getElementById("modal")
+      );
+
+      this.myModal.show();
+
+      this.buscarDocumentos("Capacitacion");
+  },
     nuevaCapacitaciones() {
       this.nueva_capacitacion = true;
       this.fecha_capacitacion = "";
@@ -4603,98 +4645,121 @@ const app = {
         this.actualizar_compromiso = false*/
     },
 
-    guardarCapacitacion(accion, index, id) {
-      if (accion == "Actualizar") {
-        console.log("Estoy actualizando");
-        this.nuevos_ingresos = document.getElementById(
-          "capacitacionIngreso" + index,
-        ).value;
-        this.fecha_capacitacion = document.getElementById(
-          "capacitacionFecha" + index,
-        ).value;
-        this.comentarios_capacitacion = document.getElementById(
-          "capacitacionComentario" + index,
-        ).value;
-      }
-      if (
-        this.nuevos_ingresos == "" ||
-        this.fecha_capacitacion == "" ||
-        this.comentarios_capacitacion == ""
-      ) {
-        return alert("Todos los campos de compromiso son requeridos.");
-      }
-      axios
-        .post("capacitacionesController.php", {
-          id: id,
-          accion: accion,
-          nuevos_ingresos: this.nuevos_ingresos,
-          fecha_capacitacion: this.fecha_capacitacion,
-          comentarios_capacitacion: this.comentarios_capacitacion,
-        })
-        .then((response) => {
-          if (response.data == true) {
-            Swal.fire({
-              title: "Guardado!!",
-              text: "Capacitación Guardada con Éxito.",
-              icon: "success",
+    
+    guardarCapacitacion(accion, id = null) {
+        if (accion === "Actualizar") {
+            const ingreso = document.getElementById(
+                "capacitacionIngreso" + id
+            );
+
+            const fecha = document.getElementById(
+                "capacitacionFecha" + id
+            );
+
+            const comentario = document.getElementById(
+                "capacitacionComentario" + id
+            );
+
+            if (!ingreso || !fecha || !comentario) {
+                console.error(
+                    "No se encontraron los campos de la capacitación:",
+                    id
+                );
+                return;
+            }
+
+            this.nuevos_ingresos = ingreso.value;
+            this.fecha_capacitacion = fecha.value;
+            this.comentarios_capacitacion = comentario.value;
+        }
+
+        if (
+            this.nuevos_ingresos == null ||
+            this.nuevos_ingresos.trim() === "" ||
+            this.fecha_capacitacion === "" ||
+            this.comentarios_capacitacion == null ||
+            this.comentarios_capacitacion.trim() === ""
+        ) {
+            return alert("Todos los campos de capacitación son requeridos.");
+        }
+
+        axios
+            .post("capacitacionesController.php", {
+                id: id,
+                accion: accion,
+                nuevos_ingresos: this.nuevos_ingresos,
+                fecha_capacitacion: this.fecha_capacitacion,
+                comentarios_capacitacion: this.comentarios_capacitacion,
+            })
+            .then((response) => {
+                if (response.data == true) {
+                    Swal.fire({
+                        title: "¡Guardado!",
+                        text: "Capacitación guardada con éxito.",
+                        icon: "success",
+                    });
+
+                    this.comentarios_capacitacion = "";
+                    this.nuevos_ingresos = "";
+                    this.fecha_capacitacion = "";
+                    this.fecha_ruta = "";
+
+                    this.nueva_capacitacion = false;
+                    this.editarCapacitacion = null;
+
+                    this.consultarCapacitacion();
+                } else {
+                    console.log(response.data);
+                }
+            })
+            .catch((error) => {
+                console.log("Error en axios:", error);
             });
-            this.comentarios_capacitacion = ""; // Limpiar campo comentarios
-            this.nuevos_ingresos = ""; // Limpiar campo ingresos
-            this.fecha_capacitacion = ""; // Limpiar campo fecha
-            this.fecha_ruta = "";
-            this.consultarCapacitacion();
-            this.nueva_capacitacion = false;
-            this.editarCapacitacion = false;
-          } else {
-            console.log(response.data);
-          }
-        })
-        .catch((error) => {
-          console.log("Error en axios:" + error);
-        });
     },
 
-    consultarCapacitacion() {
-      //this.nuevos_ingresos = ''
-      //this.fecha_capacitacion = ''
-      axios
+consultarCapacitacion() {
+    axios
         .get("capacitacionesController.php", {
-          params: {
-            accion: "Consultar",
-          },
+            params: {
+                accion: "Consultar",
+            },
         })
         .then((response) => {
-          console.log("Capacitaciones", response.data);
-          if (response.data[0] == true) {
-            this.capacitaciones = response.data[1];
-            this.cantidadDocumentos = [];
-            this.cantidadFotos = [];
-            for (let index = 0; index < this.capacitaciones.length; index++) {
-              this.buscarDocumentos(
-                "Por Fecha",
-                this.capacitaciones[index].fecha,
-                this.capacitaciones[index].area,
-                "llenadoInicial",
-                index,
-              ); //busco la cantidad de archivos que contiene cada capacitacion.
+            console.log("Capacitaciones", response.data);
+
+            if (response.data[0] == true) {
+                this.capacitaciones = response.data[1];
+
+                this.cantidadDocumentos = {};
+                this.cantidadFotos = {};
+
+                for (const capacitacion of this.capacitaciones) {
+                    this.buscarDocumentos(
+                        "Por Fecha",
+                        capacitacion.fecha,
+                        capacitacion.area,
+                        "llenadoInicial",
+                        null,
+                        capacitacion.id
+                    );
+
+                    this.buscarDocumentos(
+                        "EvidenciaFoto",
+                        capacitacion.fecha,
+                        capacitacion.area,
+                        "llenadoInicial",
+                        null,
+                        capacitacion.id
+                    );
+                }
+            } else {
+                console.log("Error en la consulta", response.data);
             }
-            for (let index = 0; index < this.capacitaciones.length; index++) {
-              this.buscarDocumentos(
-                "EvidenciaFoto",
-                this.capacitaciones[index].fecha,
-                this.capacitaciones[index].area,
-                "llenadoInicial",
-                index,
-              ); //busco la cantidad de archivos que contiene cada capacitacion.
-            }
-          } else {
-            console.log("Error en la consulta" + response.data);
-          }
         })
         .catch((error) => {
-          console.log("Error :-( en axios: " + error);
+            console.log("Error en axios:", error);
         });
-    },
+},
 
     cancelarCapacitacion() {
       this.nueva_capacitacion = false;
