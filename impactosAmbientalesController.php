@@ -92,17 +92,14 @@ if (isset($_SESSION['nombre'])) {
         break;
 
             case 'POST':
-
                 if (!empty($arreglo) && is_array($arreglo)) {
                     $resultado = guardarImpacto($arreglo);
                 } else {
-
                     $resultado = [
                         "status" => "error",
                         "message" => "No se recibieron datos."
                     ];
                 }
-
                 break;
         case 'PUT':
             $resultado = [

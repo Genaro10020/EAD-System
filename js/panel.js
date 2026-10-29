@@ -4502,9 +4502,8 @@ const app = {
       };
       console.log("Impactos a guardar/actualizar:", datos);
       // Enviar TODOS los impactos en una sola petición
-      axios
-        .post("impactosAmbientalesController.php", datos)
-        .then((response) => {
+      axios.post("impactosAmbientalesController.php", datos)
+      .then((response) => {
           console.log("Respuesta del servidor:", response.data);
           if (response.data.status === "success") {
             Swal.fire({
