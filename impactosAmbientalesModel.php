@@ -208,6 +208,7 @@ function guardarImpacto($datos) {
 
             // Acumular para proyectos_creados.
             $datosPorId[$idFinal] = [
+                'impacto'    => $concepto,
                 'diagrama'   => $diagrama,
                 'tipo'       => $tipo,
                 'alcance'    => $alcance ?? 0,
@@ -242,7 +243,7 @@ function guardarImpacto($datos) {
         if (!empty($idsExistentes)) {
 
             $resProyectos = $conexionOTS->query("
-                SELECT id, id_eads, diagrama_proceso, tipo, alcance, cantidad, referencia
+                SELECT id, id_eads, impacto_ambiental, diagrama_proceso, tipo, alcance, cantidad, referencia
                 FROM proyectos_creados
                 WHERE id_eads IS NOT NULL AND id_eads <> ''
             ");
@@ -263,7 +264,7 @@ function guardarImpacto($datos) {
             $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
 
             $stmtUpdateProyecto = $conexionOTS->prepare("
-                UPDATE proyectos_creados SET
+                UPDATE proyectos_creados SET impacto_ambiental = ?,
                     diagrama_proceso = ?, tipo = ?, alcance = ?,
                     cantidad = ?, referencia = ?, id_eads = ?
                 WHERE id = ?
@@ -278,6 +279,7 @@ function guardarImpacto($datos) {
                 if (!is_array($idsProyecto)) {
                     continue;
                 }
+
                 $idsProyecto = array_map('intval', array_values($idsProyecto));
 
                 // Si no coincide ningún id, no se hace nada.
@@ -285,14 +287,17 @@ function guardarImpacto($datos) {
                     continue;
                 }
 
+                 
+
                 $n = count($idsProyecto);
+                $oImpacto   = $decodificar($p['impacto_ambiental'], $n, '');
                 $oDiagramas   = $decodificar($p['diagrama_proceso'], $n, '');
                 $oTipos       = $decodificar($p['tipo'], $n, '');
                 $oAlcances    = $decodificar($p['alcance'], $n, 0);
                 $oCantidades  = $decodificar($p['cantidad'], $n, 0);
                 $oReferencias = $decodificar($p['referencia'], $n, '');
 
-                $nDiagramas = $nTipos = $nAlcances = $nCantidades = $nReferencias = $nIds = [];
+                $nImpacto =  $nDiagramas = $nTipos = $nAlcances = $nCantidades = $nReferencias = $nIds = [];
 
                 // Recorrer posiciones actuales del proyecto.
                 foreach ($idsProyecto as $i => $idPos) {
@@ -300,6 +305,7 @@ function guardarImpacto($datos) {
                         // Pertenece a este indicador: se actualiza si sigue vigente, si no se elimina.
                         if (isset($datosPorId[$idPos])) {
                             $d = $datosPorId[$idPos];
+                            $nImpacto[]   = $d['impacto'];
                             $nDiagramas[]   = $d['diagrama'];
                             $nTipos[]       = $d['tipo'];
                             $nAlcances[]    = $d['alcance'];
@@ -309,6 +315,7 @@ function guardarImpacto($datos) {
                         }
                     } else {
                         // Ajeno a este indicador: se conserva intacto.
+                        $nImpacto[]   = $oImpacto[$i];
                         $nDiagramas[]   = $oDiagramas[$i];
                         $nTipos[]       = $oTipos[$i];
                         $nAlcances[]    = $oAlcances[$i];
@@ -322,6 +329,7 @@ function guardarImpacto($datos) {
                 foreach ($ordenIdsFinales as $idFinal) {
                     if (!in_array($idFinal, $nIds, true)) {
                         $d = $datosPorId[$idFinal];
+                        $nImpacto[]   = $d['impacto'];
                         $nDiagramas[]   = $d['diagrama'];
                         $nTipos[]       = $d['tipo'];
                         $nAlcances[]    = $d['alcance'];
@@ -330,7 +338,7 @@ function guardarImpacto($datos) {
                         $nIds[]         = $idFinal;
                     }
                 }
-
+                 $jsonImpacto     = json_encode($nImpacto, $flags);
                 $jsonDiagramas   = json_encode($nDiagramas, $flags);
                 $jsonTipos       = json_encode($nTipos, $flags);
                 $jsonAlcances    = json_encode($nAlcances, $flags);
@@ -340,8 +348,8 @@ function guardarImpacto($datos) {
                 $idProyecto      = (int)$p['id'];
 
                 $stmtUpdateProyecto->bind_param(
-                    "ssssssi",
-                    $jsonDiagramas, $jsonTipos, $jsonAlcances,
+                    "sssssssi",
+                     $jsonImpacto, $jsonDiagramas, $jsonTipos, $jsonAlcances,
                     $jsonCantidades, $jsonReferencias, $jsonIdsEads,
                     $idProyecto
                 );
@@ -349,6 +357,7 @@ function guardarImpacto($datos) {
                     throw new Exception("Error al actualizar el proyecto OTS ID " . $idProyecto . ": " . $stmtUpdateProyecto->error);
                 }
 
+                 sincronizarImpactosProyecto($conexion, $conexionOTS, $idProyecto, $nIds);
                 $proyectosActualizados++;
             }
 
@@ -387,6 +396,82 @@ function guardarImpacto($datos) {
         return ["status" => "error", "message" => $e->getMessage()];
     }
 }
+
+    function sincronizarImpactosProyecto($conexionGhoner, $conexionOTS, $idProyecto, $idsEads) {
+
+        // Conceptos vigentes del proyecto según sus IDs actuales.
+        $vigentes = [];
+        if (!empty($idsEads)) {
+            $lista = implode(',', array_map('intval', $idsEads));
+            $res = $conexionGhoner->query("SELECT concepto, um FROM reportes_impactos_ambientales_proyectos WHERE id IN ($lista) ORDER BY id ASC");
+            if (!$res) {
+                throw new Exception("Error al consultar conceptos del proyecto: " . $conexionGhoner->error);
+            }
+            while ($f = $res->fetch_assoc()) {
+                $c = trim($f['concepto']);
+                $u = trim($f['um']);
+                if ($c === '') {
+                    continue;
+                }
+                $vigentes[] = $u !== '' ? $c . " (" . $u . ")" : $c;
+            }
+            $vigentes = array_values(array_unique($vigentes));
+        }
+
+        // Conceptos que ya existen para este proyecto en OTS.
+        $stmt = $conexionOTS->prepare("SELECT id, impacto_ambiental FROM impacto_ambiental_proyecto WHERE id_proyecto = ?");
+        if (!$stmt) {
+            throw new Exception("Error al preparar consulta impacto_ambiental_proyecto: " . $conexionOTS->error);
+        }
+        $stmt->bind_param("i", $idProyecto);
+        if (!$stmt->execute()) {
+            throw new Exception("Error al consultar impacto_ambiental_proyecto: " . $stmt->error);
+        }
+        $resExist = $stmt->get_result();
+        $existentes = [];
+        $idsBorrar = [];
+        while ($f = $resExist->fetch_assoc()) {
+            $nombre = $f['impacto_ambiental'];
+            // Se borra si ya no está vigente o si está duplicado.
+            if (!in_array($nombre, $vigentes, true) || in_array($nombre, $existentes, true)) {
+                $idsBorrar[] = (int)$f['id'];
+            } else {
+                $existentes[] = $nombre;
+            }
+        }
+        $stmt->close();
+
+        // Quitar los que sobran.
+        if (!empty($idsBorrar)) {
+            $stmtDel = $conexionOTS->prepare("DELETE FROM impacto_ambiental_proyecto WHERE id = ?");
+            if (!$stmtDel) {
+                throw new Exception("Error al preparar DELETE impacto_ambiental_proyecto: " . $conexionOTS->error);
+            }
+            foreach ($idsBorrar as $idBorrar) {
+                $stmtDel->bind_param("i", $idBorrar);
+                if (!$stmtDel->execute()) {
+                    throw new Exception("Error al eliminar de impacto_ambiental_proyecto: " . $stmtDel->error);
+                }
+            }
+            $stmtDel->close();
+        }
+
+        // Agregar los que faltan.
+        $faltantes = array_diff($vigentes, $existentes);
+        if (!empty($faltantes)) {
+            $stmtIns = $conexionOTS->prepare("INSERT INTO impacto_ambiental_proyecto (id_proyecto, impacto_ambiental) VALUES (?, ?)");
+            if (!$stmtIns) {
+                throw new Exception("Error al preparar INSERT impacto_ambiental_proyecto: " . $conexionOTS->error);
+            }
+            foreach ($faltantes as $nombre) {
+                $stmtIns->bind_param("is", $idProyecto, $nombre);
+                if (!$stmtIns->execute()) {
+                    throw new Exception("Error al insertar en impacto_ambiental_proyecto: " . $stmtIns->error);
+                }
+            }
+            $stmtIns->close();
+        }
+    }
 
 function eliminarImpacto($datos) {
     global $conexion;
@@ -438,7 +523,7 @@ function eliminarImpacto($datos) {
         $proyectosActualizados = 0;
 
         $resProyectos = $conexionOTS->query("
-            SELECT id, id_eads, diagrama_proceso, tipo, alcance, cantidad, referencia
+            SELECT id, id_eads, impacto_ambiental, diagrama_proceso, tipo, alcance, cantidad, referencia
             FROM proyectos_creados
             WHERE id_eads IS NOT NULL AND id_eads <> ''
         ");
@@ -459,7 +544,7 @@ function eliminarImpacto($datos) {
         $flags = JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
 
         $stmtUpdateProyecto = $conexionOTS->prepare("
-            UPDATE proyectos_creados SET
+            UPDATE proyectos_creados SET impacto_ambiental = ?,
                 diagrama_proceso = ?, tipo = ?, alcance = ?,
                 cantidad = ?, referencia = ?, id_eads = ?
             WHERE id = ?
@@ -481,20 +566,25 @@ function eliminarImpacto($datos) {
                 continue;
             }
 
+         
+            
+
             $n = count($idsProyecto);
+            $oAmbiental   = $decodificar($p['impacto_ambiental'], $n, '');
             $oDiagramas   = $decodificar($p['diagrama_proceso'], $n, '');
             $oTipos       = $decodificar($p['tipo'], $n, '');
             $oAlcances    = $decodificar($p['alcance'], $n, 0);
             $oCantidades  = $decodificar($p['cantidad'], $n, 0);
             $oReferencias = $decodificar($p['referencia'], $n, '');
 
-            $nDiagramas = $nTipos = $nAlcances = $nCantidades = $nReferencias = $nIds = [];
+            $nAmbiental = $nDiagramas = $nTipos = $nAlcances = $nCantidades = $nReferencias = $nIds = [];
 
             // Conservar todas las posiciones excepto la del ID eliminado.
             foreach ($idsProyecto as $i => $idPos) {
                 if ($idPos === $id) {
                     continue;
                 }
+                $nAmbiental[]   = $oAmbiental[$i];
                 $nDiagramas[]   = $oDiagramas[$i];
                 $nTipos[]       = $oTipos[$i];
                 $nAlcances[]    = $oAlcances[$i];
@@ -503,6 +593,7 @@ function eliminarImpacto($datos) {
                 $nIds[]         = $idPos;
             }
 
+            $jsonAmbiental   = json_encode($nAmbiental, $flags);
             $jsonDiagramas   = json_encode($nDiagramas, $flags);
             $jsonTipos       = json_encode($nTipos, $flags);
             $jsonAlcances    = json_encode($nAlcances, $flags);
@@ -512,8 +603,8 @@ function eliminarImpacto($datos) {
             $idProyecto      = (int)$p['id'];
 
             $stmtUpdateProyecto->bind_param(
-                "ssssssi",
-                $jsonDiagramas, $jsonTipos, $jsonAlcances,
+                "sssssssi",
+                $jsonAmbiental,$jsonDiagramas, $jsonTipos, $jsonAlcances,
                 $jsonCantidades, $jsonReferencias, $jsonIdsEads,
                 $idProyecto
             );
@@ -521,6 +612,8 @@ function eliminarImpacto($datos) {
                 throw new Exception("Error al actualizar el proyecto OTS ID " . $idProyecto . ": " . $stmtUpdateProyecto->error);
             }
 
+            // Sincronizar impacto_ambiental_proyecto (OTS).
+            sincronizarImpactosProyecto($conexion, $conexionOTS, $idProyecto, $nIds);
             $proyectosActualizados++;
         }
 
