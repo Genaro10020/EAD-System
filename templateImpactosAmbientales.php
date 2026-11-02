@@ -88,13 +88,40 @@
                 <!-- REGISTROS -->
                 <tbody>
                     <tr v-for="(impacto, index) in emisiones_aspectos_ambientales_proyecto_ead" :key="index">
-                        <td class="ia-index-col">
-                            <span class="fw-bold text-muted">{{ index + 1 }}</span>
-                        </td>
+                       <td class="ia-index-col text-center">
+                            <button
+                                v-if="emisiones_aspectos_ambientales_proyecto_ead.length === 1 && aplicarNA == false"
+                                type="button"
+                                class="btn btn-warning btn-sm rounded shadow-sm btn-accion-na mb-3"
+                                @click="marcarImpactoNoAplica(impacto)">
+                                <span class="fw-bold">NA</span>
+                            </button>
 
+                            <button
+                                v-if="emisiones_aspectos_ambientales_proyecto_ead.length === 1 && aplicarNA == true"
+                                type="button"
+                                class="btn btn-warning btn-sm rounded shadow-sm btn-accion-na mb-3"
+                                @click="reviertirNoAplica(impacto)">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    viewBox="0 0 16 16">
+                                    <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                                    <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+                                </svg>
+                            </button>
+
+                            <span
+                                v-if="emisiones_aspectos_ambientales_proyecto_ead.length > 1"
+                                class="fw-bold text-muted">
+                                {{ index + 1 }}
+                            </span>
+                        </td>
                         <!-- DIAGRAMA -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas">
+                            <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas" :disabled="aplicarNA">
                             <small class="form-text text-muted d-block mt-1 opacity-50">E-DF-IP-RJ-A</small>
                             <datalist id="catalogo-diagramas">
                                 <option v-for="valor in obtenerOpcionesCatalogo('diagrama')" :key="valor" :value="valor"></option>
@@ -103,7 +130,7 @@
 
                         <!-- TIPO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos">
+                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos" :disabled="aplicarNA">
                             <small class="form-text text-muted d-block mt-1 opacity-50">Energía</small>
                             <datalist id="catalogo-tipos">
                                 <option v-for="valor in obtenerOpcionesCatalogo('tipo')" :key="valor" :value="valor"></option>
@@ -112,7 +139,7 @@
 
                         <!-- CONCEPTO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos">
+                            <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos" :disabled="aplicarNA">
                             <small class="form-text text-muted d-block mt-1 opacity-50">Electricidad</small>
                             <datalist id="catalogo-conceptos">
                                 <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
@@ -122,11 +149,12 @@
                         <!-- ALCANCE (Tooltip corregido) -->
                         <td class="ia-col-alcance">
                             <div class="ia-scope-container mt-1">
-                                <select class="ia-select" v-model="impacto.alcance" :class="{'ia-text-muted': impacto.alcance === ''}">
+                                <select class="ia-select" v-model="impacto.alcance" :class="{ 'ia-text-muted': aplicarNA }" :disabled="aplicarNA">
                                     <option disabled value="">Alcance...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
+                                    <option value="0">N/A</option>
                                 </select>
 
                                 <div class="ia-help-buttons">
@@ -158,7 +186,7 @@
 
                         <!-- UM -->
                         <td>
-                            <input type="text" class="ia-input ia-input-small" v-model="impacto.um" list="catalogo-um" :disabled="!!umConceptoFe[impacto.concepto] || !!umConceptoImpactoAmbiental[impacto.concepto]">
+                            <input type="text" class="ia-input ia-input-small" v-model="impacto.um" list="catalogo-um" :disabled="!!umConceptoFe[impacto.concepto] || !!aplicarNA">
                             <small class="form-text text-muted d-block mt-1 opacity-50">kWh/Año</small>
                             <datalist id="catalogo-um">
                                 <option v-for="valor in obtenerOpcionesUM()" :key="valor" :value="valor"></option>
@@ -180,7 +208,7 @@
                         </td>
                         <!-- REFERENCIA -->
                         <td>
-                            <textarea class="ia-textarea" v-model="impacto.referencia" rows="2" :disabled="!!umConceptoFe[impacto.concepto]"></textarea>
+                            <textarea class="ia-textarea" v-model="impacto.referencia" rows="2" :disabled="!!umConceptoFe[impacto.concepto] || aplicarNA" ></textarea>
                             <small class="form-text text-muted d-block mt-1 opacity-50">Referencia documental</small>
                         </td>
 

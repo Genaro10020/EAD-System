@@ -208,6 +208,7 @@ const app = {
       alcanceAyudaVisible: false,
       textoAyudaAlcance: "",
       mostrarColumnaCo2: false,
+      aplicarNA: false,
       ////////////////////////////////////////////////////////////////////////////////////**CAPACITACIONES */
       cantidadDocumentos: {},
       cantidadFotos: {},
@@ -4311,6 +4312,10 @@ const app = {
                   co2: impacto.co2 ?? 0,
                   referencia: impacto.referencia ?? "",
                 }));
+                if(response.data.impactos[0].concepto === 'N/A') {
+                 this.aplicarNA = true;
+                }
+
             } else {
               // No existen impactos
               // Crear una fila nueva
@@ -4557,6 +4562,40 @@ const app = {
 
     ocultarAyuda() {
       this.filaAyudaActiva = null;
+    },
+
+        marcarImpactoNoAplica(impacto) {
+          Swal.fire({
+              title: '¿Estás seguro?',
+              text: 'Los campos se marcaran con: (N/A). ¿Deseas continuar?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#f0ad4e',
+              cancelButtonColor: '#6c757d',
+              confirmButtonText: 'Sí, marcar como N/A',
+              cancelButtonText: 'Cancelar'
+          }).then((result) => {
+              if (result.isConfirmed) {
+
+                  impacto.diagrama = 'N/A';
+                  impacto.tipo = 'N/A';
+                  impacto.concepto = 'N/A';
+                  impacto.alcance = 0;
+                  impacto.um = 'N/A';
+                  impacto.referencia = 'N/A';
+
+                  this.aplicarNA = true;
+              }
+          });
+      },
+    reviertirNoAplica(impacto) {
+        impacto.diagrama = '';
+        impacto.tipo = '';
+        impacto.concepto = '';
+        impacto.alcance = '';
+        impacto.um = '';
+        impacto.referencia = '';
+        this.aplicarNA = false;
     },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////

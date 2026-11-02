@@ -1263,6 +1263,8 @@ select option,
   margin: 0 auto;
 }
 
+
+
 /* ===== Disabled (legible) ===== */
 .ia-table .ia-input:disabled,
 .ia-table .ia-select:disabled,
@@ -1272,6 +1274,13 @@ select option,
   -webkit-text-fill-color: #475569;
   opacity: 1;
   cursor: not-allowed;
+}
+.ia-table .ia-select:disabled {
+    background-color: #f1f5f9 !important;
+    color: #475569 !important;
+    -webkit-text-fill-color: #475569 !important;
+    opacity: 1 !important;
+    cursor: not-allowed;
 }
 
 /* Campo calculado automáticamente */
@@ -1543,4 +1552,23 @@ select option,
 .ia-actions {
   display: flex;
   gap: 0.75rem;
+}
+
+.btn-accion-na {
+    width: 38px;
+    height: 38px;
+    padding: 0 !important;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.7em;
+    line-height: 1;
+}
+
+.btn-accion-na svg {
+    width: 16px;
+    height: 16px;
+    display: block;
 }
