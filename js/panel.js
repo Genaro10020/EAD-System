@@ -4564,30 +4564,30 @@ const app = {
       this.filaAyudaActiva = null;
     },
 
-        marcarImpactoNoAplica(impacto) {
-          Swal.fire({
-              title: '¿Estás seguro?',
-              text: 'Los campos se marcaran con: (N/A). ¿Deseas continuar?',
-              icon: 'warning',
-              showCancelButton: true,
-              confirmButtonColor: '#f0ad4e',
-              cancelButtonColor: '#6c757d',
-              confirmButtonText: 'Sí, marcar como N/A',
-              cancelButtonText: 'Cancelar'
-          }).then((result) => {
-              if (result.isConfirmed) {
+    marcarImpactoNoAplica(impacto) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Los campos se marcaran con: (N/A). ¿Deseas continuar?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#f0ad4e',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, marcar como N/A',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
 
-                  impacto.diagrama = 'N/A';
-                  impacto.tipo = 'N/A';
-                  impacto.concepto = 'N/A';
-                  impacto.alcance = 0;
-                  impacto.um = 'N/A';
-                  impacto.referencia = 'N/A';
+                impacto.diagrama = 'N/A';
+                impacto.tipo = 'N/A';
+                impacto.concepto = 'N/A';
+                impacto.alcance = 0;
+                impacto.um = 'N/A';
+                impacto.referencia = 'N/A';
 
-                  this.aplicarNA = true;
-              }
-          });
-      },
+                this.aplicarNA = true;
+            }
+        });
+    },
     reviertirNoAplica(impacto) {
         impacto.diagrama = '';
         impacto.tipo = '';
@@ -4597,6 +4597,13 @@ const app = {
         impacto.referencia = '';
         this.aplicarNA = false;
     },
+    validarNA(impacto) {
+      console.log("Console: ",impacto.concepto);
+        const valor = impacto.concepto?.trim().toUpperCase();
+          if (valor === 'NA' || valor === 'N/A') {
+              this.marcarImpactoNoAplica(impacto);
+          }
+      },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {

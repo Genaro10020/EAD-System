@@ -139,7 +139,7 @@
 
                         <!-- CONCEPTO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.concepto" list="catalogo-conceptos" :disabled="aplicarNA">
+                            <input type="text" class="ia-input" v-model="impacto.concepto" @blur="validarNA(impacto)" list="catalogo-conceptos" :disabled="aplicarNA">
                             <small class="form-text text-muted d-block mt-1 opacity-50">Electricidad</small>
                             <datalist id="catalogo-conceptos">
                                 <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
