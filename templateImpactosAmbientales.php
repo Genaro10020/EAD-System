@@ -92,7 +92,7 @@
                             <button
                                 v-if="emisiones_aspectos_ambientales_proyecto_ead.length === 1 && aplicarNA == false"
                                 type="button"
-                                class="btn btn-warning btn-sm rounded shadow-sm btn-accion-na mb-3"
+                                class="btn btn-sm rounded-circle shadow-sm btn-accion-na mb-3"
                                 @click="marcarImpactoNoAplica(impacto)">
                                 <span class="fw-bold">NA</span>
                             </button>
@@ -100,7 +100,7 @@
                             <button
                                 v-if="emisiones_aspectos_ambientales_proyecto_ead.length === 1 && aplicarNA == true"
                                 type="button"
-                                class="btn btn-warning btn-sm rounded shadow-sm btn-accion-na mb-3"
+                                class="btn btn-sm rounded-circle shadow-sm btn-accion-na mb-3"
                                 @click="reviertirNoAplica(impacto)">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
