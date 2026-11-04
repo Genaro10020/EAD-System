@@ -668,6 +668,20 @@ const app = {
     },
   },
   computed: {
+    documentosEquiposFiltrados() {
+      return this.lista_documentos_equipos.filter((doc) => {
+        const matchEquipo = doc.equipo
+          .toLowerCase()
+          .includes(this.filtro_equipo_doc.toLowerCase());
+        const matchPlanta =
+          this.filtro_planta_doc === "" ||
+          doc.planta === this.filtro_planta_doc;
+        const matchArea =
+          this.filtro_area_doc === "" || doc.area === this.filtro_area_doc;
+
+        return matchEquipo && matchPlanta && matchArea;
+      });
+    },
     umConceptoFe() {
       return this.calculadoraFeCombustibles.reduce((resultado, item) => {
         resultado[item.combustible_energetico] = {
