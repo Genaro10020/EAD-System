@@ -1974,19 +1974,31 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <table class="docs-data-table">
                         <thead>
                             <tr>
-                                <th style="width: 25%;">Equipo</th>
-                                <th style="width: 20%;">Planta</th>
-                                <th style="width: 20%;">Área</th>
-                                <th style="width: 15%;">Periodo</th>
-                                <th style="width: 20%;">Documentos</th>
+                                <th>Planta</th>
+                                <th>Área</th>
+                                <th>Año</th>
+                                <th>Periodo</th>
+                                <th>EAD</th>
+                                <th>Proyecto</th>
+                                <th>L.B</th>
+                                <th>Entidad</th>
+                                <th>M.C</th>
+                                <th>MR</th>
+                                <th>Documentos</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(doc, index) in documentosEquiposFiltrados" :key="index">
-                                <td class="docs-fw-bold">{{ doc.equipo }}</td>
                                 <td>{{ doc.planta }}</td>
                                 <td>{{ doc.area }}</td>
-                                <td class="docs-badge-time">{{ doc.periodo }}</td>
+                                <td>{{ doc.anio }}</td>
+                                <td><span class="docs-badge-time">{{ doc.periodo }}</span></td>
+                                <td class="docs-fw-bold">{{ doc.equipo }}</td>
+                                <td>{{ doc.proyecto }}</td>
+                                <td>{{ doc.lb }}</td>
+                                <td>{{ doc.entidad }}</td>
+                                <td>{{ doc.mc }}</td>
+                                <td>{{ doc.mr }}</td>
                                 <td>
                                     <button class="docs-btn-action" @click="descargarDocumentos(doc.id)" title="Descargar archivos">
                                         <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
