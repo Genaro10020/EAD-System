@@ -1957,15 +1957,17 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             <!-- DOCUMENTOS EQUIPOS -->
             <div v-if="ventana=='Documentos Equipos'" class="docs-main-container">
                 <div class="docs-topbar">
-                    <input type="text" class="docs-input-field" placeholder="Buscar por equipo...">
-                    <select class="docs-input-field" v-model="filtro_planta_doc">
-                        <option value="">Todas las Plantas</option>
-                        <option v-for="planta in plantas" :value="planta.nombre">{{ planta.nombre }}</option>
-                    </select>
-                    <select class="docs-input-field" v-model="filtro_area_doc">
-                        <option value="">Todas las Áreas</option>
-                        <option v-for="area in areas" :value="area.nombre">{{ area.nombre }}</option>
-                    </select>
+                    <div class="docs-filter-group">
+                        <input type="text" class="docs-input-field" placeholder="Buscar equipo..." v-model="filtro_equipo_doc">
+                        <select class="docs-input-field" v-model="filtro_planta_doc">
+                            <option value="">Todas las Plantas</option>
+                            <option v-for="planta in plantas" :value="planta.nombre">{{ planta.nombre }}</option>
+                        </select>
+                        <select class="docs-input-field" v-model="filtro_area_doc">
+                            <option value="">Todas las Áreas</option>
+                            <option v-for="area in areas" :value="area.nombre">{{ area.nombre }}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
