@@ -790,6 +790,25 @@ const app = {
         menu.style.display = "block";
       }
     },
+    consultarDocumentosEquipos() {
+      if (!this.consultaEAD || this.consultaEAD.length === 0) {
+        this.consultarEAD();
+      }
+
+      this.lista_documentos_equipos = [];
+
+      this.consultaEAD.forEach((equipo) => {
+        let obj = equipo[0] ? equipo[0] : equipo;
+
+        this.lista_documentos_equipos.push({
+          id: obj.id,
+          equipo: obj.nombre_ead,
+          planta: obj.planta,
+          area: obj.area,
+          periodo: "Histórico",
+        });
+      });
+    },
     descargarImagenTabla() {
       const elementoTabla = document.getElementById("tablaImpactosAmbientales");
 
