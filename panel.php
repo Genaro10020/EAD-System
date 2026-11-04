@@ -2006,6 +2006,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </button>
                                 </td>
                             </tr>
+                            <tr v-if="documentosEquiposFiltrados.length === 0">
+                                <td colspan="11" class="text-center text-muted py-4">No se encontraron registros con los filtros aplicados.</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
