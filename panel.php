@@ -1994,19 +1994,6 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </button>
                                 </td>
                             </tr>
-                            
-                            <tr v-if="!lista_documentos_equipos || lista_documentos_equipos.length === 0">
-                                <td class="docs-fw-bold">Máquina del Mal</td>
-                                <td>ENERYA</td>
-                                <td>Hornos</td>
-                                <td><span class="docs-badge-time">Octubre 2026</span></td>
-                                <td>
-                                    <button class="docs-btn-action">
-                                        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
-                                        Descargar
-                                    </button>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
