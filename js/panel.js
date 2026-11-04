@@ -790,24 +790,56 @@ const app = {
         menu.style.display = "block";
       }
     },
-    consultarDocumentosEquipos() {
-      if (!this.consultaEAD || this.consultaEAD.length === 0) {
-        this.consultarEAD();
-      }
-
+    async consultarDocumentosEquipos() {
       this.lista_documentos_equipos = [];
 
-      this.consultaEAD.forEach((equipo) => {
-        let obj = equipo[0] ? equipo[0] : equipo;
-
-        this.lista_documentos_equipos.push({
-          id: obj.id,
-          equipo: obj.nombre_ead,
-          planta: obj.planta,
-          area: obj.area,
-          periodo: "Histórico",
+      try {
+        const response = await axios.post("documentosEquiposController.php", {
+          accion: "ConsultarDocumentos",
         });
-      });
+
+        if (response.data[0] === true) {
+          const registros = response.data[1];
+
+          for (const obj of registros) {
+            try {
+              const docResponse = await axios.post("buscar_documentos.php", {
+                tipo_archivo: "Presentacion",
+                id_equipo: obj.id,
+                fecha_ruta: "",
+                area: "",
+              });
+
+              const archivos = docResponse.data;
+
+              if (archivos && archivos.length > 0) {
+                this.lista_documentos_equipos.push({
+                  id: obj.id,
+                  equipo: obj.equipo,
+                  planta: obj.planta,
+                  area: obj.area,
+                  proyecto: obj.proyecto,
+                  lb: obj.lb,
+                  entidad: obj.entidad,
+                  mc: obj.mc,
+                  mr: obj.mr,
+                  anio: "",
+                  periodo: "",
+                });
+              }
+            } catch (docError) {
+              console.error(
+                `Error al buscar documentos para el equipo ${obj.id}:`,
+                docError,
+              );
+            }
+          }
+        } else {
+          console.log("Error al consultar documentos: ", response.data);
+        }
+      } catch (error) {
+        console.error("Error en axios (consultarDocumentosEquipos): ", error);
+      }
     },
     async descargarDocumentos(id_equipo) {
       try {
