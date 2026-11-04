@@ -225,7 +225,7 @@ const app = {
       foto_capacitacion: [],
       pdf_capacitacion: [],
       existeImagenSeleccionadaCapacitacion: false,
-      editarCapacitacion: null, 
+      editarCapacitacion: null,
       posicion_canti_doc: "",
       posicion_inicial: 0,
       cantNewDoc: 0,
@@ -234,6 +234,11 @@ const app = {
       /*  fechaFoto: '', */
       posicion: "",
       llenado: "",
+      ////////////////////////////////////////////////////////////////////////////////////**DOCUMENTOS EQUIPOS */
+      lista_documentos_equipos: [],
+      filtro_equipo_doc: "",
+      filtro_planta_doc: "",
+      filtro_area_doc: "",
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -730,24 +735,23 @@ const app = {
     },
     //CAPACITACIONES
     areasCapacitaciones() {
-        const areas = this.capacitaciones
-            .map(capacitacion => capacitacion.area)
-            .filter(area => area != null && String(area).trim() !== "");
+      const areas = this.capacitaciones
+        .map((capacitacion) => capacitacion.area)
+        .filter((area) => area != null && String(area).trim() !== "");
 
-        return [...new Set(areas)].sort((a, b) =>
-            String(a).localeCompare(String(b), "es")
-        );
+      return [...new Set(areas)].sort((a, b) =>
+        String(a).localeCompare(String(b), "es"),
+      );
     },
 
     capacitacionesFiltradas() {
-        if (this.areaSeleccionada === "Todas") {
-            return this.capacitaciones;
-        }
+      if (this.areaSeleccionada === "Todas") {
+        return this.capacitaciones;
+      }
 
-        return this.capacitaciones.filter(
-            capacitacion =>
-                capacitacion.area === this.areaSeleccionada
-        );
+      return this.capacitaciones.filter(
+        (capacitacion) => capacitacion.area === this.areaSeleccionada,
+      );
     },
   },
   mounted() {
@@ -872,13 +876,13 @@ const app = {
     cerrarModalHistorial() {
       this.myModal.hide();
     },
-        editCap(capacitacion) {
-          this.editarCapacitacion = capacitacion.id;
-      },
+    editCap(capacitacion) {
+      this.editarCapacitacion = capacitacion.id;
+    },
 
-      cancelarEditar() {
-          this.editarCapacitacion = null;
-      },
+    cancelarEditar() {
+      this.editarCapacitacion = null;
+    },
     guardarEditar(index) {
       let comentario = document.getElementById(
         "capacitacionComentario" + index,
@@ -2067,14 +2071,14 @@ const app = {
       );
       this.myModal.show();
     },
-   buscarDocumentos(
-          tipo_archivo,
-          fecha_por_capacitacion,
-          area,
-          llenado,
-          index,
-          idCapacitacion
-      ) {
+    buscarDocumentos(
+      tipo_archivo,
+      fecha_por_capacitacion,
+      area,
+      llenado,
+      index,
+      idCapacitacion,
+    ) {
       console.log("Tipo archivo" + tipo_archivo, "Area: " + area);
       var id_equipo = "";
       var fecha_ruta = "";
@@ -2145,8 +2149,12 @@ const app = {
               //console.log(this.documento_capacitacion + "Sin imagen encontrada.")
             }
 
-            if (this.posicion_canti_doc !== null && this.posicion_canti_doc !== undefined) {
-                    this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length;
+            if (
+              this.posicion_canti_doc !== null &&
+              this.posicion_canti_doc !== undefined
+            ) {
+              this.cantidadDocumentos[this.posicion_canti_doc] =
+                this.documento_capacitacion.length;
             }
 
             if (this.nueva_capacitacion === true) {
@@ -2155,56 +2163,55 @@ const app = {
             }
             //////////////////////////////////////////  ***
           } else if (tipo_archivo === "Por Fecha") {
-                  if (this.nueva_capacitacion === true) {
-                      // Documentos de una capacitación nueva
-                      this.cantNewDoc = response.data.length;
+            if (this.nueva_capacitacion === true) {
+              // Documentos de una capacitación nueva
+              this.cantNewDoc = response.data.length;
+            } else {
+              if (llenado === "llenadoInicial") {
+                this.pdf_capacitacion = response.data;
+
+                if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                  if (typeof this.$set === "function") {
+                    this.$set(
+                      this.cantidadDocumentos,
+                      idCapacitacion,
+                      this.pdf_capacitacion.length,
+                    );
                   } else {
-                      if (llenado === "llenadoInicial") {
-                          this.pdf_capacitacion = response.data;
-
-                          if (idCapacitacion !== null && idCapacitacion !== undefined) {
-                              if (typeof this.$set === "function") {
-                                  this.$set(
-                                      this.cantidadDocumentos,
-                                      idCapacitacion,
-                                      this.pdf_capacitacion.length
-                                  );
-                              } else {
-                                  this.cantidadDocumentos[idCapacitacion] =
-                                      this.pdf_capacitacion.length;
-                              }
-                          }
-                      }
+                    this.cantidadDocumentos[idCapacitacion] =
+                      this.pdf_capacitacion.length;
                   }
-              } else if (tipo_archivo === "EvidenciaFoto") {
-                  this.foto_capacitacion = response.data;
-
-                  if (this.foto_capacitacion.length > 0) {
-                      this.random = Math.random();
-                  }
-
-                  if (llenado === "llenadoInicial") {
-                      if (idCapacitacion !== null && idCapacitacion !== undefined) {
-                          if (typeof this.$set === "function") {
-                              this.$set(
-                                  this.cantidadFotos,
-                                  idCapacitacion,
-                                  this.foto_capacitacion.length
-                              );
-                          } else {
-                              this.cantidadFotos[idCapacitacion] =
-                                  this.foto_capacitacion.length;
-                          }
-                      }
-                  } else if (llenado === "ActualizaPosicion") {
-                      this.cantidadFotos[this.posicion] =
-                          this.foto_capacitacion.length;
-                  }
-
-                  if (this.nueva_capacitacion === true) {
-                      this.cantNewFoto = this.foto_capacitacion.length;
-                  }
+                }
               }
+            }
+          } else if (tipo_archivo === "EvidenciaFoto") {
+            this.foto_capacitacion = response.data;
+
+            if (this.foto_capacitacion.length > 0) {
+              this.random = Math.random();
+            }
+
+            if (llenado === "llenadoInicial") {
+              if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                if (typeof this.$set === "function") {
+                  this.$set(
+                    this.cantidadFotos,
+                    idCapacitacion,
+                    this.foto_capacitacion.length,
+                  );
+                } else {
+                  this.cantidadFotos[idCapacitacion] =
+                    this.foto_capacitacion.length;
+                }
+              }
+            } else if (llenado === "ActualizaPosicion") {
+              this.cantidadFotos[this.posicion] = this.foto_capacitacion.length;
+            }
+
+            if (this.nueva_capacitacion === true) {
+              this.cantNewFoto = this.foto_capacitacion.length;
+            }
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -2649,7 +2656,7 @@ const app = {
               this.tomarDiaActual();
               this.consultarSeguimientoKPI();
               this.consultarJuntasArranque();
-             
+
               //Consultas de tabla impactos ambientales
               this.consultarImpactosAmbientalesOTS();
               this.consultarCalculadorafeOTS();
@@ -3521,7 +3528,6 @@ const app = {
                 this.seguimientoKPIs[0].meta_retadora;
               this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
 
-            
               if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
                 try {
                   this.pilarSeleccionado = JSON.parse(
@@ -3615,8 +3621,8 @@ const app = {
           } else {
             console.log("Error en consulta", response.data);
           }
-              //lo coloco aqui, ya que para poder verificar registro de los impacto del proyecto necesito el nombre del indicador.
-              this.consultarImpactoDeProyecto()
+          //lo coloco aqui, ya que para poder verificar registro de los impacto del proyecto necesito el nombre del indicador.
+          this.consultarImpactoDeProyecto();
         })
         .catch((error) => {
           console.log(error);
@@ -4312,10 +4318,9 @@ const app = {
                   co2: impacto.co2 ?? 0,
                   referencia: impacto.referencia ?? "",
                 }));
-                if(response.data.impactos[0].concepto === 'N/A') {
-                 this.aplicarNA = true;
-                }
-
+              if (response.data.impactos[0].concepto === "N/A") {
+                this.aplicarNA = true;
+              }
             } else {
               // No existen impactos
               // Crear una fila nueva
@@ -4507,8 +4512,9 @@ const app = {
       };
       console.log("Impactos a guardar/actualizar:", datos);
       // Enviar TODOS los impactos en una sola petición
-      axios.post("impactosAmbientalesController.php", datos)
-      .then((response) => {
+      axios
+        .post("impactosAmbientalesController.php", datos)
+        .then((response) => {
           console.log("Respuesta del servidor:", response.data);
           if (response.data.status === "success") {
             Swal.fire({
@@ -4565,45 +4571,44 @@ const app = {
     },
 
     marcarImpactoNoAplica(impacto) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Los campos se marcaran con: (N/A). ¿Deseas continuar?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#f0ad4e',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, marcar como N/A',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Los campos se marcaran con: (N/A). ¿Deseas continuar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f0ad4e",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Sí, marcar como N/A",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          impacto.diagrama = "N/A";
+          impacto.tipo = "N/A";
+          impacto.concepto = "N/A";
+          impacto.alcance = 0;
+          impacto.um = "N/A";
+          impacto.referencia = "N/A";
 
-                impacto.diagrama = 'N/A';
-                impacto.tipo = 'N/A';
-                impacto.concepto = 'N/A';
-                impacto.alcance = 0;
-                impacto.um = 'N/A';
-                impacto.referencia = 'N/A';
-
-                this.aplicarNA = true;
-            }
-        });
+          this.aplicarNA = true;
+        }
+      });
     },
     reviertirNoAplica(impacto) {
-        impacto.diagrama = '';
-        impacto.tipo = '';
-        impacto.concepto = '';
-        impacto.alcance = '';
-        impacto.um = '';
-        impacto.referencia = '';
-        this.aplicarNA = false;
+      impacto.diagrama = "";
+      impacto.tipo = "";
+      impacto.concepto = "";
+      impacto.alcance = "";
+      impacto.um = "";
+      impacto.referencia = "";
+      this.aplicarNA = false;
     },
     validarNA(impacto) {
-      console.log("Console: ",impacto.concepto);
-        const valor = impacto.concepto?.trim().toUpperCase();
-          if (valor === 'NA' || valor === 'N/A') {
-              this.marcarImpactoNoAplica(impacto);
-          }
-      },
+      console.log("Console: ", impacto.concepto);
+      const valor = impacto.concepto?.trim().toUpperCase();
+      if (valor === "NA" || valor === "N/A") {
+        this.marcarImpactoNoAplica(impacto);
+      }
+    },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
@@ -4653,22 +4658,20 @@ const app = {
     }, */
     modalDocumentoCapacitacion(fecha, idCapacitacion = null, area = "") {
       if (fecha == "") {
-          alert("Favor de seleccionar una fecha antes de subir su documento.");
-          return;
+        alert("Favor de seleccionar una fecha antes de subir su documento.");
+        return;
       }
 
       this.posicion_canti_doc = idCapacitacion;
       this.fecha_ruta = fecha;
       this.areaDocumento = area;
 
-      this.myModal = new bootstrap.Modal(
-          document.getElementById("modal")
-      );
+      this.myModal = new bootstrap.Modal(document.getElementById("modal"));
 
       this.myModal.show();
 
       this.buscarDocumentos("Capacitacion");
-  },
+    },
     nuevaCapacitaciones() {
       this.nueva_capacitacion = true;
       this.fecha_capacitacion = "";
@@ -4690,121 +4693,113 @@ const app = {
         this.actualizar_compromiso = false*/
     },
 
-    
     guardarCapacitacion(accion, id = null) {
-        if (accion === "Actualizar") {
-            const ingreso = document.getElementById(
-                "capacitacionIngreso" + id
-            );
+      if (accion === "Actualizar") {
+        const ingreso = document.getElementById("capacitacionIngreso" + id);
 
-            const fecha = document.getElementById(
-                "capacitacionFecha" + id
-            );
+        const fecha = document.getElementById("capacitacionFecha" + id);
 
-            const comentario = document.getElementById(
-                "capacitacionComentario" + id
-            );
+        const comentario = document.getElementById(
+          "capacitacionComentario" + id,
+        );
 
-            if (!ingreso || !fecha || !comentario) {
-                console.error(
-                    "No se encontraron los campos de la capacitación:",
-                    id
-                );
-                return;
-            }
-
-            this.nuevos_ingresos = ingreso.value;
-            this.fecha_capacitacion = fecha.value;
-            this.comentarios_capacitacion = comentario.value;
+        if (!ingreso || !fecha || !comentario) {
+          console.error("No se encontraron los campos de la capacitación:", id);
+          return;
         }
 
-        if (
-            this.nuevos_ingresos == null ||
-            this.nuevos_ingresos.trim() === "" ||
-            this.fecha_capacitacion === "" ||
-            this.comentarios_capacitacion == null ||
-            this.comentarios_capacitacion.trim() === ""
-        ) {
-            return alert("Todos los campos de capacitación son requeridos.");
-        }
+        this.nuevos_ingresos = ingreso.value;
+        this.fecha_capacitacion = fecha.value;
+        this.comentarios_capacitacion = comentario.value;
+      }
 
-        axios
-            .post("capacitacionesController.php", {
-                id: id,
-                accion: accion,
-                nuevos_ingresos: this.nuevos_ingresos,
-                fecha_capacitacion: this.fecha_capacitacion,
-                comentarios_capacitacion: this.comentarios_capacitacion,
-            })
-            .then((response) => {
-                if (response.data == true) {
-                    Swal.fire({
-                        title: "¡Guardado!",
-                        text: "Capacitación guardada con éxito.",
-                        icon: "success",
-                    });
+      if (
+        this.nuevos_ingresos == null ||
+        this.nuevos_ingresos.trim() === "" ||
+        this.fecha_capacitacion === "" ||
+        this.comentarios_capacitacion == null ||
+        this.comentarios_capacitacion.trim() === ""
+      ) {
+        return alert("Todos los campos de capacitación son requeridos.");
+      }
 
-                    this.comentarios_capacitacion = "";
-                    this.nuevos_ingresos = "";
-                    this.fecha_capacitacion = "";
-                    this.fecha_ruta = "";
-
-                    this.nueva_capacitacion = false;
-                    this.editarCapacitacion = null;
-
-                    this.consultarCapacitacion();
-                } else {
-                    console.log(response.data);
-                }
-            })
-            .catch((error) => {
-                console.log("Error en axios:", error);
-            });
-    },
-
-consultarCapacitacion() {
-    axios
-        .get("capacitacionesController.php", {
-            params: {
-                accion: "Consultar",
-            },
+      axios
+        .post("capacitacionesController.php", {
+          id: id,
+          accion: accion,
+          nuevos_ingresos: this.nuevos_ingresos,
+          fecha_capacitacion: this.fecha_capacitacion,
+          comentarios_capacitacion: this.comentarios_capacitacion,
         })
         .then((response) => {
-            console.log("Capacitaciones", response.data);
+          if (response.data == true) {
+            Swal.fire({
+              title: "¡Guardado!",
+              text: "Capacitación guardada con éxito.",
+              icon: "success",
+            });
 
-            if (response.data[0] == true) {
-                this.capacitaciones = response.data[1];
+            this.comentarios_capacitacion = "";
+            this.nuevos_ingresos = "";
+            this.fecha_capacitacion = "";
+            this.fecha_ruta = "";
 
-                this.cantidadDocumentos = {};
-                this.cantidadFotos = {};
+            this.nueva_capacitacion = false;
+            this.editarCapacitacion = null;
 
-                for (const capacitacion of this.capacitaciones) {
-                    this.buscarDocumentos(
-                        "Por Fecha",
-                        capacitacion.fecha,
-                        capacitacion.area,
-                        "llenadoInicial",
-                        null,
-                        capacitacion.id
-                    );
-
-                    this.buscarDocumentos(
-                        "EvidenciaFoto",
-                        capacitacion.fecha,
-                        capacitacion.area,
-                        "llenadoInicial",
-                        null,
-                        capacitacion.id
-                    );
-                }
-            } else {
-                console.log("Error en la consulta", response.data);
-            }
+            this.consultarCapacitacion();
+          } else {
+            console.log(response.data);
+          }
         })
         .catch((error) => {
-            console.log("Error en axios:", error);
+          console.log("Error en axios:", error);
         });
-},
+    },
+
+    consultarCapacitacion() {
+      axios
+        .get("capacitacionesController.php", {
+          params: {
+            accion: "Consultar",
+          },
+        })
+        .then((response) => {
+          console.log("Capacitaciones", response.data);
+
+          if (response.data[0] == true) {
+            this.capacitaciones = response.data[1];
+
+            this.cantidadDocumentos = {};
+            this.cantidadFotos = {};
+
+            for (const capacitacion of this.capacitaciones) {
+              this.buscarDocumentos(
+                "Por Fecha",
+                capacitacion.fecha,
+                capacitacion.area,
+                "llenadoInicial",
+                null,
+                capacitacion.id,
+              );
+
+              this.buscarDocumentos(
+                "EvidenciaFoto",
+                capacitacion.fecha,
+                capacitacion.area,
+                "llenadoInicial",
+                null,
+                capacitacion.id,
+              );
+            }
+          } else {
+            console.log("Error en la consulta", response.data);
+          }
+        })
+        .catch((error) => {
+          console.log("Error en axios:", error);
+        });
+    },
 
     cancelarCapacitacion() {
       this.nueva_capacitacion = false;
