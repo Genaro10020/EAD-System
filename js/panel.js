@@ -669,6 +669,14 @@ const app = {
   },
   computed: {
     documentosEquiposFiltrados() {
+      if (
+        this.filtro_equipo_doc === "" &&
+        this.filtro_planta_doc === "" &&
+        this.filtro_area_doc === ""
+      ) {
+        return [];
+      }
+
       return this.lista_documentos_equipos.filter((doc) => {
         const matchEquipo = doc.equipo
           .toLowerCase()
