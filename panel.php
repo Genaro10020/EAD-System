@@ -1953,6 +1953,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
             </div>
 
+            <!-- DOCUMENTOS EQUIPOS -->
+            <div v-if="ventana=='Documentos Equipos'">
+                
+            </div>
 
             <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
                 <!--///////////////////////////////////////-->
