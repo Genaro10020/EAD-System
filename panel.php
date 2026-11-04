@@ -6,6 +6,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
     <head>
         <?php include('head.php'); ?>
+        <link rel="stylesheet" href="css/css.css">
     </head>
 
     <body class="container-fluid">
