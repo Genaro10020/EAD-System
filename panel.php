@@ -86,6 +86,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 if (isset($_SESSION['tipo_usuario']) && ($_SESSION['tipo_usuario'] == 'Admin' || $_SESSION['tipo_usuario'] == 'Coordinador')) {
                                 ?>
                                     <a><button class="btn_menu" @click="ventanas('Capacitaciones'), consultarCapacitacion(), toggleMenu()"><b>Capacitaciones</b></button></a>
+                                    <a><button class="btn_menu" @click="ventanas('Documentos Equipos'), consultarCapacitacion(), toggleMenu()"><b>Documentos Equipos</b></button></a>
                                 <?php
                                 }
                                 ?>
