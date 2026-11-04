@@ -809,6 +809,43 @@ const app = {
         });
       });
     },
+    async descargarDocumentos(id_equipo) {
+      try {
+        const response = await axios.post("buscar_documentos.php", {
+          tipo_archivo: "Presentacion",
+          id_equipo: id_equipo,
+          fecha_ruta: "",
+          area: "",
+        });
+
+        const archivos = response.data;
+
+        if (archivos && archivos.length > 0) {
+          archivos.forEach((ruta) => {
+            let enlace = document.createElement("a");
+            enlace.href = ruta;
+            enlace.download = ruta.split("/").pop();
+            enlace.target = "_blank";
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+          });
+        } else {
+          Swal.fire(
+            "Sin documentos",
+            "Este equipo no cuenta con documentos en su repositorio",
+            "info",
+          );
+        }
+      } catch (error) {
+        console.error("Error al buscar documentos: ", error);
+        Swal.fire(
+          "Error",
+          "Hubo un problema al buscar los documentos",
+          "error",
+        );
+      }
+    },
     descargarImagenTabla() {
       const elementoTabla = document.getElementById("tablaImpactosAmbientales");
 
