@@ -1982,7 +1982,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(doc, index) in lista_documentos_equipos" :key="index">
+                            <tr v-for="(doc, index) in documentosEquiposFiltrados" :key="index">
                                 <td class="docs-fw-bold">{{ doc.equipo }}</td>
                                 <td>{{ doc.planta }}</td>
                                 <td>{{ doc.area }}</td>
