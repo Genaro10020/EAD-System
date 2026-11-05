@@ -239,9 +239,9 @@ const app = {
       filtro_equipo_doc: "",
       filtro_planta_doc: "",
       filtro_area_doc: "",
-      filtro_planta_area: "",
+      filtro_planta_area_doc: "",
       filtro_anio_doc: "",
-      mostrar_tabla_doc: false,
+      mostrar_tabla_docs: false,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
