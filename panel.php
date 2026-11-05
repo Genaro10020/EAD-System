@@ -2000,7 +2000,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(doc, index) in documentosEquiposFiltrados" :key="index">
+                            <tr v-for="(doc, index) in lista_documentos_equipos" :key="index">
                                 <td>{{ doc.planta }}</td>
                                 <td>{{ doc.area }}</td>
                                 <td>{{ doc.anio }}</td>
@@ -2018,7 +2018,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     </button>
                                 </td>
                             </tr>                            
-                            <tr v-if="!documentosEquiposFiltrados || documentosEquiposFiltrados.length === 0">
+                            <tr v-if="!lista_documentos_equipos || lista_documentos_equipos.length === 0">
                                 <td colspan="11" class="text-center text-muted py-4">No se encontraron registros con los filtros aplicados.</td>
                             </tr>
                         </tbody>
