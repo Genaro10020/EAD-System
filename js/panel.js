@@ -828,9 +828,16 @@ const app = {
     async consultarDocumentosEquipos() {
       this.lista_documentos_equipos = [];
 
+      const [plantaSeleccionada, areaSeleccionada] =
+        this.filtro_planta_area_doc.split(" - ");
+
       try {
         const response = await axios.post("documentosEquiposController.php", {
           accion: "ConsultarDocumentos",
+          planta: plantaSeleccionada,
+          area: areaSeleccionada,
+          equipo: this.filtro_equipo_doc,
+          anio: this.filtro_anio_doc,
         });
 
         if (response.data[0] === true) {
@@ -838,11 +845,11 @@ const app = {
 
           for (const obj of registros) {
             try {
-              const docResponse = await axios.post("buscar_documentos.php", {
+              const docResponse = await axiost.post("buscar_documentos.php", {
                 tipo_archivo: "Presentacion",
                 id_equipo: obj.id,
-                fecha_ruta: "",
-                area: "",
+                fecha_ruta: this.filtro_anio_doc,
+                area: obj.area,
               });
 
               const archivos = docResponse.data;
@@ -858,22 +865,22 @@ const app = {
                   entidad: obj.entidad,
                   mc: obj.mc,
                   mr: obj.mr,
-                  anio: "",
-                  periodo: "",
+                  anio: this.filtro_anio_doc,
+                  periodo: "Anual",
                 });
               }
             } catch (docError) {
               console.error(
-                `Error al buscar documentos para el equipo ${obj.id}:`,
+                `Error al buscar documentos para el equipo ${obj.id}: `,
                 docError,
               );
             }
           }
         } else {
-          console.log("Error al consultar documentos: ", response.data);
+          console.log("Erro al consultar documentos: ", response.data);
         }
       } catch (error) {
-        console.error("Error en axios (consultarDocumentosEquipos): ", error);
+        console.error("Error en axios: ", error);
       }
     },
     async descargarDocumentos(id_equipo) {
