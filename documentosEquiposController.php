@@ -12,7 +12,7 @@ if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos
   $area   = $variables["area"] ?? "";
   $equipo = $variables["equipo"] ?? "";
 
-  $consulta = "SELECT 
+  $consulta = "SELECT DISTINCT
                     e.id, 
                     e.planta, 
                     e.area, 
