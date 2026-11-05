@@ -680,6 +680,19 @@ const app = {
         return `${e.planta} - ${e.area}`;
       });
     },
+    opcionesEquiposDoc() {
+      if (!this.filtro_planta_area_doc || !this.consultaEADparaFiltrar)
+        return [];
+
+      const [plantaSeleccionada, areaSeleccionada] =
+        this.filtro_planta_area_doc.split(" - ");
+
+      return this.consultaEADparaFiltrar
+        .map((equipo) => (equipo[0] ? equipo[0] : equipo))
+        .filter(
+          (e) => e.planta === plantaSeleccionada && e.area === areaSeleccionada,
+        );
+    },
     documentosEquiposFiltrados() {
       if (
         this.filtro_equipo_doc === "" &&
