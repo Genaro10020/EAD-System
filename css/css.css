@@ -1688,17 +1688,17 @@ select option,
   overflow-x: auto;
   background-color: #ffffff;
   border-radius: 8px;
-  box-shadow:
-    0 4px 6px -1px rbga(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgb(172, 172, 172);
+  margin-top: 1rem;
 }
 
 .docs-data-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 800px;
+  min-width: 1000px;
   text-align: center;
+  font-family: "Roboto", sans-serif;
 }
 
 .docs-data-table thead tr {
@@ -1709,37 +1709,45 @@ select option,
   letter-spacing: 0.5em;
 }
 
-.docs-data-table th,
-.docs-data-table td {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+.docs-data-table thead th {
+  background-color: #343a40;
+  color: #ffffff;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1rem 0.5rem;
+  border-bottom: 2px solid #212529;
+}
+
+.docs-data-table tbody td {
+  padding: 0.85rem 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  vertical-align: middle;
+  font-size: 0.85em;
+  color: #333333;
 }
 
 .docs-data-table tbody tr {
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .docs-data-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.docs-data-table td {
-  font-size: 0.9rem;
-  color: #4b5563;
+  background-color: #f7d5d5;
 }
 
 .docs-fw-bold {
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+  color: #b80e0e;
 }
 
 .docs-badge-time {
-  background-color: #e0e7ff;
-  color: #3730a3;
+  background-color: #e9ecef;
+  color: #495057;
   padding: 0.35rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 600;
+  border-radius: 50rem;
+  font-size: 0.75rem;
+  font-weight: bold;
+  border: 1px solid #ced4da;
 }
 
 .docs-btn-action {
