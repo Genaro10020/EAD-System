@@ -688,6 +688,12 @@ const app = {
       if (!this.filtro_planta_area_doc || !this.consultaEADparaFiltrar)
         return [];
 
+      if (this.filtro_planta_area_doc === "Todas - Todas") {
+        return this.consultaEADparaFiltrar.map((equipo) =>
+          equipo[0] ? equipo[0] : equipo,
+        );
+      }
+
       const [plantaSeleccionada, areaSeleccionada] =
         this.filtro_planta_area_doc.split(" - ");
 
