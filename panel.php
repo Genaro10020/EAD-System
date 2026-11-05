@@ -1957,14 +1957,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             <!-- DOCUMENTOS EQUIPOS -->
             <div v-if="ventana=='Documentos Equipos'" class="docs-main-container">
 
-                <div class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-contente-center align-cente"
-                    style="background-color: rgba(255, 255, 255, 0.9); z-index: 9999;">
+                <div v-if="cargando_docs" class="position-fixed top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="background-color: rgba(255, 255, 255, 0.9); z-index: 9999;">
                     <div class="spinner-border text-success mb-3" style="width: 4rem; height: 4rem;" role="status"></div>
                     <h4 class="text-dark fw-bold">Procesando registros...</h4>
                     <div class="progress w-50 mt-2" style="height: 25px;">
-                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" 
-                            :style="{ width: porcentaje_carga_docs + '%' }" :aria-valuenow="porcentaje_carga_docs" aria-valuemin="0" aria-valuemax="100">
-                            <span class="fw-bold text-white" style="font-size: 1rem;">{{  porcentaje_carga_docs }}%</span>
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" :style="{ width: porcentaje_carga_docs + '%' }" :aria-valuenow="porcentaje_carga_docs" aria-valuemin="0" aria-valuemax="100">
+                            <span class="fw-bold text-white" style="font-size: 1rem;">{{ porcentaje_carga_docs }}%</span>
                         </div>
                     </div>
                 </div>
@@ -1973,12 +1971,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="docs-filter-group">
                         <select class="docs-input-field" v-model="filtro_planta_area_doc" @change="filtro_equipo_doc = ''">
                             <option value="">Seleccione Planta y Área</option>
-                            <option value="Todas - Todas">Todo</option>
+                            <option value="Todas - Todas">Todas las Plantas y Áreas</option>
                             <option v-for="item in opcionesPlantaAreaDoc" :value="item">{{ item }}</option>
                         </select>
 
                         <select class="docs-input-field" v-model="filtro_equipo_doc" :disabled="!filtro_planta_area_doc">
                             <option value="">Seleccione Equipo</option>
+                            <option value="Todos">Todos los Equipos</option>
                             <option v-for="equipo in opcionesEquiposDoc" :value="equipo.nombre_ead">{{ equipo.nombre_ead }}</option>
                         </select>
 
