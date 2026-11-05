@@ -1973,6 +1973,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                     <div class="docs-filter-group">
                         <select class="docs-input-field" v-model="filtro_planta_area_doc" @change="filtro_equipo_doc = ''">
                             <option value="">Seleccione Planta y Área</option>
+                            <option value="Todas - Todas">Todo</option>
                             <option v-for="item in opcionesPlantaAreaDoc" :value="item">{{ item }}</option>
                         </select>
 
