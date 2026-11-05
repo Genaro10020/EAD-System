@@ -842,6 +842,8 @@ const app = {
     },
     async consultarDocumentosEquipos() {
       this.lista_documentos_equipos = [];
+      this.cargando_docs = true;
+      this.porcentaje_carga_docs = 0;
 
       const [plantaSeleccionada, areaSeleccionada] =
         this.filtro_planta_area_doc.split(" - ");
@@ -857,8 +859,15 @@ const app = {
 
         if (response.data[0] === true) {
           const registros = response.data[1];
+          const totalRegistros = registros.length;
 
-          for (const obj of registros) {
+          if (totalRegistros === 0) {
+            this.cargando_docs = false;
+            return;
+          }
+
+          for (let i = 0; i < totalRegistros; i++) {
+            const obj = registros[i];
             try {
               const docResponse = await axios.post("buscar_documentos.php", {
                 tipo_archivo: "Presentacion",
@@ -890,12 +899,21 @@ const app = {
                 docError,
               );
             }
+
+            this.porcentaje_carga_docs = Math.round(
+              ((i + 1) / totalRegistros) * 100,
+            );
           }
         } else {
-          console.log("Erro al consultar documentos: ", response.data);
+          console.log("Error al consultar documentos: ", response.data);
         }
       } catch (error) {
         console.error("Error en axios: ", error);
+      } finally {
+        setTimeout(() => {
+          this.cargando_docs = false;
+          this.porcentaje_carga_docs = 0;
+        }, 600);
       }
     },
     async descargarDocumentos(id_equipo) {
