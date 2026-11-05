@@ -1965,7 +1965,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                         <select class="docs-input-field" v-model="filtro_equipo_doc" :disabled="!filtro_planta_area_doc">
                             <option value="">Seleccione Equipo</option>
-                            <option v-for="equipo in opcionesEquipoDoc" :value="equipo.nombre_ead">{{ equipo.nombre_ead }}</option>
+                            <option v-for="equipo in opcionesEquiposDoc" :value="equipo.nombre_ead">{{ equipo.nombre_ead }}</option>
                         </select>
 
                         <select class="docs-input-field" v-model="filtro_anio_doc">
