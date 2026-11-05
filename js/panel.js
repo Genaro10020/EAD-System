@@ -913,6 +913,25 @@ const app = {
         );
       }
     },
+    aplicarFiltrosDoc() {
+      if (
+        !this.filtro_planta_area_doc ||
+        !this.filtro_equipo_doc ||
+        !this.filtro_anio_doc
+      ) {
+        Swal.fire({
+          icon: "warining",
+          title: "Filtros incompletos",
+          text: "Seleccione Planta/Area, Equipo y Año antes de filtrar",
+        });
+
+        return;
+      }
+
+      this.mostrar_tabla_docs = true;
+
+      this.consultarDocumentosEquipos();
+    },
     descargarImagenTabla() {
       const elementoTabla = document.getElementById("tablaImpactosAmbientales");
 
