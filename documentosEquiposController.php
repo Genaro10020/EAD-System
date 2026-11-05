@@ -24,12 +24,30 @@ if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos
                     k.meta_retadora
                 FROM equipos_ead e
                 LEFT JOIN kpis_proyectos k ON e.id = k.id_equipo
-                WHERE e.planta = ? AND e.area = ? AND e.nombre_ead = ?";
+                WHERE 1=1";
+  
+  $parametros = [];
+  $tipos = "";
+
+  if ($planta !== "Todas") {
+      $consulta .= " AND e.planta = ? AND e.area = ?";
+      $parametros[] = $planta;
+      $parametros[] = $area;
+      $tipos .= "ss";
+  }
+
+  if ($equipo !== "Todos") {
+      $consulta .= " AND e.nombre_ead = ?";
+      $parametros[] = $equipo;
+      $tipos .= "s";
+  }
   
   $stmt = $conexion->prepare($consulta);
 
   if ($stmt) {
-    $stmt->bind_param("sss", $planta, $area, $equipo);
+    if (!empty($parametros)) {
+        $stmt->bind_param($tipos, ...$parametros);
+    }
 
     if ($stmt->execute()) {
       $resultado = $stmt->get_result();
