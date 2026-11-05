@@ -7,7 +7,11 @@ require_once "conexionGhoner.php";
 $variables = json_decode(file_get_contents("php://input"), true);
 
 if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos") {
-  
+
+  $planta = $variables["planta"] ?? "";
+  $area   = $variables["area"] ?? "";
+  $equipo = $variables["equipo"] ?? "";
+
   $consulta = "SELECT 
                     e.id, 
                     e.planta, 
@@ -19,15 +23,18 @@ if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos
                     k.meta_calculada,
                     k.meta_retadora
                 FROM equipos_ead e
-                LEFT JOIN kpis_proyectos k ON e.id = k.id_equipo";
-
+                LEFT JOIN kpis_proyectos k ON e.id = k.id_equipo
+                WHERE e.planta = ? AND e.area = ? AND e.nombre_ead = ?";
   
   $stmt = $conexion->prepare($consulta);
 
   if ($stmt) {
+    $stmt->bind_param("sss", $planta, $area, $equipo);
+
     if ($stmt->execute()) {
       $resultado = $stmt->get_result();
-      $datos = [];
+      $datos     = [];
+
       while ($fila = $resultado->fetch_assoc()) {
         $datos[] = array(
             "id"       => $fila["id"],
@@ -37,7 +44,7 @@ if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos
             "proyecto" => $fila["proyecto"] ?? "",
             "lb"       => $fila["linea_base"] ?? "",
             "entidad"  => $fila["entitlement"] ?? "",
-            "mc"       => $fila["meta_calculad"] ?? "",
+            "mc"       => $fila["meta_calculada"] ?? "",
             "mr"       => $fila["meta_retadora"] ?? ""
         );
       }
@@ -50,5 +57,4 @@ if (isset($variables["accion"]) && $variables["accion"] === "ConsultarDocumentos
     echo json_encode([false, "Error al preparar la consulta"]);
   }
 }
-
 ?>
