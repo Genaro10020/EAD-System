@@ -825,6 +825,13 @@ const app = {
         menu.style.display = "block";
       }
     },
+    limpiarFiltrosDoc() {
+      this.filtro_planta_area_doc = "";
+      this.filtro_equipo_doc = "";
+      this.filtro_anio_doc = "";
+      this.lista_documentos_equipos = [];
+      this.mostrar_tabla_docs = false;
+    },
     async consultarDocumentosEquipos() {
       this.lista_documentos_equipos = [];
 
