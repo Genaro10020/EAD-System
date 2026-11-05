@@ -845,7 +845,7 @@ const app = {
 
           for (const obj of registros) {
             try {
-              const docResponse = await axiost.post("buscar_documentos.php", {
+              const docResponse = await axios.post("buscar_documentos.php", {
                 tipo_archivo: "Presentacion",
                 id_equipo: obj.id,
                 fecha_ruta: this.filtro_anio_doc,
