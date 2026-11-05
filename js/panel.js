@@ -679,6 +679,8 @@ const app = {
 
         return `${e.planta} - ${e.area}`;
       });
+
+      return [...new Set(combinaciones)].sort();
     },
     opcionesEquiposDoc() {
       if (!this.filtro_planta_area_doc || !this.consultaEADparaFiltrar)
