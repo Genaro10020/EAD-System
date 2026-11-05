@@ -1958,15 +1958,27 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             <div v-if="ventana=='Documentos Equipos'" class="docs-main-container">
                 <div class="docs-topbar">
                     <div class="docs-filter-group">
-                        <input type="text" class="docs-input-field" placeholder="Buscar equipo..." v-model="filtro_equipo_doc">
-                        <select class="docs-input-field" v-model="filtro_planta_doc">
-                            <option value="">Todas las Plantas</option>
-                            <option v-for="planta in plantas" :value="planta.nombre">{{ planta.nombre }}</option>
+                        <select class="docs-input-field" v-model="filtro_planta_area_doc" @change="filtro_equipo_doc">
+                            <option value="">Seleccione Planta y Área</option>
+                            <option v-for="item in opcionesPlantaAreaDoc" :value="item">{{ item }}</option>
                         </select>
-                        <select class="docs-input-field" v-model="filtro_area_doc">
-                            <option value="">Todas las Áreas</option>
-                            <option v-for="area in areas" :value="area.nombre">{{ area.nombre }}</option>
+
+                        <select class="docs-input-field" v-model="filtro_equipo_doc" :disabled="!filtro_planta_area_doc">
+                            <option value="">Seleccione Equipo</option>
+                            <option v-for="equipo in opcionesEquipoDoc" :value="equipo.nombre_ead">{{ equipo.nombre_ead }}</option>
                         </select>
+
+                        <select class="docs-input-field" v-model="filtro_anio_doc">
+                            <option value="">Seleccione Año</option>
+                            <option v-for="anio in anios" :value="anio">{{ anio }}</option>
+                        </select>
+
+                        <button class="docs-btn-action" style="background-color: #10b981; padding: 0.6rem 1.2rem;" @click="aplicarFiltrosDoc()">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            Filtrar
+                        </button>
                     </div>
                 </div>
 
