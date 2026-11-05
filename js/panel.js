@@ -671,6 +671,15 @@ const app = {
     },
   },
   computed: {
+    opcionesPlantaAreaDoc() {
+      if (!this.consultaEADparaFiltrar) return [];
+
+      const combinaciones = this.consultaEADparaFiltrar.map((equipo) => {
+        const e = equipo[0] ? equipo[0] : equipo;
+
+        return `${e.planta} - ${e.area}`;
+      });
+    },
     documentosEquiposFiltrados() {
       if (
         this.filtro_equipo_doc === "" &&
