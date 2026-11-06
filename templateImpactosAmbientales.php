@@ -121,7 +121,8 @@
                         </td>
                         <!-- DIAGRAMA -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas" :disabled="aplicarNA">
+                            <input type="text" class="ia-input" v-model="impacto.diagrama" list="catalogo-diagramas" :disabled="aplicarNA"
+                             style=" width: 200px;">
                             <small class="form-text text-muted d-block mt-1 opacity-50">E-DF-IP-RJ-A</small>
                             <datalist id="catalogo-diagramas">
                                 <option v-for="valor in obtenerOpcionesCatalogo('diagrama')" :key="valor" :value="valor"></option>
@@ -130,7 +131,8 @@
 
                         <!-- TIPO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos" :disabled="aplicarNA">
+                            <input type="text" class="ia-input" v-model="impacto.tipo" list="catalogo-tipos" :disabled="aplicarNA"
+                            style=" width: 200px;">
                             <small class="form-text text-muted d-block mt-1 opacity-50">Energía</small>
                             <datalist id="catalogo-tipos">
                                 <option v-for="valor in obtenerOpcionesCatalogo('tipo')" :key="valor" :value="valor"></option>
@@ -139,7 +141,8 @@
 
                         <!-- CONCEPTO -->
                         <td>
-                            <input type="text" class="ia-input" v-model="impacto.concepto" @blur="validarNA(impacto)" list="catalogo-conceptos" :disabled="aplicarNA">
+                            <input type="text" class="ia-input" v-model="impacto.concepto" @blur="validarNA(impacto)" list="catalogo-conceptos" :disabled="aplicarNA"
+                            style=" width: 250px;">
                             <small class="form-text text-muted d-block mt-1 opacity-50">Electricidad</small>
                             <datalist id="catalogo-conceptos">
                                 <option v-for="valor in obtenerOpcionesConceptos()" :key="valor" :value="valor"></option>
@@ -158,9 +161,9 @@
                                 </select>
 
                                 <div class="ia-help-buttons">
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1, index)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2, index)" @mouseleave="ocultarAyuda">?</button>
-                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3, index)" @mouseleave="ocultarAyuda">?</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(1, index)" @mouseleave="ocultarAyuda">1</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(2, index)" @mouseleave="ocultarAyuda">2</button>
+                                    <button type="button" class="ia-btn-help" @mouseenter="mostrarAyuda(3, index)" @mouseleave="ocultarAyuda">3</button>
                                 </div>
 
                                 <!-- Tooltip anclado a la celda activa -->
@@ -178,9 +181,9 @@
                             </div>
 
                             <div v-else>
-                                <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
+                               <!--  <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
                                     No Aplica
-                                </small>
+                                </small> -->
                             </div>
                         </td>
 
@@ -201,9 +204,9 @@
                             </div>
 
                             <div v-else>
-                                <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
+                               <!--  <small class="span-alert alert-dark text-white form-text text-muted d-block mb-3">
                                     No Aplica
-                                </small>
+                                </small> -->
                             </div>
                         </td>
                         <!-- REFERENCIA -->
