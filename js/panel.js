@@ -972,6 +972,57 @@ const app = {
 
       this.consultarDocumentosEquipos();
     },
+    descargarImagenTablaDocs() {
+      const elementoTabla = document.getElementById("tablaDocumentosEquipos");
+
+      if (!elementoTabla) {
+        return Swal.fire(
+          "Error",
+          "No se encontró la tabla en la vista",
+          "error",
+        );
+      }
+
+      Swal.fire({
+        title: "Generando imagen...",
+        text: "Por favor espere un momento",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      html2canvas(elementoTabla, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      })
+        .then((canvas) => {
+          let enlaceTemporal = document.createElement("a");
+
+          let nombreBase = "General";
+
+          if (
+            this.filtro_planta_area_doc &&
+            this.filtro_planta_area_doc !== "Todas - Todas"
+          ) {
+            nombreBase = this.filtro_planta_area_doc.replace(/\s+/g, "_");
+          }
+
+          if (this.filtro_equipo_doc && this.filtro_equipo_doc !== "Todos") {
+            nombreBase += `_${this.filtro_equipo_doc.replace(/\s+/g, "_")}`;
+          }
+
+          enlaceTemporal.download = `Documentos_Equipos_${nombreBase}.png`;
+          enlaceTemporal.href = canvas.toDataURL("image/png");
+          enlaceTemporal.click();
+          Swal.close();
+        })
+        .catch((error) => {
+          console.error("Error al generar la imagen: ", error);
+          Swal.fire("Error", "Hubo un problema al generar la captura", "error");
+        });
+    },
     descargarImagenTabla() {
       const elementoTabla = document.getElementById("tablaImpactosAmbientales");
 
