@@ -2003,7 +2003,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
 
                 <div class="docs-table-responsive" v-show="mostrar_tabla_docs">
-                    <table class="docs-data-table">
+                    <table id="tablaDocumentosEquipos" class="docs-data-table">
                         <thead>
                             <tr>
                                 <th>Planta</th>
