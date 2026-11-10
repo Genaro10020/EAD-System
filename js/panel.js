@@ -2509,6 +2509,38 @@ const app = {
 
       if (tipo_archivo === "Presentacion") {
         var id = this.select_session_equipo.split("<->")[0];
+        var id = this.select_session_equipo.split("<->")[0];
+
+        if (!this.doc_nombre_proyecto || !this.doc_anio_periodo) {
+          this.login = false;
+          return Swal.fire(
+            "Datos incompletos",
+            "Debe ingresar el nombre del proyecto y seleccionar un Año y Periodo.",
+            "warning",
+          );
+        }
+
+        let partesPeriodo = this.doc_anio_periodo.split(" - ");
+        let anio = partesPeriodo[0];
+        let periodo = partesPeriodo[1];
+
+        axios
+          .put("gestionSesionesController.php", {
+            accion: "ActualizarProyectoModal",
+            id_equipo: id,
+            nombre_proyecto: this.doc_nombre_proyecto,
+            anio: anio,
+            periodo: periodo,
+          })
+          .then((response) => {
+            if (response.data === true) {
+              this.nombre_proyecto_sesion = this.doc_nombre_proyecto;
+              this.consultarSeguimientoSession();
+            } else {
+              console.error("Error al actualizar proyecto:", response.data);
+            }
+          });
+
         formData.append("id_equipo", id);
         formData.append("tipo_archivo", tipo_archivo);
         var files = this.$refs.ref_imagen_presentacion.files;
