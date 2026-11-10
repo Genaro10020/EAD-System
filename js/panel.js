@@ -3133,6 +3133,13 @@ const app = {
     },
 
     guardarActualizarSession(accion) {
+      if (this.nombre_proyecto_sesion == "") {
+        return Swal.fire({
+          text: "Agregue el nombre del proyecto",
+          icon: "question",
+        });
+      }
+
       if (this.select_session_equipo == "") {
         return Swal.fire({
           //title: "Guardado",
