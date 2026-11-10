@@ -1215,6 +1215,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     placeholder="Seleccione o registre un nuevo proyecto..." 
                                                     style="font-size: 0.85rem;" 
                                                     required
+                                                    :disabled="bloquear_nombre_proyecto"
                                                 >
                                                 <datalist id="listaProyectosModal">
                                                     <option v-for="proyecto in proyectos_equipo_modal" :value="proyecto.nombre"></option>
