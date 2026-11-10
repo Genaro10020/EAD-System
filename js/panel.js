@@ -92,6 +92,7 @@ const app = {
       porcentaje: [10, 20, 30, 40, 50, 60, 80, 90, 100],
       faseUsadaEnOtroSeguimiento: [],
       input_actualizar: "",
+      nombre_proyecto_sesion: "",
       actualizar_session: false,
       index_session_actualizar: "",
       id_gestion_session: "",
