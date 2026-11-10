@@ -885,11 +885,12 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 "Seleccione EAD para visualizar integrantes"
                             </div>
                         </div>
-                    </div>                
+                    </div>              
+
                     <!--Tarjeta Fases-->
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
                         <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
-                            <h6 class="text-center pasos">2. Metodología</h6>
+                            <h6 class="text-center pasos">3. Metodología</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Metodología</label>
                                 <select class="form-select"
@@ -902,7 +903,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     <option value="DMAIC">DMAIC</option>
                                 </select>
                             </div>
-                            <h6 class="text-center pasos mt-2">3. Etapa y fases</h6>
+                            <h6 class="text-center pasos mt-2">4. Etapa y fases</h6>
                             <div class="input-group" style="min-width:270px">
                                 <label class="input-group-text" style="font-size:0.8em">Etapa </label>
                                 <select
