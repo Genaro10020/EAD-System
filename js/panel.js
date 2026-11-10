@@ -98,6 +98,8 @@ const app = {
       opciones_periodos: [],
       doc_nombre_proyecto: "",
       doc_anio_periodo: "",
+      anio_sesion_activa: null,
+      periodo_sesion_activa: null,
       proyectos_equipo_modal: [],
       index_session_actualizar: "",
       id_gestion_session: "",
