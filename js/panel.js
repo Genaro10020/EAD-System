@@ -823,6 +823,8 @@ const app = {
     });
     this.obtenerFecha();
     this.consultarNombrePonderaciones();
+
+    this.generarPeriodos();
   },
   methods: {
     toggleMenu() {
@@ -835,6 +837,15 @@ const app = {
       } else {
         menu.style.display = "block";
       }
+    },
+    generarPeriodos() {
+      let periodos = [];
+      for (let anio = 2023; anio <= 2030; anio++) {
+        for (let periodo = 1; periodo <= 4; periodo++) {
+          periodos.push(`${anio} - Periodo ${periodo}`);
+        }
+      }
+      this.opciones_periodos = periodos;
     },
     limpiarFiltrosDoc() {
       this.filtro_planta_area_doc = "";
