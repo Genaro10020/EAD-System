@@ -2332,19 +2332,32 @@ const app = {
 
       if (this.seguimiento_session && this.seguimiento_session.length > 0) {
         let proyectosUnicos = new Set();
+        let registroActivo = null;
 
         this.seguimiento_session.forEach((item) => {
           if (item.nombre_proyecto && item.nombre_proyecto.trim() !== "") {
             proyectosUnicos.add(item.nombre_proyecto.trim());
+            if (!registroActivo) registroActivo = item;
           }
         });
 
         this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
           (nombre) => ({ nombre: nombre }),
         );
+
+        if (registroActivo) {
+          this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
+          if (registroActivo.anio && registroActivo.periodo) {
+            this.doc_anio_periodo =
+              registroActivo.anio + " - " + registroActivo.periodo;
+          }
+        }
       }
 
-      if (this.nombre_proyecto_sesion !== "") {
+      if (
+        this.nombre_proyecto_sesion !== "" &&
+        this.doc_nombre_proyecto === ""
+      ) {
         this.doc_nombre_proyecto = this.nombre_proyecto_sesion;
       }
 
