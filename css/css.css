@@ -1774,3 +1774,126 @@ select option,
   height: 16px;
   fill: currentColor;
 }
+
+/* SECCION DE GESTIÓN DE SESSION */
+
+.cabecera-controles-sesion {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.tarjeta-seccion-session {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rbga(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  height: 100%;
+}
+
+.tarjeta-seccion-session:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.estado-session-completada {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.estado-sesion-actualizar {
+  background-color: #fffbeb;
+  border-color: #fef08a;
+}
+
+.titulo-paso-sesion {
+  color: #1e293b;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #f1f5f9;
+  font-family: "Onest", sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.tabla-historial-sesion {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+}
+
+.tabla-historial-sesion thead th {
+  background-color: #f8fafc;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  font-weight: 600;
+  padding: 1rem 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tabla-historial-sesion tbody td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+  color: #334155;
+}
+
+.tabla-historial-sesion tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.tabla-historial-sesion tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.fila-historial-activa {
+  background-color: #fffbeb !important;
+}
+
+.contenedor-scroll-historial {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-top: 1rem;
+}
+
+.contenedor-scroll-historial::-webkit-scrollbar {
+  width: 6px;
+}
+
+.contenedor-scroll-historial::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.contenedor-scroll-historial::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.contenedor-scroll-historial::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.texto-detalle-sesion {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.25rem;
+}
+
+.etiqueta-resalte-sesion {
+  font-weight: 600;
+  color: #334155;
+}
