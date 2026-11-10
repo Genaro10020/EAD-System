@@ -3102,13 +3102,19 @@ const app = {
 
               if (registroConNombre) {
                 this.nombre_proyecto_sesion = registroConNombre.nombre_proyecto;
+                this.anio_sesion_activa = registroConNombre.anio || null;
+                this.periodo_sesion_activa = registroConNombre.periodo || null;
                 this.bloquear_nombre_proyecto = true;
               } else {
                 this.nombre_proyecto_sesion = "";
+                this.anio_sesion_activa = null;
+                this.periodo_sesion_activa = null;
                 this.bloquear_nombre_proyecto = false;
               }
             } else {
               this.nombre_proyecto_sesion = "";
+              this.anio_sesion_activa = null;
+              this.periodo_sesion_activa = null;
               this.bloquear_nombre_proyecto = false;
             }
 
