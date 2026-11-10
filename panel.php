@@ -1201,6 +1201,38 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="modal-body">
                                 <div class="text-center">
                                     <form @submit.prevent="uploadFile('Presentacion')">
+
+                                        <div class="row g-3 mb-4 text-start px-2">
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label fw-semibold" style="font-size: 0.9rem;">
+                                                    Nombre del Proyecto
+                                                </label>
+                                                <input 
+                                                    type="text" 
+                                                    class="form-control" 
+                                                    list="listaProyectosModal" 
+                                                    v-model="doc_nombre_proyecto" 
+                                                    placeholder="Seleccione o registre un nuevo proyecto..." 
+                                                    style="font-size: 0.85rem;" 
+                                                    required
+                                                >
+                                                <datalist id="listaProyectosModal">
+                                                    <option v-for="proyecto in proyectos_equipo_modal" :value="proyecto.nombre"></option>
+                                                </datalist>
+                                            </div>
+
+                                            <div class="col-12 col-md-6">
+                                                <label class="form-label fw-semibold" style="font-size: 0.9rem;">Año y Periodo</label>
+                                                <select class="form-select" v-model="doc_anio_periodo" style="font-size: 0.85rem;" required>
+                                                    <option value="" disabled>Seleccione...</option>
+                                                    <option v-for="opcion in opciones_periodos" :key="opcion" :value="opcion">
+                                                        {{ opcion }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <hr>
+
                                         Subir Documento
                                         <div class="col-12">
                                             <div class="custom-file mt-2 mb-3">
