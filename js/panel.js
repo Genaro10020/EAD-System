@@ -3279,6 +3279,7 @@ const app = {
     },
     reseteandoDatos() {
       this.actualizar_session = false;
+      this.bloquear_nombre_proyecto = false;
       this.index_session_actualizar = "";
       this.nombre_proyecto_sesion = "";
       this.select_etapa = "";
