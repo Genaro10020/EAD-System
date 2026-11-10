@@ -95,6 +95,7 @@ const app = {
       nombre_proyecto_sesion: "",
       bloquear_nombre_proyecto: false,
       actualizar_session: false,
+      opciones_periodos: [],
       index_session_actualizar: "",
       id_gestion_session: "",
       existenDatosSesion: false,
