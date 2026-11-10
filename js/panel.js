@@ -3178,6 +3178,7 @@ const app = {
           accion: accion,
           id_gestion_session: this.id_gestion_session,
           id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion,
           fecha: this.fecha_session,
           metodologia: this.metodologia,
           etapa: arregloEtapa,
