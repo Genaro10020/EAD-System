@@ -866,16 +866,16 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </select>
                             </div>
 
-                            <div v-if="EADIntegrantes.length > 0" class="container text-center mt-2">
-                                <b class="letrasCard">Planta:</b>{{ planta_ead }}
-                                <b class="letrasCard">Área:</b>{{ area_ead }}
-                                <b class="letrasCard">Tipo:</b>{{ tipo_equipo }}
+                            <div v-if="EADIntegrantes.length>0" class="container text-center mt-2">
+                                <b class="letrasCard">Planta:</b> {{planta_ead}}
+                                <b class="letrasCard">Area:</b> {{area_ead}}
+                                <b class="letrasCard">Tipo:</b> {{tipo_equipo}}<br>
                                 <div class="row">
                                     <div class="col-12">
                                         <ul class="text-start">
-                                            <li v-for="(integrantes, index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px">
-                                                <input type="checkbox" class="me-2" v-model="asistieron" :value="integrante.id">
-                                                {{ index + 1 }}.- {{ integrantes.colaborador }}
+                                            <li v-for="(integrantes,index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
+                                                <input class="me-2" v-model="asistieron" :value="integrantes.id" type="checkbox" />
+                                                {{index+1}}.- {{integrantes.colaborador}}
                                             </li>
                                         </ul>
                                     </div>
