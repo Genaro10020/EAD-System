@@ -849,37 +849,43 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <div class="row">
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
                         <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
-                            <h6 class="text-center pasos">1. Asistencia</h6>
-                            <div class="input-group" style="min-width:270px">
-                                <label class="input-group-text" style="font-size:0.8em">Equipo </label>
+                            <h6 class="text-center pasos">1. Proyecto</h6>
+                            <div class="input-group mb-3" style="min-width: 270px;">
+                                <label class="input-group-text" style="font-size: 0.8em;">Nombre</label>
+                                <input type="text" class="form-control" style="font-size: 0.8em;" v-model="nombre_proyecto_sesion" placeholder="Nombre del proyecto">
+                            </div>
+
+                            <h6 class="text-center pasos">2. Asistencia</h6>
+                            <div class="input-group" style="min-width: 270px;">
+                                <label class="input-group-text" style="font-size: 0.8em;">Equipo</label>
                                 <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarCompromisos(), consultarPilares()" style="font-size:0.8em">
                                     <option value="">Seleccione..</option>
-                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">{{equipos[0].nombre_ead}}</option>
+                                    <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">
+                                        {{ equipos[0].nombre_ead }}
+                                    </option>
                                 </select>
                             </div>
-                            <div v-if="EADIntegrantes.length>0" class="container text-center">
-                                <label class="letrasCard text-center mb-2">
-                                </label>
-                                <br>
-                                <b class="letrasCard">Planta:</b> {{planta_ead}}
-                                <b class="letrasCard">Area:</b> {{area_ead}}
-                                <b class="letrasCard">Tipo:</b> {{tipo_equipo}}<br>
+
+                            <div v-if="EADIntegrantes.length > 0" class="container text-center mt-2">
+                                <b class="letrasCard">Planta:</b>{{ planta_ead }}
+                                <b class="letrasCard">Área:</b>{{ area_ead }}
+                                <b class="letrasCard">Tipo:</b>{{ tipo_equipo }}
                                 <div class="row">
                                     <div class="col-12">
                                         <ul class="text-start">
-                                            <li v-for="(integrantes,index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
-                                                <input class="me-2" v-model="asistieron" :value="integrantes.id" type="checkbox" />
-                                                {{index+1}}.- {{integrantes.colaborador}}
+                                            <li v-for="(integrantes, index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px">
+                                                <input type="checkbox" class="me-2" v-model="asistieron" :value="integrante.id">
+                                                {{ index + 1 }}.- {{ integrantes.colaborador }}
                                             </li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
                             <div v-else class="text-center d-flex justify-content-center align-items-center h-50">
-                                "Seleccione EAD para visualizar integrantes."
+                                "Seleccione EAD para visualizar integrantes"
                             </div>
                         </div>
-                    </div>
+                    </div>                
                     <!--Tarjeta Fases-->
                     <div class="col-12 col-xl-3 d-flex justify-content-center">
                         <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
