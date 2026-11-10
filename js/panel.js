@@ -2326,6 +2326,28 @@ const app = {
     },
 
     modalDocumentoGestionSession() {
+      this.proyectos_equipo_modal = [];
+      this.doc_nombre_proyecto = "";
+      this.doc_anio_periodo = "";
+
+      if (this.seguimiento_session && this.seguimiento_session.length > 0) {
+        let proyectosUnicos = new Set();
+
+        this.seguimiento_session.forEach((item) => {
+          if (item.nombre_proyecto && item.nombre_proyecto.trim() !== "") {
+            proyectosUnicos.add(item.nombre_proyecto.trim());
+          }
+        });
+
+        this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
+          (nombre) => ({ nombre: nombre }),
+        );
+      }
+
+      if (this.nombre_proyecto_sesion !== "") {
+        this.doc_nombre_proyecto = this.nombre_proyecto_sesion;
+      }
+
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
