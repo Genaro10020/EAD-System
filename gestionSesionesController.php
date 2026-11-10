@@ -46,6 +46,13 @@ if(isset($_SESSION['nombre'])){
                     if(isset($arreglo['id_equipo']) && isset($arreglo['accion']) && $arreglo['accion']=='cerrarProyecto' ){
                         $id_equipo =$arreglo['id_equipo'];
                         $resultado = cerrarProyecto($id_equipo);
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarProyectoModal") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+                        $anio = $arreglo["anio"];
+                        $periodo = $arreglo["periodo"];
+                        
+                        $resultado = actualizarProyectoModal($id_equipo, $nombre_proyecto, $anio, $periodo);
                     }
                 break;
             case 'DELETE':
