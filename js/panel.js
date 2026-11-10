@@ -3010,8 +3010,16 @@ const app = {
             this.seguimiento_session = response.data[1];
 
             if (this.seguimiento_session.length > 0) {
-              this.nombre_proyecto_sesion =
-                this.seguimiento_session[0].nombre_proyecto || "";
+              let registroConNombre = this.seguimiento_session.find(
+                (item) =>
+                  item.nombre_proyecto && item.nombre_proyecto.trim() !== "",
+              );
+
+              if (registroConNombre) {
+                this.nombre_proyecto_sesion = registroConNombre.nombre_proyecto;
+              } else {
+                this.nombre_proyecto_sesion = "";
+              }
             } else {
               this.nombre_proyecto_sesion = "";
             }
