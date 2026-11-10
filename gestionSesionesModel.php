@@ -27,42 +27,41 @@ include("conexionGhoner.php");
                 return array($estado, $resultado);
     }
 
-    function guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje){
+    function guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje){
         global $conexion;
         $ids_integrantes=json_encode($ids_integrantes, JSON_UNESCAPED_UNICODE);
         $asistencia=json_encode($asistencia, JSON_UNESCAPED_UNICODE);
         $fases = json_encode($fases,JSON_UNESCAPED_UNICODE);
         $etapa = json_encode($etapa,JSON_UNESCAPED_UNICODE);
 
-        if($accion==="Guardar"){
-            $guardar = "INSERT INTO gestion_sesiones (id_equipo, nombre_proyecto, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia) VALUES (?,?,?,?,?,?,?,?,?)";
+        if($accion === "Guardar"){
+            $guardar = "INSERT INTO gestion_sesiones (id_equipo, nombre_proyecto, anio, periodo, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
             $stmt = $conexion->prepare($guardar);
             if (!$stmt) {
                 return "IDQUIPO:".$id_equipo.$conexion->error;
             }
-            $stmt->bind_param('isssssssd', $id_equipo, $nombre_proyecto, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje);
-        }else if ($accion==="Actualizar"){
-            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto=?, fecha=?, metodologia=?, etapa=?, fase=?, ids_integrantes=?, asistencia=?, porcentaje_asistencia=? WHERE id =?";
+            $stmt->bind_param('isssssssssd', $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje);
+        }else if ($accion === "Actualizar"){
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto=?, anio=?, periodo=?, fecha=?, metodologia=?, etapa=?, fase=?, ids_integrantes=?, asistencia=?, porcentaje_asistencia=? WHERE id =?";
             $stmt = $conexion->prepare($actualizar);
             if (!$stmt) {
                 return "Actualizar:".$conexion->error;
             }
-            $stmt->bind_param('sssssssdi', $nombre_proyecto, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje, $id_gestion_session);
+            $stmt->bind_param('sssssssssdi', $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje, $id_gestion_session);
         }else{
             return "el Modelo no identificó el tipo de acción";
         }
         
         if ($stmt->execute()) {
             if ($nombre_proyecto != "") {
-                $query_nombres = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+                $query_nombres = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
                 $stmt_nombres = $conexion->prepare($query_nombres);
 
                 if ($stmt_nombres) {
-                    $stmt_nombres->bind_param("si", $nombre_proyecto, $id_equipo);
+                    $stmt_nombres->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
                     $stmt_nombres->execute();
                 }
             }
-
             return true;
         } else {
             return $stmt->error;
