@@ -69,6 +69,25 @@ include("conexionGhoner.php");
         }
     }
 
+    function actualizarProyectoModal($id_equipo, $nombre_proyecto, $anio, $periodo) {
+        global $conexion;
+
+        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+        $stmt = $conexion->prepare($actualizar);
+
+        if (!$stmt) {
+            return "Error al preparar: " . $conexion->error;
+        }
+
+        $stmt->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return "Error al ejecutar: " . $stmt->error;
+    }
+
     function cerrarProyecto($id_equipo){
         $fecha = date('Y-m-d H:i:s');
         global $conexion;
