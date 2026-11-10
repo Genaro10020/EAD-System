@@ -3018,11 +3018,14 @@ const app = {
 
               if (registroConNombre) {
                 this.nombre_proyecto_sesion = registroConNombre.nombre_proyecto;
+                this.bloquear_nombre_proyecto = true;
               } else {
                 this.nombre_proyecto_sesion = "";
+                this.bloquear_nombre_proyecto = false;
               }
             } else {
               this.nombre_proyecto_sesion = "";
+              this.bloquear_nombre_proyecto = false;
             }
 
             console.log("Seguimiento", response.data[1]);
