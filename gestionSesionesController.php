@@ -27,6 +27,7 @@ if(isset($_SESSION['nombre'])){
                     if(isset($arreglo['accion']) && isset($arreglo['id_gestion_session']) && isset($arreglo['id_equipo']) && isset($arreglo['fecha']) && isset($arreglo['metodologia'])  && isset($arreglo['etapa']) && isset($arreglo['fases'])  && isset($arreglo['ids_integrantes']) && isset($arreglo['asistieron']) && isset($arreglo['porcentaje'])){
                         $accion=$arreglo['accion'];
                         $id_equipo=$arreglo['id_equipo'];
+                        $nombre_proyecto = $arreglo['nombre_proyecto'];
                         $fecha=$arreglo['fecha'];
                         $metodologia=$arreglo['metodologia'];
                         $etapa=$arreglo['etapa'];
