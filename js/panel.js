@@ -3220,6 +3220,8 @@ const app = {
       this.id_gestion_session = id_seguimiento;
       this.actualizar_session = true;
       this.index_session_actualizar = index;
+      this.nombre_proyecto_sesion =
+        this.seguimiento_session[index].nombre_proyecto;
       console.log(this.seguimiento_session[index]);
       this.asistieron = JSON.parse(this.seguimiento_session[index].asistencia);
       var IdEtapa = [];
