@@ -53,6 +53,16 @@ include("conexionGhoner.php");
         }
         
         if ($stmt->execute()) {
+            if ($nombre_proyecto != "") {
+                $query_nombres = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+                $stmt_nombres = $conexion->prepare($query_nombres);
+
+                if ($stmt_nombres) {
+                    $stmt_nombres->bind_param("si", $nombre_proyecto, $id_equipo);
+                    $stmt_nombres->execute();
+                }
+            }
+
             return true;
         } else {
             return $stmt->error;
