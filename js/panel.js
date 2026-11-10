@@ -93,6 +93,7 @@ const app = {
       faseUsadaEnOtroSeguimiento: [],
       input_actualizar: "",
       nombre_proyecto_sesion: "",
+      bloquear_nombre_proyecto: false,
       actualizar_session: false,
       index_session_actualizar: "",
       id_gestion_session: "",
