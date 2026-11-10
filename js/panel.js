@@ -3007,6 +3007,14 @@ const app = {
           //console.log("Tomando las Etapas",response.data[1].map(datos=>datos.etapa))
           if (response.data[0] == true) {
             this.seguimiento_session = response.data[1];
+
+            if (this.seguimiento_session.length > 0) {
+              this.nombre_proyecto_sesion =
+                this.seguimiento_session[0].nombre_proyecto || "";
+            } else {
+              this.nombre_proyecto_sesion = "";
+            }
+
             console.log("Seguimiento", response.data[1]);
             var seguimiento = response.data[1];
             var suma1 = 0;
