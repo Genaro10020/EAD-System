@@ -28,6 +28,8 @@ if(isset($_SESSION['nombre'])){
                         $accion=$arreglo['accion'];
                         $id_equipo=$arreglo['id_equipo'];
                         $nombre_proyecto = $arreglo['nombre_proyecto'];
+                        $anio = $arreglo['anio'] ?? null;
+                        $periodo = $arreglo['periodo'] ?? null;
                         $fecha=$arreglo['fecha'];
                         $metodologia=$arreglo['metodologia'];
                         $etapa=$arreglo['etapa'];
@@ -36,7 +38,7 @@ if(isset($_SESSION['nombre'])){
                         $asistieron=$arreglo['asistieron'];
                         $porcentaje=$arreglo['porcentaje'];
                         $id_gestion_session=$arreglo['id_gestion_session'];
-                        $resultado = guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistieron, $porcentaje);
+                        $resultado = guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistieron, $porcentaje);
                     }else{
                         $resultado = "No existen todas la variables";
                     }
