@@ -2916,6 +2916,7 @@ const app = {
           });
       } else {
         this.EADIntegrantes = [];
+        this.nombre_proyecto_sesion = "";
       }
     },
     consultarAvanceEtapas() {
