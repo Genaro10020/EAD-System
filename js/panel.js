@@ -3259,6 +3259,7 @@ const app = {
     reseteandoDatos() {
       this.actualizar_session = false;
       this.index_session_actualizar = "";
+      this.nombre_proyecto_sesion = "";
       this.select_etapa = "";
       this.fases_seleccionadas = [];
       this.fases_etapa = [];
