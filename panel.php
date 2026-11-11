@@ -1290,47 +1290,53 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <hr class="text-muted opacity-25 mt-0">
 
                                                 <!--Mostar los JPG y PNG-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
-                                                    <img :src="documento_session[index]" style="width:50%" class="mb-5"></img>
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='png' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <img :src="archivos.ruta" style="width:50%" class="mb-5"></img>
                                                 </div>
+
                                                 <!--Mostrar PDF-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='pdf'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
-                                                    <iframe :src="documento_session[index]" style="width:100%;height:500px;" class="mb-5"></iframe>
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='pdf'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <iframe :src="archivos.ruta" style="width:100%;height:500px;" class="mb-5"></iframe>
                                                 </div>
+
                                                 <!--Mostrar Word-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='doc' || archivos.slice(archivos.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
-                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='doc' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
                                                         <img src="img/word.png" style="width:200px" class="mb-5"></img>
                                                     </a>
                                                 </div>
+
                                                 <!--Mostrar Excel-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='xls' || archivos.slice(archivos.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br><!--obtengo el nombre del documento con extension-->
-                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='xls' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
                                                         <img src="img/excel.png" style="width:200px" class="mb-5"></img>
                                                     </a>
                                                 </div>
+
                                                 <!--Mostrar Power Point -->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.slice(archivos.lastIndexOf('.') + 1).toLowerCase()=='pptx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
-                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase()=='pptx'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
                                                         <img src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
                                                     </a>
                                                 </div>
+
                                                 <!--Mostrar .RAR-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
-                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
                                                         <img src="img/rar.png" style="width:200px" class="mb-5"></img>
                                                     </a>
                                                 </div>
+
                                                 <!--Mostrar .RAR-->
-                                                <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
-                                                    {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br> <!--obtengo el nombre del documento con extension-->
-                                                    <a :href="archivos" :download="nombre_de_descarga">
+                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
+                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
+                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
                                                         <img src="img/zip.png" style="width:200px" class="mb-5"></img>
                                                     </a>
                                                 </div>
