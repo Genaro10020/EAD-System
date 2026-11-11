@@ -2382,6 +2382,8 @@ const app = {
     ) {
       console.log("Tipo archivo" + tipo_archivo, "Area: " + area);
       var id_equipo = "";
+      var anio_buscar = "";
+      var periodo_buscar = "";
       var fecha_ruta = "";
 
       if (tipo_archivo === "Capacitacion") {
@@ -2389,6 +2391,8 @@ const app = {
         area = this.areaDocumento;
       } else if (tipo_archivo === "Presentacion") {
         id_equipo = this.select_session_equipo.split("<->")[0];
+        anio_buscar = this.anio_sesion_activa;
+        periodo_buscar = this.periodo_sesion_activa;
       } else if (tipo_archivo === "DefinicionProyectos") {
         area = this.seleccion_eds_areas;
       } else if (tipo_archivo === "Por Fecha") {
@@ -2420,6 +2424,8 @@ const app = {
           fecha_ruta: fecha_ruta,
           id_equipo: id_equipo,
           area: area,
+          anio: anio_buscar,
+          periodo: periodo_buscar,
         })
         .then((response) => {
           //console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
@@ -2855,9 +2861,9 @@ const app = {
       var fechaFormateada = año + "-" + mes + "-" + dia;
       this.fecha_session = fechaFormateada;
 
-      if (this.select_session_equipo != "") {
-        this.buscarDocumentos("Presentacion");
-      }
+      // if (this.select_session_equipo != "") {
+      //   this.buscarDocumentos("Presentacion");
+      // }
 
       /*setTimeout(() => {
         this.circulosPDCA()
@@ -3230,6 +3236,10 @@ const app = {
 
             this.circulosPDCA();
             this.fasesUtilizadas();
+
+            if (this.select_session_equipo != "") {
+              this.buscarDocumentos("Presentacion");
+            }
           } else {
             console.log("Error en la consulta" + response.data[0]);
           }
