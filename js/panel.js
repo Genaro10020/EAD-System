@@ -2558,6 +2558,9 @@ const app = {
 
         formData.append("id_equipo", id);
         formData.append("tipo_archivo", tipo_archivo);
+
+        formData.append("anio", anio);
+        formData.append("periodo", periodo);
         var files = this.$refs.ref_imagen_presentacion.files;
         var totalfiles = this.$refs.ref_imagen_presentacion.files.length;
       } else if (tipo_archivo === "DefinicionProyectos") {
