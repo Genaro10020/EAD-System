@@ -10,7 +10,11 @@ $fecha_ruta=$variables['fecha_ruta'];
 $id_equipo=$variables['id_equipo'];
 $area = '';
 if($tipo_archivo === 'Presentacion'){
-    $ruta = "documentoSession/".$id_equipo;
+
+    $anio = isset($variables["anio"]) && $variables["anio"] !== "" ? $variables["anio"] : "Sin_Año";
+    $periodo = isset($variables["periodo"]) && $variables["periodo"] !== "" ? $variables["periodo"] : "Sin_Periodo";
+
+    $ruta = "documentoSession/".$id_equipo."/".$anio."/".$periodo;
 }else if($tipo_archivo === 'Capacitacion' || $tipo_archivo === 'Por Fecha' || $tipo_archivo === 'EvidenciaFoto' || $tipo_archivo === 'DefinicionProyectos'){
     if($_SESSION['tipo_acceso']=="Admin"){
         if(isset($variables['area'])){
