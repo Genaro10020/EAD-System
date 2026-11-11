@@ -1259,14 +1259,14 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
                                                             Nombre del Proyecto
                                                         </label>
-                                                        <input type="text" class="form-control form-control-sm" placeholder="Proyecto asignado...">
+                                                        <input type="text" class="form-control form-control-sm" v-model="archivos.proyecto" placeholder="Proyecto asignado...">
                                                     </div>
 
                                                     <div class="col-12 col-md-4">
                                                         <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
                                                             Año y Periodo
                                                         </label>
-                                                        <select class="form-select form-select-sm">
+                                                        <select class="form-select form-select-sm" v-model="archivos.anio_periodo">
                                                             <option value="" disabled selected>Seleccione...</option>
                                                             <option v-for="opcion in opciones_periodos" :key="opcion" :value="opcion">
                                                                 {{ opcion }}
@@ -1275,7 +1275,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </div>
 
                                                     <div class="col-12 col-md-3 d-flex justify-content-end gap-2">
-                                                        <button type="button" class="btn btn-warning btn-sm text-dark fw-semibold px-3" title="Actualizar datos">
+                                                        <button type="button" class="btn btn-warning btn-sm text-dark fw-semibold px-3" @click="actualizarDocumento(archivos)" title="Actualizar datos">
                                                             <i class="bi bi-arrow-clockwise"></i> Actualizar
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm fw-semibold px-3" @click="eliminarDocumento(archivos,'Presentacion')" title="Eliminar documento">
