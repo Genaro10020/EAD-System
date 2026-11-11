@@ -1252,13 +1252,43 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <!-- Mostrando los archivos cargados SEGUIMIENTO-->
                                         <div v-if="documento_session.length>0">
                                             <hr>
-                                            <div class="col-12" v-for="(archivos,index) in documento_session">
-                                                <div class="row">
-                                                    <span class="badge bg-secondary">Documento {{index+1}}</span><br>
-                                                    <div class="mt-1">
-                                                        <button type="button" class="btn btn-danger" @click="eliminarDocumento(archivos,'Presentacion')" style="font-size:14px;">Eliminar</button>
+                                            <div class="col-12 mb-4 p-3 border rounded shadow-sm bg-light" v-for="(archivos,index) in documento_session">
+
+                                                <div class="row g-2 align-items-end mb-3 text-start">
+                                                    <div class="col-12 col-md-5">
+                                                        <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
+                                                            Nombre del Proyecto
+                                                        </label>
+                                                        <input type="text" class="form-control form-control-sm" placeholder="Proyecto asignado...">
+                                                    </div>
+
+                                                    <div class="col-12 col-md-4">
+                                                        <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
+                                                            Año y Periodo
+                                                        </label>
+                                                        <select class="form-select form-select-sm">
+                                                            <option value="" disabled selected>Seleccione...</option>
+                                                            <option v-for="opcion in opciones_periodos" :key="opcion" :value="opcion">
+                                                                {{ opcion }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="col-12 col-md-3 d-flex justify-content-end gap-2">
+                                                        <button type="button" class="btn btn-warning btn-sm text-dark fw-semibold px-3" title="Actualizar datos">
+                                                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm fw-semibold px-3" @click="eliminarDocumento(archivos,'Presentacion')" title="Eliminar documento">
+                                                            <i class="bi bi-trash-fill"></i> Eliminar
+                                                        </button>
                                                     </div>
                                                 </div>
+
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <span class="badge bg-secondary">Documento {{ index+1 }}</span>
+                                                </div>
+                                                <hr class="text-muted opacity-25 mt-0">
+
                                                 <!--Mostar los JPG y PNG-->
                                                 <div v-if="archivos.slice(archivos.lastIndexOf('.') + 1)=='png' || archivos.slice(archivos.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
                                                     {{nombre_de_descarga=archivos.slice(archivos.lastIndexOf('/')+1)}}<br>
