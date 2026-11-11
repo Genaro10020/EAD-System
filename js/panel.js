@@ -2349,10 +2349,6 @@ const app = {
 
         if (registroActivo) {
           this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
-          if (registroActivo.anio && registroActivo.periodo) {
-            this.doc_anio_periodo =
-              registroActivo.anio + " - " + registroActivo.periodo;
-          }
         }
       }
 
@@ -2365,6 +2361,24 @@ const app = {
 
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
+    },
+    actualizarDocumento(archivoObj) {
+      console.log("Datos del documento a actualizar:", archivoObj);
+
+      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
+        Swal.fire(
+          "Faltan Datos",
+          "Seleccione el Año y Periodo para poder clasificar este documento viejo.",
+          "warning",
+        );
+        return;
+      }
+
+      Swal.fire({
+        icon: "info",
+        title: "En desarrollo",
+        text: "En el próximo paso programaremos la lógica en PHP para mover este documento a la carpeta de su Año y Periodo correspondientes.",
+      });
     },
     modalDocumentoDefinicionDeProyectos() {
       this.myModal = new bootstrap.Modal(
