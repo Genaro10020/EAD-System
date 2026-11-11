@@ -1276,7 +1276,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                                                     <div class="col-12 col-md-3 d-flex justify-content-end gap-2">
                                                         <button type="button" class="btn btn-warning btn-sm text-dark fw-semibold px-3" @click="actualizarDocumento(archivos)" title="Actualizar datos">
-                                                            <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                                            <i class="bi bi-arrow-clockwise"></i> Editar
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-sm fw-semibold px-3" @click="eliminarDocumento(archivos,'Presentacion')" title="Eliminar documento">
                                                             <i class="bi bi-trash-fill"></i> Eliminar
