@@ -2385,6 +2385,11 @@ const app = {
       this.index_documento_editar = index;
       this.modo_nuevo_proyecto_edicion = false;
     },
+    cancelarEdicionDocumento() {
+      this.index_documento_editar = null;
+      this.modo_nuevo_proyecto = false;
+      this.buscarDocumentos("Presentacion");
+    },
     actualizarDocumento(archivoObj, index) {
       if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
         return Swal.fire(
