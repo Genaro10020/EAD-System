@@ -2332,17 +2332,30 @@ const app = {
 
     modalDocumentoGestionSession() {
       this.proyectos_equipo_modal = [];
+      this.fechas_cierre_equipo = [];
       this.doc_nombre_proyecto = "";
       this.doc_anio_periodo = "";
+      this.index_documento_editar = null;
+      this.modo_nuevo_proyecto_edicion = false;
 
       if (this.seguimiento_session && this.seguimiento_session.length > 0) {
         let proyectosUnicos = new Set();
+        let fechasUnicas = new Set();
         let registroActivo = null;
 
         this.seguimiento_session.forEach((item) => {
           if (item.nombre_proyecto && item.nombre_proyecto.trim() !== "") {
             proyectosUnicos.add(item.nombre_proyecto.trim());
             if (!registroActivo) registroActivo = item;
+          }
+
+          if (
+            item.fecha_cierre &&
+            item.fecha_cierre.trim() !== "" &&
+            item.fecha_cierre !== "0000-00-00 00:00:00"
+          ) {
+            let soloFecha = item.fecha_cierre.split(" ")[0];
+            fechasUnicas.add(soloFecha);
           }
         });
 
@@ -2352,6 +2365,11 @@ const app = {
 
         if (registroActivo) {
           this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
+
+          if (registroActivo.anio && registroActivo.periodo) {
+            this.doc_anio_periodo =
+              registroActivo.anio + " - " + registerModule.periodo;
+          }
         }
       }
 
