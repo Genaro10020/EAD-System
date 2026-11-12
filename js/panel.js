@@ -2336,6 +2336,7 @@ const app = {
       this.doc_nombre_proyecto = "";
       this.doc_anio_periodo = "";
       this.index_documento_editar = null;
+      this.modo_nuevo_proyecto = false;
       this.modo_nuevo_proyecto_edicion = false;
 
       if (this.seguimiento_session && this.seguimiento_session.length > 0) {
@@ -2348,7 +2349,6 @@ const app = {
             proyectosUnicos.add(item.nombre_proyecto.trim());
             if (!registroActivo) registroActivo = item;
           }
-
           if (
             item.fecha_cierre &&
             item.fecha_cierre.trim() !== "" &&
@@ -2362,14 +2362,12 @@ const app = {
         this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
           (nombre) => ({ nombre: nombre }),
         );
+        this.fechas_cierre_equipo = Array.from(fechasUnicas).sort(
+          (a, b) => new Date(b) - new Date(a),
+        );
 
         if (registroActivo) {
           this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
-
-          if (registroActivo.anio && registroActivo.periodo) {
-            this.doc_anio_periodo =
-              registroActivo.anio + " - " + registerModule.periodo;
-          }
         }
       }
 
@@ -2387,22 +2385,40 @@ const app = {
       this.index_documento_editar = index;
       this.modo_nuevo_proyecto_edicion = false;
     },
-    actualizarDocumento(archivoObj) {
-      console.log("Datos del documento a actualizar:", archivoObj);
-
-      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
-        Swal.fire(
+    actualizarDocumento(archivoObj, index) {
+      if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
+        return Swal.fire(
           "Faltan Datos",
-          "Seleccione el Año y Periodo para poder clasificar este documento viejo.",
+          "El nombre del proyecto no puede estar vacío.",
           "warning",
         );
-        return;
+      }
+      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
+        return Swal.fire(
+          "Faltan Datos",
+          "Seleccione el Año y Periodo.",
+          "warning",
+        );
+      }
+      if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
+        return Swal.fire(
+          "Faltan Datos",
+          "Seleccione la Fecha de Cierre asociada.",
+          "warning",
+        );
       }
 
+      console.log("Datos listos para enviar al backend:", archivoObj);
+
+      this.index_documento_editar = null;
+      this.modo_nuevo_proyecto_edicion = false;
+
       Swal.fire({
-        icon: "info",
-        title: "En desarrollo",
-        text: "En el próximo paso programaremos la lógica en PHP para mover este documento a la carpeta de su Año y Periodo correspondientes.",
+        icon: "success",
+        title: "Edición confirmada",
+        text: "En el próximo paso conectaremos esto al backend para actualizar el registro.",
+        timer: 2500,
+        showConfirmButton: false,
       });
     },
     modalDocumentoDefinicionDeProyectos() {
