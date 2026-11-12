@@ -1900,6 +1900,19 @@ select option,
 
 /* MODAL DOCUMENTOS */
 
+.modal-backdrop {
+  z-index: 10040 !important;
+}
+
+.modal {
+  z-index: 10050 !important;
+}
+
+.modal-dialog {
+  position: relative;
+  z-index: 10051;
+}
+
 .modal-documentos {
   border: none;
   border-radius: 14px;
