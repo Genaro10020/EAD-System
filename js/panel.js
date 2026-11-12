@@ -2346,6 +2346,9 @@ const app = {
           id_equipo_actual = this.select_session_equipo.split("<->")[0];
         }
 
+        let historialCerrados = [];
+        let proyectosUnicos = new Set();
+
         if (id_equipo_actual) {
           const resFechas = await axios.get("gestionSesionesController.php", {
             params: {
@@ -2354,19 +2357,37 @@ const app = {
             },
           });
           if (resFechas.data && resFechas.data[0] === true) {
-            this.fechas_cierre_equipo = resFechas.data[1].sort(
+            let datosBD = resFechas.data[1];
+            let fechasSet = new Set();
+
+            datosBD.forEach((item) => {
+              let fechaStr =
+                typeof item === "object" ? item.fecha_cierre : item;
+              if (fechaStr && !fechaStr.startsWith("0000-00-00")) {
+                fechasSet.add(fechaStr.split(" ")[0].trim());
+              }
+              if (typeof item === "object") {
+                historialCerrados.push(item);
+                if (
+                  item.nombre_proyecto &&
+                  item.nombre_proyecto.trim() !== ""
+                ) {
+                  proyectosUnicos.add(item.nombre_proyecto.trim());
+                }
+              }
+            });
+
+            this.fechas_cierre_equipo = Array.from(fechasSet).sort(
               (a, b) => new Date(b) - new Date(a),
             );
           }
         }
 
+        let registroActivo = null;
         if (
           this.seguimiento_session &&
           Array.isArray(this.seguimiento_session)
         ) {
-          let proyectosUnicos = new Set();
-          let registroActivo = null;
-
           this.seguimiento_session.forEach((item) => {
             if (
               item &&
@@ -2378,22 +2399,55 @@ const app = {
               if (!registroActivo) registroActivo = item;
             }
           });
+        }
 
-          this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
-            (nombre) => ({ nombre: nombre }),
-          );
+        if (this.documento_session && Array.isArray(this.documento_session)) {
+          this.documento_session.forEach((doc) => {
+            if (!doc.fecha_cierre || doc.fecha_cierre === "") {
+              let match = historialCerrados.find(
+                (h) =>
+                  (doc.anio_periodo &&
+                    `${h.anio} - ${h.periodo}` === doc.anio_periodo) ||
+                  (doc.proyecto &&
+                    h.nombre_proyecto &&
+                    h.nombre_proyecto.trim() === doc.proyecto.trim()),
+              );
+              if (match && match.fecha_cierre) {
+                doc.fecha_cierre = match.fecha_cierre.split(" ")[0].trim();
+              }
+            }
 
-          if (registroActivo) {
-            this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
-          }
+            if (doc.proyecto && doc.proyecto.trim() !== "") {
+              proyectosUnicos.add(doc.proyecto.trim());
+            }
+            if (
+              doc.fecha_cierre &&
+              doc.fecha_cierre.trim() !== "" &&
+              !doc.fecha_cierre.startsWith("0000-00-00")
+            ) {
+              let fechaDoc = doc.fecha_cierre.split(" ")[0].trim();
+              if (!this.fechas_cierre_equipo.includes(fechaDoc)) {
+                this.fechas_cierre_equipo.push(fechaDoc);
+              }
+            }
+          });
+          this.fechas_cierre_equipo.sort((a, b) => new Date(b) - new Date(a));
+        }
+
+        this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
+          (nombre) => ({ nombre: nombre }),
+        );
+
+        if (registroActivo) {
+          this.doc_nombre_proyecto = registroActivo.nombre_proyecto.trim();
         }
 
         if (
           this.nombre_proyecto_sesion &&
-          this.nombre_proyecto_sesion !== "" &&
+          this.nombre_proyecto_sesion.trim() !== "" &&
           this.doc_nombre_proyecto === ""
         ) {
-          this.doc_nombre_proyecto = this.nombre_proyecto_sesion;
+          this.doc_nombre_proyecto = this.nombre_proyecto_sesion.trim();
         }
 
         let modalElement = document.getElementById("modal");
@@ -2548,6 +2602,7 @@ const app = {
               const reg = (this.seguimiento_session || []).find(
                 (s) => s.nombre_proyecto && s.nombre_proyecto.trim() !== "",
               );
+
               documentos.forEach((doc) => {
                 doc.proyecto = (
                   doc.proyecto ||
@@ -2565,6 +2620,25 @@ const app = {
                   reg?.fecha_cierre ||
                   ""
                 ).split(" ")[0];
+
+                if (
+                  doc.proyecto &&
+                  !this.proyectos_equipo_modal.some(
+                    (p) => p.nombre === doc.proyecto,
+                  )
+                ) {
+                  this.proyectos_equipo_modal.push({ nombre: doc.proyecto });
+                }
+
+                if (
+                  doc.fecha_cierre &&
+                  !this.fechas_cierre_equipo.includes(doc.fecha_cierre)
+                ) {
+                  this.fechas_cierre_equipo.push(doc.fecha_cierre);
+                  this.fechas_cierre_equipo.sort(
+                    (a, b) => new Date(b) - new Date(a),
+                  );
+                }
               });
             }
 
