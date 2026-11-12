@@ -1409,6 +1409,10 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                                 Seleccione...
                                                             </option>
 
+                                                            <option value="Sin Proyecto">
+                                                                Sin Proyecto
+                                                            </option>
+
                                                             <option
                                                                 v-for="proyecto in proyectos_equipo_modal"
                                                                 :key="proyecto.nombre"
