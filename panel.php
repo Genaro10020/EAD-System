@@ -1191,243 +1191,411 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                 <!--MODAL DOCUMENTO--->
                 <!-- Modal Eliminar/Actualizar Documento del Proyecto-->
-                <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h6 class="modal-title" id="exampleModalLabel">Documento/s <b>{{select_session_equipo.split('<->')[1]}}</b></h6>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal fade" id="modal" tabindex="-1"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                        <div class="modal-content modal-documentos">
+
+                            <div class="modal-header modal-documentos-header">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="modal-icon">
+                                            <i class="bi bi-folder2-open"></i>
+                                        </span>
+                                        <span class="text-uppercase small fw-semibold opacity-75">
+                                            Gestión documental
+                                        </span>
+                                    </div>
+
+                                    <h5 class="modal-title fw-bold mb-0" id="exampleModalLabel">
+                                        Documentos
+                                    </h5>
+
+                                    <small class="opacity-75">
+                                        Equipo: {{select_session_equipo.split('<->')[1]}}
+                                    </small>
+                                </div>
+
+                                <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <div class="text-center">
-                                    <form @submit.prevent="uploadFile('Presentacion')">
 
-                                        <div class="row g-3 mb-4 text-start px-2">
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label fw-semibold" style="font-size: 0.9rem;">
-                                                    Nombre del Proyecto
+                            <div class="modal-body modal-documentos-body">
+                                <form @submit.prevent="uploadFile('Presentacion')">
+                                    <div class="seccion-carga-documento mb-4">
+                                        <div class="seccion-titulo mb-3">
+                                            <div>
+                                                <h6 class="fw-bold mb-1">
+                                                    <i class="bi bi-cloud-arrow-up me-2"></i>
+                                                    Agregar documento
+                                                </h6>
+                                                <small class="text-secondary">
+                                                    Selecciona el proyecto, periodo y archivo que deseas adjuntar.
+                                                </small>
+                                            </div>
+                                        </div>
+
+                                        <div class="row g-3 align-items-end">
+                                            <div class="col-12 col-lg-5">
+                                                <label class="form-label">
+                                                    Nombre del proyecto
                                                 </label>
-                                                <div class="input-group">
-                                                    <select 
-                                                        v-if="modo_nuevo_proyecto" 
-                                                        class="form-select" 
-                                                        v-model="doc_nombre_proyecto"
-                                                        style="font-size: 0.85rem;"
-                                                        :required="!modo_nuevo_proyecto"
-                                                        :disabled="bloquear_nombre_proyecto">
-                                                        <option value="" disabled>Seleccione un proyecto...</option>
-                                                        <option v-for="proyecto in proyectos_equipo_modal" :value="proyecto.nombre">
-                                                            {{ proyecto.nombre }}
-                                                        </option>
-                                                    </select>
 
-                                                    <input
-                                                        v-else
-                                                        type="text"
-                                                        class="form-control"
-                                                        v-model="doc_nombre_proyecto"
-                                                        placeholder="Registre un nuevo proyecto..."
-                                                        style="font-size: 0.85rem;"
-                                                        :required="modo_nuevo_proyecto"
-                                                        :disabled="bloquear_nombre_proyecto"
-                                                    >
+                                                <select class="form-select"
+                                                    v-model="doc_nombre_proyecto"
+                                                    required
+                                                    :disabled="bloquear_nombre_proyecto">
 
-                                                    <button
-                                                        type="button"
-                                                        class="btn btn-outline-secondary"
-                                                        @click="modo_nuevo_proyecto = !modo_nuevo_proyecto"
-                                                        :disabled="bloquear_nombre_proyecto"
-                                                        :title="modo_nuevo_proyecto ? 'Elegir proyecto existente' : 'Nuevo nombre proyecto'"
-                                                    >
-                                                        <i class="bi" :class="modo_nuevo_proyecto ? 'bi-list-ul' : 'bi-plus-lg'"></i>
-                                                    </button>
-                                                </div>
+                                                    <option value="" disabled>
+                                                        Seleccione proyecto...
+                                                    </option>
+
+                                                    <option v-for="proyecto in proyectos_equipo_modal"
+                                                        :key="proyecto.nombre"
+                                                        :value="proyecto.nombre">
+                                                        {{ proyecto.nombre }}
+                                                    </option>
+                                                </select>
                                             </div>
 
-                                            <div class="col-12 col-md-6">
-                                                <label class="form-label fw-semibold" style="font-size: 0.9rem;">Año y Periodo</label>
-                                                <select class="form-select" v-model="doc_anio_periodo" style="font-size: 0.85rem;" required>
-                                                    <option value="" disabled>Seleccione...</option>
-                                                    <option v-for="opcion in opciones_periodos" :key="opcion" :value="opcion">
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <label class="form-label">
+                                                    Año y periodo
+                                                </label>
+
+                                                <select class="form-select"
+                                                    v-model="doc_anio_periodo" required>
+
+                                                    <option value="" disabled>
+                                                        Seleccione periodo...
+                                                    </option>
+
+                                                    <option v-for="opcion in opciones_periodos"
+                                                        :key="opcion" :value="opcion">
                                                         {{ opcion }}
                                                     </option>
                                                 </select>
                                             </div>
-                                        </div>
-                                        <hr>
 
-                                        Subir Documento
-                                        <div class="col-12">
-                                            <div class="custom-file mt-2 mb-3">
-                                                <input type="file" id="input_file_seguimiento" @change="varificandoSelecionSeguimiento()" ref="ref_imagen_presentacion" multiple accept="*.jpg/*.png/*.pdf/*.doc/*.docx/*.ppt/*.pptx/*.xls/*.xlsx" class="btn btn-secondary  ms-2 p-0" required />
+                                            <div class="col-12 col-md-6 col-lg-4">
+                                                <label class="form-label">
+                                                    Archivo adjunto
+                                                </label>
+
+                                                <input type="file"
+                                                    id="input_file_seguimiento"
+                                                    @change="varificandoSelecionSeguimiento()"
+                                                    ref="ref_imagen_presentacion"
+                                                    multiple
+                                                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.rar,.zip"
+                                                    class="form-control"
+                                                    required />
                                             </div>
+
                                         </div>
-                                        <div class="col-12" v-if="existeImagenSeleccionada && login!=true">
-                                            <button type="submit" name="upload" class="btn btn-primary">Subir Archivos </button>
+
+                                        <div class="d-flex justify-content-end mt-3">
+                                            <button
+                                                v-if="existeImagenSeleccionada && login!=true"
+                                                type="submit"
+                                                class="btn btn-primary px-4 fw-semibold">
+
+                                                <i class="bi bi-upload me-2"></i>
+                                                Subir documento
+                                            </button>
                                         </div>
-                                        <div v-if="login==true" class="d-flex justify-content-center">
+
+                                        <div v-if="login==true"
+                                            class="estado-subida mt-3">
+
+                                            <img src="img/loading.gif" width="35" />
+                                            <span class="fw-semibold">Subiendo documento...</span>
+                                        </div>
+
+                                    </div>
+
+                                    <div v-if="documento_session.length > 0">
+                                        <div class="d-flex justify-content-between
+                                            align-items-center mb-3">
+
                                             <div>
-                                                <img class="mx-auto" style="width:50px;" src="img/loading.gif" /><label>Subiendo...</label>
+                                                <h6 class="fw-bold mb-1">
+                                                    <i class="bi bi-files me-2"></i>
+                                                    Documentos registrados
+                                                </h6>
+
+                                                <small class="text-secondary">
+                                                    Consulta y administra los archivos del equipo.
+                                                </small>
                                             </div>
+
+                                            <span class="contador-documentos">
+                                                {{ documento_session.length }} archivos
+                                            </span>
+
                                         </div>
 
-                                        <!-- Mostrando los archivos cargados SEGUIMIENTO-->
-                                        <div v-if="documento_session.length>0">
-                                            <hr>
-                                            <div class="col-12 mb-4 p-3 border rounded shadow-sm bg-light" v-for="(archivos,index) in documento_session">
-                                                <div class="row g-3 align-items-end mb-3 text-start">
+                                        <div class="documento-card mb-3"
+                                            v-for="(archivos,index) in documento_session"
+                                            :key="index">
 
-                                                    <!-- Nombre del proyecto -->
-                                                    <div class="col-12 col-lg-5">
-                                                        <label class="form-label fw-semibold text-secondary small">
-                                                            Nombre del proyecto
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            class="form-control form-control-sm"
-                                                            v-model="archivos.proyecto"
-                                                            placeholder="Proyecto asignado..."
-                                                            :disabled="index_documento_editar !== index"
-                                                        >
-                                                    </div>
-
-                                                    <div class="col-12 col-sm-6 col-lg-3">
-                                                        <label class="form-label fw-semibold text-secondary small">
-                                                            Año y periodo
-                                                        </label>
-                                                        <select
-                                                            class="form-select form-select-sm"
-                                                            v-model="archivos.anio_periodo"
-                                                            :disabled="index_documento_editar !== index"
-                                                        >
-                                                            <option value="" disabled>Seleccione...</option>
-                                                            <option
-                                                                v-for="opcion in opciones_periodos"
-                                                                :key="opcion"
-                                                                :value="opcion"
-                                                            >
-                                                                {{ opcion }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-
-                                                    <div class="col-12 col-sm-6 col-lg-4">
-                                                        <label class="form-label fw-semibold text-secondary small">
-                                                            Fecha de cierre
-                                                        </label>
-                                                        <select
-                                                            class="form-select form-select-sm"
-                                                            v-model="archivos.fecha_cierre"
-                                                            :disabled="index_documento_editar !== index"
-                                                        >
-                                                            <option value="" disabled>Seleccione fecha...</option>
-                                                            <option
-                                                                v-for="fecha in fechas_cierre_equipo"
-                                                                :key="fecha"
-                                                                :value="fecha"
-                                                            >
-                                                                {{ fecha }}
-                                                            </option>
-                                                        </select>
-                                                    </div>
-
-                                                </div>
-
-                                                <div class="d-flex flex-column flex-sm-row justify-content-between
-                                                    align-items-sm-center gap-3 mb-3">
-
-                                                    <span class="badge bg-secondary px-3 py-2 align-self-start">
-                                                        <i class="bi bi-file-earmark-text me-1"></i>
-                                                        Documento {{ index + 1 }}
+                                            <div class="documento-card-header">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <span class="documento-icon">
+                                                        <i class="bi bi-file-earmark-text"></i>
                                                     </span>
 
-                                                    <div class="d-flex flex-wrap gap-2">
+                                                    <div>
+                                                        <span class="fw-bold">
+                                                            Documento {{ index+1 }}
+                                                        </span>
+                                                        <small class="d-block text-secondary">
+                                                            Información del archivo
+                                                        </small>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex gap-2">
+
+                                                    <button
+                                                        v-if="index_documento_editar !== index"
+                                                        type="button"
+                                                        class="btn btn-outline-primary btn-sm"
+                                                        @click="habilitarEdicionDocumento(index)"
+                                                        title="Editar información">
+
+                                                        <i class="bi bi-pencil-square me-1"></i>
+                                                        Editar
+                                                    </button>
+
+                                                    <button
+                                                        v-else
+                                                        type="button"
+                                                        class="btn btn-success btn-sm"
+                                                        @click="actualizarDocumento(archivos, index)"
+                                                        title="Guardar cambios">
+
+                                                        <i class="bi bi-check-lg me-1"></i>
+                                                        Guardar
+                                                    </button>
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-outline-danger btn-sm"
+                                                        @click="eliminarDocumento(archivos,'Presentacion')"
+                                                        title="Eliminar documento">
+
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-3 p-3 align-items-end">
+
+                                                <div class="col-12 col-lg-5">
+                                                    <label class="form-label">
+                                                        Nombre del proyecto
+                                                    </label>
+
+                                                    <div class="input-group">
+                                                        <select
+                                                            v-if="!modo_nuevo_proyecto_edicion || index_documento_editar !== index"
+                                                            class="form-select"
+                                                            v-model="archivos.proyecto"
+                                                            :disabled="index_documento_editar !== index">
+
+                                                            <option value="" disabled>
+                                                                Seleccione...
+                                                            </option>
+
+                                                            <option
+                                                                v-for="proyecto in proyectos_equipo_modal"
+                                                                :key="proyecto.nombre"
+                                                                :value="proyecto.nombre">
+                                                                {{ proyecto.nombre }}
+                                                            </option>
+                                                        </select>
+
+                                                        <input
+                                                            v-if="modo_nuevo_proyecto_edicion && index_documento_editar === index"
+                                                            type="text"
+                                                            class="form-control"
+                                                            v-model="archivos.proyecto"
+                                                            placeholder="Nuevo proyecto..."
+                                                            :disabled="index_documento_editar !== index">
 
                                                         <button
                                                             type="button"
-                                                            class="btn btn-outline-primary btn-sm px-3"
-                                                            @click="actualizarDocumento(archivos)"
-                                                            title="Actualizar datos"
-                                                        >
-                                                            <i class="bi bi-pencil-square me-1"></i>
-                                                            Editar
-                                                        </button>
+                                                            class="btn btn-outline-secondary"
+                                                            @click="modo_nuevo_proyecto_edicion = !modo_nuevo_proyecto_edicion"
+                                                            :disabled="index_documento_editar !== index"
+                                                            :title="modo_nuevo_proyecto_edicion ? 'Elegir proyecto existente' : 'Nuevo nombre proyecto'">
 
-                                                        <button
-                                                            type="button"
-                                                            class="btn btn-outline-danger btn-sm px-3"
-                                                            @click="eliminarDocumento(archivos, 'Presentacion')"
-                                                            title="Eliminar documento"
-                                                        >
-                                                            <i class="bi bi-trash3 me-1"></i>
-                                                            Eliminar
+                                                            <i class="bi"
+                                                                :class="modo_nuevo_proyecto_edicion ? 'bi-list-ul' : 'bi-plus-lg'">
+                                                            </i>
                                                         </button>
                                                     </div>
                                                 </div>
 
-                                                <hr class="text-muted opacity-25 mt-0">
-                                                <!--Mostar los JPG y PNG-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='png' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <img :src="archivos.ruta" style="width:50%" class="mb-5"></img>
+                                                <div class="col-12 col-sm-6 col-lg-3">
+                                                    <label class="form-label">
+                                                        Año y periodo
+                                                    </label>
+
+                                                    <select class="form-select"
+                                                        v-model="archivos.anio_periodo"
+                                                        :disabled="index_documento_editar !== index">
+
+                                                        <option value="" disabled>
+                                                            Seleccione...
+                                                        </option>
+
+                                                        <option
+                                                            v-for="opcion in opciones_periodos"
+                                                            :key="opcion"
+                                                            :value="opcion">
+                                                            {{ opcion }}
+                                                        </option>
+                                                    </select>
                                                 </div>
 
-                                                <!--Mostrar PDF-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='pdf'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <iframe :src="archivos.ruta" style="width:100%;height:500px;" class="mb-5"></iframe>
+                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                    <label class="form-label">
+                                                        Fecha de cierre
+                                                    </label>
+
+                                                    <select class="form-select"
+                                                        v-model="archivos.fecha_cierre"
+                                                        :disabled="index_documento_editar !== index">
+
+                                                        <option value="" disabled>
+                                                            Seleccione fecha...
+                                                        </option>
+
+                                                        <option
+                                                            v-for="fecha in fechas_cierre_equipo"
+                                                            :key="fecha"
+                                                            :value="fecha">
+                                                            {{ fecha }}
+                                                        </option>
+                                                    </select>
                                                 </div>
 
-                                                <!--Mostrar Word-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='doc' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='docx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
-                                                        <img src="img/word.png" style="width:200px" class="mb-5"></img>
-                                                    </a>
-                                                </div>
-
-                                                <!--Mostrar Excel-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='xls' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='xlsx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
-                                                        <img src="img/excel.png" style="width:200px" class="mb-5"></img>
-                                                    </a>
-                                                </div>
-
-                                                <!--Mostrar Power Point -->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase()=='ppt' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase()=='pptx'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
-                                                        <img src="img/powerpoint.png" style="width:200px" class="mb-5"></img>
-                                                    </a>
-                                                </div>
-
-                                                <!--Mostrar .RAR-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='rar'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
-                                                        <img src="img/rar.png" style="width:200px" class="mb-5"></img>
-                                                    </a>
-                                                </div>
-
-                                                <!--Mostrar .RAR-->
-                                                <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='zip'" class="col-12 text-center">
-                                                    {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
-                                                    <a :href="archivos.ruta" :download="nombre_de_descarga">
-                                                        <img src="img/zip.png" style="width:200px" class="mb-5"></img>
-                                                    </a>
-                                                </div>
                                             </div>
+
+                                            <!-- VISTA PREVIA -->
+                                            <div class="documento-preview">
+
+                                                <div class="documento-preview-title">
+                                                    <i class="bi bi-eye me-2"></i>
+                                                    Vista previa del archivo
+                                                </div>
+
+                                                <!-- JPG / PNG -->
+                                                <div
+                                                    v-if="['png','jpg','jpeg'].includes(archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase())"
+                                                    class="text-center">
+
+                                                    <img
+                                                        :src="archivos.ruta"
+                                                        class="preview-imagen">
+                                                </div>
+
+                                                <!-- PDF -->
+                                                <div
+                                                    v-else-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase() == 'pdf'">
+
+                                                    <iframe
+                                                        :src="archivos.ruta"
+                                                        class="preview-pdf">
+                                                    </iframe>
+                                                </div>
+
+                                                <!-- WORD -->
+                                                <div
+                                                    v-else-if="['doc','docx'].includes(archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase())"
+                                                    class="preview-archivo">
+
+                                                    <i class="bi bi-file-earmark-word text-primary"></i>
+                                                    <a :href="archivos.ruta"
+                                                        :download="archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)">
+                                                        Descargar documento Word
+                                                    </a>
+                                                </div>
+
+                                                <!-- EXCEL -->
+                                                <div
+                                                    v-else-if="['xls','xlsx'].includes(archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase())"
+                                                    class="preview-archivo">
+
+                                                    <i class="bi bi-file-earmark-excel text-success"></i>
+                                                    <a :href="archivos.ruta"
+                                                        :download="archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)">
+                                                        Descargar archivo Excel
+                                                    </a>
+                                                </div>
+
+                                                <!-- POWERPOINT -->
+                                                <div
+                                                    v-else-if="['ppt','pptx'].includes(archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase())"
+                                                    class="preview-archivo">
+
+                                                    <i class="bi bi-file-earmark-ppt text-danger"></i>
+                                                    <a :href="archivos.ruta"
+                                                        :download="archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)">
+                                                        Descargar presentación
+                                                    </a>
+                                                </div>
+
+                                                <!-- RAR / ZIP -->
+                                                <div
+                                                    v-else-if="['rar','zip'].includes(archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1).toLowerCase())"
+                                                    class="preview-archivo">
+
+                                                    <i class="bi bi-file-earmark-zip text-warning"></i>
+                                                    <a :href="archivos.ruta"
+                                                        :download="archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)">
+                                                        Descargar archivo comprimido
+                                                    </a>
+                                                </div>
+
+                                                <div class="text-center mt-3">
+                                                    <small class="text-secondary">
+                                                        {{ archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1) }}
+                                                    </small>
+                                                </div>
+
+                                            </div>
+
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+
+                                    <!-- SIN DOCUMENTOS -->
+                                    <div v-else class="estado-vacio">
+                                        <i class="bi bi-folder2-open"></i>
+                                        <h6>No hay documentos registrados</h6>
+                                        <small>Los archivos que agregues aparecerán aquí.</small>
+                                    </div>
+
+                                </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+                            <!-- PIE -->
+                            <div class="modal-footer modal-documentos-footer">
+                                <button type="button"
+                                    class="btn btn-light border px-4"
+                                    data-bs-dismiss="modal">
+                                    <i class="bi bi-x-lg me-1"></i>
+                                    Cerrar
+                                </button>
                             </div>
+
                         </div>
                     </div>
                 </div>
+
                 <!--Fin Modal subir seguimiento-->
 
                 <!--MODAL DEFINICION DE PROYECTOS--->
