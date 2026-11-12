@@ -87,6 +87,26 @@ include("conexionGhoner.php");
         return "Error al ejecutar: " . $stmt->error;
     }
 
+    function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre) {
+        global $conexion;
+
+        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND DATE(fecha_cierre) = ?";
+
+        $stmt = $conexion->prepare($actualizar);
+
+        if (!$stmt) {
+            return "Error al preparar: " . $conexion->error;
+        }
+
+        $stmt->bind_param("sssis", $nombre_proyecto, $anio, $periodo, $id_equipo, $fecha_cierre);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return "Error al ejecutar: " . $stmt->error;
+    }
+
     function cerrarProyecto($id_equipo){
         $fecha = date('Y-m-d H:i:s');
         global $conexion;
