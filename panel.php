@@ -1368,16 +1368,27 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         Editar
                                                     </button>
 
-                                                    <button
-                                                        v-else
-                                                        type="button"
-                                                        class="btn btn-success btn-sm"
-                                                        @click="actualizarDocumento(archivos, index)"
-                                                        title="Guardar cambios">
+                                                    <template v-else>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-success btn-sm"
+                                                            @click="actualizarDocumento(archivos, index)"
+                                                            title="Guardar cambios">
+    
+                                                            <i class="bi bi-check-lg me-1"></i>
+                                                            Guardar
+                                                        </button>
 
-                                                        <i class="bi bi-check-lg me-1"></i>
-                                                        Guardar
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-outline-secondary btn-sm"
+                                                            @click="cancelarEdicionDocumento()"
+                                                            title="Cancelar edición"
+                                                        >
+                                                            <i class="bi bi-x-lg me-1"></i>
+                                                            Cancelar
+                                                        </button>
+                                                    </template>
 
                                                     <button
                                                         type="button"
