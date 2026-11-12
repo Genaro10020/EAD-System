@@ -2437,18 +2437,44 @@ const app = {
         );
       }
 
-      console.log("Datos listos para enviar al backend:", archivoObj);
+      let partesPeriodo = archivoObj.anio_periodo.split(" - ");
+      let anio = partesPeriodo[0];
+      let periodo = partesPeriodo[1];
+      let id_equipo = this.select_session_equipo.split("<->")[0];
 
-      this.index_documento_editar = null;
-      this.modo_nuevo_proyecto_edicion = false;
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarRegistrosPorFecha",
+          id_equipo: id_equipo,
+          nombre_proyecto: archivoObj.proyecto,
+          anio: anio,
+          periodo: periodo,
+          fecha_cierre: archivoObj.fecha_cierre,
+        })
+        .then((response) => {
+          if (response.data === true) {
+            this.index_documento_editar = null;
+            this.modo_nuevo_proyecto_edicion = false;
 
-      Swal.fire({
-        icon: "success",
-        title: "Edición confirmada",
-        text: "En el próximo paso conectaremos esto al backend para actualizar el registro.",
-        timer: 2500,
-        showConfirmButton: false,
-      });
+            Swal.fire({
+              icon: "success",
+              title: "Actualizado",
+              text: "Los registros se vincularon y actualizaron correctamente.",
+              timer: 2000,
+              showConfirmButton: false,
+            });
+          } else {
+            console.error("Error backend:", response.data);
+            Swal.fire(
+              "Error",
+              "Hubo un problema al actualizar los registros.",
+              "error",
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error axios:", error);
+        });
     },
     modalDocumentoDefinicionDeProyectos() {
       this.myModal = new bootstrap.Modal(
