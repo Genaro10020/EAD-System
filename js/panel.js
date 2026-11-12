@@ -2456,10 +2456,12 @@ const app = {
             this.index_documento_editar = null;
             this.modo_nuevo_proyecto_edicion = false;
 
+            this.consultarSeguimientoSession();
+
             Swal.fire({
               icon: "success",
               title: "Actualizado",
-              text: "Los registros se vincularon y actualizaron correctamente.",
+              text: "Los registros se vinculularon y actualizaron correctamente.",
               timer: 2000,
               showConfirmButton: false,
             });
@@ -2538,15 +2540,37 @@ const app = {
           periodo: periodo_buscar,
         })
         .then((response) => {
-          //console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
-          //console.log("Buscando documentos",response.data);
           if (tipo_archivo === "Presentacion") {
-            this.documento_session = response.data;
+            let documentos = response.data;
+
+            if (documentos && documentos.length > 0) {
+              const reg = (this.seguimiento_session || []).find(
+                (s) => s.nombre_proyecto && s.nombre_proyecto.trim() !== "",
+              );
+              documentos.forEach((doc) => {
+                doc.proyecto = (
+                  doc.proyecto ||
+                  reg?.nombre_proyecto ||
+                  ""
+                ).trim();
+                doc.anio_periodo = (
+                  doc.anio_periodo ||
+                  (reg ? `${reg.anio} - ${reg.periodo}` : "")
+                )
+                  .replace(/\s*-\s*/g, " - ")
+                  .trim();
+                doc.fecha_cierre = (
+                  doc.fecha_cierre ||
+                  reg?.fecha_cierre ||
+                  ""
+                ).split(" ")[0];
+              });
+            }
+
+            this.documento_session = documentos;
+
             if (this.documento_session.length > 0) {
-              //console.log(this.documento_session + "Archivos encontrados.")
               this.random = Math.random();
-            } else {
-              //console.log(this.documento_session + "Sin imagen encontrada.")
             }
           } else if (tipo_archivo === "DefinicionProyectos") {
             this.documento_definicion = response.data;
@@ -3209,9 +3233,17 @@ const app = {
           },
         })
         .then((response) => {
-          //console.log("Tomando las Etapas",response.data[1].map(datos=>datos.etapa))
           if (response.data[0] == true) {
-            this.seguimiento_session = response.data[1];
+            let registros = response.data[1];
+
+            registros.forEach((item) => {
+              if (item.nombre_proyecto === null) item.nombre_proyecto = "";
+              if (item.anio === null) item.anio = "";
+              if (item.periodo === null) item.periodo = "";
+              if (item.fecha_cierre === null) item.fecha_cierre = "";
+            });
+
+            this.seguimiento_session = registros;
 
             if (this.seguimiento_session.length > 0) {
               let registroConNombre = this.seguimiento_session.find(
@@ -3237,8 +3269,8 @@ const app = {
               this.bloquear_nombre_proyecto = false;
             }
 
-            console.log("Seguimiento", response.data[1]);
-            var seguimiento = response.data[1];
+            console.log("Seguimiento", this.seguimiento_session);
+            var seguimiento = this.seguimiento_session;
             var suma1 = 0;
             var suma2 = 0;
             var suma3 = 0;
@@ -3251,42 +3283,32 @@ const app = {
 
             for (let i = 0; i < seguimiento.length; i++) {
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 1) {
-                //P Que se llevan
                 suma1 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 2) {
-                //D Que se llevan
                 suma2 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 3) {
-                //C Que se llevan
                 suma3 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 4) {
-                //A Que se llevan
                 suma4 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 5) {
-                //DMAIC (D) Que se llevan
                 suma5 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 6) {
-                //DMAIC (M) Que se llevan
                 suma6 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 7) {
-                //DMAIC (A) Que se llevan
                 suma7 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 8) {
-                //DMAIC (I) Que se llevan
                 suma8 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 9) {
-                //DMAIC (C) Que se llevan
                 suma9 += JSON.parse(seguimiento[i].fase).length;
               }
-              //console.log("PARSEANDO"+i,parseInt(JSON.parse(seguimiento[i].etapa)[0]))
             }
 
             var valorMaximo = 100;
