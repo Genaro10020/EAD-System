@@ -2331,55 +2331,79 @@ const app = {
     },
 
     async modalDocumentoGestionSession() {
-      this.proyectos_equipo_modal = [];
-      this.fechas_cierre_equipo = [];
-      this.doc_nombre_proyecto = "";
-      this.doc_anio_periodo = "";
-      this.index_documento_editar = null;
-      this.modo_nuevo_proyecto = false;
-      this.modo_nuevo_proyecto_edicion = false;
+      try {
+        this.proyectos_equipo_modal = [];
+        this.fechas_cierre_equipo = [];
+        this.doc_nombre_proyecto = "";
+        this.doc_anio_periodo = "";
+        this.doc_fecha_cierre = "";
+        this.index_documento_editar = null;
+        this.modo_nuevo_proyecto = false;
+        this.modo_nuevo_proyecto_edicion = false;
 
-      if (this.seguimiento_session && this.seguimiento_session.length > 0) {
-        let proyectosUnicos = new Set();
-        let fechasUnicas = new Set();
-        let registroActivo = null;
-
-        this.seguimiento_session.forEach((item) => {
-          if (item.nombre_proyecto && item.nombre_proyecto.trim() !== "") {
-            proyectosUnicos.add(item.nombre_proyecto.trim());
-            if (!registroActivo) registroActivo = item;
-          }
-          if (
-            item.fecha_cierre &&
-            item.fecha_cierre.trim() !== "" &&
-            item.fecha_cierre !== "0000-00-00 00:00:00"
-          ) {
-            let soloFecha = item.fecha_cierre.split(" ")[0];
-            fechasUnicas.add(soloFecha);
-          }
-        });
-
-        this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
-          (nombre) => ({ nombre: nombre }),
-        );
-        this.fechas_cierre_equipo = Array.from(fechasUnicas).sort(
-          (a, b) => new Date(b) - new Date(a),
-        );
-
-        if (registroActivo) {
-          this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
+        let id_equipo_actual = null;
+        if (this.select_session_equipo) {
+          id_equipo_actual = this.select_session_equipo.split("<->")[0];
         }
-      }
 
-      if (
-        this.nombre_proyecto_sesion !== "" &&
-        this.doc_nombre_proyecto === ""
-      ) {
-        this.doc_nombre_proyecto = this.nombre_proyecto_sesion;
-      }
+        if (id_equipo_actual) {
+          const resFechas = await axios.get("gestionSesionesController.php", {
+            params: {
+              accion: "ConsultarFechasCierre",
+              id_equipo: id_equipo_actual,
+            },
+          });
+          if (resFechas.data && resFechas.data[0] === true) {
+            this.fechas_cierre_equipo = resFechas.data[1].sort(
+              (a, b) => new Date(b) - new Date(a),
+            );
+          }
+        }
 
-      this.myModal = new bootstrap.Modal(document.getElementById("modal"));
-      this.myModal.show();
+        if (
+          this.seguimiento_session &&
+          Array.isArray(this.seguimiento_session)
+        ) {
+          let proyectosUnicos = new Set();
+          let registroActivo = null;
+
+          this.seguimiento_session.forEach((item) => {
+            if (
+              item &&
+              item.nombre_proyecto &&
+              typeof item.nombre_proyecto === "string" &&
+              item.nombre_proyecto.trim() !== ""
+            ) {
+              proyectosUnicos.add(item.nombre_proyecto.trim());
+              if (!registroActivo) registroActivo = item;
+            }
+          });
+
+          this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
+            (nombre) => ({ nombre: nombre }),
+          );
+
+          if (registroActivo) {
+            this.doc_nombre_proyecto = registroActivo.nombre_proyecto;
+          }
+        }
+
+        if (
+          this.nombre_proyecto_sesion &&
+          this.nombre_proyecto_sesion !== "" &&
+          this.doc_nombre_proyecto === ""
+        ) {
+          this.doc_nombre_proyecto = this.nombre_proyecto_sesion;
+        }
+
+        let modalElement = document.getElementById("modal");
+        if (modalElement) {
+          this.myModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+          this.myModal.show();
+        }
+      } catch (error) {
+        console.error("Error al abrir la modal:", error);
+      }
     },
     habilitarEdicionDocumento(index) {
       this.index_documento_editar = index;
