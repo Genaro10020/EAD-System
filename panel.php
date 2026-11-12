@@ -1207,19 +1207,41 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 <label class="form-label fw-semibold" style="font-size: 0.9rem;">
                                                     Nombre del Proyecto
                                                 </label>
-                                                <input 
-                                                    type="text" 
-                                                    class="form-control" 
-                                                    list="listaProyectosModal" 
-                                                    v-model="doc_nombre_proyecto" 
-                                                    placeholder="Seleccione o registre un nuevo proyecto..." 
-                                                    style="font-size: 0.85rem;" 
-                                                    required
-                                                    :disabled="bloquear_nombre_proyecto"
-                                                >
-                                                <datalist id="listaProyectosModal">
-                                                    <option v-for="proyecto in proyectos_equipo_modal" :value="proyecto.nombre"></option>
-                                                </datalist>
+                                                <div class="input-group">
+                                                    <select 
+                                                        v-if="modo_nuevo_proyecto" 
+                                                        class="form-select" 
+                                                        v-model="doc_nombre_proyecto"
+                                                        style="font-size: 0.85rem;"
+                                                        :required="!modo_nuevo_proyecto"
+                                                        :disabled="bloquear_nombre_proyecto">
+                                                        <option value="" disabled>Seleccione un proyecto...</option>
+                                                        <option v-for="proyecto in proyectos_equipo_modal" :value="proyecto.nombre">
+                                                            {{ proyecto.nombre }}
+                                                        </option>
+                                                    </select>
+
+                                                    <input
+                                                        v-else
+                                                        type="text"
+                                                        class="form-control"
+                                                        v-model="doc_nombre_proyecto"
+                                                        placeholder="Registre un nuevo proyecto..."
+                                                        style="font-size: 0.85rem;"
+                                                        :required="modo_nuevo_proyecto"
+                                                        :disabled="bloquear_nombre_proyecto"
+                                                    >
+
+                                                    <button
+                                                        type="button"
+                                                        class="btn btn-outline-secondary"
+                                                        @click="modo_nuevo_proyecto = !modo_nuevo_proyecto"
+                                                        :disabled="bloquear_nombre_proyecto"
+                                                        :title="modo_nuevo_proyecto ? 'Elegir proyecto existente' : 'Nuevo nombre proyecto'"
+                                                    >
+                                                        <i class="bi" :class="modo_nuevo_proyecto ? 'bi-list-ul' : 'bi-plus-lg'"></i>
+                                                    </button>
+                                                </div>
                                             </div>
 
                                             <div class="col-12 col-md-6">
@@ -1253,42 +1275,97 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                         <div v-if="documento_session.length>0">
                                             <hr>
                                             <div class="col-12 mb-4 p-3 border rounded shadow-sm bg-light" v-for="(archivos,index) in documento_session">
+                                                <div class="row g-3 align-items-end mb-3 text-start">
 
-                                                <div class="row g-2 align-items-end mb-3 text-start">
-                                                    <div class="col-12 col-md-5">
-                                                        <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Nombre del Proyecto
+                                                    <!-- Nombre del proyecto -->
+                                                    <div class="col-12 col-lg-5">
+                                                        <label class="form-label fw-semibold text-secondary small">
+                                                            Nombre del proyecto
                                                         </label>
-                                                        <input type="text" class="form-control form-control-sm" v-model="archivos.proyecto" placeholder="Proyecto asignado...">
+                                                        <input
+                                                            type="text"
+                                                            class="form-control form-control-sm"
+                                                            v-model="archivos.proyecto"
+                                                            placeholder="Proyecto asignado..."
+                                                            :disabled="index_documento_editar !== index"
+                                                        >
                                                     </div>
 
-                                                    <div class="col-12 col-md-4">
-                                                        <label class="form-label text-muted mb-1" style="font-size: 0.8rem; font-weight: 600;">
-                                                            Año y Periodo
+                                                    <div class="col-12 col-sm-6 col-lg-3">
+                                                        <label class="form-label fw-semibold text-secondary small">
+                                                            Año y periodo
                                                         </label>
-                                                        <select class="form-select form-select-sm" v-model="archivos.anio_periodo">
-                                                            <option value="" disabled selected>Seleccione...</option>
-                                                            <option v-for="opcion in opciones_periodos" :key="opcion" :value="opcion">
+                                                        <select
+                                                            class="form-select form-select-sm"
+                                                            v-model="archivos.anio_periodo"
+                                                            :disabled="index_documento_editar !== index"
+                                                        >
+                                                            <option value="" disabled>Seleccione...</option>
+                                                            <option
+                                                                v-for="opcion in opciones_periodos"
+                                                                :key="opcion"
+                                                                :value="opcion"
+                                                            >
                                                                 {{ opcion }}
                                                             </option>
                                                         </select>
                                                     </div>
 
-                                                    <div class="col-12 col-md-3 d-flex justify-content-end gap-2">
-                                                        <button type="button" class="btn btn-warning btn-sm text-dark fw-semibold px-3" @click="actualizarDocumento(archivos)" title="Actualizar datos">
-                                                            <i class="bi bi-arrow-clockwise"></i> Editar
+                                                    <div class="col-12 col-sm-6 col-lg-4">
+                                                        <label class="form-label fw-semibold text-secondary small">
+                                                            Fecha de cierre
+                                                        </label>
+                                                        <select
+                                                            class="form-select form-select-sm"
+                                                            v-model="archivos.fecha_cierre"
+                                                            :disabled="index_documento_editar !== index"
+                                                        >
+                                                            <option value="" disabled>Seleccione fecha...</option>
+                                                            <option
+                                                                v-for="fecha in fechas_cierre_equipo"
+                                                                :key="fecha"
+                                                                :value="fecha"
+                                                            >
+                                                                {{ fecha }}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="d-flex flex-column flex-sm-row justify-content-between
+                                                    align-items-sm-center gap-3 mb-3">
+
+                                                    <span class="badge bg-secondary px-3 py-2 align-self-start">
+                                                        <i class="bi bi-file-earmark-text me-1"></i>
+                                                        Documento {{ index + 1 }}
+                                                    </span>
+
+                                                    <div class="d-flex flex-wrap gap-2">
+
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-outline-primary btn-sm px-3"
+                                                            @click="actualizarDocumento(archivos)"
+                                                            title="Actualizar datos"
+                                                        >
+                                                            <i class="bi bi-pencil-square me-1"></i>
+                                                            Editar
                                                         </button>
-                                                        <button type="button" class="btn btn-danger btn-sm fw-semibold px-3" @click="eliminarDocumento(archivos,'Presentacion')" title="Eliminar documento">
-                                                            <i class="bi bi-trash-fill"></i> Eliminar
+
+                                                        <button
+                                                            type="button"
+                                                            class="btn btn-outline-danger btn-sm px-3"
+                                                            @click="eliminarDocumento(archivos, 'Presentacion')"
+                                                            title="Eliminar documento"
+                                                        >
+                                                            <i class="bi bi-trash3 me-1"></i>
+                                                            Eliminar
                                                         </button>
                                                     </div>
                                                 </div>
 
-                                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                                    <span class="badge bg-secondary">Documento {{ index+1 }}</span>
-                                                </div>
                                                 <hr class="text-muted opacity-25 mt-0">
-
                                                 <!--Mostar los JPG y PNG-->
                                                 <div v-if="archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='png' || archivos.ruta.slice(archivos.ruta.lastIndexOf('.') + 1)=='jpg'" class="col-12 text-center">
                                                     {{nombre_de_descarga = archivos.ruta.slice(archivos.ruta.lastIndexOf('/')+1)}}<br>
