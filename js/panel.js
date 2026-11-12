@@ -2330,7 +2330,7 @@ const app = {
       }
     },
 
-    modalDocumentoGestionSession() {
+    async modalDocumentoGestionSession() {
       this.proyectos_equipo_modal = [];
       this.fechas_cierre_equipo = [];
       this.doc_nombre_proyecto = "";
