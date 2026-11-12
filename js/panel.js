@@ -2383,6 +2383,10 @@ const app = {
       this.myModal = new bootstrap.Modal(document.getElementById("modal"));
       this.myModal.show();
     },
+    habilitarEdicionDocumento(index) {
+      this.index_documento_editar = index;
+      this.modo_nuevo_proyecto_edicion = false;
+    },
     actualizarDocumento(archivoObj) {
       console.log("Datos del documento a actualizar:", archivoObj);
 
