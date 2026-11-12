@@ -63,8 +63,9 @@ if(isset($_SESSION['nombre'])){
                         $anio = $arreglo["anio"];
                         $periodo = $arreglo["periodo"];
                         $fecha_cierre = $arreglo["fecha_cierre"];
-                        
-                        $resultado = actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre);
+                        $ruta_vieja = $arreglo["ruta_vieja"] ?? "";
+
+                        $resultado = actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja);
                     }
                 break;
             case 'DELETE':

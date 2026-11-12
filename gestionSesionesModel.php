@@ -87,8 +87,22 @@ include("conexionGhoner.php");
         return "Error al ejecutar: " . $stmt->error;
     }
 
-    function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre) {
+    function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja) {
         global $conexion;
+
+        if (!empty($ruta_vieja) && file_exists($ruta_vieja)) {
+            $nombre_archivo = basename($ruta_vieja);
+            
+            $directorio_nuevo = "documentoSession/" . $id_equipo . "/" . $anio . "/" . $periodo . "/";
+            $ruta_nueva = $directorio_nuevo . $nombre_archivo;
+
+            if ($ruta_vieja !== $ruta_nueva) {
+                if (!is_dir($directorio_nuevo)) {
+                    mkdir($directorio_nuevo, 0777, true);
+                }
+                rename($ruta_vieja, $ruta_nueva);
+            }
+        }
 
         $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND DATE(fecha_cierre) = ?";
 

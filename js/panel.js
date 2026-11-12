@@ -2450,6 +2450,7 @@ const app = {
           anio: anio,
           periodo: periodo,
           fecha_cierre: archivoObj.fecha_cierre,
+          ruta_vieja: archivoObj.ruta,
         })
         .then((response) => {
           if (response.data === true) {
