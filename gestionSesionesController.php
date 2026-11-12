@@ -55,8 +55,16 @@ if(isset($_SESSION['nombre'])){
                         $nombre_proyecto = $arreglo["nombre_proyecto"];
                         $anio = $arreglo["anio"];
                         $periodo = $arreglo["periodo"];
-                        
                         $resultado = actualizarProyectoModal($id_equipo, $nombre_proyecto, $anio, $periodo);
+                        
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarRegistrosPorFecha") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+                        $anio = $arreglo["anio"];
+                        $periodo = $arreglo["periodo"];
+                        $fecha_cierre = $arreglo["fecha_cierre"];
+                        
+                        $resultado = actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre);
                     }
                 break;
             case 'DELETE':
