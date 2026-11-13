@@ -137,7 +137,7 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
     $anio_actual = (int)date('Y');
     $mes_actual = (int)date('n');
     
-    $mes_limite = $mes_actual - 1;
+    $mes_limite = $mes_actual - 2;
     $anio_limite = $anio_actual;
     
     if ($mes_limite < 1) {
@@ -150,7 +150,8 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
         $es_reciente = true;
     }
 
-    if ($es_reciente) {        
+    if ($es_reciente) {      
+        $es_reciente = "Si";  
         $consulta = "SELECT e.id_ponderacion, p.ponderacion 
                     FROM equipos_ead e 
                     LEFT JOIN ponderaciones p ON p.id = e.id_ponderacion 
@@ -165,12 +166,14 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
                         $id_ponderacion = (int)$fila['id_ponderacion'];
                         $nombre_ponderacion = $fila['ponderacion'] ?? "";
                         $hay_ponderacion = true;
+                        
                     }
                 }
             }
             $stmt->close();
         }
     } else {
+         $es_reciente = "No";
         $consulta = "SELECT sc.id_ponderacion, p.ponderacion 
                     FROM scorecard sc
                     LEFT JOIN ponderaciones p ON p.id = sc.id_ponderacion
@@ -186,6 +189,7 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
                     $id_ponderacion = (int)$fila['id_ponderacion'];
                     $nombre_ponderacion = $fila['ponderacion'] ?? "";
                     $hay_ponderacion = true;
+                   
                 }
             }
             $stmt->close();
@@ -195,7 +199,8 @@ function obtenerPonderacionPeriodo($id_equipo, $anio, $mes)
     return array(true, array(
         'hay_ponderacion'     => $hay_ponderacion,
         'id_ponderacion'      => $id_ponderacion,
-        'nombre_ponderacion'  => $nombre_ponderacion
+        'nombre_ponderacion'  => $nombre_ponderacion,
+        'es_reciente'  => $es_reciente
     ));
 }
 
