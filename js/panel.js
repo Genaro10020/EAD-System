@@ -3669,6 +3669,7 @@ const app = {
       this.faseUsadaEnOtroSeguimiento = fases_seleccionadas_sin_coincidencias;
     },
     reseteandoDatos() {
+      this.editando_nombre_proyecto_sesion = false;
       this.actualizar_session = false;
       this.bloquear_nombre_proyecto = false;
       this.index_session_actualizar = "";
