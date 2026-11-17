@@ -3,6 +3,13 @@ const app = {
   data() {
     return {
       alert: null,
+      notificacion_toast: {
+        visible: false,
+        titulo: "",
+        mensaje: "",
+        tipo: "success",
+      },
+      toastTimeout: null,
       verMenu: "Si",
       menuAbierto: false,
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
