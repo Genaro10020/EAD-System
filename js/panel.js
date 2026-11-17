@@ -2842,7 +2842,7 @@ const app = {
 
         if (!this.doc_nombre_proyecto || !this.doc_anio_periodo) {
           this.login = false;
-          return Swal.fire(
+          return this.mostrarNotificacionToast(
             "Datos incompletos",
             "Debe ingresar el nombre del proyecto y seleccionar un Año y Periodo.",
             "warning",
@@ -2919,11 +2919,11 @@ const app = {
           console.log("Hola response", response.data);
 
           if (response.data.length > 0) {
-            Swal.fire({
-              title: "Guardado!!",
-              text: "Archivo guardado con éxito",
-              icon: "success",
-            });
+            this.mostrarNotificacionToast(
+              "¡Guardado!",
+              "Archivo guardado con éxito.",
+              "success",
+            );
 
             if (tipo_archivo === "Presentacion") {
               this.$refs.ref_imagen_presentacion.value = "";
