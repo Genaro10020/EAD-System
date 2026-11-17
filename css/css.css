@@ -2202,3 +2202,146 @@ select option,
     padding: 1rem;
   }
 }
+
+/* NOTIFICACIÓN TOAST */
+
+.notificacion-flotante-contenedor {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 99999;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 320px;
+  max-width: 420px;
+  background-color: #ffffff;
+  padding: 16px 18px;
+  border-radius: 12px;
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.16),
+    0 4px 10px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid #10b981;
+  overflow: hidden;
+  animation: entradaNotificacionToast 0.3s cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.notificacion-flotante-contenedor.tipo-success {
+  border-left-color: #10b981;
+}
+
+.notificacion-flotante-contenedor.tipo-warning {
+  border-left-color: #f59e0b;
+}
+
+.notificacion-flotante-contenedor.tipo-error {
+  border-left-color: #ef4444;
+}
+
+.notificacion-flotante-icono {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 1.15rem;
+}
+
+.tipo-success .notificacion-flotante-icono {
+  background-color: #ecfdf5;
+  color: #10b981;
+}
+
+.tipo-warning .notificacion-flotante-icono {
+  background-color: #fffbeb;
+  color: #f59e0b;
+}
+
+.tipo-error .notificacion-flotante-icono {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
+
+.notificacion-flotante-contenido {
+  flex: 1;
+  text-align: left;
+}
+
+.notificacion-flotante-titulo {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 3px 0;
+}
+
+.notificacion-flotante-texto {
+  font-size: 0.82rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notificacion-flotante-cerrar {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.notificacion-flotante-cerrar:hover {
+  color: #334155;
+}
+
+.notificacion-flotante-progreso {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  animation: progresoNotificacionToast 3.2s linear forwards;
+}
+
+.tipo-success .notificacion-flotante-progreso {
+  background-color: #10b981;
+}
+
+.tipo-warning .notificacion-flotante-progreso {
+  background-color: #f59e0b;
+}
+
+.tipo-error .notificacion-flotante-progreso {
+  background-color: #ef4444;
+}
+
+@keyframes entradaNotificacionToast {
+  from {
+    opacity: 0;
+    transform: translateX(60px) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX() scale(1);
+  }
+}
+
+@keyframes progresoNotificacionToast {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
