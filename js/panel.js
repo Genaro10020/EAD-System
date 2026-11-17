@@ -874,6 +874,31 @@ const app = {
         clearTimeout(this.toastTimeout);
       }
     },
+    actualizarDocumento(archivoObj, index) {
+      if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
+        return this.mostrarNotificacionToast(
+          "Faltan Datos",
+          "El nombre del proyecto no puede estar vacio",
+          "warning",
+        );
+      }
+
+      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
+        return this.mostrarNotificacionToast(
+          "Faltan Datos",
+          "Seleccione el Año y Periodo",
+          "warining",
+        );
+      }
+
+      if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
+        return this.mostrarNotificacionToast(
+          "Faltan Datos",
+          "Seleccione la Fecha de Cierre asociada",
+          "warining",
+        );
+      }
+    },
     toggleMenu() {
       this.verificarSesion();
       //this.menuAbierto = !this.menuAbierto;
