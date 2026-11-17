@@ -101,6 +101,8 @@ const app = {
       input_actualizar: "",
       nombre_proyecto_sesion: "",
       bloquear_nombre_proyecto: false,
+      editando_nombre_proyecto_sesion: false,
+      nombre_proyecto_respaldo: "",
       actualizar_session: false,
       opciones_periodos: [],
       doc_nombre_proyecto: "",
