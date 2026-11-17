@@ -2515,73 +2515,10 @@ const app = {
       this.index_documento_editar = index;
       this.modo_nuevo_proyecto_edicion = false;
     },
-    actualizarDocumento(archivoObj, index) {
-      if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
-        return this.mostrarNotificacionToast(
-          "Faltan Datos",
-          "El nombre del proyecto no puede estar vacío.",
-          "warning",
-        );
-      }
-      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
-        return this.mostrarNotificacionToast(
-          "Faltan Datos",
-          "Seleccione el Año y Periodo.",
-          "warning",
-        );
-      }
-      if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
-        return this.mostrarNotificacionToast(
-          "Faltan Datos",
-          "Seleccione la Fecha de Cierre asociada.",
-          "warning",
-        );
-      }
-
-      let partesPeriodo = archivoObj.anio_periodo.split(" - ");
-      let anio = partesPeriodo[0];
-      let periodo = partesPeriodo[1];
-      let id_equipo = this.select_session_equipo.split("<->")[0];
-
-      axios
-        .put("gestionSesionesController.php", {
-          accion: "ActualizarRegistrosPorFecha",
-          id_equipo: id_equipo,
-          nombre_proyecto: archivoObj.proyecto,
-          anio: anio,
-          periodo: periodo,
-          fecha_cierre: archivoObj.fecha_cierre,
-          ruta_vieja: archivoObj.ruta,
-        })
-        .then((response) => {
-          if (response.data === true) {
-            this.index_documento_editar = null;
-            this.modo_nuevo_proyecto_edicion = false;
-
-            this.consultarSeguimientoSession();
-
-            this.mostrarNotificacionToast(
-              "Actualizado",
-              "Los registros se vincularon y actualizaron correctamente.",
-              "success",
-            );
-          } else {
-            console.error("Error backend:", response.data);
-            this.mostrarNotificacionToast(
-              "Error",
-              "Hubo un problema al actualizar los registros.",
-              "error",
-            );
-          }
-        })
-        .catch((error) => {
-          console.error("Error axios:", error);
-          this.mostrarNotificacionToast(
-            "Error de conexión",
-            "No se pudo conectar con el servidor.",
-            "error",
-          );
-        });
+    cancelarEdicionDocumento() {
+      this.index_documento_editar = null;
+      this.modo_nuevo_proyecto_edicion = false;
+      this.buscarDocumentos("Presentacion");
     },
     actualizarDocumento(archivoObj, index) {
       if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
