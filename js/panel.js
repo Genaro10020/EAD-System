@@ -842,6 +842,31 @@ const app = {
     this.generarPeriodos();
   },
   methods: {
+    mostrarNotificacionToast(titulo, mensaje, tipo = "success") {
+      if (this.toastTimeout) {
+        clearTimeout(this.toastTimeout);
+      }
+
+      this.notificacion_toast = {
+        visible: false,
+        titulo: "",
+        mensaje: "",
+        tipo: tipo,
+      };
+
+      this.$nextTick(() => {
+        this.notificacion_toast = {
+          visible: true,
+          titulo: titulo,
+          mensaje: mensaje,
+          tipo: tipo,
+        };
+
+        this.toastTimeout = setTimeout(() => {
+          this.notificacion_toast.visible = false;
+        }, 3200);
+      });
+    },
     toggleMenu() {
       this.verificarSesion();
       //this.menuAbierto = !this.menuAbierto;
