@@ -867,6 +867,13 @@ const app = {
         }, 3200);
       });
     },
+    cerrarNotificacionToast() {
+      this.notificacion_toast.visible = false;
+
+      if (this.toastTimeout) {
+        clearTimeout(this.toastTimeout);
+      }
+    },
     toggleMenu() {
       this.verificarSesion();
       //this.menuAbierto = !this.menuAbierto;
