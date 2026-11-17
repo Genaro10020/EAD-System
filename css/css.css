@@ -2332,7 +2332,7 @@ select option,
 
   to {
     opacity: 1;
-    transform: translateX() scale(1);
+    transform: translateX(0) scale(1);
   }
 }
 
