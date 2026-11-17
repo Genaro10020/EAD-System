@@ -2206,10 +2206,10 @@ select option,
 /* NOTIFICACIÓN TOAST */
 
 .notificacion-flotante-contenedor {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 99999;
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  z-index: 2147483647 !important;
   display: flex;
   align-items: flex-start;
   gap: 14px;
