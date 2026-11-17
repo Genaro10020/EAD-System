@@ -6,7 +6,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
     <head>
         <?php include('head.php'); ?>
-        <link rel="stylesheet" href="css/css.css">
+        <link rel="stylesheet" href="css/css.css?<?php echo time(); ?>">
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     </head>
 
@@ -59,25 +59,27 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
         </header>
         <div id="app" class="col-12" style="min-height: 80vh;" v-cloak>
 
-            <div 
-                v-if="notificacion_toast.visible" 
-                class="notificacion-flotante-contenedor"
-                :class="'tipo-' + notificacion_toast.tipo"
-                >
-                <div class="notificacion-flotante-icono">
-                    <i v-if="notificacion_toast.tipo === 'success'" class="bi bi-check-lg"></i>
-                    <i v-else-if="notificacion_toast.tipo === 'warning'" class="bi bi-exclamation-triangle-fill"></i>
-                    <i v-else class="bi bi-x-circle-fill"></i>
+            <teleport to="body">
+                <div 
+                    v-if="notificacion_toast.visible" 
+                    class="notificacion-flotante-contenedor"
+                    :class="'tipo-' + notificacion_toast.tipo"
+                    >
+                    <div class="notificacion-flotante-icono">
+                        <i v-if="notificacion_toast.tipo === 'success'" class="bi bi-check-lg"></i>
+                        <i v-else-if="notificacion_toast.tipo === 'warning'" class="bi bi-exclamation-triangle-fill"></i>
+                        <i v-else class="bi bi-x-circle-fill"></i>
+                    </div>
+                    <div class="notificacion-flotante-contenido">
+                        <h6 class="notificacion-flotante-titulo">{{ notificacion_toast.titulo }}</h6>
+                        <p class="notificacion-flotante-texto">{{ notificacion_toast.mensaje }}</p>
+                    </div>
+                    <button type="button" class="notificacion-flotante-cerrar" @click="cerrarNotificacionToast()">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                    <div class="notificacion-flotante-progreso"></div>
                 </div>
-                <div class="notificacion-flotante-contenido">
-                    <h6 class="notificacion-flotante-titulo">{{ notificacion_toast.titulo }}</h6>
-                    <p class="notificacion-flotante-texto">{{ notificacion_toast.mensaje }}</p>
-                </div>
-                <button type="button" class="notificacion-flotante-cerrar" @click="cerrarNotificacionToast()">
-                    <i class="bi bi-x-lg"></i>
-                </button>
-                <div class="notificacion-flotante-progreso"></div>
-            </div>
+            </teleport>
             <img v-if="loading==true" src="img/loading.gif">
             <div class="row d-flex text-center">
                 <?php
@@ -4005,9 +4007,9 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             </div>-->
             <!--/////////////////////////////////////////////// MODAL VSUALIZAR FORO //////////////////// -->
         </div>
-        <script src="js/panel.js?<?php echo time(); ?>"></script>
-        <script src="js/header.js?<? echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="js/panel.js?<?php echo time(); ?>"></script>
+        <script src="js/header.js?<?php echo time(); ?>"></script>
         <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     </body>
 
