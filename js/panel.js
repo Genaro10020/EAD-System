@@ -2403,15 +2403,22 @@ const app = {
 
         if (this.documento_session && Array.isArray(this.documento_session)) {
           this.documento_session.forEach((doc) => {
+            const tienePeriodo =
+              doc.anio_periodo && doc.anio_periodo.trim() !== "";
+
+            if (!tienePeriodo) {
+              doc.proyecto = "";
+              doc.anio_periodo = "";
+              doc.fecha_cierre = "";
+
+              return;
+            }
+
             if (!doc.fecha_cierre || doc.fecha_cierre === "") {
               let match = historialCerrados.find(
-                (h) =>
-                  (doc.anio_periodo &&
-                    `${h.anio} - ${h.periodo}` === doc.anio_periodo) ||
-                  (doc.proyecto &&
-                    h.nombre_proyecto &&
-                    h.nombre_proyecto.trim() === doc.proyecto.trim()),
+                (h) => `${h.anio} - ${h.periodo}` === doc.anio_periodo,
               );
+
               if (match && match.fecha_cierre) {
                 doc.fecha_cierre = match.fecha_cierre.split(" ")[0].trim();
               }
@@ -2420,12 +2427,14 @@ const app = {
             if (doc.proyecto && doc.proyecto.trim() !== "") {
               proyectosUnicos.add(doc.proyecto.trim());
             }
+
             if (
               doc.fecha_cierre &&
               doc.fecha_cierre.trim() !== "" &&
               !doc.fecha_cierre.startsWith("0000-00-00")
             ) {
               let fechaDoc = doc.fecha_cierre.split(" ")[0].trim();
+
               if (!this.fechas_cierre_equipo.includes(fechaDoc)) {
                 this.fechas_cierre_equipo.push(fechaDoc);
               }
@@ -2598,16 +2607,46 @@ const app = {
           if (tipo_archivo === "Presentacion") {
             let documentos = response.data;
 
-            if (documentos && documentos.length > 0) {
-              documentos.forEach((doc) => {
+            if (
+              documentos &&
+              Array.isArray(documentos) &&
+              documentos.length > 0
+            ) {
+              documentos = documentos.map((doc) => {
+                if (typeof doc === "string") {
+                  let partes = doc.split("/");
+                  let anio_periodo_doc = "";
+
+                  if (partes.length >= 5) {
+                    anio_periodo_doc = `${partes[2].trim()} - ${partes[3].trim()}`;
+                  }
+
+                  return {
+                    ruta: doc,
+                    proyecto: "",
+                    anio_periodo: anio_periodo_doc,
+                    fecha_cierre: "",
+                  };
+                }
+
                 const tienePeriodo =
-                  doc.anio_periodo && doc_anio_periodo.trim() !== "";
+                  doc.anio_periodo &&
+                  String(doc.anio_periodo).trim() !== "" &&
+                  !String(doc.anio_periodo).includes("null");
 
                 doc.proyecto =
-                  tienePeriodo && doc.proyecto ? doc.proyecto.trim() : "";
+                  tienePeriodo && doc.proyecto
+                    ? String(doc.proyecto).trim()
+                    : "";
                 doc.anio_periodo = tienePeriodo
-                  ? doc.anio_periodo.replace(/\s*-\s*/g, " - ").trim()
+                  ? String(doc.anio_periodo)
+                      .replace(/\s*-\s*/g, " - ")
+                      .trim()
                   : "";
+                doc.fecha_cierre =
+                  tienePeriodo && doc.fecha_cierre
+                    ? String(doc.fecha_cierre).split(" ")[0].trim()
+                    : "";
 
                 if (
                   doc.proyecto &&
@@ -2627,7 +2666,17 @@ const app = {
                     (a, b) => new Date(b) - new Date(a),
                   );
                 }
+
+                return doc;
               });
+            } else {
+              documentos = [];
+            }
+
+            this.documento_session = documentos;
+
+            if (this.documento_session.length > 0) {
+              this.random = Math.random();
             }
           } else if (tipo_archivo === "DefinicionProyectos") {
             this.documento_definicion = response.data;
