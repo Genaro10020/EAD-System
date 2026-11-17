@@ -2403,23 +2403,29 @@ const app = {
 
         if (this.documento_session && Array.isArray(this.documento_session)) {
           this.documento_session.forEach((doc) => {
+            if (!doc || typeof doc !== "object") return;
+
             const tienePeriodo =
-              doc.anio_periodo && doc.anio_periodo.trim() !== "";
+              doc.anio_periodo &&
+              String(doc.anio_periodo).trim() !== "" &&
+              !String(doc.anio_periodo).includes("null");
 
             if (!tienePeriodo) {
               doc.proyecto = "";
               doc.anio_periodo = "";
               doc.fecha_cierre = "";
-
               return;
             }
 
-            if (!doc.fecha_cierre || doc.fecha_cierre === "") {
-              let match = historialCerrados.find(
-                (h) => `${h.anio} - ${h.periodo}` === doc.anio_periodo,
-              );
+            let match = historialCerrados.find(
+              (h) => `${h.anio} - ${h.periodo}` === doc.anio_periodo,
+            );
 
-              if (match && match.fecha_cierre) {
+            if (match) {
+              if (!doc.proyecto && match.nombre_proyecto) {
+                doc.proyecto = match.nombre_proyecto.trim();
+              }
+              if (!doc.fecha_cierre && match.fecha_cierre) {
                 doc.fecha_cierre = match.fecha_cierre.split(" ")[0].trim();
               }
             }
@@ -2427,14 +2433,12 @@ const app = {
             if (doc.proyecto && doc.proyecto.trim() !== "") {
               proyectosUnicos.add(doc.proyecto.trim());
             }
-
             if (
               doc.fecha_cierre &&
               doc.fecha_cierre.trim() !== "" &&
               !doc.fecha_cierre.startsWith("0000-00-00")
             ) {
               let fechaDoc = doc.fecha_cierre.split(" ")[0].trim();
-
               if (!this.fechas_cierre_equipo.includes(fechaDoc)) {
                 this.fechas_cierre_equipo.push(fechaDoc);
               }
