@@ -1413,7 +1413,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     <button
                                                         type="button"
                                                         class="btn btn-outline-danger btn-sm"
-                                                        @click="eliminarDocumento(archivos,'Presentacion')"
+                                                        @click="eliminarDocumento(archivos.ruta || archivos, 'Presentacion')"
                                                         title="Eliminar documento">
 
                                                         <i class="bi bi-trash3"></i>
