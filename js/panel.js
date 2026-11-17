@@ -848,6 +848,10 @@ const app = {
       this.nombre_proyecto_respaldo = this.nombre_proyecto_sesion;
       this.editando_nombre_proyecto_sesion = true;
     },
+    cancelarEdicionNombreProyecto() {
+      this.nombre_proyecto_sesion = this.nombre_proyecto_respaldo;
+      this.editando_nombre_proyecto_sesion = false;
+    },
     mostrarNotificacionToast(titulo, mensaje, tipo = "success") {
       if (this.toastTimeout) {
         clearTimeout(this.toastTimeout);
