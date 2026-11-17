@@ -1429,7 +1429,11 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         Nombre del proyecto
                                                     </label>
 
-                                                    <div class="input-group">
+                                                    <div v-if="index_documento_editar !== index" class="small text-secondary fw-medium py-1">
+                                                        {{ archivos?.proyecto || "Sin proyecto asignado" }}
+                                                    </div>
+
+                                                    <div v-else class="input-group input-group-sm">
                                                         <select
                                                             v-if="!modo_nuevo_proyecto_edicion || index_documento_editar !== index"
                                                             class="form-select"
@@ -1453,23 +1457,18 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         </select>
 
                                                         <input
-                                                            v-if="modo_nuevo_proyecto_edicion && index_documento_editar === index"
+                                                            v-else
                                                             type="text"
                                                             class="form-control"
                                                             v-model="archivos.proyecto"
-                                                            placeholder="Nuevo proyecto..."
-                                                            :disabled="index_documento_editar !== index">
+                                                            placeholder="Nuevo proyecto...">
 
                                                         <button
                                                             type="button"
                                                             class="btn btn-outline-secondary"
                                                             @click="modo_nuevo_proyecto_edicion = !modo_nuevo_proyecto_edicion"
-                                                            :disabled="index_documento_editar !== index"
                                                             :title="modo_nuevo_proyecto_edicion ? 'Elegir proyecto existente' : 'Nuevo nombre proyecto'">
-
-                                                            <i class="bi"
-                                                                :class="modo_nuevo_proyecto_edicion ? 'bi-list-ul' : 'bi-plus-lg'">
-                                                            </i>
+                                                            <i class="bi" :class="modo_nuevo_proyecto_edicion ? 'bi-list-ul' : 'bi-plus-lg'"></i>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -1479,7 +1478,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         Año y periodo
                                                     </label>
 
-                                                    <select class="form-select"
+                                                    <div v-if="index_documento_editar !== index" class="small text-secondary fw-medium py-1">
+                                                        {{ archivos?.anio_periodo || "Sin periodo" }}
+                                                    </div>
+
+                                                    <select
+                                                        v-else
+                                                        class="form-select"
                                                         v-model="archivos.anio_periodo"
                                                         :disabled="index_documento_editar !== index">
 
@@ -1501,7 +1506,13 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                         Fecha de cierre
                                                     </label>
 
-                                                    <select class="form-select"
+                                                    <div v-if="index_documento_editar !== index" class="small text-secondary fw-medium py-1">
+                                                        {{ archivos?.fecha_cierre || "Sin fecha de cierre" }}
+                                                    </div>
+
+                                                    <select
+                                                        v-else 
+                                                        class="form-select"
                                                         v-model="archivos.fecha_cierre"
                                                         :disabled="index_documento_editar !== index">
 
