@@ -844,6 +844,10 @@ const app = {
     this.generarPeriodos();
   },
   methods: {
+    habilitarEdicionNombreProyecto() {
+      this.nombre_proyecto_respaldo = this.nombre_proyecto_sesion;
+      this.editando_nombre_proyecto_sesion = true;
+    },
     mostrarNotificacionToast(titulo, mensaje, tipo = "success") {
       if (this.toastTimeout) {
         clearTimeout(this.toastTimeout);
