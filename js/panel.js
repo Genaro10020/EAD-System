@@ -2599,27 +2599,15 @@ const app = {
             let documentos = response.data;
 
             if (documentos && documentos.length > 0) {
-              const reg = (this.seguimiento_session || []).find(
-                (s) => s.nombre_proyecto && s.nombre_proyecto.trim() !== "",
-              );
-
               documentos.forEach((doc) => {
-                doc.proyecto = (
-                  doc.proyecto ||
-                  reg?.nombre_proyecto ||
-                  ""
-                ).trim();
-                doc.anio_periodo = (
-                  doc.anio_periodo ||
-                  (reg ? `${reg.anio} - ${reg.periodo}` : "")
-                )
-                  .replace(/\s*-\s*/g, " - ")
-                  .trim();
-                doc.fecha_cierre = (
-                  doc.fecha_cierre ||
-                  reg?.fecha_cierre ||
-                  ""
-                ).split(" ")[0];
+                const tienePeriodo =
+                  doc.anio_periodo && doc_anio_periodo.trim() !== "";
+
+                doc.proyecto =
+                  tienePeriodo && doc.proyecto ? doc.proyecto.trim() : "";
+                doc.anio_periodo = tienePeriodo
+                  ? doc.anio_periodo.replace(/\s*-\s*/g, " - ").trim()
+                  : "";
 
                 if (
                   doc.proyecto &&
@@ -2640,12 +2628,6 @@ const app = {
                   );
                 }
               });
-            }
-
-            this.documento_session = documentos;
-
-            if (this.documento_session.length > 0) {
-              this.random = Math.random();
             }
           } else if (tipo_archivo === "DefinicionProyectos") {
             this.documento_definicion = response.data;
