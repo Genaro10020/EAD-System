@@ -875,6 +875,36 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <div class="input-group mb-3" style="min-width: 270px;">
                                 <label class="input-group-text" style="font-size: 0.8em;">Nombre</label>
                                 <input type="text" class="form-control" style="font-size: 0.8em;" v-model="nombre_proyecto_sesion" placeholder="Nombre del proyecto" :disabled="bloquear_nombre_proyecto">
+
+                                <button
+                                    v-if="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
+                                    class="btn btn-warning btn-sm px-2 py-0 text-white"
+                                    type="button"
+                                    @click="habilitarEdicionNombreProyecto()"
+                                    title="Actualizar nombre del proyecto"                                    
+                                >
+                                    <i class="bi bi-pencil" style="font-size: 0.85em;"></i>
+                                </button>
+
+                                <template v-if="editando_nombre_proyecto_sesion">
+                                    <button
+                                        class="btn btn-success btn-sm px-2 py-0"
+                                        type="button"
+                                        @click="guardarNombreProyectoSesion()"
+                                        title="Guardar nuevo nombre"
+                                    >
+                                        <i class="bi bi-check-lg" style="font-size: 0.85em;"></i>
+                                    </button>
+
+                                    <button
+                                        class="btn btn-danger btn-sm px-2 py-0"
+                                        type="button"
+                                        @click="cancelarEdicionNombreProyecto()"
+                                        title="Cancelar"
+                                    >
+                                        <i class="bi bi-x-lg" style="font-size: 0.85em;"></i>
+                                    </button>
+                                </template>
                             </div>
 
                             <h6 class="text-center pasos">2. Asistencia</h6>
