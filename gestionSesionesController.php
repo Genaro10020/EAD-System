@@ -66,6 +66,11 @@ if(isset($_SESSION['nombre'])){
                         $ruta_vieja = $arreglo["ruta_vieja"] ?? "";
 
                         $resultado = actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja);
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarNombreProyectoActivo") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+
+                        $resultado = actualizarNombreProyectoActivo($id_equipo, $nombre_proyecto);
                     }
                 break;
             case 'DELETE':
