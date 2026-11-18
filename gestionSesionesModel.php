@@ -90,22 +90,44 @@ include("conexionGhoner.php");
     function actualizarNombreProyectoActivo($id_equipo, $nombre_proyecto) {
         global $conexion;
 
-        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
-        $stmt = $conexion->prepare($actualizar);
+        $verificar = "SELECT COUNT(*) as total FROM gestion_sesiones WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+        $stmt_ver = $conexion->prepare($verificar);
+        $stmt_ver->bind_param("i", $id_equipo);
+        $stmt_ver->execute();
+        $res = $stmt_ver->get_result()->fetch_assoc();
+        $stmt_ver->close();
 
-        if (!$stmt) {
-            return "Error al preparar: " . $conexion->error;
+        if ($res['total'] > 0) {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+            $stmt = $conexion->prepare($actualizar);
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
+            $stmt->bind_param("si", $nombre_proyecto, $id_equipo);
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            }
+            return "Error al ejecutar: " . $stmt->error;
+        } else {
+            $fecha_actual = date('Y-m-d');
+            $vacio_json = "[]";
+            $cero = 0;
+            $metodologia_default = "";
+            $cerrado_default = "";
+
+            $insertar = "INSERT INTO gestion_sesiones (id_equipo, nombre_proyecto, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia, proyecto_cerrado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt_ins = $conexion->prepare($insertar);
+            if (!$stmt_ins) {
+                return "Error al preparar inserción: " . $conexion->error;
+            }
+            $stmt_ins->bind_param("isssssssds", $id_equipo, $nombre_proyecto, $fecha_actual, $metodologia_default, $vacio_json, $vacio_json, $vacio_json, $vacio_json, $cero, $cerrado_default);
+            if ($stmt_ins->execute()) {
+                $stmt_ins->close();
+                return true;
+            }
+            return "Error al insertar: " . $stmt_ins->error;
         }
-
-        $stmt->bind_param("si", $nombre_proyecto, $id_equipo);
-
-        if ($stmt->execute()) {
-            $stmt->close();
-
-            return true;
-        }
-
-        return "Error al ejecutar: " . $stmt->error;
     }
 
     function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja) {
