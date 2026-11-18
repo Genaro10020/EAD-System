@@ -874,7 +874,15 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                             <h6 class="text-center pasos">1. Proyecto</h6>
                             <div class="input-group mb-3" style="min-width: 270px;">
                                 <label class="input-group-text" style="font-size: 0.8em;">Nombre</label>
-                                <input type="text" class="form-control" style="font-size: 0.8em;" v-model="nombre_proyecto_sesion" placeholder="Nombre del proyecto" :disabled="bloquear_nombre_proyecto">
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    style="font-size: 0.8em;" 
+                                    v-model="nombre_proyecto_sesion" 
+                                    placeholder="Nombre del proyecto" 
+                                    :disabled="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
+                                    @keyup.enter="editando_nombre_proyecto_sesion ? guardarNombreProyectoSesion() : null"
+                                >
 
                                 <button
                                     v-if="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
