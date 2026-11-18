@@ -881,9 +881,23 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                     v-model="nombre_proyecto_sesion" 
                                     placeholder="Nombre del proyecto" 
                                     :disabled="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
-                                    @keyup.enter="editando_nombre_proyecto_sesion ? guardarNombreProyectoSesion() : null"
+                                    @keyup.enter="
+                                        editando_nombre_proyecto_sesion 
+                                            ? guardarNombreProyectoSesion() 
+                                            : (!bloquear_nombre_proyecto && select_session_equipo !== '' ? registrarNombreProyectoSesion() : null)
+                                    "
                                 >
 
+                                <button
+                                    v-if="!bloquear_nombre_proyecto && select_session_equipo !== ''"
+                                    class="btn btn-success btn-sm px-2 py-0"
+                                    type="button"
+                                    @click="registrarNombreProyectoSesion()"
+                                    title="Registrar nombre del proyecto"
+                                >
+                                    <i class="bi bi-floppy" style="font-size: 0.85em;"></i>
+                                </button>
+                                
                                 <button
                                     v-if="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
                                     class="btn btn-warning btn-sm px-2 py-0 text-white"
