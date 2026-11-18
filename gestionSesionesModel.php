@@ -147,17 +147,28 @@ include("conexionGhoner.php");
             }
         }
 
-        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND DATE(fecha_cierre) = ?";
+        if (empty($fecha_cierre)) {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+            $stmt = $conexion->prepare($actualizar);
 
-        $stmt = $conexion->prepare($actualizar);
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
 
-        if (!$stmt) {
-            return "Error al preparar: " . $conexion->error;
+            $stmt->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
+        } else {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND DATE(fecha_cierre) = ?";
+            $stmt = $conexion->prepare($actualizar);
+
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
+
+            $stmt->bind_param("sssis", $nombre_proyecto, $anio, $periodo, $id_equipo, $fecha_cierre);
         }
 
-        $stmt->bind_param("sssis", $nombre_proyecto, $anio, $periodo, $id_equipo, $fecha_cierre);
-
         if ($stmt->execute()) {
+            $stmt->close();
             return true;
         }
 
