@@ -2639,13 +2639,13 @@ const app = {
           "warning",
         );
       }
-      if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
-        return this.mostrarNotificacionToast(
-          "Faltan Datos",
-          "Seleccione la Fecha de Cierre asociada.",
-          "warning",
-        );
-      }
+      // if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
+      //   return this.mostrarNotificacionToast(
+      //     "Faltan Datos",
+      //     "Seleccione la Fecha de Cierre asociada.",
+      //     "warning",
+      //   );
+      // }
 
       let partesPeriodo = archivoObj.anio_periodo.split(" - ");
       let anio = partesPeriodo[0];
