@@ -87,6 +87,27 @@ include("conexionGhoner.php");
         return "Error al ejecutar: " . $stmt->error;
     }
 
+    function actualizarNombreProyectoActivo($id_equipo, $nombre_proyecto) {
+        global $conexion;
+
+        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+        $stmt = $conexion->prepare($actualizar);
+
+        if (!$stmt) {
+            return "Error al preparar: " . $conexion->error;
+        }
+
+        $stmt->bind_param("si", $nombre_proyecto, $id_equipo);
+
+        if ($stmt->execute()) {
+            $stmt->close();
+
+            return true;
+        }
+
+        return "Error al ejecutar: " . $stmt->error;
+    }
+
     function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja) {
         global $conexion;
 
