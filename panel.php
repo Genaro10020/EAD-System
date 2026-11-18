@@ -1476,7 +1476,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                 </div>
                                             </div>
 
-                                            <div class="row g-3 p-3 align-items-end">
+                                            <div class="row g-3 p-3 align-items-end ">
 
                                                 <div class="col-12 col-lg-5">
                                                     <label class="form-label">
@@ -1555,7 +1555,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                                     </select>
                                                 </div>
 
-                                                <div class="col-12 col-sm-6 col-lg-4">
+                                                <div class="col-12 col-sm-6 col-lg-4" v-if="fechas_cierre_equipo.length>0">
                                                     <label class="form-label">
                                                         Fecha de cierre
                                                     </label>
