@@ -852,6 +852,46 @@ const app = {
       this.nombre_proyecto_sesion = this.nombre_proyecto_respaldo;
       this.editando_nombre_proyecto_sesion = false;
     },
+    guardarNombreProyectoSesion() {
+      if (
+        !this.nombre_proyecto_sesion ||
+        this.nombre_proyecto_sesion.trim() === ""
+      ) {
+        return this.mostrarNotificacionToast(
+          "Campo vació",
+          "El nombre del proyecto no puede quedar vacio",
+          "warning",
+        );
+      }
+
+      let id_equipo = this.select_session_equipo.split("<->")[0];
+
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarNombreProyectoActivo",
+          id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion.trim(),
+        })
+        .then((response) => {
+          if (response.data == true) {
+            this.editando_nombre_proyecto_sesion = false;
+            this.consultarSeguimientoSession();
+            this.mostrarNotificacionToast(
+              "¡Actualizado!",
+              "El nombre del proyecto se actualizó correctamente",
+              "success",
+            );
+          }
+        })
+        .cath((error) => {
+          console.error("Error en axios: ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexion",
+            "Hubo un problema al conectar con el servidor",
+            "error",
+          );
+        });
+    },
     mostrarNotificacionToast(titulo, mensaje, tipo = "success") {
       if (this.toastTimeout) {
         clearTimeout(this.toastTimeout);
