@@ -2513,7 +2513,8 @@ const app = {
                 historialCerrados.push(item);
                 if (
                   item.nombre_proyecto &&
-                  item.nombre_proyecto.trim() !== ""
+                  item.nombre_proyecto.trim() !== "" &&
+                  item.nombre_proyecto.trim().toLowerCase() !== "sin proyecto"
                 ) {
                   proyectosUnicos.add(item.nombre_proyecto.trim());
                 }
@@ -2536,7 +2537,8 @@ const app = {
               item &&
               item.nombre_proyecto &&
               typeof item.nombre_proyecto === "string" &&
-              item.nombre_proyecto.trim() !== ""
+              item.nombre_proyecto.trim() !== "" &&
+              item.nombre_proyecto.trim().toLowerCase() !== "sin proyecto"
             ) {
               proyectosUnicos.add(item.nombre_proyecto.trim());
               if (!registroActivo) registroActivo = item;
@@ -2573,7 +2575,11 @@ const app = {
               }
             }
 
-            if (doc.proyecto && doc.proyecto.trim() !== "") {
+            if (
+              doc.proyecto &&
+              doc.proyecto.trim() !== "" &&
+              doc.proyecto.trim().toLowerCase() !== "sin proyecto"
+            ) {
               proyectosUnicos.add(doc.proyecto.trim());
             }
             if (
@@ -2800,6 +2806,7 @@ const app = {
 
                 if (
                   doc.proyecto &&
+                  doc.proyecto.trim().toLowerCase() !== "sin proyecto" &&
                   !this.proyectos_equipo_modal.some(
                     (p) => p.nombre === doc.proyecto,
                   )
