@@ -844,6 +844,60 @@ const app = {
     this.generarPeriodos();
   },
   methods: {
+    registrarNombreProyectoSesion() {
+      if (!this.select_session_equipo || this.select_session_equipo === "") {
+        return this.mostrarNotificacionToast(
+          "Equipo no seleccionado",
+          "Primero debes seleccionar un equipo en el paso 2",
+          "warning",
+        );
+      }
+
+      if (
+        !this.nombre_proyecto_sesion ||
+        this.nombre_proyecto_sesion.trim() === ""
+      ) {
+        return this.mostrarNotificacionToast(
+          "Campo vacío",
+          "Escribe el nombre del proyecto antes de registrar",
+          "warning",
+        );
+      }
+
+      let id_equipo = this.select_session_equipo.split("<->")[0];
+
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarNombreProyectoActivo",
+          id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion.trim(),
+        })
+        .then((response) => {
+          if (response.data == true) {
+            this.bloquear_nombre_proyecto = true;
+            this.consultarSeguimientoSession();
+            this.mostrarNotificacionToast(
+              "¡Registrado!",
+              "El nombre del proyecto se registró correctamente",
+              "success",
+            );
+          } else {
+            this.mostrarNotificacionToast(
+              "Error",
+              "No se pudo registrar el nombre del proyecto",
+              "error",
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error en axios: ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexión",
+            "Hubo un problema al conectar con el servidor",
+            "error",
+          );
+        });
+    },
     habilitarEdicionNombreProyecto() {
       this.nombre_proyecto_respaldo = this.nombre_proyecto_sesion;
       this.editando_nombre_proyecto_sesion = true;
