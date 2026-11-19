@@ -12,7 +12,11 @@ if(isset($_FILES['files']['name'])){
 
     if ($tipo_archivo === 'Presentacion') {
         $id = $_POST['id_equipo'];
-        $ruta = "documentoSession/".$id."/";
+
+        $anio = isset($_POST["anio"]) ? $_POST["anio"] : "Sin_Año";
+        $periodo = isset($_POST["periodo"]) ? $_POST["periodo"] : "Sin_Periodo";
+
+        $ruta = "documentoSession/".$id."/".$anio."/".$periodo."/";
     }else if ($tipo_archivo === 'DefinicionProyectos') {
          $area = $_POST['area'];
         $ruta = "documentosdefinicionproyectos/".$area."/";

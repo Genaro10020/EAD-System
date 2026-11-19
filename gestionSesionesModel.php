@@ -27,35 +27,152 @@ include("conexionGhoner.php");
                 return array($estado, $resultado);
     }
 
-    function guardarActualizarSession($id_gestion_session,$accion,$id_equipo,$fecha,$metodologia,$etapa,$fases,$ids_integrantes,$asistencia,$porcentaje){
-                    global $conexion;
-                    $ids_integrantes=json_encode($ids_integrantes, JSON_UNESCAPED_UNICODE);
-                    $asistencia=json_encode($asistencia, JSON_UNESCAPED_UNICODE);
-                    $fases = json_encode($fases,JSON_UNESCAPED_UNICODE);
-                    $etapa = json_encode($etapa,JSON_UNESCAPED_UNICODE);
+    function guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje){
+        global $conexion;
+        $ids_integrantes=json_encode($ids_integrantes, JSON_UNESCAPED_UNICODE);
+        $asistencia=json_encode($asistencia, JSON_UNESCAPED_UNICODE);
+        $fases = json_encode($fases,JSON_UNESCAPED_UNICODE);
+        $etapa = json_encode($etapa,JSON_UNESCAPED_UNICODE);
 
-                    if($accion==="Guardar"){
-                        $guardar = "INSERT INTO gestion_sesiones (id_equipo, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia) VALUES (?,?,?,?,?,?,?,?)";
-                        $stmt = $conexion->prepare($guardar);
-                        if (!$stmt) {
-                            return "IDQUIPO:".$id_equipo.$conexion->error;
-                        }
-                        $stmt->bind_param('issssssd',$id_equipo,$fecha,$metodologia,$etapa,$fases,$ids_integrantes,$asistencia,$porcentaje);
-                    }else if ($accion==="Actualizar"){
-                        $actualizar = "UPDATE gestion_sesiones SET fecha=?, metodologia=?, etapa=?, fase=?, ids_integrantes=?, asistencia=?, porcentaje_asistencia=? WHERE id =?";
-                        $stmt = $conexion->prepare($actualizar);
-                        if (!$stmt) {
-                            return "Actualizar:".$conexion->error;
-                        }
-                        $stmt->bind_param('ssssssdi',$fecha,$metodologia,$etapa,$fases,$ids_integrantes,$asistencia,$porcentaje,$id_gestion_session);
-                    }else{
-                        return "el Modelo no identificó el tipo de acción";
-                    }
-                    if ($stmt->execute()) {
-                        return true;
-                    } else {
-                        return $stmt->error;
-                    }
+        if($accion === "Guardar"){
+            $guardar = "INSERT INTO gestion_sesiones (id_equipo, nombre_proyecto, anio, periodo, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
+            $stmt = $conexion->prepare($guardar);
+            if (!$stmt) {
+                return "IDQUIPO:".$id_equipo.$conexion->error;
+            }
+            $stmt->bind_param('isssssssssd', $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje);
+        }else if ($accion === "Actualizar"){
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto=?, anio=?, periodo=?, fecha=?, metodologia=?, etapa=?, fase=?, ids_integrantes=?, asistencia=?, porcentaje_asistencia=? WHERE id =?";
+            $stmt = $conexion->prepare($actualizar);
+            if (!$stmt) {
+                return "Actualizar:".$conexion->error;
+            }
+            $stmt->bind_param('sssssssssdi', $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistencia, $porcentaje, $id_gestion_session);
+        }else{
+            return "el Modelo no identificó el tipo de acción";
+        }
+        
+        if ($stmt->execute()) {
+            if ($nombre_proyecto != "") {
+                $query_nombres = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+                $stmt_nombres = $conexion->prepare($query_nombres);
+
+                if ($stmt_nombres) {
+                    $stmt_nombres->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
+                    $stmt_nombres->execute();
+                }
+            }
+            return true;
+        } else {
+            return $stmt->error;
+        }
+    }
+
+    function actualizarProyectoModal($id_equipo, $nombre_proyecto, $anio, $periodo) {
+        global $conexion;
+
+        $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+        $stmt = $conexion->prepare($actualizar);
+
+        if (!$stmt) {
+            return "Error al preparar: " . $conexion->error;
+        }
+
+        $stmt->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return "Error al ejecutar: " . $stmt->error;
+    }
+
+    function actualizarNombreProyectoActivo($id_equipo, $nombre_proyecto) {
+        global $conexion;
+
+        $verificar = "SELECT COUNT(*) as total FROM gestion_sesiones WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+        $stmt_ver = $conexion->prepare($verificar);
+        $stmt_ver->bind_param("i", $id_equipo);
+        $stmt_ver->execute();
+        $res = $stmt_ver->get_result()->fetch_assoc();
+        $stmt_ver->close();
+
+        if ($res['total'] > 0) {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+            $stmt = $conexion->prepare($actualizar);
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
+            $stmt->bind_param("si", $nombre_proyecto, $id_equipo);
+            if ($stmt->execute()) {
+                $stmt->close();
+                return true;
+            }
+            return "Error al ejecutar: " . $stmt->error;
+        } else {
+            $fecha_actual = date('Y-m-d');
+            $vacio_json = "[]";
+            $cero = 0;
+            $metodologia_default = "";
+            $cerrado_default = "";
+
+            $insertar = "INSERT INTO gestion_sesiones (id_equipo, nombre_proyecto, fecha, metodologia, etapa, fase, ids_integrantes, asistencia, porcentaje_asistencia, proyecto_cerrado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt_ins = $conexion->prepare($insertar);
+            if (!$stmt_ins) {
+                return "Error al preparar inserción: " . $conexion->error;
+            }
+            $stmt_ins->bind_param("isssssssds", $id_equipo, $nombre_proyecto, $fecha_actual, $metodologia_default, $vacio_json, $vacio_json, $vacio_json, $vacio_json, $cero, $cerrado_default);
+            if ($stmt_ins->execute()) {
+                $stmt_ins->close();
+                return true;
+            }
+            return "Error al insertar: " . $stmt_ins->error;
+        }
+    }
+
+    function actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja) {
+        global $conexion;
+
+        if (!empty($ruta_vieja) && file_exists($ruta_vieja)) {
+            $nombre_archivo = basename($ruta_vieja);
+            
+            $directorio_nuevo = "documentoSession/" . $id_equipo . "/" . $anio . "/" . $periodo . "/";
+            $ruta_nueva = $directorio_nuevo . $nombre_archivo;
+
+            if ($ruta_vieja !== $ruta_nueva) {
+                if (!is_dir($directorio_nuevo)) {
+                    mkdir($directorio_nuevo, 0777, true);
+                }
+                rename($ruta_vieja, $ruta_nueva);
+            }
+        }
+
+        if (empty($fecha_cierre)) {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND proyecto_cerrado != 'Si'";
+            $stmt = $conexion->prepare($actualizar);
+
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
+
+            $stmt->bind_param("sssi", $nombre_proyecto, $anio, $periodo, $id_equipo);
+        } else {
+            $actualizar = "UPDATE gestion_sesiones SET nombre_proyecto = ?, anio = ?, periodo = ? WHERE id_equipo = ? AND DATE(fecha_cierre) = ?";
+            $stmt = $conexion->prepare($actualizar);
+
+            if (!$stmt) {
+                return "Error al preparar: " . $conexion->error;
+            }
+
+            $stmt->bind_param("sssis", $nombre_proyecto, $anio, $periodo, $id_equipo, $fecha_cierre);
+        }
+
+        if ($stmt->execute()) {
+            $stmt->close();
+            return true;
+        }
+
+        return "Error al ejecutar: " . $stmt->error;
     }
 
     function cerrarProyecto($id_equipo){
@@ -159,5 +276,39 @@ include("conexionGhoner.php");
         $stmt->close();
         $conexion->close();
         return array($estado, $resultado,$fecha);
+}
+
+function obtenerFechasCierreEquipo($id_equipo) {
+    global $conexion;
+    $resultado = [];
+    $estado = false;
+
+    $consulta = "SELECT DISTINCT DATE(fecha_cierre) as fecha_cierre FROM gestion_sesiones WHERE id_equipo = ? AND proyecto_cerrado = 'Si' AND fecha_cierre IS NOT NULL";
+
+    $stmt = $conexion->prepare($consulta);
+    if (!$stmt) {
+        $estado = "Error al preparar " . $conexion->error;
+
+        return array($estado, $resultado);
+    }
+
+    $stmt->bind_param("i", $id_equipo);
+    if (!$stmt->execute()) {
+        $estado = "Error en la ejecución SQL:" . $stmt->error;
+
+        return array($estado, $resultado);
+    }
+
+    $estado = true;
+    $datos = $stmt->get_result();
+    while ($fila = $datos->fetch_assoc()) {
+        if ($fila["fecha_cierre"] != null) {
+            $resultado[] = $fila["fecha_cierre"];
+        }
+    }
+
+    $stmt->close();
+
+    return array($estado, $resultado);
 }
 ?>

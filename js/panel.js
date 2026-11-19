@@ -3,6 +3,13 @@ const app = {
   data() {
     return {
       alert: null,
+      notificacion_toast: {
+        visible: false,
+        titulo: "",
+        mensaje: "",
+        tipo: "success",
+      },
+      toastTimeout: null,
       verMenu: "Si",
       menuAbierto: false,
       /*/////////////////////////////////////////////////////////////////////////////////VARIBLES USUARIOS Y DEPARTAMENTOS INICIO*/
@@ -92,7 +99,20 @@ const app = {
       porcentaje: [10, 20, 30, 40, 50, 60, 80, 90, 100],
       faseUsadaEnOtroSeguimiento: [],
       input_actualizar: "",
+      nombre_proyecto_sesion: "",
+      bloquear_nombre_proyecto: false,
+      editando_nombre_proyecto_sesion: false,
+      nombre_proyecto_respaldo: "",
       actualizar_session: false,
+      opciones_periodos: [],
+      doc_nombre_proyecto: "",
+      doc_anio_periodo: "",
+      anio_sesion_activa: null,
+      periodo_sesion_activa: null,
+      proyectos_equipo_modal: [],
+      modo_nuevo_proyecto_edicion: false,
+      index_documento_editar: null,
+      fechas_cierre_equipo: [],
       index_session_actualizar: "",
       id_gestion_session: "",
       existenDatosSesion: false,
@@ -225,7 +245,7 @@ const app = {
       foto_capacitacion: [],
       pdf_capacitacion: [],
       existeImagenSeleccionadaCapacitacion: false,
-      editarCapacitacion: null, 
+      editarCapacitacion: null,
       posicion_canti_doc: "",
       posicion_inicial: 0,
       cantNewDoc: 0,
@@ -234,6 +254,16 @@ const app = {
       /*  fechaFoto: '', */
       posicion: "",
       llenado: "",
+      ////////////////////////////////////////////////////////////////////////////////////**DOCUMENTOS EQUIPOS */
+      lista_documentos_equipos: [],
+      filtro_equipo_doc: "",
+      filtro_planta_doc: "",
+      filtro_area_doc: "",
+      filtro_planta_area_doc: "",
+      filtro_anio_doc: "",
+      mostrar_tabla_docs: false,
+      cargando_docs: false,
+      porcentaje_carga_docs: 0,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
 
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
@@ -663,6 +693,58 @@ const app = {
     },
   },
   computed: {
+    opcionesPlantaAreaDoc() {
+      if (!this.consultaEADparaFiltrar) return [];
+
+      const combinaciones = this.consultaEADparaFiltrar.map((equipo) => {
+        const e = equipo[0] ? equipo[0] : equipo;
+
+        return `${e.planta} - ${e.area}`;
+      });
+
+      return [...new Set(combinaciones)].sort();
+    },
+    opcionesEquiposDoc() {
+      if (!this.filtro_planta_area_doc || !this.consultaEADparaFiltrar)
+        return [];
+
+      if (this.filtro_planta_area_doc === "Todas - Todas") {
+        return this.consultaEADparaFiltrar.map((equipo) =>
+          equipo[0] ? equipo[0] : equipo,
+        );
+      }
+
+      const [plantaSeleccionada, areaSeleccionada] =
+        this.filtro_planta_area_doc.split(" - ");
+
+      return this.consultaEADparaFiltrar
+        .map((equipo) => (equipo[0] ? equipo[0] : equipo))
+        .filter(
+          (e) => e.planta === plantaSeleccionada && e.area === areaSeleccionada,
+        );
+    },
+    documentosEquiposFiltrados() {
+      if (
+        this.filtro_equipo_doc === "" &&
+        this.filtro_planta_doc === "" &&
+        this.filtro_area_doc === ""
+      ) {
+        return [];
+      }
+
+      return this.lista_documentos_equipos.filter((doc) => {
+        const matchEquipo = doc.equipo
+          .toLowerCase()
+          .includes(this.filtro_equipo_doc.toLowerCase());
+        const matchPlanta =
+          this.filtro_planta_doc === "" ||
+          doc.planta === this.filtro_planta_doc;
+        const matchArea =
+          this.filtro_area_doc === "" || doc.area === this.filtro_area_doc;
+
+        return matchEquipo && matchPlanta && matchArea;
+      });
+    },
     umConceptoFe() {
       return this.calculadoraFeCombustibles.reduce((resultado, item) => {
         resultado[item.combustible_energetico] = {
@@ -730,24 +812,23 @@ const app = {
     },
     //CAPACITACIONES
     areasCapacitaciones() {
-        const areas = this.capacitaciones
-            .map(capacitacion => capacitacion.area)
-            .filter(area => area != null && String(area).trim() !== "");
+      const areas = this.capacitaciones
+        .map((capacitacion) => capacitacion.area)
+        .filter((area) => area != null && String(area).trim() !== "");
 
-        return [...new Set(areas)].sort((a, b) =>
-            String(a).localeCompare(String(b), "es")
-        );
+      return [...new Set(areas)].sort((a, b) =>
+        String(a).localeCompare(String(b), "es"),
+      );
     },
 
     capacitacionesFiltradas() {
-        if (this.areaSeleccionada === "Todas") {
-            return this.capacitaciones;
-        }
+      if (this.areaSeleccionada === "Todas") {
+        return this.capacitaciones;
+      }
 
-        return this.capacitaciones.filter(
-            capacitacion =>
-                capacitacion.area === this.areaSeleccionada
-        );
+      return this.capacitaciones.filter(
+        (capacitacion) => capacitacion.area === this.areaSeleccionada,
+      );
     },
   },
   mounted() {
@@ -759,8 +840,144 @@ const app = {
     });
     this.obtenerFecha();
     this.consultarNombrePonderaciones();
+
+    this.generarPeriodos();
   },
   methods: {
+    registrarNombreProyectoSesion() {
+      if (!this.select_session_equipo || this.select_session_equipo === "") {
+        return this.mostrarNotificacionToast(
+          "Equipo no seleccionado",
+          "Primero debes seleccionar un equipo en el paso 2",
+          "warning",
+        );
+      }
+
+      if (
+        !this.nombre_proyecto_sesion ||
+        this.nombre_proyecto_sesion.trim() === ""
+      ) {
+        return this.mostrarNotificacionToast(
+          "Campo vacío",
+          "Escribe el nombre del proyecto antes de registrar",
+          "warning",
+        );
+      }
+
+      let id_equipo = this.select_session_equipo.split("<->")[0];
+
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarNombreProyectoActivo",
+          id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion.trim(),
+        })
+        .then((response) => {
+          if (response.data == true) {
+            this.bloquear_nombre_proyecto = true;
+            this.consultarSeguimientoSession();
+            this.mostrarNotificacionToast(
+              "¡Registrado!",
+              "El nombre del proyecto se registró correctamente",
+              "success",
+            );
+          } else {
+            this.mostrarNotificacionToast(
+              "Error",
+              "No se pudo registrar el nombre del proyecto",
+              "error",
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error en axios: ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexión",
+            "Hubo un problema al conectar con el servidor",
+            "error",
+          );
+        });
+    },
+    habilitarEdicionNombreProyecto() {
+      this.nombre_proyecto_respaldo = this.nombre_proyecto_sesion;
+      this.editando_nombre_proyecto_sesion = true;
+    },
+    cancelarEdicionNombreProyecto() {
+      this.nombre_proyecto_sesion = this.nombre_proyecto_respaldo;
+      this.editando_nombre_proyecto_sesion = false;
+    },
+    guardarNombreProyectoSesion() {
+      if (
+        !this.nombre_proyecto_sesion ||
+        this.nombre_proyecto_sesion.trim() === ""
+      ) {
+        return this.mostrarNotificacionToast(
+          "Campo vació",
+          "El nombre del proyecto no puede quedar vacio",
+          "warning",
+        );
+      }
+
+      let id_equipo = this.select_session_equipo.split("<->")[0];
+
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarNombreProyectoActivo",
+          id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion.trim(),
+        })
+        .then((response) => {
+          if (response.data == true) {
+            this.editando_nombre_proyecto_sesion = false;
+            this.consultarSeguimientoSession();
+            this.mostrarNotificacionToast(
+              "¡Actualizado!",
+              "El nombre del proyecto se actualizó correctamente",
+              "success",
+            );
+          }
+        })
+        .cath((error) => {
+          console.error("Error en axios: ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexion",
+            "Hubo un problema al conectar con el servidor",
+            "error",
+          );
+        });
+    },
+    mostrarNotificacionToast(titulo, mensaje, tipo = "success") {
+      if (this.toastTimeout) {
+        clearTimeout(this.toastTimeout);
+      }
+
+      this.notificacion_toast = {
+        visible: false,
+        titulo: "",
+        mensaje: "",
+        tipo: tipo,
+      };
+
+      this.$nextTick(() => {
+        this.notificacion_toast = {
+          visible: true,
+          titulo: titulo,
+          mensaje: mensaje,
+          tipo: tipo,
+        };
+
+        this.toastTimeout = setTimeout(() => {
+          this.notificacion_toast.visible = false;
+        }, 3200);
+      });
+    },
+    cerrarNotificacionToast() {
+      this.notificacion_toast.visible = false;
+
+      if (this.toastTimeout) {
+        clearTimeout(this.toastTimeout);
+      }
+    },
     toggleMenu() {
       this.verificarSesion();
       //this.menuAbierto = !this.menuAbierto;
@@ -771,6 +988,205 @@ const app = {
       } else {
         menu.style.display = "block";
       }
+    },
+    generarPeriodos() {
+      let periodos = [];
+      for (let anio = 2023; anio <= 2030; anio++) {
+        for (let periodo = 1; periodo <= 4; periodo++) {
+          periodos.push(`${anio} - Periodo ${periodo}`);
+        }
+      }
+      this.opciones_periodos = periodos;
+    },
+    limpiarFiltrosDoc() {
+      this.filtro_planta_area_doc = "";
+      this.filtro_equipo_doc = "";
+      this.filtro_anio_doc = "";
+      this.lista_documentos_equipos = [];
+      this.mostrar_tabla_docs = false;
+    },
+    async consultarDocumentosEquipos() {
+      this.lista_documentos_equipos = [];
+      this.cargando_docs = true;
+      this.porcentaje_carga_docs = 0;
+
+      const [plantaSeleccionada, areaSeleccionada] =
+        this.filtro_planta_area_doc.split(" - ");
+
+      try {
+        const response = await axios.post("documentosEquiposController.php", {
+          accion: "ConsultarDocumentos",
+          planta: plantaSeleccionada,
+          area: areaSeleccionada,
+          equipo: this.filtro_equipo_doc,
+          anio: this.filtro_anio_doc,
+        });
+
+        if (response.data[0] === true) {
+          const registros = response.data[1];
+          const totalRegistros = registros.length;
+
+          if (totalRegistros === 0) {
+            this.cargando_docs = false;
+            return;
+          }
+
+          for (let i = 0; i < totalRegistros; i++) {
+            const obj = registros[i];
+            try {
+              const docResponse = await axios.post("buscar_documentos.php", {
+                tipo_archivo: "Presentacion",
+                id_equipo: obj.id,
+                fecha_ruta: this.filtro_anio_doc,
+                area: obj.area,
+              });
+
+              const archivos = docResponse.data;
+
+              if (archivos && archivos.length > 0) {
+                this.lista_documentos_equipos.push({
+                  id: obj.id,
+                  equipo: obj.equipo,
+                  planta: obj.planta,
+                  area: obj.area,
+                  proyecto: obj.proyecto,
+                  lb: obj.lb,
+                  entidad: obj.entidad,
+                  mc: obj.mc,
+                  mr: obj.mr,
+                  anio: this.filtro_anio_doc,
+                  periodo: "Anual",
+                });
+              }
+            } catch (docError) {
+              console.error(
+                `Error al buscar documentos para el equipo ${obj.id}: `,
+                docError,
+              );
+            }
+
+            this.porcentaje_carga_docs = Math.round(
+              ((i + 1) / totalRegistros) * 100,
+            );
+          }
+        } else {
+          console.log("Error al consultar documentos: ", response.data);
+        }
+      } catch (error) {
+        console.error("Error en axios: ", error);
+      } finally {
+        setTimeout(() => {
+          this.cargando_docs = false;
+          this.porcentaje_carga_docs = 0;
+        }, 600);
+      }
+    },
+    async descargarDocumentos(id_equipo) {
+      try {
+        const response = await axios.post("buscar_documentos.php", {
+          tipo_archivo: "Presentacion",
+          id_equipo: id_equipo,
+          fecha_ruta: "",
+          area: "",
+        });
+
+        const archivos = response.data;
+
+        if (archivos && archivos.length > 0) {
+          archivos.forEach((ruta) => {
+            let enlace = document.createElement("a");
+            enlace.href = ruta;
+            enlace.download = ruta.split("/").pop();
+            enlace.target = "_blank";
+            document.body.appendChild(enlace);
+            enlace.click();
+            document.body.removeChild(enlace);
+          });
+        } else {
+          Swal.fire(
+            "Sin documentos",
+            "Este equipo no cuenta con documentos en su repositorio",
+            "info",
+          );
+        }
+      } catch (error) {
+        console.error("Error al buscar documentos: ", error);
+        Swal.fire(
+          "Error",
+          "Hubo un problema al buscar los documentos",
+          "error",
+        );
+      }
+    },
+    aplicarFiltrosDoc() {
+      if (
+        !this.filtro_planta_area_doc ||
+        !this.filtro_equipo_doc ||
+        !this.filtro_anio_doc
+      ) {
+        Swal.fire({
+          icon: "warining",
+          title: "Filtros incompletos",
+          text: "Seleccione Planta/Area, Equipo y Año antes de filtrar",
+        });
+
+        return;
+      }
+
+      this.mostrar_tabla_docs = true;
+
+      this.consultarDocumentosEquipos();
+    },
+    descargarImagenTablaDocs() {
+      const elementoTabla = document.getElementById("tablaDocumentosEquipos");
+
+      if (!elementoTabla) {
+        return Swal.fire(
+          "Error",
+          "No se encontró la tabla en la vista",
+          "error",
+        );
+      }
+
+      Swal.fire({
+        title: "Generando imagen...",
+        text: "Por favor espere un momento",
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+
+      html2canvas(elementoTabla, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+      })
+        .then((canvas) => {
+          let enlaceTemporal = document.createElement("a");
+
+          let nombreBase = "General";
+
+          if (
+            this.filtro_planta_area_doc &&
+            this.filtro_planta_area_doc !== "Todas - Todas"
+          ) {
+            nombreBase = this.filtro_planta_area_doc.replace(/\s+/g, "_");
+          }
+
+          if (this.filtro_equipo_doc && this.filtro_equipo_doc !== "Todos") {
+            nombreBase += `_${this.filtro_equipo_doc.replace(/\s+/g, "_")}`;
+          }
+
+          enlaceTemporal.download = `Documentos_Equipos_${nombreBase}.png`;
+          enlaceTemporal.href = canvas.toDataURL("image/png");
+          enlaceTemporal.click();
+          Swal.close();
+        })
+        .catch((error) => {
+          console.error("Error al generar la imagen: ", error);
+          Swal.fire("Error", "Hubo un problema al generar la captura", "error");
+        });
     },
     descargarImagenTabla() {
       const elementoTabla = document.getElementById("tablaImpactosAmbientales");
@@ -872,13 +1288,13 @@ const app = {
     cerrarModalHistorial() {
       this.myModal.hide();
     },
-        editCap(capacitacion) {
-          this.editarCapacitacion = capacitacion.id;
-      },
+    editCap(capacitacion) {
+      this.editarCapacitacion = capacitacion.id;
+    },
 
-      cancelarEditar() {
-          this.editarCapacitacion = null;
-      },
+    cancelarEditar() {
+      this.editarCapacitacion = null;
+    },
     guardarEditar(index) {
       let comentario = document.getElementById(
         "capacitacionComentario" + index,
@@ -2057,9 +2473,230 @@ const app = {
       }
     },
 
-    modalDocumentoGestionSession() {
-      this.myModal = new bootstrap.Modal(document.getElementById("modal"));
-      this.myModal.show();
+    async modalDocumentoGestionSession() {
+      try {
+        this.proyectos_equipo_modal = [];
+        this.fechas_cierre_equipo = [];
+        this.doc_nombre_proyecto = "";
+        this.doc_anio_periodo = "";
+        this.doc_fecha_cierre = "";
+        this.index_documento_editar = null;
+        this.modo_nuevo_proyecto = false;
+        this.modo_nuevo_proyecto_edicion = false;
+
+        let id_equipo_actual = null;
+        if (this.select_session_equipo) {
+          id_equipo_actual = this.select_session_equipo.split("<->")[0];
+        }
+
+        let historialCerrados = [];
+        let proyectosUnicos = new Set();
+
+        if (id_equipo_actual) {
+          const resFechas = await axios.get("gestionSesionesController.php", {
+            params: {
+              accion: "ConsultarFechasCierre",
+              id_equipo: id_equipo_actual,
+            },
+          });
+          if (resFechas.data && resFechas.data[0] === true) {
+            let datosBD = resFechas.data[1];
+            let fechasSet = new Set();
+
+            datosBD.forEach((item) => {
+              let fechaStr =
+                typeof item === "object" ? item.fecha_cierre : item;
+              if (fechaStr && !fechaStr.startsWith("0000-00-00")) {
+                fechasSet.add(fechaStr.split(" ")[0].trim());
+              }
+              if (typeof item === "object") {
+                historialCerrados.push(item);
+                if (
+                  item.nombre_proyecto &&
+                  item.nombre_proyecto.trim() !== "" &&
+                  item.nombre_proyecto.trim().toLowerCase() !== "sin proyecto"
+                ) {
+                  proyectosUnicos.add(item.nombre_proyecto.trim());
+                }
+              }
+            });
+
+            this.fechas_cierre_equipo = Array.from(fechasSet).sort(
+              (a, b) => new Date(b) - new Date(a),
+            );
+          }
+        }
+
+        let registroActivo = null;
+        if (
+          this.seguimiento_session &&
+          Array.isArray(this.seguimiento_session)
+        ) {
+          this.seguimiento_session.forEach((item) => {
+            if (
+              item &&
+              item.nombre_proyecto &&
+              typeof item.nombre_proyecto === "string" &&
+              item.nombre_proyecto.trim() !== "" &&
+              item.nombre_proyecto.trim().toLowerCase() !== "sin proyecto"
+            ) {
+              proyectosUnicos.add(item.nombre_proyecto.trim());
+              if (!registroActivo) registroActivo = item;
+            }
+          });
+        }
+
+        if (this.documento_session && Array.isArray(this.documento_session)) {
+          this.documento_session.forEach((doc) => {
+            if (!doc || typeof doc !== "object") return;
+
+            const tienePeriodo =
+              doc.anio_periodo &&
+              String(doc.anio_periodo).trim() !== "" &&
+              !String(doc.anio_periodo).includes("null");
+
+            if (!tienePeriodo) {
+              doc.proyecto = "";
+              doc.anio_periodo = "";
+              doc.fecha_cierre = "";
+              return;
+            }
+
+            let match = historialCerrados.find(
+              (h) => `${h.anio} - ${h.periodo}` === doc.anio_periodo,
+            );
+
+            if (match) {
+              if (!doc.proyecto && match.nombre_proyecto) {
+                doc.proyecto = match.nombre_proyecto.trim();
+              }
+              if (!doc.fecha_cierre && match.fecha_cierre) {
+                doc.fecha_cierre = match.fecha_cierre.split(" ")[0].trim();
+              }
+            }
+
+            if (
+              doc.proyecto &&
+              doc.proyecto.trim() !== "" &&
+              doc.proyecto.trim().toLowerCase() !== "sin proyecto"
+            ) {
+              proyectosUnicos.add(doc.proyecto.trim());
+            }
+            if (
+              doc.fecha_cierre &&
+              doc.fecha_cierre.trim() !== "" &&
+              !doc.fecha_cierre.startsWith("0000-00-00")
+            ) {
+              let fechaDoc = doc.fecha_cierre.split(" ")[0].trim();
+              if (!this.fechas_cierre_equipo.includes(fechaDoc)) {
+                this.fechas_cierre_equipo.push(fechaDoc);
+              }
+            }
+          });
+          this.fechas_cierre_equipo.sort((a, b) => new Date(b) - new Date(a));
+        }
+
+        this.proyectos_equipo_modal = Array.from(proyectosUnicos).map(
+          (nombre) => ({ nombre: nombre }),
+        );
+
+        if (registroActivo) {
+          this.doc_nombre_proyecto = registroActivo.nombre_proyecto.trim();
+        }
+
+        if (
+          this.nombre_proyecto_sesion &&
+          this.nombre_proyecto_sesion.trim() !== "" &&
+          this.doc_nombre_proyecto === ""
+        ) {
+          this.doc_nombre_proyecto = this.nombre_proyecto_sesion.trim();
+        }
+
+        let modalElement = document.getElementById("modal");
+        if (modalElement) {
+          this.myModal = bootstrap.Modal.getOrCreateInstance(modalElement);
+          this.myModal.show();
+        }
+      } catch (error) {
+        console.error("Error al abrir la modal:", error);
+      }
+    },
+    habilitarEdicionDocumento(index) {
+      this.index_documento_editar = index;
+      this.modo_nuevo_proyecto_edicion = false;
+    },
+    cancelarEdicionDocumento() {
+      this.index_documento_editar = null;
+      this.modo_nuevo_proyecto_edicion = false;
+      this.buscarDocumentos("Presentacion");
+    },
+    actualizarDocumento(archivoObj, index) {
+      if (!archivoObj.proyecto || archivoObj.proyecto.trim() === "") {
+        return this.mostrarNotificacionToast(
+          "Faltan Datos",
+          "El nombre del proyecto no puede estar vacío.",
+          "warning",
+        );
+      }
+      if (!archivoObj.anio_periodo || archivoObj.anio_periodo === "") {
+        return this.mostrarNotificacionToast(
+          "Faltan Datos",
+          "Seleccione el Año y Periodo.",
+          "warning",
+        );
+      }
+      // if (!archivoObj.fecha_cierre || archivoObj.fecha_cierre === "") {
+      //   return this.mostrarNotificacionToast(
+      //     "Faltan Datos",
+      //     "Seleccione la Fecha de Cierre asociada.",
+      //     "warning",
+      //   );
+      // }
+
+      let partesPeriodo = archivoObj.anio_periodo.split(" - ");
+      let anio = partesPeriodo[0];
+      let periodo = partesPeriodo[1];
+      let id_equipo = this.select_session_equipo.split("<->")[0];
+
+      axios
+        .put("gestionSesionesController.php", {
+          accion: "ActualizarRegistrosPorFecha",
+          id_equipo: id_equipo,
+          nombre_proyecto: archivoObj.proyecto,
+          anio: anio,
+          periodo: periodo,
+          fecha_cierre: archivoObj.fecha_cierre,
+          ruta_vieja: archivoObj.ruta,
+        })
+        .then((response) => {
+          if (response.data == true) {
+            this.index_documento_editar = null;
+            this.modo_nuevo_proyecto_edicion = false;
+
+            this.consultarSeguimientoSession();
+
+            this.mostrarNotificacionToast(
+              "Actualizado",
+              "Los registros se vincularon y actualizaron correctamente.",
+              "success",
+            );
+          } else {
+            console.error("Error backend:", response.data);
+            this.mostrarNotificacionToast(
+              "Error",
+              "Hubo un problema al actualizar los registros.",
+              "error",
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error axios:", error);
+          this.mostrarNotificacionToast(
+            "Error de conexión",
+            "No se pudo conectar con el servidor.",
+            "error",
+          );
+        });
     },
     modalDocumentoDefinicionDeProyectos() {
       this.myModal = new bootstrap.Modal(
@@ -2067,16 +2704,18 @@ const app = {
       );
       this.myModal.show();
     },
-   buscarDocumentos(
-          tipo_archivo,
-          fecha_por_capacitacion,
-          area,
-          llenado,
-          index,
-          idCapacitacion
-      ) {
+    buscarDocumentos(
+      tipo_archivo,
+      fecha_por_capacitacion,
+      area,
+      llenado,
+      index,
+      idCapacitacion,
+    ) {
       console.log("Tipo archivo" + tipo_archivo, "Area: " + area);
       var id_equipo = "";
+      var anio_buscar = "";
+      var periodo_buscar = "";
       var fecha_ruta = "";
 
       if (tipo_archivo === "Capacitacion") {
@@ -2084,6 +2723,8 @@ const app = {
         area = this.areaDocumento;
       } else if (tipo_archivo === "Presentacion") {
         id_equipo = this.select_session_equipo.split("<->")[0];
+        anio_buscar = this.anio_sesion_activa;
+        periodo_buscar = this.periodo_sesion_activa;
       } else if (tipo_archivo === "DefinicionProyectos") {
         area = this.seleccion_eds_areas;
       } else if (tipo_archivo === "Por Fecha") {
@@ -2115,17 +2756,84 @@ const app = {
           fecha_ruta: fecha_ruta,
           id_equipo: id_equipo,
           area: area,
+          anio: anio_buscar,
+          periodo: periodo_buscar,
         })
         .then((response) => {
-          //console.log("Buscando documentos de tipo fecha_ruta:", fecha_ruta, "area:", area)
-          //console.log("Buscando documentos",response.data);
           if (tipo_archivo === "Presentacion") {
-            this.documento_session = response.data;
-            if (this.documento_session.length > 0) {
-              //console.log(this.documento_session + "Archivos encontrados.")
-              this.random = Math.random();
+            let documentos = response.data;
+
+            if (
+              documentos &&
+              Array.isArray(documentos) &&
+              documentos.length > 0
+            ) {
+              documentos = documentos.map((doc) => {
+                if (typeof doc === "string") {
+                  let partes = doc.split("/");
+                  let anio_periodo_doc = "";
+
+                  if (partes.length >= 5) {
+                    anio_periodo_doc = `${partes[2].trim()} - ${partes[3].trim()}`;
+                  }
+
+                  return {
+                    ruta: doc,
+                    proyecto: "",
+                    anio_periodo: anio_periodo_doc,
+                    fecha_cierre: "",
+                  };
+                }
+
+                const tienePeriodo =
+                  doc.anio_periodo &&
+                  String(doc.anio_periodo).trim() !== "" &&
+                  !String(doc.anio_periodo).includes("null");
+
+                doc.proyecto =
+                  tienePeriodo && doc.proyecto
+                    ? String(doc.proyecto).trim()
+                    : "";
+                doc.anio_periodo = tienePeriodo
+                  ? String(doc.anio_periodo)
+                      .replace(/\s*-\s*/g, " - ")
+                      .trim()
+                  : "";
+                doc.fecha_cierre =
+                  tienePeriodo && doc.fecha_cierre
+                    ? String(doc.fecha_cierre).split(" ")[0].trim()
+                    : "";
+
+                if (
+                  doc.proyecto &&
+                  doc.proyecto.trim().toLowerCase() !== "sin proyecto" &&
+                  !this.proyectos_equipo_modal.some(
+                    (p) => p.nombre === doc.proyecto,
+                  )
+                ) {
+                  this.proyectos_equipo_modal.push({ nombre: doc.proyecto });
+                }
+
+                if (
+                  doc.fecha_cierre &&
+                  !this.fechas_cierre_equipo.includes(doc.fecha_cierre)
+                ) {
+                  this.fechas_cierre_equipo.push(doc.fecha_cierre);
+                  this.fechas_cierre_equipo.sort(
+                    (a, b) => new Date(b) - new Date(a),
+                  );
+                }
+
+                return doc;
+              });
             } else {
-              //console.log(this.documento_session + "Sin imagen encontrada.")
+              documentos = [];
+            }
+
+            this.documento_session = documentos;
+
+            if (this.documento_session.length > 0) {
+              this.random = Math.random();
             }
           } else if (tipo_archivo === "DefinicionProyectos") {
             this.documento_definicion = response.data;
@@ -2145,8 +2853,12 @@ const app = {
               //console.log(this.documento_capacitacion + "Sin imagen encontrada.")
             }
 
-            if (this.posicion_canti_doc !== null && this.posicion_canti_doc !== undefined) {
-                    this.cantidadDocumentos[this.posicion_canti_doc] = this.documento_capacitacion.length;
+            if (
+              this.posicion_canti_doc !== null &&
+              this.posicion_canti_doc !== undefined
+            ) {
+              this.cantidadDocumentos[this.posicion_canti_doc] =
+                this.documento_capacitacion.length;
             }
 
             if (this.nueva_capacitacion === true) {
@@ -2155,56 +2867,55 @@ const app = {
             }
             //////////////////////////////////////////  ***
           } else if (tipo_archivo === "Por Fecha") {
-                  if (this.nueva_capacitacion === true) {
-                      // Documentos de una capacitación nueva
-                      this.cantNewDoc = response.data.length;
+            if (this.nueva_capacitacion === true) {
+              // Documentos de una capacitación nueva
+              this.cantNewDoc = response.data.length;
+            } else {
+              if (llenado === "llenadoInicial") {
+                this.pdf_capacitacion = response.data;
+
+                if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                  if (typeof this.$set === "function") {
+                    this.$set(
+                      this.cantidadDocumentos,
+                      idCapacitacion,
+                      this.pdf_capacitacion.length,
+                    );
                   } else {
-                      if (llenado === "llenadoInicial") {
-                          this.pdf_capacitacion = response.data;
-
-                          if (idCapacitacion !== null && idCapacitacion !== undefined) {
-                              if (typeof this.$set === "function") {
-                                  this.$set(
-                                      this.cantidadDocumentos,
-                                      idCapacitacion,
-                                      this.pdf_capacitacion.length
-                                  );
-                              } else {
-                                  this.cantidadDocumentos[idCapacitacion] =
-                                      this.pdf_capacitacion.length;
-                              }
-                          }
-                      }
+                    this.cantidadDocumentos[idCapacitacion] =
+                      this.pdf_capacitacion.length;
                   }
-              } else if (tipo_archivo === "EvidenciaFoto") {
-                  this.foto_capacitacion = response.data;
-
-                  if (this.foto_capacitacion.length > 0) {
-                      this.random = Math.random();
-                  }
-
-                  if (llenado === "llenadoInicial") {
-                      if (idCapacitacion !== null && idCapacitacion !== undefined) {
-                          if (typeof this.$set === "function") {
-                              this.$set(
-                                  this.cantidadFotos,
-                                  idCapacitacion,
-                                  this.foto_capacitacion.length
-                              );
-                          } else {
-                              this.cantidadFotos[idCapacitacion] =
-                                  this.foto_capacitacion.length;
-                          }
-                      }
-                  } else if (llenado === "ActualizaPosicion") {
-                      this.cantidadFotos[this.posicion] =
-                          this.foto_capacitacion.length;
-                  }
-
-                  if (this.nueva_capacitacion === true) {
-                      this.cantNewFoto = this.foto_capacitacion.length;
-                  }
+                }
               }
+            }
+          } else if (tipo_archivo === "EvidenciaFoto") {
+            this.foto_capacitacion = response.data;
+
+            if (this.foto_capacitacion.length > 0) {
+              this.random = Math.random();
+            }
+
+            if (llenado === "llenadoInicial") {
+              if (idCapacitacion !== null && idCapacitacion !== undefined) {
+                if (typeof this.$set === "function") {
+                  this.$set(
+                    this.cantidadFotos,
+                    idCapacitacion,
+                    this.foto_capacitacion.length,
+                  );
+                } else {
+                  this.cantidadFotos[idCapacitacion] =
+                    this.foto_capacitacion.length;
+                }
+              }
+            } else if (llenado === "ActualizaPosicion") {
+              this.cantidadFotos[this.posicion] = this.foto_capacitacion.length;
+            }
+
+            if (this.nueva_capacitacion === true) {
+              this.cantNewFoto = this.foto_capacitacion.length;
+            }
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -2216,8 +2927,43 @@ const app = {
 
       if (tipo_archivo === "Presentacion") {
         var id = this.select_session_equipo.split("<->")[0];
+        var id = this.select_session_equipo.split("<->")[0];
+
+        if (!this.doc_nombre_proyecto || !this.doc_anio_periodo) {
+          this.login = false;
+          return this.mostrarNotificacionToast(
+            "Datos incompletos",
+            "Debe ingresar el nombre del proyecto y seleccionar un Año y Periodo.",
+            "warning",
+          );
+        }
+
+        let partesPeriodo = this.doc_anio_periodo.split(" - ");
+        let anio = partesPeriodo[0];
+        let periodo = partesPeriodo[1];
+
+        axios
+          .put("gestionSesionesController.php", {
+            accion: "ActualizarProyectoModal",
+            id_equipo: id,
+            nombre_proyecto: this.doc_nombre_proyecto,
+            anio: anio,
+            periodo: periodo,
+          })
+          .then((response) => {
+            if (response.data === true) {
+              this.nombre_proyecto_sesion = this.doc_nombre_proyecto;
+              this.consultarSeguimientoSession();
+            } else {
+              console.error("Error al actualizar proyecto:", response.data);
+            }
+          });
+
         formData.append("id_equipo", id);
         formData.append("tipo_archivo", tipo_archivo);
+
+        formData.append("anio", anio);
+        formData.append("periodo", periodo);
         var files = this.$refs.ref_imagen_presentacion.files;
         var totalfiles = this.$refs.ref_imagen_presentacion.files.length;
       } else if (tipo_archivo === "DefinicionProyectos") {
@@ -2262,11 +3008,11 @@ const app = {
           console.log("Hola response", response.data);
 
           if (response.data.length > 0) {
-            Swal.fire({
-              title: "Guardado!!",
-              text: "Archivo guardado con éxito",
-              icon: "success",
-            });
+            this.mostrarNotificacionToast(
+              "¡Guardado!",
+              "Archivo guardado con éxito.",
+              "success",
+            );
 
             if (tipo_archivo === "Presentacion") {
               this.$refs.ref_imagen_presentacion.value = "";
@@ -2512,9 +3258,9 @@ const app = {
       var fechaFormateada = año + "-" + mes + "-" + dia;
       this.fecha_session = fechaFormateada;
 
-      if (this.select_session_equipo != "") {
-        this.buscarDocumentos("Presentacion");
-      }
+      // if (this.select_session_equipo != "") {
+      //   this.buscarDocumentos("Presentacion");
+      // }
 
       /*setTimeout(() => {
         this.circulosPDCA()
@@ -2649,7 +3395,7 @@ const app = {
               this.tomarDiaActual();
               this.consultarSeguimientoKPI();
               this.consultarJuntasArranque();
-             
+
               //Consultas de tabla impactos ambientales
               this.consultarImpactosAmbientalesOTS();
               this.consultarCalculadorafeOTS();
@@ -2661,6 +3407,7 @@ const app = {
           });
       } else {
         this.EADIntegrantes = [];
+        this.nombre_proyecto_sesion = "";
       }
     },
     consultarAvanceEtapas() {
@@ -2749,11 +3496,44 @@ const app = {
           },
         })
         .then((response) => {
-          //console.log("Tomando las Etapas",response.data[1].map(datos=>datos.etapa))
           if (response.data[0] == true) {
-            this.seguimiento_session = response.data[1];
-            console.log("Seguimiento", response.data[1]);
-            var seguimiento = response.data[1];
+            let registros = response.data[1];
+
+            registros.forEach((item) => {
+              if (item.nombre_proyecto === null) item.nombre_proyecto = "";
+              if (item.anio === null) item.anio = "";
+              if (item.periodo === null) item.periodo = "";
+              if (item.fecha_cierre === null) item.fecha_cierre = "";
+            });
+
+            this.seguimiento_session = registros;
+
+            if (this.seguimiento_session.length > 0) {
+              let registroConNombre = this.seguimiento_session.find(
+                (item) =>
+                  item.nombre_proyecto && item.nombre_proyecto.trim() !== "",
+              );
+
+              if (registroConNombre) {
+                this.nombre_proyecto_sesion = registroConNombre.nombre_proyecto;
+                this.anio_sesion_activa = registroConNombre.anio || null;
+                this.periodo_sesion_activa = registroConNombre.periodo || null;
+                this.bloquear_nombre_proyecto = true;
+              } else {
+                this.nombre_proyecto_sesion = "";
+                this.anio_sesion_activa = null;
+                this.periodo_sesion_activa = null;
+                this.bloquear_nombre_proyecto = false;
+              }
+            } else {
+              this.nombre_proyecto_sesion = "";
+              this.anio_sesion_activa = null;
+              this.periodo_sesion_activa = null;
+              this.bloquear_nombre_proyecto = false;
+            }
+
+            console.log("Seguimiento", this.seguimiento_session);
+            var seguimiento = this.seguimiento_session;
             var suma1 = 0;
             var suma2 = 0;
             var suma3 = 0;
@@ -2766,42 +3546,32 @@ const app = {
 
             for (let i = 0; i < seguimiento.length; i++) {
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 1) {
-                //P Que se llevan
                 suma1 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 2) {
-                //D Que se llevan
                 suma2 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 3) {
-                //C Que se llevan
                 suma3 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 4) {
-                //A Que se llevan
                 suma4 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 5) {
-                //DMAIC (D) Que se llevan
                 suma5 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 6) {
-                //DMAIC (M) Que se llevan
                 suma6 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 7) {
-                //DMAIC (A) Que se llevan
                 suma7 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 8) {
-                //DMAIC (I) Que se llevan
                 suma8 += JSON.parse(seguimiento[i].fase).length;
               }
               if (parseInt(JSON.parse(seguimiento[i].etapa)[0]) === 9) {
-                //DMAIC (C) Que se llevan
                 suma9 += JSON.parse(seguimiento[i].fase).length;
               }
-              //console.log("PARSEANDO"+i,parseInt(JSON.parse(seguimiento[i].etapa)[0]))
             }
 
             var valorMaximo = 100;
@@ -2861,6 +3631,10 @@ const app = {
 
             this.circulosPDCA();
             this.fasesUtilizadas();
+
+            if (this.select_session_equipo != "") {
+              this.buscarDocumentos("Presentacion");
+            }
           } else {
             console.log("Error en la consulta" + response.data[0]);
           }
@@ -2878,6 +3652,13 @@ const app = {
     },
 
     guardarActualizarSession(accion) {
+      if (this.nombre_proyecto_sesion == "") {
+        return Swal.fire({
+          text: "Agregue el nombre del proyecto",
+          icon: "question",
+        });
+      }
+
       if (this.select_session_equipo == "") {
         return Swal.fire({
           //title: "Guardado",
@@ -2916,6 +3697,9 @@ const app = {
           accion: accion,
           id_gestion_session: this.id_gestion_session,
           id_equipo: id_equipo,
+          nombre_proyecto: this.nombre_proyecto_sesion,
+          anio: this.anio_sesion_activa,
+          periodo: this.periodo_sesion_activa,
           fecha: this.fecha_session,
           metodologia: this.metodologia,
           etapa: arregloEtapa,
@@ -2957,6 +3741,8 @@ const app = {
       this.id_gestion_session = id_seguimiento;
       this.actualizar_session = true;
       this.index_session_actualizar = index;
+      this.nombre_proyecto_sesion =
+        this.seguimiento_session[index].nombre_proyecto;
       console.log(this.seguimiento_session[index]);
       this.asistieron = JSON.parse(this.seguimiento_session[index].asistencia);
       var IdEtapa = [];
@@ -2992,8 +3778,13 @@ const app = {
       this.faseUsadaEnOtroSeguimiento = fases_seleccionadas_sin_coincidencias;
     },
     reseteandoDatos() {
+      this.editando_nombre_proyecto_sesion = false;
       this.actualizar_session = false;
+      this.bloquear_nombre_proyecto = false;
       this.index_session_actualizar = "";
+      this.nombre_proyecto_sesion = "";
+      this.anio_sesion_activa = null;
+      this.periodo_sesion_activa = null;
       this.select_etapa = "";
       this.fases_seleccionadas = [];
       this.fases_etapa = [];
@@ -3521,7 +4312,6 @@ const app = {
                 this.seguimientoKPIs[0].meta_retadora;
               this.datoGrafica_semana = this.seguimientoKPIs[0].semana;
 
-            
               if (this.seguimientoKPIs[0] && this.seguimientoKPIs[0].pilares) {
                 try {
                   this.pilarSeleccionado = JSON.parse(
@@ -3615,8 +4405,8 @@ const app = {
           } else {
             console.log("Error en consulta", response.data);
           }
-              //lo coloco aqui, ya que para poder verificar registro de los impacto del proyecto necesito el nombre del indicador.
-              this.consultarImpactoDeProyecto()
+          //lo coloco aqui, ya que para poder verificar registro de los impacto del proyecto necesito el nombre del indicador.
+          this.consultarImpactoDeProyecto();
         })
         .catch((error) => {
           console.log(error);
@@ -4312,10 +5102,9 @@ const app = {
                   co2: impacto.co2 ?? 0,
                   referencia: impacto.referencia ?? "",
                 }));
-                if(response.data.impactos[0].concepto === 'N/A') {
-                 this.aplicarNA = true;
-                }
-
+              if (response.data.impactos[0].concepto === "N/A") {
+                this.aplicarNA = true;
+              }
             } else {
               // No existen impactos
               // Crear una fila nueva
@@ -4507,8 +5296,9 @@ const app = {
       };
       console.log("Impactos a guardar/actualizar:", datos);
       // Enviar TODOS los impactos en una sola petición
-      axios.post("impactosAmbientalesController.php", datos)
-      .then((response) => {
+      axios
+        .post("impactosAmbientalesController.php", datos)
+        .then((response) => {
           console.log("Respuesta del servidor:", response.data);
           if (response.data.status === "success") {
             Swal.fire({
@@ -4565,45 +5355,44 @@ const app = {
     },
 
     marcarImpactoNoAplica(impacto) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Los campos se marcaran con: (N/A). ¿Deseas continuar?',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#f0ad4e',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Sí, marcar como N/A',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
+      Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Los campos se marcaran con: (N/A). ¿Deseas continuar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#f0ad4e",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Sí, marcar como N/A",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          impacto.diagrama = "N/A";
+          impacto.tipo = "N/A";
+          impacto.concepto = "N/A";
+          impacto.alcance = 0;
+          impacto.um = "N/A";
+          impacto.referencia = "N/A";
 
-                impacto.diagrama = 'N/A';
-                impacto.tipo = 'N/A';
-                impacto.concepto = 'N/A';
-                impacto.alcance = 0;
-                impacto.um = 'N/A';
-                impacto.referencia = 'N/A';
-
-                this.aplicarNA = true;
-            }
-        });
+          this.aplicarNA = true;
+        }
+      });
     },
     reviertirNoAplica(impacto) {
-        impacto.diagrama = '';
-        impacto.tipo = '';
-        impacto.concepto = '';
-        impacto.alcance = '';
-        impacto.um = '';
-        impacto.referencia = '';
-        this.aplicarNA = false;
+      impacto.diagrama = "";
+      impacto.tipo = "";
+      impacto.concepto = "";
+      impacto.alcance = "";
+      impacto.um = "";
+      impacto.referencia = "";
+      this.aplicarNA = false;
     },
     validarNA(impacto) {
-      console.log("Console: ",impacto.concepto);
-        const valor = impacto.concepto?.trim().toUpperCase();
-          if (valor === 'NA' || valor === 'N/A') {
-              this.marcarImpactoNoAplica(impacto);
-          }
-      },
+      console.log("Console: ", impacto.concepto);
+      const valor = impacto.concepto?.trim().toUpperCase();
+      if (valor === "NA" || valor === "N/A") {
+        this.marcarImpactoNoAplica(impacto);
+      }
+    },
 
     //////////////////////////////////////////////////////////////////////CAPACITACIONES/////////////////////////////////////////////////
     modalEvFoto(fecha, index, area) {
@@ -4653,22 +5442,20 @@ const app = {
     }, */
     modalDocumentoCapacitacion(fecha, idCapacitacion = null, area = "") {
       if (fecha == "") {
-          alert("Favor de seleccionar una fecha antes de subir su documento.");
-          return;
+        alert("Favor de seleccionar una fecha antes de subir su documento.");
+        return;
       }
 
       this.posicion_canti_doc = idCapacitacion;
       this.fecha_ruta = fecha;
       this.areaDocumento = area;
 
-      this.myModal = new bootstrap.Modal(
-          document.getElementById("modal")
-      );
+      this.myModal = new bootstrap.Modal(document.getElementById("modal"));
 
       this.myModal.show();
 
       this.buscarDocumentos("Capacitacion");
-  },
+    },
     nuevaCapacitaciones() {
       this.nueva_capacitacion = true;
       this.fecha_capacitacion = "";
@@ -4690,121 +5477,113 @@ const app = {
         this.actualizar_compromiso = false*/
     },
 
-    
     guardarCapacitacion(accion, id = null) {
-        if (accion === "Actualizar") {
-            const ingreso = document.getElementById(
-                "capacitacionIngreso" + id
-            );
+      if (accion === "Actualizar") {
+        const ingreso = document.getElementById("capacitacionIngreso" + id);
 
-            const fecha = document.getElementById(
-                "capacitacionFecha" + id
-            );
+        const fecha = document.getElementById("capacitacionFecha" + id);
 
-            const comentario = document.getElementById(
-                "capacitacionComentario" + id
-            );
+        const comentario = document.getElementById(
+          "capacitacionComentario" + id,
+        );
 
-            if (!ingreso || !fecha || !comentario) {
-                console.error(
-                    "No se encontraron los campos de la capacitación:",
-                    id
-                );
-                return;
-            }
-
-            this.nuevos_ingresos = ingreso.value;
-            this.fecha_capacitacion = fecha.value;
-            this.comentarios_capacitacion = comentario.value;
+        if (!ingreso || !fecha || !comentario) {
+          console.error("No se encontraron los campos de la capacitación:", id);
+          return;
         }
 
-        if (
-            this.nuevos_ingresos == null ||
-            this.nuevos_ingresos.trim() === "" ||
-            this.fecha_capacitacion === "" ||
-            this.comentarios_capacitacion == null ||
-            this.comentarios_capacitacion.trim() === ""
-        ) {
-            return alert("Todos los campos de capacitación son requeridos.");
-        }
+        this.nuevos_ingresos = ingreso.value;
+        this.fecha_capacitacion = fecha.value;
+        this.comentarios_capacitacion = comentario.value;
+      }
 
-        axios
-            .post("capacitacionesController.php", {
-                id: id,
-                accion: accion,
-                nuevos_ingresos: this.nuevos_ingresos,
-                fecha_capacitacion: this.fecha_capacitacion,
-                comentarios_capacitacion: this.comentarios_capacitacion,
-            })
-            .then((response) => {
-                if (response.data == true) {
-                    Swal.fire({
-                        title: "¡Guardado!",
-                        text: "Capacitación guardada con éxito.",
-                        icon: "success",
-                    });
+      if (
+        this.nuevos_ingresos == null ||
+        this.nuevos_ingresos.trim() === "" ||
+        this.fecha_capacitacion === "" ||
+        this.comentarios_capacitacion == null ||
+        this.comentarios_capacitacion.trim() === ""
+      ) {
+        return alert("Todos los campos de capacitación son requeridos.");
+      }
 
-                    this.comentarios_capacitacion = "";
-                    this.nuevos_ingresos = "";
-                    this.fecha_capacitacion = "";
-                    this.fecha_ruta = "";
-
-                    this.nueva_capacitacion = false;
-                    this.editarCapacitacion = null;
-
-                    this.consultarCapacitacion();
-                } else {
-                    console.log(response.data);
-                }
-            })
-            .catch((error) => {
-                console.log("Error en axios:", error);
-            });
-    },
-
-consultarCapacitacion() {
-    axios
-        .get("capacitacionesController.php", {
-            params: {
-                accion: "Consultar",
-            },
+      axios
+        .post("capacitacionesController.php", {
+          id: id,
+          accion: accion,
+          nuevos_ingresos: this.nuevos_ingresos,
+          fecha_capacitacion: this.fecha_capacitacion,
+          comentarios_capacitacion: this.comentarios_capacitacion,
         })
         .then((response) => {
-            console.log("Capacitaciones", response.data);
+          if (response.data == true) {
+            Swal.fire({
+              title: "¡Guardado!",
+              text: "Capacitación guardada con éxito.",
+              icon: "success",
+            });
 
-            if (response.data[0] == true) {
-                this.capacitaciones = response.data[1];
+            this.comentarios_capacitacion = "";
+            this.nuevos_ingresos = "";
+            this.fecha_capacitacion = "";
+            this.fecha_ruta = "";
 
-                this.cantidadDocumentos = {};
-                this.cantidadFotos = {};
+            this.nueva_capacitacion = false;
+            this.editarCapacitacion = null;
 
-                for (const capacitacion of this.capacitaciones) {
-                    this.buscarDocumentos(
-                        "Por Fecha",
-                        capacitacion.fecha,
-                        capacitacion.area,
-                        "llenadoInicial",
-                        null,
-                        capacitacion.id
-                    );
-
-                    this.buscarDocumentos(
-                        "EvidenciaFoto",
-                        capacitacion.fecha,
-                        capacitacion.area,
-                        "llenadoInicial",
-                        null,
-                        capacitacion.id
-                    );
-                }
-            } else {
-                console.log("Error en la consulta", response.data);
-            }
+            this.consultarCapacitacion();
+          } else {
+            console.log(response.data);
+          }
         })
         .catch((error) => {
-            console.log("Error en axios:", error);
+          console.log("Error en axios:", error);
         });
-},
+    },
+
+    consultarCapacitacion() {
+      axios
+        .get("capacitacionesController.php", {
+          params: {
+            accion: "Consultar",
+          },
+        })
+        .then((response) => {
+          console.log("Capacitaciones", response.data);
+
+          if (response.data[0] == true) {
+            this.capacitaciones = response.data[1];
+
+            this.cantidadDocumentos = {};
+            this.cantidadFotos = {};
+
+            for (const capacitacion of this.capacitaciones) {
+              this.buscarDocumentos(
+                "Por Fecha",
+                capacitacion.fecha,
+                capacitacion.area,
+                "llenadoInicial",
+                null,
+                capacitacion.id,
+              );
+
+              this.buscarDocumentos(
+                "EvidenciaFoto",
+                capacitacion.fecha,
+                capacitacion.area,
+                "llenadoInicial",
+                null,
+                capacitacion.id,
+              );
+            }
+          } else {
+            console.log("Error en la consulta", response.data);
+          }
+        })
+        .catch((error) => {
+          console.log("Error en axios:", error);
+        });
+    },
 
     cancelarCapacitacion() {
       this.nueva_capacitacion = false;

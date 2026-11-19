@@ -12,21 +12,26 @@ if(isset($_SESSION['nombre'])){
             case 'GET':
                     $id_equipo = $_GET['id_equipo'];
                     if($_GET['accion'] == "ConsultarSeguimiento"){
-                            $resultado = consultarSession($id_equipo);
-                        }else if($_GET['accion'] == "ConsultarSeguimientoAsistencia"){
-                            $anio=$_GET['anio'];
-                            $mes=$_GET['mes'];
-                            //consulto la gestion de sesiones para tomar el historia de asistencias ScoreCard
-                            $resultado = consultarSessionAsistencia($id_equipo,$anio,$mes);
-                        }else{
-                            $resultado = "No existe esta acción";
-                        }
+                        $resultado = consultarSession($id_equipo);
+                    }else if($_GET['accion'] == "ConsultarSeguimientoAsistencia"){
+                        $anio=$_GET['anio'];
+                        $mes=$_GET['mes'];
+                        $resultado = consultarSessionAsistencia($id_equipo,$anio,$mes);
+                    }else if($_GET['accion'] == "ConsultarFechasCierre"){
+                        $resultado = obtenerFechasCierreEquipo($id_equipo);
+                    }else{
+                        $resultado = "No existe esta acción";
+                    }
+
                 break;
             case 'POST':
           
                     if(isset($arreglo['accion']) && isset($arreglo['id_gestion_session']) && isset($arreglo['id_equipo']) && isset($arreglo['fecha']) && isset($arreglo['metodologia'])  && isset($arreglo['etapa']) && isset($arreglo['fases'])  && isset($arreglo['ids_integrantes']) && isset($arreglo['asistieron']) && isset($arreglo['porcentaje'])){
                         $accion=$arreglo['accion'];
                         $id_equipo=$arreglo['id_equipo'];
+                        $nombre_proyecto = $arreglo['nombre_proyecto'];
+                        $anio = $arreglo['anio'] ?? null;
+                        $periodo = $arreglo['periodo'] ?? null;
                         $fecha=$arreglo['fecha'];
                         $metodologia=$arreglo['metodologia'];
                         $etapa=$arreglo['etapa'];
@@ -35,7 +40,7 @@ if(isset($_SESSION['nombre'])){
                         $asistieron=$arreglo['asistieron'];
                         $porcentaje=$arreglo['porcentaje'];
                         $id_gestion_session=$arreglo['id_gestion_session'];
-                        $resultado = guardarActualizarSession($id_gestion_session,$accion,$id_equipo,$fecha,$metodologia,$etapa,$fases,$ids_integrantes,$asistieron,$porcentaje);
+                        $resultado = guardarActualizarSession($id_gestion_session, $accion, $id_equipo, $nombre_proyecto, $anio, $periodo, $fecha, $metodologia, $etapa, $fases, $ids_integrantes, $asistieron, $porcentaje);
                     }else{
                         $resultado = "No existen todas la variables";
                     }
@@ -45,6 +50,27 @@ if(isset($_SESSION['nombre'])){
                     if(isset($arreglo['id_equipo']) && isset($arreglo['accion']) && $arreglo['accion']=='cerrarProyecto' ){
                         $id_equipo =$arreglo['id_equipo'];
                         $resultado = cerrarProyecto($id_equipo);
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarProyectoModal") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+                        $anio = $arreglo["anio"];
+                        $periodo = $arreglo["periodo"];
+                        $resultado = actualizarProyectoModal($id_equipo, $nombre_proyecto, $anio, $periodo);
+                        
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarRegistrosPorFecha") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+                        $anio = $arreglo["anio"];
+                        $periodo = $arreglo["periodo"];
+                        $fecha_cierre = $arreglo["fecha_cierre"];
+                        $ruta_vieja = $arreglo["ruta_vieja"] ?? "";
+
+                        $resultado = actualizarRegistrosPorFecha($id_equipo, $nombre_proyecto, $anio, $periodo, $fecha_cierre, $ruta_vieja);
+                    } else if (isset($arreglo["accion"]) && $arreglo["accion"] === "ActualizarNombreProyectoActivo") {
+                        $id_equipo = $arreglo["id_equipo"];
+                        $nombre_proyecto = $arreglo["nombre_proyecto"];
+
+                        $resultado = actualizarNombreProyectoActivo($id_equipo, $nombre_proyecto);
                     }
                 break;
             case 'DELETE':
