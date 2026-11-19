@@ -52,7 +52,8 @@ if(isset($_SESSION['nombre'])){
                             //$ids_evaluadores=json_encode($arreglo['evaluadores'],JSON_UNESCAPED_UNICODE);
                             $ids_ead=$arreglo['ids_ead'];
                             $ids_evaluadores=$arreglo['evaluadores'];
-                            $resultado = guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores);
+                            $tipoEvaluacion=$arreglo['tipoEvaluacion'];
+                            $resultado = guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores,$tipoEvaluacion);
                         }
                         if(isset($arreglo['accion']) && $arreglo['accion']=='editarOrden'){
                             $ead_foro_id = $arreglo['ead_foro_id'];

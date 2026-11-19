@@ -3443,6 +3443,22 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </input>
                             </div>
                         </div>
+                    <div class="d-flex flex-column align-items-center justify-content-center mt-2" style="background-color: rgb(184,14,14); border-radius: 10px; height: 60px; font-size: 0.8em;">
+                        <label class="fw-bold text-white mb-1">Tipo de evaluación:</label>
+                        <div class="d-flex gap-2">
+                            <input type="radio" class="btn-check" name="tipoEvaluacion" id="estandar" value="estandar" v-model="tipoEvaluacion">
+                            <label class="btn btn-sm rounded-pill py-0 px-3" for="estandar" :class="tipoEvaluacion === 'estandar' ? 'bg-white text-success border-white' : 'btn-outline-light'">
+                               <i v-if="tipoEvaluacion === 'estandar'" class="bi bi-check-circle-fill text-success me-1"></i>
+                                Estándar
+                            </label>
+
+                            <input type="radio" class="btn-check" name="tipoEvaluacion" id="gonher" value="gonher" v-model="tipoEvaluacion">
+                            <label class="btn btn-sm rounded-pill py-0 px-3" for="gonher" :class="tipoEvaluacion === 'gonher' ? 'bg-white text-success border-white' : 'btn-outline-light'">
+                                <i v-if="tipoEvaluacion === 'gonher'" class="bi bi-check-circle-fill text-success me-1"></i>
+                                Gonher
+                            </label>
+                        </div>
+                    </div>
                         <div class=" text-center mt-3 ">
                             <div class="d-flex">
                                 <div class="col-6">

@@ -329,6 +329,7 @@ const app = {
       etapas: "",
       comentario: "",
       contestado: [],
+      tipoEvaluacion: 'estandar',
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: "",
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -5857,6 +5858,9 @@ const app = {
         if (this.ckeckEvaluadores.length <= 0) {
           return alert("Seleccione Evaluadores");
         }
+        if (!this.tipoEvaluacion) {
+         return alert('Selecciona un tipo de preguntas/evaluación.');
+        }
         planta = this.select_planta_foro;
         area = this.select_area_foro;
       } else {
@@ -5875,9 +5879,13 @@ const app = {
         if (this.select_planta_foro == "") {
           planta = "Multiplanta";
         }
+         if (!this.tipoEvaluacion) {
+         return alert('Selecciona un tipo de preguntas/evaluación.');
+        }
         planta = this.select_planta_foro;
         area = "Multiárea";
       }
+
       axios
         .post("competenciasController.php", {
           accion: "CrearForo",
@@ -5887,6 +5895,7 @@ const app = {
           fecha: this.fecha_foro,
           ids_ead: this.ckeckEADForo,
           evaluadores: this.ckeckEvaluadores,
+          tipoEvaluacion:this.tipoEvaluacion
         })
         .then((response) => {
           console.log("Crear Foro", response.data);

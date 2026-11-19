@@ -151,7 +151,7 @@ include("conexionGhoner.php");
             return array ($resultado,$estado);
     }
 
-    function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores){
+    function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores,$tipoEvaluacion){
         global $conexion;
         $estado = [];
         $query = "INSERT INTO foros (nombre_foro,planta,area,foro,fecha,estatus) VALUES (?,?,?,?,?,?)";
@@ -182,7 +182,12 @@ include("conexionGhoner.php");
                                 $estado[2] = true;
                                 $conexion->insert_id; //tomo el id de ead_foro
 
-                                        $seleccionar = "SELECT * FROM preguntas";//selecciono las preguntas para replicar
+                                        if($tipoEvaluacion=='' || $tipoEvaluacion=='estandar'){
+                                                $seleccionar = "SELECT * FROM preguntas";//selecciono las preguntas para replicar preguntas estandar
+                                        }else if($tipoEvaluacion=='gonher'){
+                                                $seleccionar = "SELECT * FROM preguntas_gonher";//selecciono las preguntas para replicar preguntas gonher
+                                        }
+                                        
                                         $resultados = mysqli_query($conexion,$seleccionar);
                                         if($resultados){
                                             $estado[3] = true;
@@ -211,7 +216,7 @@ include("conexionGhoner.php");
             $estado[0] =$conexion->error;
         }
         $stmt->close();
-        return array($estado,$ids_ead,$ids_evaluadores);
+        return array($estado,$ids_ead,$ids_evaluadores,$tipoEvaluacion);
     }
 
     function actualizandoNombreProyecto($id,$nombre){
