@@ -888,6 +888,38 @@ const app = {
     this.generarPeriodos();
   },
   methods: {
+    cambiarPreguntas(tabla) {
+      this.tabla_preguntas_activa = tabla;
+      this.filtro_etapa_pregunta = "";
+      this.filtro_texto_pregunta = "";
+      this.cerrarFormularioPregunta();
+      this.consultarPreguntas();
+    },
+    consultarPreguntas() {
+      axios
+        .get("preguntasController.php", {
+          params: {
+            accion: "Consultar",
+            tabla: this.tabla_preguntas_activa,
+          },
+        })
+        .then((response) => {
+          if (response.data && response.data[0] === true) {
+            this.lista_preguntas_crud = response.data[1];
+          } else {
+            this.lista_preguntas_crud = [];
+            console.log("Error al consultar preguntas: ", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Error en axios (consultarPreguntas): ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexion",
+            "No se pudieron cargar las preguntas",
+            "error",
+          );
+        });
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
