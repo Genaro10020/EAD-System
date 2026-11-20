@@ -939,6 +939,15 @@ const app = {
       };
       this.mostrar_form_pregunta = true;
     },
+    cerrarFormularioPregunta() {
+      this.mostrar_form_pregunta = false;
+      this.form_pregunta = {
+        id: null,
+        etapa: "",
+        peso: "",
+        pregunta: "",
+      };
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
