@@ -721,6 +721,22 @@ const app = {
         0,
       );
     },
+    preguntasFiltradas() {
+      return (this.lista_preguntas_crud || []).filter((preg) => {
+        if (!preg) return false;
+        const coincideEtapa =
+          !this.filtro_etapa_pregunta ||
+          preg.etapa === this.filtro_etapa_pregunta;
+
+        const coincideTexto =
+          !this.filtro_texto_pregunta ||
+          (preg.pregunta &&
+            preg.pregunta
+              .toLowerCase()
+              .includes(this.filtro_texto_pregunta.toLowerCase()));
+        return coincideEtapa && coincideTexto;
+      });
+    },
     opcionesPlantaAreaDoc() {
       if (!this.consultaEADparaFiltrar) return [];
 
