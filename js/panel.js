@@ -715,7 +715,12 @@ const app = {
 
       return Array.from(mapa, ([etapa, peso]) => ({ etapa, peso }));
     },
-
+    sumaPesosEtapas() {
+      return this.resumenEtapasPreguntas.reduce(
+        (acc, item) => acc + item.peso,
+        0,
+      );
+    },
     opcionesPlantaAreaDoc() {
       if (!this.consultaEADparaFiltrar) return [];
 
