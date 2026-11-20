@@ -704,6 +704,18 @@ const app = {
     },
   },
   computed: {
+    resumenEtapasPreguntas() {
+      const mapa = new Map();
+
+      (this.lista_preguntas_crud || []).forEach((item) => {
+        if (item && item.etapa && !mapa.has(item.etapa)) {
+          mapa.set(item.etapa, Number(item.peso) || 0);
+        }
+      });
+
+      return Array.from(mapa, ([etapa, peso]) => ({ etapa, peso }));
+    },
+
     opcionesPlantaAreaDoc() {
       if (!this.consultaEADparaFiltrar) return [];
 
