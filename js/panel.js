@@ -948,6 +948,19 @@ const app = {
         pregunta: "",
       };
     },
+    autocompletarPesoEtapa() {
+      if (!this.form_pregunta.etapa) return;
+
+      const encontrada = this.resumenEtapasPreguntas.find(
+        (e) =>
+          e.etapa.toLowerCase() ===
+          this.form_pregunta.etapa.trim().toLowerCase(),
+      );
+
+      if (encontrada) {
+        this.form_pregunta.peso = encontrada.peso;
+      }
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
