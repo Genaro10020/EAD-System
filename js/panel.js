@@ -961,6 +961,72 @@ const app = {
         this.form_pregunta.peso = encontrada.peso;
       }
     },
+    guardarPregunta() {
+      const etapa = (this.form_pregunta.etapa || "").trim();
+      const pregunta = (this.form_pregunta.pregunta || "").trim();
+      const peso = Number(this.form_pregunta.peso);
+
+      if (!etapa || !pregunta || !peso || peso <= 0) {
+        return this.mostrarNotificacionToast(
+          "Campos incompletos",
+          "Completa la etapa, un peso válido y el texto de la pregunta",
+          "warning",
+        );
+      }
+
+      const esEdicion = Boolean(this.form_pregunta.id);
+
+      const peticion = esEdicion
+        ? axios.put("preguntasController.php", {
+            accion: "Actualizar",
+            tabla: this.tabla_preguntas_activa,
+            id: this.form_pregunta.id,
+            etapa: etapa,
+            peso: peso,
+            pregunta: pregunta,
+          })
+        : axios.post("preguntasController.php", {
+            accion: "Insertar",
+            tabla: this.tabla_preguntas_activa,
+            etapa: etapa,
+            peso: peso,
+            pregunta: pregunta,
+          });
+
+      peticion
+        .then((response) => {
+          if (
+            response.data === true ||
+            (response.data && response.data[0] === true)
+          ) {
+            this.mostrarNotificacionToast(
+              esEdicion ? "¡Actualizada!" : "¡Guardada!",
+              esEdicion
+                ? "La pregunta se actualizó correctamente"
+                : "La pregunta se registro correctamente",
+              "success",
+            );
+
+            this.cerrarFormularioPregunta();
+            this.consultarPreguntas();
+          } else {
+            console.error("Error backend: ", response.data);
+            this.mostrarNotificacionToast(
+              "Error",
+              "No se pudo guardar la pregunta",
+              "error",
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error en axios (guardarPregunta): ", error);
+          this.mostrarNotificacionToast(
+            "Error de conexión",
+            "Hubo un problema al conectar con el servidor",
+            "error",
+          );
+        });
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
