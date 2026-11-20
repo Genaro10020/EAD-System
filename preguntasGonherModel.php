@@ -43,4 +43,41 @@ function consultarPreguntas($tabla) {
   return array(true, $resultado);
 }
 
+function insertarPregunta($tabla, $etapa, $peso, $pregunta) {
+  global $conexion;
+
+  $tablaSegura = validarNombreTabla($tabla);
+
+  if (!$tablaSegura) {
+    return "Tabla no válida";
+  }
+
+  $id_ead_foro = 0;
+  $valor = 0;
+
+  $insertar = "INSERT INTO `$tablaSegura` (id_ead_foro, etapa, peso, pregunta, valor) VALUES (?, ?, ?, ?, ?)";
+
+  $stmt = $conexion->prepare($insertar);
+
+  if (!$stmt) {
+    return "Error al preparar: " . $conexion->error;
+  }
+
+  $stmt->bind_param("isisi", $id_ead_foro, $etapa, $peso, $pregunta, $valor);
+
+  if ($stmt->execute()) {
+    $stmt->close();
+    sincronizarPesoEtapa($tablaSegura, $etapa, $peso);
+    $conexion->close();
+
+    return true;
+  } else {
+    $error = $stmt->error;
+    $stmt->close();
+    $conexion->close();
+
+    return $error;
+  }
+}
+
 ?>
