@@ -1027,6 +1027,61 @@ const app = {
           );
         });
     },
+    eliminarPregunta(preg) {
+      Swal.fire({
+        title: "¿Eliminar pregunta?",
+        html: `<p class="mb-1">Se eliminará la siguiente pregunta:</p><small class="text-muted">"${preg.pregunta}"</small>`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#b80e0e",
+        cancelButtonColor: "#6c757d",
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      }).then((result) => {
+        if (!result.isConfirmed) return;
+
+        axios
+          .delete("preguntasController.php", {
+            params: {
+              tabla: this.tabla_preguntas_activa,
+              id: preg.id,
+            },
+          })
+          .then((response) => {
+            if (
+              response.data === true ||
+              (response.data && response.data[0] === true)
+            ) {
+              if (this.form_pregunta.id === preg.id) {
+                this.cerrarFormularioPregunta();
+              }
+
+              this.mostrarNotificacionToast(
+                "¡Eliminada!",
+                "La pregunta fue eliminada correctamente",
+                "success",
+              );
+
+              this.consultarPreguntas();
+            } else {
+              console.error("Error backend: ", response.data);
+              this.mostrarNotificacionToast(
+                "Error",
+                "No se pudo eliminar la pregunta",
+                "error",
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error en axios (eliminarPregunta: )", error);
+            this.mostrarNotificacionToast(
+              "Error de conexión",
+              "Hubo un problema al conectar con el servidor",
+              "error",
+            );
+          });
+      });
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
