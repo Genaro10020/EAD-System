@@ -265,7 +265,17 @@ const app = {
       cargando_docs: false,
       porcentaje_carga_docs: 0,
       //////////////////////////////////////////////////////////////////////////////////////**PREGUNTAS*/
-
+      tabla_preguntas_activa: "preguntas",
+      lista_preguntas_crud: [],
+      filtro_etapa_pregunta: "",
+      filtro_texto_pregunta: "",
+      mostrar_form_pregunta: false,
+      form_pregunta: {
+        id: null,
+        etapa: "",
+        peso: "",
+        pregunta: "",
+      },
       //////////////////////////////////////////////////////////////////////////////////////**CREAR COMPENTENCIAS */
       foros: [],
       EADFiltrado: [],
@@ -329,7 +339,7 @@ const app = {
       etapas: "",
       comentario: "",
       contestado: [],
-      tipoEvaluacion: 'estandar',
+      tipoEvaluacion: "estandar",
       //////////////////////////////////////////////////////////////////////////////////////*EVALUAR*/
       equipo_score: "",
       ////////////////////////////////////////////////////////////////////////////////////*GRAFICAS*/
@@ -5859,7 +5869,7 @@ const app = {
           return alert("Seleccione Evaluadores");
         }
         if (!this.tipoEvaluacion) {
-         return alert('Selecciona un tipo de preguntas/evaluación.');
+          return alert("Selecciona un tipo de preguntas/evaluación.");
         }
         planta = this.select_planta_foro;
         area = this.select_area_foro;
@@ -5879,8 +5889,8 @@ const app = {
         if (this.select_planta_foro == "") {
           planta = "Multiplanta";
         }
-         if (!this.tipoEvaluacion) {
-         return alert('Selecciona un tipo de preguntas/evaluación.');
+        if (!this.tipoEvaluacion) {
+          return alert("Selecciona un tipo de preguntas/evaluación.");
         }
         planta = this.select_planta_foro;
         area = "Multiárea";
@@ -5895,7 +5905,7 @@ const app = {
           fecha: this.fecha_foro,
           ids_ead: this.ckeckEADForo,
           evaluadores: this.ckeckEvaluadores,
-          tipoEvaluacion:this.tipoEvaluacion
+          tipoEvaluacion: this.tipoEvaluacion,
         })
         .then((response) => {
           console.log("Crear Foro", response.data);
