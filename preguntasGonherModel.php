@@ -80,4 +80,40 @@ function insertarPregunta($tabla, $etapa, $peso, $pregunta) {
   }
 }
 
+function actualizarPregunta($tabla, $id, $etapa, $peso, $pregunta) {
+  global $conexion;
+
+  $tablaSegura = validarNombreTabla($tabla);
+
+  if (!$tablaSegura) {
+    return "Tabla no válida";
+  }
+
+  $actualizar = "UPDATE `$tablaSegura` SET etapa = ?, peso = ?, pregunta = ? WHERE id = ? AND id_ead_foro = 0";
+
+  $stmt = $conexion->prepare($actualizar);
+
+  if (!$stmt) {
+    return "Error al preparar: " . $conexion->error;
+  }
+
+  $stmt->bind_param("sisi", $etapa, $peso, $pregunta, $id);
+
+  if ($stmt->execute()) {
+    $stmt->close();
+    sincronizarPesoEtapa($tablaSegura, $etapa, $peso);
+
+    $conexion->close();
+
+    return true;
+  } else {
+    $error = $stmt->error;
+
+    $stmt->close();
+    $conexion->close();
+
+    return $error;
+  }
+}
+
 ?>
