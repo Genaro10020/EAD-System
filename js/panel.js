@@ -920,6 +920,16 @@ const app = {
           );
         });
     },
+    abrirFormularioPregunta() {
+      this.form_pregunta = {
+        id: null,
+        etapa: this.filtro_etapa_pregunta || "",
+        peso: "",
+        pregunta: "",
+      };
+      this.autocompletarPesoEtapa();
+      this.mostrar_form_pregunta = true;
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
