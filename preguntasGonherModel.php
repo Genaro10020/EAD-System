@@ -116,4 +116,19 @@ function actualizarPregunta($tabla, $id, $etapa, $peso, $pregunta) {
   }
 }
 
+function sincronizarPesoEtapa($tablaSegura, $etapa, $peso) {
+  global $conexion;
+
+  $sql = "UPDATE `$tablaSegura` SET peso = ? WHERE etapa = ? AND id_ead_foro = 0";
+
+  $stmtSync = $conexion->prepare($sql);
+
+  if ($stmtSync) {
+    $stmtSync->bind_param("is", $peso, $etapa);
+
+    $stmtSync->execute();
+    $stmtSync->close();
+  }
+}
+
 ?>
