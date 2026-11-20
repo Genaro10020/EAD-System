@@ -930,6 +930,15 @@ const app = {
       this.autocompletarPesoEtapa();
       this.mostrar_form_pregunta = true;
     },
+    editarPregunta(preg) {
+      this.form_pregunta = {
+        id: preg.id,
+        etapa: preg.etapa,
+        peso: Number(preg.peso),
+        pregunta: preg.pregunta,
+      };
+      this.mostrar_form_pregunta = true;
+    },
     registrarNombreProyectoSesion() {
       if (!this.select_session_equipo || this.select_session_equipo === "") {
         return this.mostrarNotificacionToast(
