@@ -131,4 +131,37 @@ function sincronizarPesoEtapa($tablaSegura, $etapa, $peso) {
   }
 }
 
+function eliminarPregunta($tabla, $id) {
+  global $conexion;
+
+  $tablaSegura = validarNombreTabla($tabla);
+
+  if (!$tablaSegura) {
+    return "Tabla no válida";
+  }
+
+  $eliminar = "DELETE FROM `$tablaSegura` WHERE id = ? AND id_ead_foro = 0";
+  $stmt = $conexion->prepare($eliminar);
+
+  if (!$stmt) {
+    return "Error al preparar: " . $conexion->error;
+  }
+
+  $stmt->bind_param("i", $id);
+
+  if ($stmt->execute()) {
+    $eliminado = $stmt->affected_rows > 0;
+    $stmt->close();
+
+    $conexion->close();
+
+    return $eliminado ? true : "No se encontró el registro base a eliminar";
+  } else {
+    $error = $stmt->error;
+    $stmt->close();
+    $conexion->close();
+
+    return $error;
+  }
+}
 ?>
