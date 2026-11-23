@@ -2473,55 +2473,209 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
             </div>
 
-            <div v-if="ventana=='Preguntas'"> <!--bloque PREGUNTAS-->
-                <!--///////////////////////////////////////-->
-                <div class="row text-center">
-                    <div class="col-12 col-lg-4">
-                        <span class="badge text-bg-secondary">Etapas</span>
-                        <table class="table m-2">
-                            <thead class="table-light">
-                                <th>#</th>
-                                <th>Etapa</th>
-                                <th>Peso</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <div v-if="ventana=='Preguntas'" class="preg-contenedor">            
+                <div class="preg-selector-wrapper">
+                    <div class="preg-tabs">
+                        <button 
+                            type="button" 
+                            class="preg-tab-btn" 
+                            :class="{ 'activo': tabla_preguntas_activa === 'preguntas' }"
+                            @click="cambiarPreguntas('preguntas')">
+                            <i class="bi bi-list-check"></i>
+                            Evaluación Estándar
+                        </button>
+                        <button 
+                            type="button" 
+                            class="preg-tab-btn" 
+                            :class="{ 'activo': tabla_preguntas_activa === 'preguntas_gonher' }"
+                            @click="cambiarPreguntas('preguntas_gonher')">
+                            <i class="bi bi-award"></i>
+                            Evaluación Gonher
+                        </button>
                     </div>
-                    <div class="col-12 col-lg-8">
-                        <span class="badge text-bg-secondary">Cuestionario</span>
-                        <table class="table m-2">
-                            <thead>
-                                <th width="max-width:100px">
-                                    Etapa
-                                </th>
-                                <th width="max-width:100px">
-                                    Peso
-                                </th>
-                                <th>
-                                    Pregunta
-                                </th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
 
-                                    </td>
-                                    <td>
+                    <div class="preg-filtros">
+                        <select class="preg-select" v-model="filtro_etapa_pregunta">
+                            <option value="">Todas las etapas</option>
+                            <option v-for="item in resumenEtapasPreguntas" :key="item.etapa" :value="item.etapa">
+                                {{ item.etapa }} ({{ item.peso }}%)
+                            </option>
+                        </select>
 
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <input 
+                            type="text" 
+                            class="preg-input preg-input-busqueda" 
+                            v-model="filtro_texto_pregunta" 
+                            placeholder="Buscar pregunta...">
+
+                        <button 
+                            type="button" 
+                            class="preg-btn preg-btn-primary" 
+                            @click="abrirFormularioPregunta()">
+                            <i class="bi bi-plus-lg"></i> Nueva Pregunta
+                        </button>
                     </div>
                 </div>
-                <!--///////////////////////////////////////-->
+
+                <div class="preg-grid">                    
+                    <div class="preg-card">
+                        <div class="preg-card-header">
+                            <h6 class="preg-card-titulo">
+                                <i class="bi bi-pie-chart-fill text-danger"></i>
+                                Etapas y Ponderación
+                            </h6>
+                            <!-- <span 
+                                class="preg-badge-total" 
+                                :class="sumaPesosEtapas === 100 ? 'preg-total-ok' : 'preg-total-warn'">
+                                Total: {{ sumaPesosEtapas }}%
+                            </span> -->
+                        </div>
+
+                        <div class="preg-table-scroll">
+                            <table class="preg-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 45px; text-align: center;">#</th>
+                                        <th>Etapa</th>
+                                        <th style="width: 80px; text-align: center;">Peso</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr 
+                                        v-for="(item, index) in resumenEtapasPreguntas" 
+                                        :key="item.etapa"
+                                        style="cursor: pointer;"
+                                        @click="filtro_etapa_pregunta = (filtro_etapa_pregunta === item.etapa ? '' : item.etapa)">
+                                        <td style="text-align: center; font-weight: 600;">{{ index + 1 }}</td>
+                                        <td style="font-weight: 500;">{{ item.etapa }}</td>
+                                        <td style="text-align: center;">
+                                            <span class="preg-badge-peso">{{ item.peso }}</span>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="resumenEtapasPreguntas.length === 0">
+                                        <td colspan="3" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                                            Sin etapas registradas
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="preg-card">
+                        <div class="preg-card-header">
+                            <h6 class="preg-card-titulo">
+                                <i class="bi bi-question-circle-fill text-danger"></i>
+                                Cuestionario ({{ tabla_preguntas_activa === 'preguntas' ? 'Estándar' : 'Gonher' }})
+                            </h6>
+                            <span style="font-size: 0.8rem; color: #64748b;">
+                                Mostrando {{ preguntasFiltradas.length }} preguntas
+                            </span>
+                        </div>
+
+                        <div v-if="mostrar_form_pregunta" class="preg-form-box">
+                            <div class="preg-field-group">
+                                <label class="preg-field-label">Etapa</label>
+                                <input 
+                                    type="text" 
+                                    class="preg-input" 
+                                    list="lista-etapas-sugeridas" 
+                                    v-model="form_pregunta.etapa" 
+                                    @change="autocompletarPesoEtapa()"
+                                    placeholder="Ej. Planeación del Proyecto">
+                                <datalist id="lista-etapas-sugeridas">
+                                    <option v-for="item in resumenEtapasPreguntas" :key="item.etapa" :value="item.etapa"></option>
+                                </datalist>
+                            </div>
+
+                            <div class="preg-field-group">
+                                <label class="preg-field-label">Peso</label>
+                                <input 
+                                    type="number" 
+                                    class="preg-input" 
+                                    v-model.number="form_pregunta.peso" 
+                                    min="1">
+                            </div>
+
+                            <div class="preg-field-group">
+                                <label class="preg-field-label">Pregunta</label>
+                                <input 
+                                    type="text" 
+                                    class="preg-input" 
+                                    v-model="form_pregunta.pregunta" 
+                                    placeholder="Escribe la pregunta de evaluación...">
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem;">
+                                <button type="button" class="preg-btn preg-btn-primary" @click="guardarPregunta()">
+                                    <i class="bi bi-floppy-fill"></i>
+                                    {{ form_pregunta.id ? 'Actualizar' : 'Guardar' }}
+                                </button>
+                                <button type="button" class="preg-btn preg-btn-secondary" @click="cerrarFormularioPregunta()">
+                                    Cancelar
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="preg-table-scroll">
+                            <table class="preg-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">#</th>
+                                        <th style="width: 210px;">Etapa</th>
+                                        <th style="width: 80px; text-align: center;">Peso</th>
+                                        <th>Pregunta</th>
+                                        <th style="width: 110px; text-align: center;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr 
+                                        v-for="(preg, index) in preguntasFiltradas" 
+                                        :key="preg.id"
+                                        :class="{ 'preg-fila-editando': form_pregunta.id === preg.id }">
+                                        <td style="text-align: center; font-weight: 600; color: #64748b;">
+                                            {{ index + 1 }}
+                                        </td>
+                                        <td>
+                                            <span class="preg-badge-etapa">{{ preg.etapa }}</span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span class="preg-badge-peso">{{ preg.peso }}</span>
+                                        </td>
+                                        <td style="line-height: 1.4;">
+                                            {{ preg.pregunta }}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div class="preg-acciones-grupo">
+                                                <button 
+                                                    type="button" 
+                                                    class="preg-btn-icon preg-btn-edit" 
+                                                    @click="editarPregunta(preg)" 
+                                                    title="Editar pregunta">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </button>
+                                                <button 
+                                                    type="button" 
+                                                    class="preg-btn-icon preg-btn-delete" 
+                                                    @click="eliminarPregunta(preg)" 
+                                                    title="Eliminar pregunta">
+                                                    <i class="bi bi-trash3-fill"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="preguntasFiltradas.length === 0">
+                                        <td colspan="5" style="text-align: center; color: #94a3b8; padding: 2.5rem;">
+                                            No se encontraron preguntas con los filtros actuales.
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
+
             <div v-if="ventana == 'Ponderación'">
                 <div class="row d-flex barra-gris justify-content-center align-items-center" style="font-size: 0.9em; height:80px;">
                     <h6 class="text-center pasos mt-2"> Ponderaciones</label></h6>
