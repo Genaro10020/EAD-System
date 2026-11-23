@@ -2418,17 +2418,27 @@ select option,
 }
 
 .preg-input,
+input[type="number"].preg-input,
 .preg-select {
+  width: auto;
+  height: 38px;
   padding: 0.5rem 0.85rem;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   font-size: 0.88rem;
   color: #334155;
   background-color: #ffffff;
+  box-sizing: border-box;
   outline: none;
   transition:
     border-color 0.2s,
     box-shadow 0.2s;
+}
+
+.preg-form-box .preg-input,
+.preg-form-box input[type="number"].preg-input,
+.preg-form-box .preg-select {
+  width: 100%;
 }
 
 .preg-input:focus,
