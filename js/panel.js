@@ -6445,9 +6445,7 @@ const app = {
           id_foro: this.id_foro,
         })
         .then((response) => {
-          console.log(
-            "this.equipoEADSeleccionado: " + this.equipoEADSeleccionado,
-          );
+          console.log(response.data);
           if (response.data == true) {
             this.appendAlert("Equipo guardado correctamente.", "success");
             this.consultarDetallesForo(this.id_foro);

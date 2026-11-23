@@ -154,11 +154,11 @@ include("conexionGhoner.php");
     function guardarForo($nombre_foro,$planta,$area,$fecha,$ids_ead,$ids_evaluadores,$tipoEvaluacion){
         global $conexion;
         $estado = [];
-        $query = "INSERT INTO foros (nombre_foro,planta,area,foro,fecha,estatus) VALUES (?,?,?,?,?,?)";
+        $query = "INSERT INTO foros (nombre_foro,planta,area,foro,tipo_evaluacion,fecha,estatus) VALUES (?,?,?,?,?,?,?)";
         $stmt = $conexion->prepare($query);
         $foro = "Áreas";
         $estatus = "Abierto";
-        $stmt->bind_param("ssssss", $nombre_foro,$planta,$area,$foro,$fecha,$estatus);
+        $stmt->bind_param("sssssss", $nombre_foro,$planta,$area,$foro,$tipoEvaluacion,$fecha,$estatus);
         if($stmt->execute()){//guardo el foro
             $estado[0] = true;
             $ultimo_id = $conexion->insert_id;// tomo el id nuevo creado del foro.
@@ -383,6 +383,22 @@ include("conexionGhoner.php");
         $estado = false;
         $idEvaluadores = [];
 
+        /*Buscando tipo evaluacion*/
+        $consultaTipo = $conexion->prepare("SELECT tipo_evaluacion FROM `foros` WHERE id = ?");
+        $consultaTipo->bind_param("i", $id_foro);
+
+        if (!$consultaTipo->execute()) {
+            return $estado;
+        }
+
+        $resultadoTipo = $consultaTipo->get_result();
+
+        if ($resultadoTipo->num_rows == 0) {
+            return $estado;
+        }
+        $filaTipo = $resultadoTipo->fetch_assoc();
+        $tipoEvaluacion = $filaTipo['tipo_evaluacion'];
+
 
         /*========== Validar si ya existe en la bd. ==========*/
         $consulta = $conexion->prepare("SELECT * FROM `ead_foro` WHERE id_foro = ? AND id_equipos_ead = ?");
@@ -432,7 +448,13 @@ include("conexionGhoner.php");
             return $estado;
         }
 
-        $preguntas = $conexion->prepare("SELECT * FROM `preguntas`");
+       if ($tipoEvaluacion == "estandar" || $tipoEvaluacion == "") {
+            $preguntas = $conexion->prepare("SELECT * FROM `preguntas`");
+        } elseif ($tipoEvaluacion == "gonher") {
+            $preguntas = $conexion->prepare("SELECT * FROM `preguntas_gonher`");
+        } else {
+            return $estado;
+        }
         $preguntas->execute();
         $resultadoP = $preguntas->get_result();
         $preguntasTotales = [];
@@ -488,6 +510,22 @@ include("conexionGhoner.php");
         $idEquiposEAD = [];
         $idEquipoForos = [];
 
+        /*Buscando tipo evaluacion*/
+        $consultaTipo = $conexion->prepare("SELECT tipo_evaluacion FROM `foros` WHERE id = ?");
+        $consultaTipo->bind_param("i", $id_foro);
+
+        if (!$consultaTipo->execute()) {
+            return $estado;
+        }
+
+        $resultadoTipo = $consultaTipo->get_result();
+
+        if ($resultadoTipo->num_rows == 0) {
+            return $estado;
+        }
+        $filaTipo = $resultadoTipo->fetch_assoc();
+        $tipoEvaluacion = $filaTipo['tipo_evaluacion'];
+
         //CONSULTAS GENERALES
         $consulta = $conexion->prepare("SELECT  c.id_evaluador, foroead.id_equipos_ead, foroead.id AS idDeEquipoEAD
                     FROM `calificacion` as c
@@ -524,7 +562,13 @@ include("conexionGhoner.php");
         $consulta->close();
 
         //Extraer preguntas para insertar nuevamente.
-        $preguntas = $conexion->prepare("SELECT * FROM `preguntas`");
+        if ($tipoEvaluacion == "estandar" || $tipoEvaluacion == "") {
+            $preguntas = $conexion->prepare("SELECT * FROM `preguntas`");
+        } elseif ($tipoEvaluacion == "gonher") {
+            $preguntas = $conexion->prepare("SELECT * FROM `preguntas_gonher`");
+        } else {
+            return $estado;
+        }
         $preguntas->execute();
         $resultadop = $preguntas->get_result();
         $preguntasTotales = [];
