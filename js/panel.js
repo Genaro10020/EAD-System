@@ -897,7 +897,7 @@ const app = {
     },
     consultarPreguntas() {
       axios
-        .get("preguntasController.php", {
+        .get("preguntasGonherController.php", {
           params: {
             accion: "Consultar",
             tabla: this.tabla_preguntas_activa,
@@ -977,7 +977,7 @@ const app = {
       const esEdicion = Boolean(this.form_pregunta.id);
 
       const peticion = esEdicion
-        ? axios.put("preguntasController.php", {
+        ? axios.put("preguntasGonherController.php", {
             accion: "Actualizar",
             tabla: this.tabla_preguntas_activa,
             id: this.form_pregunta.id,
@@ -985,7 +985,7 @@ const app = {
             peso: peso,
             pregunta: pregunta,
           })
-        : axios.post("preguntasController.php", {
+        : axios.post("preguntasGonherController.php", {
             accion: "Insertar",
             tabla: this.tabla_preguntas_activa,
             etapa: etapa,
@@ -1041,7 +1041,7 @@ const app = {
         if (!result.isConfirmed) return;
 
         axios
-          .delete("preguntasController.php", {
+          .delete("preguntasGonherController.php", {
             params: {
               tabla: this.tabla_preguntas_activa,
               id: preg.id,
@@ -2075,17 +2075,17 @@ const app = {
         });
     },
     /*/////////////////////////////////////////////////////////////////////////////////PREGUNTAS*/
-    consultarPreguntas() {
-      axios
-        .get("preguntasController.php", {})
-        .then((response) => {
-          console.log("Preguntas", response.data);
-        })
-        .catch((error) => {
-          console.log("Error en axios :-(" + error);
-        })
-        .finally({});
-    },
+    // consultarPreguntas() {
+    //   axios
+    //     .get("preguntasController.php", {})
+    //     .then((response) => {
+    //       console.log("Preguntas", response.data);
+    //     })
+    //     .catch((error) => {
+    //       console.log("Error en axios :-(" + error);
+    //     })
+    //     .finally({});
+    // },
     /*/////////////////////////////////////////////////////////////////////////////////SCORECARD*/
     consultarObjetivos() {
       axios
