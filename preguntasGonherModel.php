@@ -4,7 +4,7 @@ include("conexionGhoner.php");
 function validarNombreTabla($tabla) {
   $tablasPermitidas = ["preguntas", "preguntas_gonher"];
 
-  return is_array($tabla, $tablasPermitidas, true) ? $tabla : false;
+  return in_array($tabla, $tablasPermitidas, true) ? $tabla : false;
 }
 
 function consultarPreguntas($tabla) {
