@@ -3409,38 +3409,78 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
             </div>
             <!--/////////////////////////////////COMPETENCIA DE PLANTA////////////////////////////////////////////////////////////////////////////////////////-->
-            <div v-if="ventana == 'Evaluar'">
-                <div class="scroll">
-                    <div class="col-12 d-flex justify-content-center">
-                        <table class="table table-bordered table-striped mt-5">
-                            <thead class="thead-dark bg-secondary">
-                                <tr class="table-active text-center">
-                                    <th>Orden</th>
+            <div v-if="ventana == 'Evaluar'" class="eval-contenedor">
+                <div class="eval-tarjeta">
+                    <div class="eval-tabla-scroll">
+                        <table class="eval-tabla">
+                            <thead>
+                                <tr>
+                                    <th style="width: 70px;">Orden</th>
                                     <th>Planta</th>
                                     <th>Área</th>
-                                    <th>Nombre EAD</th>
+                                    <th>Nombre</th>
                                     <th>Proyecto</th>
                                     <th>Mi comentario</th>
-                                    <th>Evaluar</th>
-                                    <th>Calificación Final</th>
+                                    <th style="width: 150px;">Evaluar</th>
+                                    <th style="width: 140px;">Calificación Final</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="text-center" v-for="(equipoEvaluador, index) in equiposEvaluador">
-                                    <th><b>{{index+1}}</b></th>
-                                    <td>{{equipoEvaluador.planta}}</td>
-                                    <td>{{equipoEvaluador.area}}</td>
-                                    <td>{{equipoEvaluador.nombre_ead}}</td>
-                                    <td class="text-start">{{equipoEvaluador.proyecto}}</td>
-                                    <td class="text-start"> {{equipoEvaluador.comentario}}</td>
-                                    <td>
-                                        <button v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0" class="botones-actualizar  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro,equipoEvaluador.comentario)">Reevaluar</button>
-
-                                        <button v-else class="botones-crear  rounded-pill border-0 my-1 px-2 mb-2" @click="modalPreguntas(equipoEvaluador.nombre_ead),consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro),IDCalifiacion(equipoEvaluador.id_calificacion,equipoEvaluador.id_ead_foro)">Evaluar</button>
+                                <tr v-for="(equipoEvaluador, index) in equiposEvaluador" :key="equipoEvaluador.id_ead_foro || index">
+                                    <td data-label="Orden">
+                                        <span class="eval-orden-badge">
+                                            {{ index + 1 }}
+                                        </span>
                                     </td>
-                                    <td> {{equipoEvaluador.calificacion}}</td>
+                                    <td data-label="Planta">
+                                        <span class="eval-planta-badge">
+                                            {{ equipoEvaluador.planta }}
+                                        </span>
+                                    </td>
+                                    <td data-label="Área">
+                                        {{ equipoEvaluador.area }}
+                                    </td>
+                                    <td data-label="Nombre EAD" class="eval-nombre-ead">
+                                        {{ equipoEvaluador.nombre_ead }}
+                                    </td>
+                                    <td data-label="Proyecto" class="eval-text-izquierdo">
+                                        {{ equipoEvaluador.proyecto || "Sin proyecto asignado" }}
+                                    </td>
+                                    <td data-label="Mi comentario" class="eval-texto-izquierda eval-comentario">
+                                        {{ equipoEvaluador.comentario  }}
+                                    </td>
+                                    <td data-label="Acción">
+                                        <button
+                                            v-if="!isNaN(parseInt(equipoEvaluador.calificacion)) && parseInt(equipoEvaluador.calificacion) > 0" 
+                                            type="button"
+                                            class="eval-btn eval-btn-reevaluar"
+                                            @click="modalPreguntas(equipoEvaluador.nombre_ead), consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro), IDCalifiacion(equipoEvaluador.id_calificacion, equipoEvaluador.id_ead_foro, equipoEvaluador.comentario)"
+                                        >
+                                            <i class="bi bi-arrow-repeat"></i> Reevaluar
+                                        </button>
+                                        <button 
+                                            v-else 
+                                            type="button"
+                                            class="eval-btn eval-btn-evaluar" 
+                                            @click="modalPreguntas(equipoEvaluador.nombre_ead), consultarPreguntasEvaluador(equipoEvaluador.id_ead_foro), IDCalifiacion(equipoEvaluador.id_calificacion, equipoEvaluador.id_ead_foro)">
+                                            <i class="bi bi-clipboard-check"></i> Evaluar
+                                        </button>
+                                    </td>
+                                    <td data-label="Calificacion Final">
+                                        <span
+                                            class="eval-calificacion-badge"
+                                            :class="{ 'calificado': !isNaN(parseFloat(equipo)) }"
+                                        >
+                                            {{ equipoEvaluador.calificacion }}
+                                        </span>
+                                    </td>
                                 </tr>
-                                <!-- Repite las filas para EAD 2 al 14 según sea necesario  -->
+
+                                <tr v-if="!equiposEvaluador || equiposEvaluador.length === 0">
+                                    <td colspan="8" class="eval-vacio">
+                                        No hay equipos asignados para evaluar en este momentos.
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
