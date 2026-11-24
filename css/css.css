@@ -2680,3 +2680,248 @@ input[type="number"].preg-input,
   background-color: #ef4444;
   color: #ffffff;
 }
+
+/* EVALUAR */
+.eval-contenedor {
+  padding: 1.5rem;
+  font-family:
+    "Inter",
+    "Robot",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  min-width: 82vh;
+}
+
+.eval-tarjeta {
+  max-width: 1400px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+
+.eval-tabla-scroll {
+  width: 100%;
+  overflow-x: auto;
+  max-height: 75vh;
+}
+
+.eval-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.88rem;
+}
+
+.eval-tabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #451d24;
+  color: #f8fafc;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 1rem 0.85rem;
+  border-bottom: 3px solid #b80e0e;
+  white-space: nowrap;
+}
+
+.eval-tabla tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.18s ease;
+}
+
+.eval-tabla tbody tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.eval-tabla tbody td {
+  padding: 0.9rem 0.85rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.eval-orden-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  border-radius: 50%;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  font-weight: 700;
+  font-size: 0.8rem;
+  border: 1px solid #cbd5e1;
+}
+
+.eval-planta-badge {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.eval-nombre-ead {
+  font-weight: 700;
+  color: #b80e0e;
+}
+
+.eval-texto-izquierda {
+  text-align: left;
+  max-width: 260px;
+  line-height: 1.4;
+}
+
+.eval-comentario {
+  color: #64748b;
+  font-style: italic;
+  font-size: 0.83rem;
+}
+
+.eval-calificacion-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.eval-calificacion-badge.calificado {
+  background-color: #dcfce7;
+  color: #166534;
+  border-color: #86efac;
+}
+
+.eval-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.48rem 1.15rem;
+  border: none;
+  border-radius: 9999px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.eval-btn:hover {
+  transform: translateY(-1px);
+}
+
+.eval-btn:active {
+  transform: translateY(0);
+}
+
+.eval-btn-evaluar {
+  background-color: #10b981;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.28);
+}
+
+.eval-btn-evaluar:hover {
+  background-color: #059669;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+}
+
+.eval-btn-reevaluar {
+  background-color: #f59e0b;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.28);
+}
+
+.eval-btn-reevaluar:hover {
+  background-color: #d97706;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.35);
+}
+
+.eval-vacio {
+  padding: 2.5rem 1rem !important;
+  color: #94a3b8 !important;
+  font-weight: 500;
+}
+
+@media (max-width: 860px) {
+  .eval-contenedor {
+    padding: 0.85rem;
+  }
+
+  .eval-tarjeta {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .eval-tabla-scroll {
+    max-height: none;
+    overflow-x: visible;
+  }
+
+  .eval-tabla,
+  .eval-tabla tbody,
+  .eval-tabla tr,
+  .eval-tabla td {
+    display: block;
+    width: 100%;
+  }
+
+  .eval-tabla thead {
+    display: none;
+  }
+
+  .eval-tabla tbody tr {
+    background-color: #ffffff !important;
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #b80e0e;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.85rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  }
+
+  .eval-tabla tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 0.6rem 0.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    max-width: 100%;
+  }
+
+  .eval-tabla tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .eval-tabla tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #64748b;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  .eval-texto-izquierda {
+    text-align: right;
+  }
+}
