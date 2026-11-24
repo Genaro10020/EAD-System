@@ -3348,3 +3348,463 @@ input[type="number"].preg-input,
     max-width: 100%;
   }
 }
+
+/* CREAR COMPENTENCIA / FOROS */
+
+.foro-contenedor {
+  padding: 1.5rem;
+  font-family:
+    "Inter",
+    "Roboto",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #f8fafc;
+  min-height: 85vh;
+  text-align: left;
+}
+
+.foro-layout {
+  max-width: 1500px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 520px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+@media (max-width: 1180px) {
+  .foro-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.foro-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+}
+
+.foro-card-header {
+  background-color: #8b0f0f;
+  color: #ffffff;
+  padding: 1.1rem 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #630a0a;
+}
+
+.foro-card-titulo {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  letter-spacing: 0.01em;
+}
+
+.foro-card-subtitulo {
+  font-size: 0.78rem;
+  opacity: 0.85;
+}
+
+.foro-card-body {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.foro-campo-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.foro-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #475569;
+}
+
+.foro-input,
+.foro-select {
+  width: 100%;
+  height: 38px;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  outline: none;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s ease;
+}
+
+.foro-input:focus,
+.foro-select:focus {
+  border-color: #b80e0e;
+  box-shadow: 0 0 0 3px rgba(184, 14, 14, 0.12);
+}
+
+.foro-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.9rem;
+}
+
+.foro-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.75rem;
+}
+
+@media (max-width: 600px) {
+  .foro-grid-2,
+  .foro-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.foro-segmento {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background-color: #f1f5f9;
+  padding: 0.28rem;
+  border-radius: 9px;
+  border: 1px solid #e2e8f0;
+  gap: 0.28rem;
+}
+
+.foro-segmento-item {
+  position: relative;
+  margin: 0;
+  cursor: pointer;
+}
+
+.foro-segmento-item input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.foro-segmento-texto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 7px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.foro-segmento-item input[type="radio"]:checked + .foro-segmento-texto {
+  background-color: #ffffff;
+  color: #b80e0e;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+.foro-alcance-box {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.95rem;
+}
+
+.foro-listas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .foro-listas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.foro-lista-panel {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+}
+
+.foro-lista-header {
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 0.6rem 0.85rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 38px;
+}
+
+.foro-lista-acciones {
+  display: inline-flex;
+  gap: 0.3rem;
+}
+
+.foro-btn-mini {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2s ease;
+}
+
+.foro-btn-mini:hover {
+  transform: scale(1.08);
+}
+
+.foro-btn-mini.crear {
+  background-color: #10b981;
+}
+
+.foro-btn-mini.editar {
+  background-color: #f59e0b;
+}
+
+.foro-btn-mini.eliminar {
+  background-color: #ef4444;
+}
+
+.foro-lista-scroll {
+  max-height: 215px;
+  overflow-y: auto;
+  padding: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.foro-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 7px;
+  border: 1px solid #f1f5f9;
+  background-color: #ffffff;
+  font-size: 0.82rem;
+  color: #334155;
+  cursor: pointer;
+  margin: 0;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.foro-check-item:hover {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.foro-check-item input[type="checkbox"] {
+  accent-color: #b80e0e;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.foro-lista-vacia {
+  padding: 1.5rem 0.75rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.foro-btn-submit {
+  width: 100%;
+  padding: 0.72rem 1.2rem;
+  border: none;
+  border-radius: 10px;
+  background-color: #10b981;
+  color: #ffffff;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition:
+    background-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.foro-btn-submit:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.foro-tabla-scroll {
+  width: 100%;
+  overflow-x: auto;
+  max-height: 74vh;
+}
+
+.foro-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.86rem;
+}
+
+.foro-tabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.9rem 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.foro-tabla tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.foro-tabla tbody tr:hover {
+  background-color: #fef2f2;
+}
+
+.foro-tabla tbody td {
+  padding: 0.85rem 0.75rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.foro-nombre-celda {
+  font-weight: 700;
+  color: #1e293b;
+  text-align: left;
+}
+
+.foro-badge-planta {
+  display: inline-block;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.76rem;
+}
+
+.foro-btn-tabla {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.38rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    opacity 0.2 ease;
+  white-space: nowrap;
+}
+
+.foro-btn-tabla:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.foro-btn-ver {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.foro-btn-abierto {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.foro-btn-cerrado {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+@media (max-width: 768px) {
+  .foro-contenedor {
+    padding: 0.85rem;
+  }
+
+  .foro-tabla thead {
+    display: none;
+  }
+
+  .foro-tabla,
+  .foro-tabla tbody,
+  .foro-tabla tr,
+  .foro-tabla td {
+    display: block;
+    width: 100%;
+  }
+
+  .foro-tabla tbody tr {
+    border: 1px solid #e2e8f0;
+    border-left: 4px solid #8b0f0f;
+    border-radius: 10px;
+    margin-bottom: 0.85rem;
+    background-color: #ffffff;
+  }
+
+  .foro-tabla tbody td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: right;
+    padding: 0.55rem 0.2rem;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .foro-tabla tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .foro-tabla tbody td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-right: 0.75rem;
+  }
+
+  .foro-nombre-celda {
+    text-align: right;
+  }
+}
