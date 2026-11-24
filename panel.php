@@ -3488,101 +3488,139 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
 
                 <!-- FIN DE COMPETENCIA PLANTA -->
                 <!--Modal Preguntas Evaluacion-->
-                <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em;" data-bs-keyboard="false">
+                <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em; z-index: 2050;" data-bs-keyboard="false">
                     <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-xl-down modal-xl">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <label class="modal-title">Evaluación: {{tituloModal}} <span class="text-primary ms-2"><b>{{mensaje}}</b></span></label>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="cerrarModalHistorial()"></button>
+                        <div class="modal-content eval-modal-contenedor">
+                            
+                            <div class="eval-modal-header">
+                                <div class="eval-modal-titulo-grupo">
+                                    <span class="eval-modal-subtitulo">Formulario de Evaluación</span>
+                                    <h5 class="eval-modal-titulo">
+                                        <span>{{ tituloModal }}</span>
+                                        <span v-if="mensaje" class="eval-modal-mensaje">{{ mensaje }}</span>
+                                    </h5>
+                                </div>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" @click="cerrarModalHistorial()"></button>
                             </div>
-                            <div class="modal-body">
-                                <div v-for="(preguntas,etapas,bloques) in preguntas_evaluar"><!--No estoy necesitando la variable preguntas solo etapas y bloques es index un simple numero--->
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th class="bg-dark text-light" colspan="2" scope="col">{{bloques+1}} - {{etapas}}</th>
-                                                <th scope="col">
-                                                    <label class="w-25" style="display: inline-block">{{preguntas_evaluar[etapas][0].peso}}%</label>
-                                                    <label class="w-75" style="font-size:0.8em; display: inline-block" v-show="!contestado[etapas].includes('No') && !contestado[etapas].includes('Sin Contestar')"><span class="badge bg-primary mx-auto"><b>Completada</b></span></label>
-                                                    <label class="w-75" style="font-size:0.8em; display: inline-block" v-show="contestado[etapas].includes('Sin Contestar')"><span class="badge bg-danger mx-auto"><b>Sin completar</b></span></label>
-                                                </th>
-                                            </tr>
-                                        </thead>
+
+                            <div class="modal-body eval-modal-body">                                
+                                <div v-for="(preguntas, etapas, bloques) in preguntas_evaluar" :key="etapas" class="eval-etapa-card">
+                                    <div class="eval-etapa-header">
+                                        <span class="eval-etapa-nombre">{{ bloques + 1 }} - {{ etapas }}</span>
+                                        <div class="eval-etapa-meta">
+                                            <span class="eval-etapa-peso">{{ preguntas_evaluar[etapas][0].peso }}%</span>
+                                            <span 
+                                                v-show="!contestado[etapas].includes('No') && !contestado[etapas].includes('Sin Contestar')" 
+                                                class="eval-estado-pill completada">
+                                                <i class="bi bi-check-circle-fill me-1"></i>Completada
+                                            </span>
+                                            <span 
+                                                v-show="contestado[etapas].includes('Sin Contestar')" 
+                                                class="eval-estado-pill incompleta">
+                                                <i class="bi bi-exclamation-circle-fill me-1"></i>Sin completar
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <table class="eval-preguntas-tabla">
                                         <tbody>
-                                            <tr v-for="(pregunta,index) in preguntas_evaluar[etapas]"><!--Aqui tomo las preguntas-->
-                                                <th tyle="width: 5%;" scope="row">{{bloques+1}}.{{index+1}}</th>
-                                                <td tyle="width: 60%">{{pregunta.pregunta}}</td>
-                                                <td style="width: 30%;" class="text-center" :style="{ background: contestado[etapas][index] === 'Si' ? '' : contestado[etapas][index] === 'Sin Contestar'  ? '#ffeeed' : ''}">
-                                                    <input type="radio" class="opcion-radio" :value="0" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 0" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,0)">
-                                                    <label class="label-radios ms-1">0</label>
-                                                    <input type="radio" class="opcion-radio" :value="1" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 1" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,1)">
-                                                    <label class="label-radios ms-1">1</label>
-                                                    <input type="radio" class="opcion-radio" :value="2" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 2" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,2)">
-                                                    <label class="label-radios ms-1">2</label>
-                                                    <input type="radio" class="opcion-radio" :value="3" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 3" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,3)">
-                                                    <label class="label-radios ms-1">3</label>
-                                                    <input type="radio" class="opcion-radio" :value="4" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 4" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,4)">
-                                                    <label class="label-radios ms-1">4</label>
-                                                    <input type="radio" class="opcion-radio" :value="5" v-model="pregunta.valor" :name="'contact'+pregunta.id" :checked="parseInt(pregunta.valor) === 5" @click="guardarValor(pregunta.id,pregunta.id_ead_foro,5)">
-                                                    <label class="label-radios ms-1">5</label>
+                                            <tr v-for="(pregunta, index) in preguntas_evaluar[etapas]" :key="pregunta.id">
+                                                <th class="eval-preg-num" scope="row">{{ bloques + 1 }}.{{ index + 1 }}</th>
+                                                <td class="eval-preg-texto">{{ pregunta.pregunta }}</td>
+                                                <td class="eval-preg-opciones" :class="{ 'sin-contestar': contestado[etapas][index] === 'Sin Contestar' }">
+                                                    <div class="eval-opciones-grupo">
+                                                        <label v-for="n in [0, 1, 2, 3, 4, 5]" :key="n" class="eval-opcion-item">
+                                                            <input 
+                                                                type="radio" 
+                                                                class="eval-radio" 
+                                                                :value="n" 
+                                                                v-model="pregunta.valor" 
+                                                                :name="'contact' + pregunta.id" 
+                                                                :checked="parseInt(pregunta.valor) === n" 
+                                                                @click="guardarValor(pregunta.id, pregunta.id_ead_foro, n)">
+                                                            <span class="eval-opcion-numero">{{ n }}</span>
+                                                        </label>
+                                                    </div>
                                                 </td>
-                                                <td style="width: 5%;">
-                                                    <i v-if="pregunta.valor!=null" class="text-success bi bi-check2"></i>
+                                                <td class="eval-preg-check">
+                                                    <i v-if="pregunta.valor != null" class="bi bi-check-circle-fill"></i>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="mt-5">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col" class="bg-dark text-light">#</th>
-                                                <th scope="col" class="bg-dark text-light">Etapas</th>
-                                                <th scope="col" class="bg-dark text-light">Puntos Maximos</th>
-                                                <th scope="col" class="bg-dark text-light">Puntos Reales</th>
-                                                <th scope="col" class="bg-dark text-light">Ponderación</th>
-                                                <th scope="col" class="bg-dark text-light">Calificación</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template v-for="(preguntas,etapas,bloques) in preguntas_evaluar">
-                                                <tr><!--Aqui tomo las preguntas-->
-                                                    <th scope="row">{{bloques+1}}.</th>
-                                                    <td>{{etapas}}</td>
-                                                    <td>{{datosEvaluar[etapas].puntos_maximos}}</td>
-                                                    <td>{{datosEvaluar[etapas].puntos_reales}}</td>
-                                                    <td>{{datosEvaluar[etapas].ponderacion}}%</td>
-                                                    <td>{{(((datosEvaluar[etapas].puntos_reales / datosEvaluar[etapas].puntos_maximos) * (datosEvaluar[etapas].ponderacion / 100)) * 100).toFixed(2)}}</td>
+
+                                <div class="eval-resumen-card">
+                                    <div style="overflow-x: auto;">
+                                        <table class="eval-resumen-tabla">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" style="width: 50px;">#</th>
+                                                    <th scope="col" style="text-align: left;">Etapas</th>
+                                                    <th scope="col">Puntos Máximos</th>
+                                                    <th scope="col">Puntos Reales</th>
+                                                    <th scope="col">Ponderación</th>
+                                                    <th scope="col">Calificación</th>
                                                 </tr>
-                                            </template>
-                                            <tr>
-                                                <td></td>
-                                                <td>Total</td>
-                                                <td>{{sumaPuntosMaximos}}</td>
-                                                <td>{{sumaPuntosReales}}</td>
-                                                <td>{{sumaPonderacion}}</td>
-                                                <td>{{calificacionEAD}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(preguntas, etapas, bloques) in preguntas_evaluar" :key="'res-' + etapas">
+                                                    <th scope="row">{{ bloques + 1 }}.</th>
+                                                    <td style="text-align: left; font-weight: 500;">{{ etapas }}</td>
+                                                    <td>{{ datosEvaluar[etapas].puntos_maximos }}</td>
+                                                    <td>{{ datosEvaluar[etapas].puntos_reales }}</td>
+                                                    <td>{{ datosEvaluar[etapas].ponderacion }}%</td>
+                                                    <td style="font-weight: 600;">
+                                                        {{ (((datosEvaluar[etapas].puntos_reales / datosEvaluar[etapas].puntos_maximos) * (datosEvaluar[etapas].ponderacion / 100)) * 100).toFixed(2) }}
+                                                    </td>
+                                                </tr>
+                                                <tr class="eval-resumen-total">
+                                                    <td></td>
+                                                    <td style="text-align: left;">Total</td>
+                                                    <td>{{ sumaPuntosMaximos }}</td>
+                                                    <td>{{ sumaPuntosReales }}</td>
+                                                    <td>{{ sumaPonderacion }}%</td>
+                                                    <td>
+                                                        <span class="eval-calificacion-final-pill">{{ calificacionEAD }}</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="modal-footer justify-content-evelyn align-items-center">
-                                <div class="d-flex col-12 justify-content-center">
-                                    <div class="d-flex col-8 col-lg-7 text-end">
-                                        <div class="w-50 my-auto">
-                                            <input type="text" class="form-control border border-info ms-lg-5" v-model="comentario" placeholder="Comentario (Opcional)" />
-                                        </div>
-                                        <div class="w-50">
-                                            <button v-if="examenFinalizado=='Finalizado'" type="button" class="btn btn-primary" @click="enviarCalificacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
-                                            <button v-else type="button" class="btn btn-secondary" @click="contestarEvaluacion()"><i class="bi bi-send-fill me-1"></i>Enviar Calificación</button>
-                                        </div>
-                                    </div>
-                                    <div class="d-flex col-2 col-lg-5 justify-content-end">
-                                        <button type="button" class="btn btn-secondary p-1" data-bs-dismiss="modal" style="font-size: 1em;" @click="cerrarModalHistorial()">Cerrar</button>
-                                    </div>
+
+                            <div class="eval-modal-footer">
+                                <div class="eval-footer-controles">
+                                    <input 
+                                        type="text" 
+                                        class="eval-input-comentario" 
+                                        v-model="comentario" 
+                                        placeholder="Comentario (Opcional)..." />
+                                    
+                                    <button 
+                                        v-if="examenFinalizado == 'Finalizado'" 
+                                        type="button" 
+                                        class="eval-btn-enviar listo" 
+                                        @click="enviarCalificacion()">
+                                        <i class="bi bi-send-fill"></i> Enviar Calificación
+                                    </button>
+                                    <button 
+                                        v-else 
+                                        type="button" 
+                                        class="eval-btn-enviar pendiente" 
+                                        @click="contestarEvaluacion()">
+                                        <i class="bi bi-send-fill"></i> Enviar Calificación
+                                    </button>
                                 </div>
+
+                                <button 
+                                    type="button" 
+                                    class="eval-btn-cerrar" 
+                                    data-bs-dismiss="modal" 
+                                    @click="cerrarModalHistorial()">
+                                    Cerrar
+                                </button>
                             </div>
                         </div>
                     </div>
