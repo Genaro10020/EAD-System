@@ -3629,176 +3629,258 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
             </div>
 
             <!--/////////////////////////////////FOROS////////////////////////////////////////////////////////////////////////////////////////-->
-            <div v-if="ventana == 'Crear Competencia'">
-                <div class="col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2  offset-xl-2 col-xl-8  col-xxl-6 offset-xxl-3 px-4 shadow-lg mt-3 border border-white rounded-3 mx-auto" style="max-width: 900px;">
-                    <div class="col-12">
-                        <div class=" text-center  mx-auto" style="background-color: rgb(184, 14, 14);border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                            <div class=" d-flex" style="padding:2px 2px;">
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: #b80e0e; font-size: 0.8em">Nombre del foro: </span>
-                                <input class="form-control select" v-model="nombre_foro" style="border-radius: 0px 10px 10px 0px; border-color: #b80e0e;">
-                                </input>
-                            </div>
+            <div v-if="ventana == 'Crear Competencia'" class="foro-contenedor">
+                <div class="foro-layout">
+                    <div class="foro-card">
+                        <div class="foro-card-header">
+                            <h5 class="foro-card-titulo">
+                                <i class="bi bi-trophy-fill"></i>
+                                Configurar Competencia
+                            </h5>
+                            <span class="foro-card-subtitulo">Nuevo Foro</span>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                            <div class="input-group" style="padding:2px 2px;">
-                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Foro Global: </span>
-                                <input type="radio" class="btn-check" name="btnradio" id="btnradio1" v-model="foroGlobal" autocomplete="off" value="true" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="resetearVariablesForo(),consultarEADxPlanta()" />
-                                <label class="btn btn-light border border-1 border-danger" for="btnradio1" style="font-size: 0.8em">Si</label>
-                                <input type="radio" class="btn-check" name="btnradio" id="btnradio2" v-model="foroGlobal" value="false" autocomplete="off" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="resetearVariablesForo()" />
-                                <label class="btn btn-light me-2 border border-1 border-danger rounded-end" for="btnradio2" style="font-size: 0.8em">No</label>
-                                <span v-if="foroGlobal=='true'" class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
-                                <select v-if="foroGlobal=='true'" class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="consultarEADxPlanta()">
-                                    <option value="">Multiplanta</option>
-                                    <option v-for="planta in plantasEADs">{{planta}}
-                                </select>
-                                <span v-if="foroGlobal=='true'" class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
-                                <input v-if="foroGlobal=='true'" type="date" class="form-control select" v-model="fecha_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" />
-                            </div>
-                        </div>
-                        <div v-if="foroGlobal=='false'" class="text-center" style="background-color: rgb(184, 14, 14); border-radius: 10px; margin-top: 20px; color: white; height: 41px;">
-                            <div class="input-group" style="padding:2px 2px;">
-                                <span class="input-group-text " style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Planta: </span>
-                                <select class="form-control select me-2" v-model="select_planta_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxArea()">
-                                    <option value="" disabled>Seleccione..</option>
-                                    <option v-for="planta in plantasEADs">{{planta}}
 
-                                </select>
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Área: </span>
-                                <select class="form-control select  me-2" v-model="select_area_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);" @change="cosultarEADxPlantaxArea()">
-                                    <option value="" disabled>Seleccione..</option>
-                                    <option v-for="area in areasEADs">{{area}}</option>
-                                </select>
-                                <span class="input-group-text" style="border-radius: 10px 0px 0px 10px; border-color: rgb(184, 14, 14);font-size: 0.8em">Fecha: </span>
-                                <input type="date" class="form-control select" v-model="fecha_foro" style="border-radius: 0px 10px 10px 0px; border-color: rgb(184, 14, 14);">
-                                </input>
+                        <div class="foro-card-body">
+                            <div class="foro-campo-grupo">
+                                <label class="foro-label">Nombre del foro</label>
+                                <input 
+                                    type="text" 
+                                    class="foro-input" 
+                                    v-model="nombre_foro" 
+                                    placeholder="Ej. Foro Regional Q4 2026">
                             </div>
-                        </div>
-                    <div class="d-flex flex-column align-items-center justify-content-center mt-2" style="background-color: rgb(184,14,14); border-radius: 10px; height: 60px; font-size: 0.8em;">
-                        <label class="fw-bold text-white mb-1">Tipo de evaluación:</label>
-                        <div class="d-flex gap-2">
-                            <input type="radio" class="btn-check" name="tipoEvaluacion" id="estandar" value="estandar" v-model="tipoEvaluacion">
-                            <label class="btn btn-sm rounded-pill py-0 px-3" for="estandar" :class="tipoEvaluacion === 'estandar' ? 'bg-white text-success border-white' : 'btn-outline-light'">
-                               <i v-if="tipoEvaluacion === 'estandar'" class="bi bi-check-circle-fill text-success me-1"></i>
-                                Estándar
-                            </label>
 
-                            <input type="radio" class="btn-check" name="tipoEvaluacion" id="gonher" value="gonher" v-model="tipoEvaluacion">
-                            <label class="btn btn-sm rounded-pill py-0 px-3" for="gonher" :class="tipoEvaluacion === 'gonher' ? 'bg-white text-success border-white' : 'btn-outline-light'">
-                                <i v-if="tipoEvaluacion === 'gonher'" class="bi bi-check-circle-fill text-success me-1"></i>
-                                Gonher
-                            </label>
-                        </div>
-                    </div>
-                        <div class=" text-center mt-3 ">
-                            <div class="d-flex">
-                                <div class="col-6">
-                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:0.8em;">
-                                        Elija los EAD
-                                    </div>
-                                    <div class="scroll2">
-                                        <div class="input-group mb-1" v-for="equipo in EADFiltrado">
-                                            <div class="input-group-text" style="border-radius: 0px; ">
-                                                <input class="form-check-input" type="checkbox" v-model="ckeckEADForo" :value="equipo.id" value="" aria-label="Checkbox for following text input">
-                                            </div>
-                                            <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">{{equipo.nombre_ead}}</label>
-                                        </div>
-                                        <div v-show="EADFiltrado.length<=0">
-                                            <label class="form-control text-start text-secondary" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">No existen EAD's con planta y área seleccionada.</label>
-                                        </div>
+                            <div class="foro-grid-2">
+                                <div class="foro-campo-grupo">
+                                    <label class="foro-label">¿Foro Global?</label>
+                                    <div class="foro-segmento">
+                                        <label class="foro-segmento-item">
+                                            <input 
+                                                type="radio" 
+                                                name="btnradio" 
+                                                id="btnradio1" 
+                                                value="true" 
+                                                v-model="foroGlobal" 
+                                                @change="resetearVariablesForo(), consultarEADxPlanta()">
+                                            <span class="foro-segmento-texto">Sí</span>
+                                        </label>
+                                        <label class="foro-segmento-item">
+                                            <input 
+                                                type="radio" 
+                                                name="btnradio" 
+                                                id="btnradio2" 
+                                                value="false" 
+                                                v-model="foroGlobal" 
+                                                @change="resetearVariablesForo()">
+                                            <span class="foro-segmento-texto">No</span>
+                                        </label>
                                     </div>
                                 </div>
-                                <div class="col-6 ms-2">
-                                    <div class="text-center" style="border-radius: 10px; color: white; background-color: #b80e0e; font-size:0.8em; display: flex; justify-content: space-between; align-items: center;  justify-content: center;">
-                                        <div class="container text-center">
-                                            <div class="row">
-                                                <div class="col-5">
-                                                    Evaluadores
-                                                </div>
-                                                <div class="col-7">
-                                                    <button class="btn-circle-agregar rounded-pill px-2 border-0" @click="modalEvaluadores('Crear')"><i class="bi bi-plus-circle"></i></button>
-                                                    <button class="btn-circle-actualizar rounded-pill px-2 border-0 ms-1" @click="modalEvaluadores('Actualizar')"><i class="bi bi-arrow-up-circle"></i></button>
-                                                    <button class="btn-circle-eliminar rounded-pill px-2 border-0 ms-1" @click="eliminarEvaluador()"><i class="bi bi-x-circle"></i></button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="scroll3">
-                                        <div class="input-group mb-1" v-for="(evaluador,index) in evaluadores">
-                                            <div class="input-group-text" style="border-radius: 0px;">
-                                                <input class="form-check-input" type="checkbox" v-model="ckeckEvaluadores" :value="evaluador.id" aria-label="Checkbox for following text input">
-                                            </div>
-                                            <label class="form-control text-start" aria-label="Text input with checkbox" style="border-radius: 0px; font-size:0.8em">{{evaluador.nombre}}</label>
-                                        </div>
+
+                                <div class="foro-campo-grupo">
+                                    <label class="foro-label">Tipo de evaluación</label>
+                                    <div class="foro-segmento">
+                                        <label class="foro-segmento-item">
+                                            <input 
+                                                type="radio" 
+                                                name="tipoEvaluacion" 
+                                                id="estandar" 
+                                                value="estandar" 
+                                                v-model="tipoEvaluacion">
+                                            <span class="foro-segmento-texto">
+                                                <i v-if="tipoEvaluacion === 'estandar'" class="bi bi-check-circle-fill text-success"></i>
+                                                Estándar
+                                            </span>
+                                        </label>
+                                        <label class="foro-segmento-item">
+                                            <input 
+                                                type="radio" 
+                                                name="tipoEvaluacion" 
+                                                id="gonher" 
+                                                value="gonher" 
+                                                v-model="tipoEvaluacion">
+                                            <span class="foro-segmento-texto">
+                                                <i v-if="tipoEvaluacion === 'gonher'" class="bi bi-check-circle-fill text-success"></i>
+                                                Gonher
+                                            </span>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <button class="botones-crear rounded-pill mt-2 border-0" @click="crearForo()">Crear foro</button>
+
+                            <div class="foro-alcance-box">
+                                <div v-if="foroGlobal == 'true'" class="foro-grid-2">
+                                    <div class="foro-campo-grupo">
+                                        <label class="foro-label">Planta</label>
+                                        <select class="foro-select" v-model="select_planta_foro" @change="consultarEADxPlanta()">
+                                            <option value="">Multiplanta</option>
+                                            <option v-for="planta in plantasEADs" :key="planta" :value="planta">{{ planta }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="foro-campo-grupo">
+                                        <label class="foro-label">Fecha del evento</label>
+                                        <input type="date" class="foro-input" v-model="fecha_foro">
+                                    </div>
+                                </div>
+
+                                <div v-if="foroGlobal == 'false'" class="foro-grid-3">
+                                    <div class="foro-campo-grupo">
+                                        <label class="foro-label">Planta</label>
+                                        <select class="foro-select" v-model="select_planta_foro" @change="cosultarEADxArea()">
+                                            <option value="" disabled>Seleccione...</option>
+                                            <option v-for="planta in plantasEADs" :key="planta" :value="planta">{{ planta }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="foro-campo-grupo">
+                                        <label class="foro-label">Área</label>
+                                        <select class="foro-select" v-model="select_area_foro" @change="cosultarEADxPlantaxArea()">
+                                            <option value="" disabled>Seleccione...</option>
+                                            <option v-for="area in areasEADs" :key="area" :value="area">{{ area }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="foro-campo-grupo">
+                                        <label class="foro-label">Fecha</label>
+                                        <input type="date" class="foro-input" v-model="fecha_foro">
+                                    </div>
+                                </div>
                             </div>
+
+                            <div class="foro-listas-grid">
+                                <div class="foro-lista-panel">
+                                    <div class="foro-lista-header">
+                                        <span>Equipos EAD ({{ ckeckEADForo.length }})</span>
+                                    </div>
+                                    <div class="foro-lista-scroll">
+                                        <label 
+                                            v-for="equipo in EADFiltrado" 
+                                            :key="equipo.id" 
+                                            class="foro-check-item">
+                                            <input type="checkbox" v-model="ckeckEADForo" :value="equipo.id">
+                                            <span>{{ equipo.nombre_ead }}</span>
+                                        </label>
+                                        <div v-show="EADFiltrado.length <= 0" class="foro-lista-vacia">
+                                            No hay EAD's disponibles con los filtros actuales.
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="foro-lista-panel">
+                                    <div class="foro-lista-header">
+                                        <span>Evaluadores ({{ ckeckEvaluadores.length }})</span>
+                                        <div class="foro-lista-acciones">
+                                            <button type="button" class="foro-btn-mini crear" @click="modalEvaluadores('Crear')" title="Nuevo evaluador">
+                                                <i class="bi bi-plus-lg"></i>
+                                            </button>
+                                            <button type="button" class="foro-btn-mini editar" @click="modalEvaluadores('Actualizar')" title="Editar evaluador seleccionado">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+                                            <button type="button" class="foro-btn-mini eliminar" @click="eliminarEvaluador()" title="Eliminar evaluador seleccionado">
+                                                <i class="bi bi-trash3-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="foro-lista-scroll">
+                                        <label 
+                                            v-for="evaluador in evaluadores" 
+                                            :key="evaluador.id" 
+                                            class="foro-check-item">
+                                            <input type="checkbox" v-model="ckeckEvaluadores" :value="evaluador.id">
+                                            <span>{{ evaluador.nombre }}</span>
+                                        </label>
+                                        <div v-if="!evaluadores || evaluadores.length === 0" class="foro-lista-vacia">
+                                            Sin evaluadores registrados.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" class="foro-btn-submit" @click="crearForo()">
+                                <i class="bi bi-plus-circle-fill"></i>
+                                Crear Foro
+                            </button>
                         </div>
                     </div>
-                    <div class="">
-                        <div class="text-center " style="border-radius: 10px; margin-top: 20px; color: white; background-color: #b80e0e;font-size:0.8em;">
-                            Foros creados
+
+                    <div class="foro-card">
+                        <div class="foro-card-header">
+                            <h5 class="foro-card-titulo">
+                                <i class="bi bi-calendar2-check-fill"></i>
+                                Foros Creados
+                            </h5>
+                            <span class="foro-card-subtitulo">{{ foros.length }} registrados</span>
                         </div>
-                        <div class="scroll4">
-                            <table class=" table table-bordered text-center ">
-                                <thead class="sticky-top">
-                                    <tr class="table-active" style="font-size:0.8em !important">
-                                        <th>
-                                            Detalles
-                                        </th>
-                                        <th>
-                                            Nombre
-                                        </th>
-                                        <th>
-                                            Planta
-                                        </th>
-                                        <th>
-                                            Área
-                                        </th>
-                                        <th style="min-width: 80px;">
-                                            Fecha
-                                        </th>
-                                        <th>
-                                            Estatus
-                                        </th>
-                                        <th>
-                                            Actualizar
-                                        </th>
+
+                        <div class="foro-tabla-scroll">
+                            <table class="foro-tabla">
+                                <thead>
+                                    <tr>
+                                        <th>Detalles</th>
+                                        <th style="text-align: left;">Nombre</th>
+                                        <th>Planta</th>
+                                        <th>Área</th>
+                                        <th>Fecha</th>
+                                        <th>Estatus</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="middle-center" v-for="foro in foros" style="font-size:0.8em">
-                                        <td>
-                                            <button class="btn btn-success btn-boton" @click="modalForosDetalles(foro.nombre_foro),consultarDetallesForo(foro.id)">
-                                                <i class="bi bi-eye-fill"></i>
+                                    <tr v-for="foro in foros" :key="foro.id">
+                                        <td data-label="Detalles">
+                                            <button 
+                                                type="button" 
+                                                class="foro-btn-tabla foro-btn-ver" 
+                                                @click="modalForosDetalles(foro.nombre_foro), consultarDetallesForo(foro.id)"
+                                                title="Ver resultados y posiciones">
+                                                <i class="bi bi-eye-fill"></i> Ver
                                             </button>
                                         </td>
-                                        <td>
-                                            {{foro.nombre_foro}}
+                                        <td data-label="Nombre" class="foro-nombre-celda">
+                                            {{ foro.nombre_foro }}
                                         </td>
-                                        <td>
-                                            {{foro.planta}}
+                                        <td data-label="Planta">
+                                            <span class="foro-badge-planta">{{ foro.planta }}</span>
                                         </td>
-                                        <td>
-                                            {{foro.area}}
+                                        <td data-label="Área">
+                                            {{ foro.area }}
                                         </td>
-                                        <td style="min-width: 80px;">
-                                            {{foro.fecha}}
+                                        <td data-label="Fecha" style="white-space: nowrap;">
+                                            {{ foro.fecha }}
                                         </td>
-                                        <td>
-                                            <button v-if="foro.estatus=='Cerrado'" class="btn btn-danger btn-cerrar-foro " @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)"><i class="bi bi-door-open-fill"></i> Cerrado</button>
-                                            <button v-if="foro.estatus=='Abierto'" class="btn btn-success btn-cerrar-foro" @click="estatusForo(foro.id,foro.nombre_foro,foro.estatus)"><i class="bi bi-door-closed-fill"></i> Abierto</button>
+                                        <td data-label="Estatus">
+                                            <button 
+                                                v-if="foro.estatus == 'Cerrado'" 
+                                                type="button" 
+                                                class="foro-btn-tabla foro-btn-cerrado" 
+                                                @click="estatusForo(foro.id, foro.nombre_foro, foro.estatus)">
+                                                <i class="bi bi-lock-fill"></i> Cerrado
+                                            </button>
+                                            <button 
+                                                v-if="foro.estatus == 'Abierto'" 
+                                                type="button" 
+                                                class="foro-btn-tabla foro-btn-abierto" 
+                                                @click="estatusForo(foro.id, foro.nombre_foro, foro.estatus)">
+                                                <i class="bi bi-unlock-fill"></i> Abierto
+                                            </button>
                                         </td>
-                                        <td>
-                                            <button class="btn btn-warning btn-boton" @click='modalForoActualizar(foro.nombre_foro, foro.id)'>Actualizar</button>
+                                        <td data-label="Acciones">
+                                            <button 
+                                                type="button" 
+                                                class="foro-btn-tabla foro-btn-editar" 
+                                                @click="modalForoActualizar(foro.nombre_foro, foro.id)">
+                                                <i class="bi bi-pencil-square"></i> Actualizar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr v-if="!foros || foros.length === 0">
+                                        <td colspan="7" class="foro-lista-vacia">
+                                            No hay foros creados todavía.
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
 
                             <!--ModalUsuarios-->
                             <div id="modal_evaluadores" class="modal" tabindex="-1" role="dialog">
