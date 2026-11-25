@@ -2686,13 +2686,40 @@ input[type="number"].preg-input,
   padding: 1.5rem;
   font-family:
     "Inter",
-    "Robot",
+    "Roboto",
     system-ui,
     -apple-system,
     sans-serif;
-  min-width: 82vh;
+  min-height: 82vh;
+  width: 100%;
+  box-sizing: border-box;
 }
 
+#modalEvaluacion .modal-dialog {
+  max-width: 95vw;
+  margin: 1rem auto;
+}
+
+@media (min-width: 1200px) {
+  #modalEvaluacion .modal-dialog {
+    max-width: 1140px;
+  }
+}
+
+@media (max-width: 991px) {
+  .eval-preg-opciones {
+    width: auto;
+    min-width: 240px;
+  }
+
+  .eval-opciones-grupo {
+    gap: 0.3rem;
+  }
+
+  .eval-opcion-item {
+    padding: 0.2rem 0.25rem;
+  }
+}
 .eval-tarjeta {
   max-width: 1400px;
   margin: 0 auto;
@@ -2858,7 +2885,37 @@ input[type="number"].preg-input,
   font-weight: 500;
 }
 
-@media (max-width: 860px) {
+/* Ajuste compacto para Tablet Vertical (768px - 991px) manteniendo la tabla horizontal */
+@media (max-width: 991px) {
+  .eval-contenedor {
+    padding: 1rem;
+  }
+
+  .eval-tabla {
+    font-size: 0.8rem;
+  }
+
+  .eval-tabla thead th {
+    padding: 0.75rem 0.45rem;
+    font-size: 0.7rem;
+  }
+
+  .eval-tabla tbody td {
+    padding: 0.7rem 0.45rem;
+  }
+
+  .eval-btn {
+    padding: 0.4rem 0.85rem;
+    font-size: 0.78rem;
+  }
+
+  .eval-texto-izquierda {
+    max-width: 150px;
+  }
+}
+
+/* Vista en tarjetas únicamente para celulares (<= 640px) */
+@media (max-width: 640px) {
   .eval-contenedor {
     padding: 0.85rem;
   }

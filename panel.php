@@ -3489,7 +3489,7 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 <!-- FIN DE COMPETENCIA PLANTA -->
                 <!--Modal Preguntas Evaluacion-->
                 <div id="modalEvaluacion" class="modal" tabindex="-1" style="font-size: 0.9em; z-index: 2050;" data-bs-keyboard="false">
-                    <div class="modal-dialog modal-dialog-scrollable modal-fullscreen-xl-down modal-xl">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
                         <div class="modal-content eval-modal-contenedor">
                             
                             <div class="eval-modal-header">
