@@ -3865,3 +3865,861 @@ input[type="number"].preg-input,
     text-align: right;
   }
 }
+
+/* GESTION SESIONES */
+
+/* =========================================================
+   GESTIÓN DE SESIONES (CSS PURO)
+   ========================================================= */
+
+.gs-contenedor {
+  padding: 1.25rem 1.5rem 2rem;
+  font-family:
+    "Inter",
+    "Roboto",
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background-color: #f8fafc;
+  color: #1e293b;
+  text-align: left;
+}
+
+/* --- Barra Superior de Controles y Gráficas PDCA/DMAIC --- */
+.gs-cabecera-panel {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.15rem 1.5rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.gs-barra-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+}
+
+.gs-grupo-control {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid #cbd5e1;
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #ffffff;
+  height: 38px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.gs-grupo-control:focus-within {
+  border-color: #b80e0e;
+  box-shadow: 0 0 0 3px rgba(184, 14, 14, 0.12);
+}
+
+.gs-grupo-etiqueta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.85rem;
+  background-color: #f1f5f9;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-right: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.gs-control-input,
+.gs-control-select {
+  border: none;
+  outline: none;
+  padding: 0 0.85rem;
+  font-size: 0.85rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  min-width: 175px;
+  font-family: inherit;
+}
+
+.gs-control-select:disabled,
+.gs-control-input:disabled {
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.gs-btn-doc {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 38px;
+  padding: 0 1.15rem;
+  border: none;
+  border-radius: 9px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #334155;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s,
+    opacity 0.2s;
+  white-space: nowrap;
+}
+
+.gs-btn-doc:hover:not(:disabled) {
+  background-color: #1e293b;
+  transform: translateY(-1px);
+}
+
+.gs-btn-doc.con-archivos {
+  background-color: #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+}
+
+.gs-btn-doc.con-archivos:hover:not(:disabled) {
+  background-color: #059669;
+}
+
+.gs-btn-doc:disabled {
+  background-color: #cbd5e1;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+/* --- Indicadores Circulares PDCA / DMAIC --- */
+.gs-ciclo-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.gs-ciclo-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.75rem;
+}
+
+.gs-ciclo-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.gs-ciclo-dona {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gs-ciclo-dona canvas {
+  min-height: 80px;
+  min-width: 80px;
+  max-height: 80px;
+  max-width: 80px;
+  z-index: 2;
+}
+
+.gs-ciclo-letra {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  color: #1e293b;
+  font-weight: 800;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.gs-ciclo-porcentaje {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+  min-width: 34px;
+}
+
+/* --- Grid Principal de 3 Columnas (Pasos 1-2, Pasos 3-4, Historial) --- */
+.gs-grid-principal {
+  display: grid;
+  grid-template-columns: 330px 330px 1fr;
+  gap: 1.35rem;
+  align-items: stretch;
+}
+
+@media (max-width: 1280px) {
+  .gs-grid-principal {
+    grid-template-columns: 1fr 1fr;
+  }
+  .gs-col-historial {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 768px) {
+  .gs-contenedor {
+    padding: 0.85rem;
+  }
+  .gs-grid-principal {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Tarjetas de Pasos --- */
+.gs-tarjeta {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid #8b0f0f;
+  border-radius: 14px;
+  padding: 1.35rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.gs-tarjeta.estado-actualizar {
+  background-color: #fffbeb;
+  border-color: #fde68a;
+  border-top-color: #f59e0b;
+}
+
+.gs-tarjeta.estado-completado {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  border-top-color: #10b981;
+}
+
+.gs-bloque-paso {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.gs-paso-titulo {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.gs-paso-numero {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #8b0f0f;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gs-campo-inline {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+  height: 36px;
+}
+
+.gs-campo-inline:focus-within {
+  border-color: #8b0f0f;
+  box-shadow: 0 0 0 3px rgba(139, 15, 15, 0.1);
+}
+
+.gs-campo-inline-label {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-right: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.gs-campo-inline input,
+.gs-campo-inline select {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0 0.7rem;
+  font-size: 0.84rem;
+  color: #1e293b;
+  background-color: #ffffff;
+}
+
+.gs-campo-inline input:disabled,
+.gs-campo-inline select:disabled {
+  background-color: #f1f5f9;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.gs-btn-icono {
+  border: none;
+  padding: 0 0.65rem;
+  color: #ffffff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: opacity 0.2s;
+}
+
+.gs-btn-icono:hover {
+  opacity: 0.88;
+}
+
+.gs-btn-icono.guardar {
+  background-color: #10b981;
+}
+.gs-btn-icono.editar {
+  background-color: #f59e0b;
+}
+.gs-btn-icono.cancelar {
+  background-color: #ef4444;
+}
+
+/* --- Ficha Técnica del Equipo y Lista de Checkboxes --- */
+.gs-ficha-equipo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  justify-content: center;
+  padding: 0.55rem 0.65rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.76rem;
+  color: #475569;
+}
+
+.gs-ficha-dato strong {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.gs-lista-checks {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  max-height: 290px;
+  overflow-y: auto;
+}
+
+.gs-check-fila {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  padding: 0.45rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+  background-color: #ffffff;
+  font-size: 0.81rem;
+  color: #334155;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.gs-check-fila:hover {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.gs-check-fila input[type="checkbox"] {
+  accent-color: #8b0f0f;
+  width: 15px;
+  height: 15px;
+  margin-top: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.gs-estado-vacio-tarjeta {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1rem;
+  color: #94a3b8;
+  font-size: 0.84rem;
+  font-style: italic;
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+}
+
+/* --- Tarjeta Historial y Barra de Progreso --- */
+.gs-tarjeta-historial {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-top: 4px solid #1e293b;
+  border-radius: 14px;
+  padding: 1.35rem;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.gs-historial-titulo {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-align: center;
+}
+
+.gs-progreso-contenedor {
+  display: flex;
+  align-items: center;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  height: 24px;
+  overflow: hidden;
+  padding: 2px;
+}
+
+.gs-progreso-etiqueta {
+  background-color: #1e293b;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 0 0.85rem;
+  height: 100%;
+  border-radius: 9999px 0 0 9999px;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.gs-progreso-track {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.gs-progreso-barra {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  border-radius: 0 9999px 9999px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 46px;
+  transition: width 0.35s ease;
+}
+
+.gs-progreso-texto {
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.gs-tabla-scroll {
+  overflow-x: auto;
+  max-height: 380px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.gs-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.83rem;
+  text-align: left;
+}
+
+.gs-tabla thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #8b0f0f;
+  color: #ffffff;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.8rem 0.75rem;
+  border-bottom: 2px solid #630a0a;
+}
+
+.gs-tabla tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.gs-tabla tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.gs-tabla tbody tr.fila-actualizando {
+  background-color: #fffbeb;
+}
+
+.gs-tabla.tabla-completada tbody tr {
+  background-color: #f0fdf4;
+}
+
+.gs-tabla tbody td,
+.gs-tabla tbody th {
+  padding: 0.75rem;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.gs-lista-fases-celda {
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.gs-badge-etapa {
+  display: inline-block;
+  padding: 0.24rem 0.6rem;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  font-weight: 600;
+  font-size: 0.76rem;
+  border: 1px solid #cbd5e1;
+}
+
+.gs-badge-asistencia {
+  display: inline-block;
+  padding: 0.22rem 0.6rem;
+  border-radius: 9999px;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  font-size: 0.76rem;
+}
+
+.gs-acciones-tabla {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.gs-btn-tabla {
+  width: 92px;
+  padding: 0.34rem 0.6rem;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    opacity 0.2s;
+}
+
+.gs-btn-tabla:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.gs-btn-tabla.editar {
+  background-color: #f59e0b;
+}
+.gs-btn-tabla.eliminar {
+  background-color: #ef4444;
+}
+.gs-btn-tabla.cancelar {
+  background-color: #64748b;
+}
+
+/* --- Botón Principal Guardar / Actualizar / Cerrar --- */
+.gs-barra-guardado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+}
+
+.gs-aviso-cierre {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.gs-btn-principal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.68rem 2rem;
+  border: none;
+  border-radius: 9999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.gs-btn-principal:hover {
+  transform: translateY(-1px);
+}
+
+.gs-btn-principal.guardar,
+.gs-btn-principal.finalizar {
+  background-color: #10b981;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.28);
+}
+
+.gs-btn-principal.guardar:hover,
+.gs-btn-principal.finalizar:hover {
+  background-color: #059669;
+}
+
+.gs-btn-principal.actualizar {
+  background-color: #f59e0b;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.28);
+}
+
+.gs-btn-principal.actualizar:hover {
+  background-color: #d97706;
+}
+
+/* --- Sección Compromisos y Juntas de Arranque --- */
+.gs-grid-secundario {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.35rem;
+  margin-bottom: 1.75rem;
+}
+
+@media (max-width: 1024px) {
+  .gs-grid-secundario {
+    grid-template-columns: 1fr;
+  }
+}
+
+.gs-panel-seccion {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+}
+
+.gs-panel-header {
+  background-color: #1e293b;
+  color: #ffffff;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-left: 5px solid #8b0f0f;
+}
+
+.gs-panel-titulo {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.gs-panel-subtitulo {
+  font-weight: 400;
+  opacity: 0.85;
+  font-size: 0.85rem;
+}
+
+.gs-btn-nuevo-compromiso {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  border: none;
+  border-radius: 9999px;
+  background-color: #10b981;
+  color: #ffffff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.15s;
+}
+
+.gs-btn-nuevo-compromiso:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
+.gs-tabla-sub-scroll {
+  overflow-x: auto;
+  max-height: 340px;
+}
+
+.gs-tabla-sub {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.gs-tabla-sub thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: #f8fafc;
+  color: #475569;
+  font-size: 0.73rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.75rem 0.7rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.gs-tabla-sub tbody td,
+.gs-tabla-sub tbody th {
+  padding: 0.7rem;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.gs-tabla-sub tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.gs-tabla-sub tbody tr.fila-nueva {
+  background-color: #f0fdf4;
+}
+
+.gs-tabla-sub tbody tr.fila-editando {
+  background-color: #fffbeb;
+}
+
+.gs-tabla-sub tbody tr.fila-junta {
+  background-color: #f0fdf4;
+}
+
+.gs-input-celda,
+.gs-select-celda {
+  width: 100%;
+  height: 32px;
+  padding: 0 0.5rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  color: #1e293b;
+  background-color: #ffffff;
+  outline: none;
+}
+
+.gs-input-celda:focus,
+.gs-select-celda:focus {
+  border-color: #8b0f0f;
+}
+
+.gs-celda-vacia {
+  text-align: center !important;
+  padding: 1.5rem 1rem !important;
+  background-color: #fefce8;
+  color: #854d0e !important;
+  font-size: 0.84rem;
+}
+
+.gs-acciones-inline {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.gs-btn-mini {
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.gs-btn-mini.guardar {
+  background-color: #10b981;
+}
+.gs-btn-mini.editar {
+  background-color: #f59e0b;
+}
+.gs-btn-mini.eliminar {
+  background-color: #ef4444;
+}
+.gs-btn-mini.cancelar {
+  background-color: #64748b;
+}

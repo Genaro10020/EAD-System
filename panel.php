@@ -739,200 +739,186 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                 </div>
                 <!-- FIN Modal Baja colaborador-->
             </div>
-            <div class="container-fluid" v-if="ventana == 'Gestion Sesiones'">
-                <div class="row barra-gris">
-                    <div class="col-12 ">
-                        <div class="row g-2 mt-2 mb-2 align-items-center justify-content-center">
 
-                            <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') { ?>
+            <div class="gs-contenedor" v-if="ventana == 'Gestion Sesiones'">
+                <div class="gs-cabecera-panel">
+                    <div class="gs-barra-filtros">
+                        <?php if (isset($_SESSION['tipo_usuario']) && $_SESSION['tipo_usuario'] == 'Admin') { ?>
+                            <button type="button"
+                                class="gs-btn-doc"
+                                :class="{'con-archivos': documento_definicion.length > 0}"
+                                @click="modalDocumentoDefinicionDeProyectos()"
+                                :disabled="!seleccion_eds_areas.length">
+                                <i class="bi bi-folder-plus"></i>
+                                Definición Proyectos ({{documento_definicion.length}})
+                            </button>
 
-                                <div class="col-12 col-md-6 col-xl-3 d-flex justify-content-center">
-                                    <button class="btn py-1 w-100"
-                                        style="font-size:12px; max-width:200px;"
-                                        :class="{'btn-success': documento_definicion.length > 0, 'btn-primary': documento_definicion.length <= 0}"
-                                        @click="modalDocumentoDefinicionDeProyectos()"
-                                        :disabled="!seleccion_eds_areas.length">
-                                        <i class="bi bi-folder-plus"></i>
-                                        Definición Proyectos ({{documento_definicion.length}})
-                                    </button>
-                                </div>
-
-                                <div class="col-12 col-md-6 col-xl-2">
-                                    <div class="input-group  d-flex justify-content-center">
-                                        <label class="input-group-text" style="font-size:0.8em">Área</label>
-                                        <select class="form-select"
-                                            style="font-size:12px; max-width:200px;"
-                                            v-model="seleccion_eds_areas"
-                                            @change="filtrandoEADsGestion()"
-                                            style="font-size:0.8em">
-                                            <option value="">Todas las áreas..</option>
-                                            <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                            <?php } ?>
-
-                            <div class="col-12 col-md-6 col-xl-2 d-flex justify-content-center">
-                                <button class="btn py-1 w-100"
-                                    style="font-size:12px; max-width:200px;"
-                                    :class="{'btn-success': documento_session.length > 0, 'btn-primary': documento_session.length <= 0}"
-                                    @click="modalDocumentoGestionSession()"
-                                    :disabled="!select_session_equipo.length">
-                                    <i class="bi bi-folder-plus"></i>
-                                    Documento ({{documento_session.length}})
-                                </button>
+                            <div class="gs-grupo-control">
+                                <label class="gs-grupo-etiqueta">Área</label>
+                                <select class="gs-control-select"
+                                    v-model="seleccion_eds_areas"
+                                    @change="filtrandoEADsGestion()">
+                                    <option value="">Todas las áreas..</option>
+                                    <option v-for="area in uniqueAreas()" :value="area">{{area}}</option>
+                                </select>
                             </div>
+                        <?php } ?>
 
-                            <div class="col-12 col-md-6 col-xl-2">
-                                <div class="input-group d-flex justify-content-center">
-                                    <label class="input-group-text" style="font-size:0.7em">Fecha</label>
-                                    <input v-model="fecha_session"
-                                        style="font-size:12px; max-width:200px;"
-                                        type="date"
-                                        class="form-control"
-                                        style="font-size:0.7em"
-                                        @change="buscarDocumentos('Presentacion')">
-                                </div>
-                            </div>
+                        <button type="button"
+                            class="gs-btn-doc"
+                            :class="{'con-archivos': documento_session.length > 0}"
+                            @click="modalDocumentoGestionSession()"
+                            :disabled="!select_session_equipo.length">
+                            <i class="bi bi-folder-plus"></i>
+                            Documento ({{documento_session.length}})
+                        </button>
 
-                            <!--<div class="col-12 col-md-6 col-xl-3">
-                                    <div class="input-group d-flex justify-content-center">
-                                        <label class="input-group-text" style="font-size:0.8em">Metodología</label>
-                                        <select class="form-select"
-                                            :disabled="tipo_equipo=='EAD'"
-                                            style="font-size:12px; max-width:200px;"
-                                            v-model="metodologia"
-                                            @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()"
-                                            style="font-size:0.8em">
-                                            <option value="">Seleccione...</option>
-                                            <option value="PDCA">PDCA</option>
-                                            <option value="DMAIC">DMAIC</option>
-                                        </select>
-                                    </div>
-                                </div>-->
-
+                        <div class="gs-grupo-control">
+                            <label class="gs-grupo-etiqueta">Fecha</label>
+                            <input v-model="fecha_session"
+                                type="date"
+                                class="gs-control-input"
+                                @change="buscarDocumentos('Presentacion')">
                         </div>
                     </div>
-                    <div class="col-12  d-flex justify-content-center align-items-center">
-                        <div v-if="metodologia=='PDCA'" class="d-flex justify-content-center">
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">P</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaP"></canvas><br>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaP}}%</label>
+
+                    <div class="gs-ciclo-wrapper">
+                        <div v-if="metodologia=='PDCA'" class="gs-ciclo-lista">
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">P</span>
+                                    <canvas id="pdcaP"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaP}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">D</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaD"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaD}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">D</span>
+                                    <canvas id="pdcaD"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaD}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">C</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaC"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaC}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">C</span>
+                                    <canvas id="pdcaC"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaC}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">A</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="pdcaA"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaA}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">A</span>
+                                    <canvas id="pdcaA"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaA}}%</span>
                             </div>
                         </div>
-                        <div v-if="metodologia=='DMAIC'" class="d-flex justify-content-center">
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">D</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicD"></canvas><br>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaMD}}%</label>
+
+                        <div v-if="metodologia=='DMAIC'" class="gs-ciclo-lista">
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">D</span>
+                                    <canvas id="dmaicD"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaMD}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">M</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicM"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaMM}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">M</span>
+                                    <canvas id="dmaicM"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaMM}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">A</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicA"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaMA}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">A</span>
+                                    <canvas id="dmaicA"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaMA}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">I</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicI"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaMI}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">I</span>
+                                    <canvas id="dmaicI"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaMI}}%</span>
                             </div>
-                            <div class="col-3 col-sm-3 d-flex justify-content-center">
-                                <div class="text-center" style="border-radius:50%; background:white; position: relative; top: 25px; left: 55px; min-height: 30px; min-width: 30px; max-height: 30px; max-width: 30px; z-index:1"><label class="mt-1">C</label></div>
-                                <canvas style="min-height:80px; min-width:80px; max-height:80px; max-width:80px; z-index:30" id="dmaicC"></canvas>
-                                <label style="margin-top:30px;font-size:0.7em">{{llevaMC}}%</label>
+                            <div class="gs-ciclo-item">
+                                <div class="gs-ciclo-dona">
+                                    <span class="gs-ciclo-letra">C</span>
+                                    <canvas id="dmaicC"></canvas>
+                                </div>
+                                <span class="gs-ciclo-porcentaje">{{llevaMC}}%</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!--Tarjeta Integrantes-->
-                <div class="row">
-                    <div class="col-12 col-xl-3 d-flex justify-content-center">
-                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
-                            <h6 class="text-center pasos">1. Proyecto</h6>
-                            <div class="input-group mb-3" style="min-width: 270px;">
-                                <label class="input-group-text" style="font-size: 0.8em;">Nombre</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    style="font-size: 0.8em;" 
-                                    v-model="nombre_proyecto_sesion" 
-                                    placeholder="Nombre del proyecto" 
+                <div class="gs-grid-principal">
+                    <div class="gs-tarjeta" :class="{'estado-actualizar':actualizar_session,'estado-completado':seguimiento_completado>=100}">
+                        <div class="gs-bloque-paso">
+                            <h6 class="gs-paso-titulo">
+                                <span class="gs-paso-numero">1</span>
+                                Proyecto
+                            </h6>
+                            <div class="gs-campo-inline">
+                                <label class="gs-campo-inline-label">Nombre</label>
+                                <input
+                                    type="text"
+                                    v-model="nombre_proyecto_sesion"
+                                    placeholder="Nombre del proyecto"
                                     :disabled="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
                                     @keyup.enter="
                                         editando_nombre_proyecto_sesion 
                                             ? guardarNombreProyectoSesion() 
                                             : (!bloquear_nombre_proyecto && select_session_equipo !== '' ? registrarNombreProyectoSesion() : null)
-                                    "
-                                >
+                                    ">
 
                                 <button
                                     v-if="!bloquear_nombre_proyecto && select_session_equipo !== ''"
-                                    class="btn btn-success btn-sm px-2 py-0"
+                                    class="gs-btn-icono guardar"
                                     type="button"
                                     @click="registrarNombreProyectoSesion()"
-                                    title="Registrar nombre del proyecto"
-                                >
-                                    <i class="bi bi-floppy" style="font-size: 0.85em;"></i>
+                                    title="Registrar nombre del proyecto">
+                                    <i class="bi bi-floppy"></i>
                                 </button>
-                                
+
                                 <button
                                     v-if="bloquear_nombre_proyecto && !editando_nombre_proyecto_sesion"
-                                    class="btn btn-warning btn-sm px-2 py-0 text-white"
+                                    class="gs-btn-icono editar"
                                     type="button"
                                     @click="habilitarEdicionNombreProyecto()"
-                                    title="Actualizar nombre del proyecto"                                    
-                                >
-                                    <i class="bi bi-pencil" style="font-size: 0.85em;"></i>
+                                    title="Actualizar nombre del proyecto">
+                                    <i class="bi bi-pencil"></i>
                                 </button>
 
                                 <template v-if="editando_nombre_proyecto_sesion">
                                     <button
-                                        class="btn btn-success btn-sm px-2 py-0"
+                                        class="gs-btn-icono guardar"
                                         type="button"
                                         @click="guardarNombreProyectoSesion()"
-                                        title="Guardar nuevo nombre"
-                                    >
-                                        <i class="bi bi-check-lg" style="font-size: 0.85em;"></i>
+                                        title="Guardar nuevo nombre">
+                                        <i class="bi bi-check-lg"></i>
                                     </button>
-
                                     <button
-                                        class="btn btn-danger btn-sm px-2 py-0"
+                                        class="gs-btn-icono cancelar"
                                         type="button"
                                         @click="cancelarEdicionNombreProyecto()"
-                                        title="Cancelar"
-                                    >
-                                        <i class="bi bi-x-lg" style="font-size: 0.85em;"></i>
+                                        title="Cancelar">
+                                        <i class="bi bi-x-lg"></i>
                                     </button>
                                 </template>
                             </div>
+                        </div>
 
-                            <h6 class="text-center pasos">2. Asistencia</h6>
-                            <div class="input-group" style="min-width: 270px;">
-                                <label class="input-group-text" style="font-size: 0.8em;">Equipo</label>
-                                <select class="form-select" v-model="select_session_equipo" @change="consultarEADXID(),consultarCompromisos(), consultarPilares()" style="font-size:0.8em">
+                        <div class="gs-bloque-paso" style="flex: 1;">
+                            <h6 class="gs-paso-titulo">
+                                <span class="gs-paso-numero">2</span>
+                                Asistencia
+                            </h6>
+                            <div class="gs-campo-inline">
+                                <label class="gs-campo-inline-label">Equipo</label>
+                                <select v-model="select_session_equipo" @change="consultarEADXID(),consultarCompromisos(), consultarPilares()">
                                     <option value="">Seleccione..</option>
                                     <option v-for="equipos in consultaEAD" :value="equipos[0].id+'<->'+equipos[0].nombre_ead+'<->'+equipos[0].planta+'<->'+equipos[0].area">
                                         {{ equipos[0].nombre_ead }}
@@ -940,277 +926,340 @@ if ($_SESSION['nombre'] && $_SESSION['tipo_acceso']) {
                                 </select>
                             </div>
 
-                            <div v-if="EADIntegrantes.length>0" class="container text-center mt-2">
-                                <b class="letrasCard">Planta:</b> {{planta_ead}}
-                                <b class="letrasCard">Area:</b> {{area_ead}}
-                                <b class="letrasCard">Tipo:</b> {{tipo_equipo}}<br>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="text-start">
-                                            <li v-for="(integrantes,index) in EADIntegrantes" style="margin-bottom: 2px; font-size: 12px;">
-                                                <input class="me-2" v-model="asistieron" :value="integrantes.id" type="checkbox" />
-                                                {{index+1}}.- {{integrantes.colaborador}}
-                                            </li>
-                                        </ul>
-                                    </div>
+                            <template v-if="EADIntegrantes.length>0">
+                                <div class="gs-ficha-equipo">
+                                    <span class="gs-ficha-dato"><strong>Planta:</strong> {{planta_ead}}</span>
+                                    <span>•</span>
+                                    <span class="gs-ficha-dato"><strong>Área:</strong> {{area_ead}}</span>
+                                    <span>•</span>
+                                    <span class="gs-ficha-dato"><strong>Tipo:</strong> {{tipo_equipo}}</span>
                                 </div>
-                            </div>
-                            <div v-else class="text-center d-flex justify-content-center align-items-center h-50">
-                                "Seleccione EAD para visualizar integrantes"
+
+                                <ul class="gs-lista-checks">
+                                    <li v-for="(integrantes,index) in EADIntegrantes" :key="integrantes.id">
+                                        <label class="gs-check-fila">
+                                            <input v-model="asistieron" :value="integrantes.id" type="checkbox" />
+                                            <span><strong>{{index+1}}.</strong> {{integrantes.colaborador}}</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </template>
+                            <div v-else class="gs-estado-vacio-tarjeta">
+                                Seleccione EAD para visualizar integrantes
                             </div>
                         </div>
-                    </div>              
+                    </div>
 
-                    <!--Tarjeta Fases-->
-                    <div class="col-12 col-xl-3 d-flex justify-content-center">
-                        <div class="tarjeta my-2" :class="{'color-actualizar':actualizar_session,'color-completado':seguimiento_completado>=100}">
-                            <h6 class="text-center pasos">3. Metodología</h6>
-                            <div class="input-group" style="min-width:270px">
-                                <label class="input-group-text" style="font-size:0.8em">Metodología</label>
-                                <select class="form-select"
+                    <div class="gs-tarjeta" :class="{'estado-actualizar':actualizar_session,'estado-completado':seguimiento_completado>=100}">
+                        <div class="gs-bloque-paso">
+                            <h6 class="gs-paso-titulo">
+                                <span class="gs-paso-numero">3</span>
+                                Metodología
+                            </h6>
+                            <div class="gs-campo-inline">
+                                <label class="gs-campo-inline-label">Metodología</label>
+                                <select
                                     :disabled="tipo_equipo=='EAD' || existenDatosSesion==true"
                                     v-model="metodologia"
-                                    @change="consultarAvanceEtapas()"
-                                    style="font-size:0.8em">
+                                    @change="consultarAvanceEtapas()">
                                     <option value="">Seleccione...</option>
                                     <option value="PDCA">PDCA</option>
                                     <option value="DMAIC">DMAIC</option>
                                 </select>
                             </div>
-                            <h6 class="text-center pasos mt-2">4. Etapa y fases</h6>
-                            <div class="input-group" style="min-width:270px">
-                                <label class="input-group-text" style="font-size:0.8em">Etapa </label>
+                        </div>
+
+                        <div class="gs-bloque-paso" style="flex: 1;">
+                            <h6 class="gs-paso-titulo">
+                                <span class="gs-paso-numero">4</span>
+                                Etapa y fases
+                            </h6>
+                            <div class="gs-campo-inline">
+                                <label class="gs-campo-inline-label">Etapa</label>
                                 <select
                                     :disabled="metodologia==''"
-                                    class="form-select" v-model="select_etapa" @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()" style="font-size:0.8em">
+                                    v-model="select_etapa"
+                                    @change="consultarFaseXetapaSeleccionada(),fasesUtilizadas()">
                                     <option value="">Seleccione..</option>
                                     <option v-for="etapa in etapas" :value="etapa.id+'<->'+etapa.etapa">{{etapa.etapa}}</option>
                                 </select>
                             </div>
-                            <div v-if="fases_etapa.length>0" class="container text-center">
-                                <label class="letrasCard text-center">
-                                </label>
-                                <br>
-                                <b class="letrasCard">Fases</b>
-                                <div class="row">
-                                    <div class="col-12">
-                                        <ul class="text-start">
-                                            <li v-for="fase in fases_etapa" style="margin-bottom: 2px; font-size: 12px;">
-                                                <input v-model="fases_seleccionadas" :value="fase.fase" type="checkbox" :disabled="faseUsada(fase.fase)" />.-{{fase.fase}}
-                                            </li>
-                                        </ul>
-                                    </div>
+
+                            <template v-if="fases_etapa.length>0">
+                                <div class="gs-ficha-equipo">
+                                    <span class="gs-ficha-dato"><strong>Fases disponibles</strong></span>
                                 </div>
-                            </div>
-                            <div v-else class="text-center d-flex justify-content-center align-items-center h-50">
-                                <label>"Seleccione Etapa para visualizar las Fases."</label>
+                                <ul class="gs-lista-checks">
+                                    <li v-for="fase in fases_etapa" :key="fase.fase">
+                                        <label class="gs-check-fila">
+                                            <input v-model="fases_seleccionadas" :value="fase.fase" type="checkbox" :disabled="faseUsada(fase.fase)" />
+                                            <span>{{fase.fase}}</span>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </template>
+                            <div v-else class="gs-estado-vacio-tarjeta">
+                                Seleccione Etapa para visualizar las Fases
                             </div>
                         </div>
                     </div>
-                    <!--tabla seguimiento session-->
-                    <div class="col-12 col-xl-6">
-                        <h6 class="text-center pasos mt-2"> Historial asistencia, etapas y fases.</h6>
-                        <div class="progress " style="height: 20px;"><!--Porcentaje Total-->
-                            <div class="text-bg-secondary rounded-start ps-2 d-flex align-items-center" style="font-size:0.7em; width: 100px;"><span>Avance Proyecto:</span></div>
-                            <div class="progress-bar" role="progressbar" :style="'width:'+porcetajeTotal()+'!important;'" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" v-cloak><label style="font-size:10px">{{porcetajeTotal()}}</label></div>
+
+                    <div class="gs-tarjeta-historial gs-col-historial">
+                        <h6 class="gs-historial-titulo">Historial asistencia, etapas y fases</h6>
+
+                        <div class="gs-progreso-contenedor">
+                            <span class="gs-progreso-etiqueta">Avance Proyecto</span>
+                            <div class="gs-progreso-track">
+                                <div class="gs-progreso-barra" :style="'width:' + porcetajeTotal() + '!important;'" v-cloak>
+                                    <span class="gs-progreso-texto">{{porcetajeTotal()}}</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="scroll5">
-                            <table class="table table-bordered mt-2" :class="{'table-success': seguimiento_completado>=100}" style="font-size:0.7em">
-                                <thead class="table-active">
-                                    <tr class="text-center">
-                                        <th scope="col">#</th>
-                                        <th scope="col">Fecha</th>
-                                        <th scope="col">Etapa</th>
-                                        <th scope="col">Fase</th>
-                                        <th scope="col">% Asistencia</th>
-                                        <th scope="col"></th>
+
+                        <div class="gs-tabla-scroll">
+                            <table class="gs-tabla" :class="{'tabla-completada': seguimiento_completado>=100}">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 45px; text-align: center;">#</th>
+                                        <th style="width: 105px;">Fecha</th>
+                                        <th style="width: 120px;">Etapa</th>
+                                        <th>Fase</th>
+                                        <th style="width: 110px; text-align: center;">% Asistencia</th>
+                                        <th style="width: 115px; text-align: center;">Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="align-middle" v-for="(seguimiento,index) in seguimiento_session" :key="index" :class="{'table-warning': index_session_actualizar==index && actualizar_session}">
-                                        <th scope="row" class="text-center">{{index+1}}</th>
-                                        <td>{{cambiarformato(seguimiento.fecha)}}</td>
-                                        <td>{{tomandoEtapa(seguimiento.etapa)}}</td>
+                                    <tr v-for="(seguimiento,index) in seguimiento_session"
+                                        :key="index"
+                                        :class="{'fila-actualizando': index_session_actualizar==index && actualizar_session}">
+                                        <th style="text-align: center;">{{index+1}}</th>
+                                        <td style="white-space: nowrap;">{{cambiarformato(seguimiento.fecha)}}</td>
                                         <td>
-                                            <ul>
-                                                <li v-for="(fase, faseIndex) in convertirArregloFase(seguimiento.fase)">
+                                            <span class="gs-badge-etapa">{{tomandoEtapa(seguimiento.etapa)}}</span>
+                                        </td>
+                                        <td>
+                                            <ul class="gs-lista-fases-celda">
+                                                <li v-for="(fase, faseIndex) in convertirArregloFase(seguimiento.fase)" :key="faseIndex">
                                                     {{fase}}
                                                 </li>
                                             </ul>
                                         </td>
-                                        <td class="text-center">{{seguimiento.porcentaje_asistencia}} %</td>
-                                        <td class="text-center">
-                                            <div v-if="!actualizar_compromiso && !actualizar_session">
-                                                <button class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em; min-width:80px;" @click="actualizarSession(index,seguimiento.id)"> <i class="bi bi-arrow-clockwise"><br></i> Actualizar</button><br>
-                                                <button class="btn btn-danger btn-boton px-2 py-0 ms-2 mt-2" style="font-size: 0.9em; min-width:80px;" @click="eliminarGestionSession(seguimiento.id)"> <i class="bi bi-trash-fill"><br></i> Eliminar</button>
+                                        <td style="text-align: center;">
+                                            <span class="gs-badge-asistencia">{{seguimiento.porcentaje_asistencia}} %</span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <div v-if="!actualizar_compromiso && !actualizar_session" class="gs-acciones-tabla">
+                                                <button type="button" class="gs-btn-tabla editar" @click="actualizarSession(index,seguimiento.id)">
+                                                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                                </button>
+                                                <button type="button" class="gs-btn-tabla eliminar" @click="eliminarGestionSession(seguimiento.id)">
+                                                    <i class="bi bi-trash-fill"></i> Eliminar
+                                                </button>
                                             </div>
-                                            <div v-if="!actualizar_compromiso && actualizar_session">
-                                                <button v-if="index_session_actualizar===index" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em; min-width:80px;" @click="reseteandoDatos()"> <i class="bi bi-x-lg"><br></i> Cancelar</button>
+                                            <div v-if="!actualizar_compromiso && actualizar_session" class="gs-acciones-tabla">
+                                                <button v-if="index_session_actualizar===index" type="button" class="gs-btn-tabla cancelar" @click="reseteandoDatos()">
+                                                    <i class="bi bi-x-lg"></i> Cancelar
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr v-if="seguimiento_session.length<=0">
-                                        <th colspan="6" class="text-center">Sin seguimiento</th>
+                                        <td colspan="6" style="text-align: center; color: #94a3b8; padding: 2rem;">
+                                            Sin seguimiento registrado
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                <div v-if="!agregar_compromiso && !actualizar_compromiso" class="text-center">
-                    <span v-if="seguimiento_completado>=100 && !actualizar_session" class="badge bg-warning text-dark" style="font-size: 0.6em">Listo para cerrarse, no olvide cargar la presentación.</span><br>
-                    <button v-if="seguimiento_completado>=100 && !actualizar_session" class="botones-finalizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="cerrarProyecto()"><i class="bi bi-floppy me-2"></i></i>Cerrar proyecto</button>
-                    <button v-else-if="actualizar_session" class="botones-actualizar rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Actualizar')"><i class="bi bi-floppy"></i></i> Actualizar</button>
-                    <button v-else class="botones-crear rounded-pill border-0 my-1 px-2 mb-2 mt-3" @click="guardarActualizarSession('Guardar')"><i class="bi bi-floppy-fill"></i> Guardar</button>
-                </div>
-                <div class="row" v-if="select_session_equipo.length>0"><!--contenido compromiso, solo se mostrar cuando exista un equipo seleccionado--->
-                    <div class="col-12 col-lg-6"><!--Inicio Scroll-->
-                        <div class="row barra-gris d-flex align-content-center " style="height:40px;">
-                            <h6 class="text-center pasos mt-2"> Compromisos <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
-                        </div>
-                        <div class="col-12">
-                            <div class="scroll5 col-12" style="font-size:0.8em">
-                                <table class="table mt-2">
-                                    <thead>
-                                        <tr class="table-secondary">
-                                            <th scope="col"># <button class="btn btn-success btn-boton px-2 py-0 ms-2" @click="agregarCompromiso()" style="font-size:0.9em"><i class="bi bi-plus-circle"></i> Nuevo Compromiso</button></th>
-                                            <th scope="col" class="text-center">Compromiso</th>
-                                            <th scope="col" class="text-center">Responsable</th>
-                                            <th scope="col">Fecha</th>
-                                            <th scope="col">Estatus</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="agregar_compromiso" class="table-success"><!--Nueva Competencia-->
-                                            <td class="text-center" style="width: 200px;">
-                                                <button class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                <button class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="guardarCompromiso()"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                            </td>
-                                            <td>
-                                                <input v-model="compromiso" type="text" class="form-control" />
-                                            </td>
-                                            <td>
-                                                <select v-model="responsable_compromiso">
-                                                    <option value="" disabled>Seleccione responsable</option>
-                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input v-model="fecha_compromiso" type="date" class="form-control" />
-                                            </td>
-                                            <td>
-                                                <label>0%</label>
-                                            </td>
-                                            <td>
 
-                                            </td>
-                                        </tr>
-                                        <tr v-if="compromisos.length>0" v-for="(commitment,index) in compromisos" :key="index" :class="{'table-warning':actualizar_compromiso && input_actualizar==(index+1)}">
-                                            <th scope="row" style="width: 200px;">{{index+1}}
-                                                <button v-if="!actualizar_compromiso" class="btn btn-warning btn-boton px-2 py-0 ms-2 text-white" style="font-size: 0.9em;" @click="actualizarCompromiso(index+1)"> <i class="bi bi-arrow-clockwise"></i> Actualizar</button>
-                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="cancelarActualizarCompromiso()"> <i class="bi bi-x-lg"></i> Cancelar</button>
-                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" class="btn btn-success btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="actualizandoCompromiso(commitment.id)"> <i class="bi bi-floppy-fill"></i> Guardar</button>
-                                            </th>
-                                            <td>
-                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="form-control" />
-                                                <label v-else> {{commitment.compromiso}}</label>
-                                            </td>
-                                            <td>
-                                                <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)">
-                                                    <option value="" disabled>Seleccione responsable</option>
-                                                    <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
-                                                </select>
-                                                <label v-else>{{commitment.nombre_responsable}}</label>
-                                            </td>
-                                            <td style="width:200px">
-                                                <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date" class="form-control" />
-                                                <label v-else>{{cambiarformato(commitment.fecha)}}</label>
-                                            </td>
-                                            <td>
-                                                <label v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</label>
-                                                <select :id="'selectPorcentaje'+commitment.id" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
-                                                    <option value="0" disabled>0 %</option>
-                                                    <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <button v-if="!actualizar_compromiso" class="btn btn-danger btn-boton px-2 py-0 ms-2" style="font-size: 0.9em;" @click="eliminarCompromiso(commitment.id)"> <i class="bi bi-trash-fill"></i> Eliminar</button>
-                                            </td>
-                                        </tr>
-                                        <tr v-else>
-                                            <td colspan="6" class="text-center" style="background:#FBF7C7">
-                                                Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con compromisos
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                <div v-if="!agregar_compromiso && !actualizar_compromiso" class="gs-barra-guardado">
+                    <span v-if="seguimiento_completado>=100 && !actualizar_session" class="gs-aviso-cierre">
+                        <i class="bi bi-info-circle-fill me-1"></i>
+                        Listo para cerrarse, no olvide cargar la presentación.
+                    </span>
+
+                    <button v-if="seguimiento_completado>=100 && !actualizar_session" type="button" class="gs-btn-principal finalizar" @click="cerrarProyecto()">
+                        <i class="bi bi-floppy"></i> Cerrar proyecto
+                    </button>
+                    <button v-else-if="actualizar_session" type="button" class="gs-btn-principal actualizar" @click="guardarActualizarSession('Actualizar')">
+                        <i class="bi bi-floppy"></i> Actualizar
+                    </button>
+                    <button v-else type="button" class="gs-btn-principal guardar" @click="guardarActualizarSession('Guardar')">
+                        <i class="bi bi-floppy-fill"></i> Guardar
+                    </button>
+                </div>
+
+                <!-- COMPROMISOS Y JUNTAS DE ARRANQUE -->
+                <div class="gs-grid-secundario" v-if="select_session_equipo.length>0">
+                    <!-- COMPROMISOS -->
+                    <div class="gs-panel-seccion">
+                        <div class="gs-panel-header">
+                            <h6 class="gs-panel-titulo">
+                                Compromisos
+                                <span class="gs-panel-subtitulo" v-show="select_session_equipo.split('<->')[1]">
+                                    ({{select_session_equipo.split('<->')[1]}})
+                                </span>
+                            </h6>
+                            <button type="button" class="gs-btn-nuevo-compromiso" @click="agregarCompromiso()">
+                                <i class="bi bi-plus-circle"></i> Nuevo Compromiso
+                            </button>
                         </div>
-                    </div><!--Fin scroll-->
-                    <div class="col-12 col-lg-6">
-                        <div class="row barra-gris d-flex align-content-center" style="height:40px;">
-                            <h6 class="text-center pasos mt-2">Juntas de Arranque <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
-                        </div>
-                        <div class="col-12"><!--Inicio Scroll-->
-                            <div class="scroll5 col-12" style="font-size:0.8em">
-                                <table class="table mt-2">
-                                    <thead>
-                                        <tr class="table-secondary">
-                                            <th scope="col" class="text-center">#</th>
-                                            <th scope="col" class="text-center">Asistencia</th>
-                                            <th scope="col" class="text-center">Hora Inicial</th>
-                                            <th scope="col" class="text-center">Hora Final</th>
-                                            <th scope="col" class="text-center">Tiempo</th>
-                                            <th scope="col" class="text-center">Fotografía</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="justasArranque.length>0" v-for="(juntas,index) in justasArranque" class="table-success">
-                                            <td class="text-center" style="width: 200px;">
-                                                {{index+1}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{juntas.asistencia}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{juntas.hora_inicial}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{juntas.hora_final}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{juntas.total_tiempo}}
-                                            </td>
-                                            <td class="text-center">
-                                                {{juntas.fotografia}}
-                                            </td>
-                                        </tr>
-                                        <tr v-else>
-                                            <td colspan="6" class="text-center" style="background:#FBF7C7">
-                                                Equipo <b>{{select_session_equipo.split('<->')[1]}}</b> no cuenta con juntas de arranque
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div><!--Fin scroll-->
+
+                        <div class="gs-tabla-sub-scroll">
+                            <table class="gs-tabla-sub">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 170px;">#</th>
+                                        <th>Compromiso</th>
+                                        <th>Responsable</th>
+                                        <th style="width: 130px;">Fecha</th>
+                                        <th style="width: 95px;">Estatus</th>
+                                        <th style="width: 95px; text-align: center;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-if="agregar_compromiso" class="fila-nueva">
+                                        <td>
+                                            <div class="gs-acciones-inline">
+                                                <button type="button" class="gs-btn-mini cancelar" @click="cancelarCompromiso()">
+                                                    <i class="bi bi-x-lg"></i> Cancelar
+                                                </button>
+                                                <button type="button" class="gs-btn-mini guardar" @click="guardarCompromiso()">
+                                                    <i class="bi bi-floppy-fill"></i> Guardar
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input v-model="compromiso" type="text" class="gs-input-celda" placeholder="Descripción..." />
+                                        </td>
+                                        <td>
+                                            <select v-model="responsable_compromiso" class="gs-select-celda">
+                                                <option value="" disabled>Seleccione responsable</option>
+                                                <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input v-model="fecha_compromiso" type="date" class="gs-input-celda" />
+                                        </td>
+                                        <td>0%</td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr v-if="compromisos.length>0"
+                                        v-for="(commitment,index) in compromisos"
+                                        :key="index"
+                                        :class="{'fila-editando': actualizar_compromiso && input_actualizar==(index+1)}">
+                                        <th>
+                                            <div class="gs-acciones-inline" style="align-items: center;">
+                                                <span>{{index+1}}</span>
+                                                <button v-if="!actualizar_compromiso" type="button" class="gs-btn-mini editar" @click="actualizarCompromiso(index+1)">
+                                                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                                                </button>
+                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" type="button" class="gs-btn-mini cancelar" @click="cancelarActualizarCompromiso()">
+                                                    <i class="bi bi-x-lg"></i> Cancelar
+                                                </button>
+                                                <button v-if="actualizar_compromiso===true && input_actualizar==(index+1)" type="button" class="gs-btn-mini guardar" @click="actualizandoCompromiso(commitment.id)">
+                                                    <i class="bi bi-floppy-fill"></i> Guardar
+                                                </button>
+                                            </div>
+                                        </th>
+                                        <td>
+                                            <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="compromiso" type="text" class="gs-input-celda" />
+                                            <span v-else>{{commitment.compromiso}}</span>
+                                        </td>
+                                        <td>
+                                            <select v-model="responsable_compromiso" v-if="actualizar_compromiso && input_actualizar==(index+1)" class="gs-select-celda">
+                                                <option value="" disabled>Seleccione responsable</option>
+                                                <option v-for="integrante in EADIntegrantes" :value="integrante.id">{{integrante.colaborador}}</option>
+                                            </select>
+                                            <span v-else>{{commitment.nombre_responsable}}</span>
+                                        </td>
+                                        <td style="white-space: nowrap;">
+                                            <input v-if="actualizar_compromiso && input_actualizar==(index+1)" v-model="fecha_compromiso" type="date" class="gs-input-celda" />
+                                            <span v-else>{{cambiarformato(commitment.fecha)}}</span>
+                                        </td>
+                                        <td>
+                                            <span v-if="actualizar_compromiso && input_actualizar==(index+1)">{{commitment.estatus}} %</span>
+                                            <select :id="'selectPorcentaje'+commitment.id" class="gs-select-celda" @change="actualizarPorcentajeCompromiso(commitment.id)" :key="commitment.id" v-else>
+                                                <option value="0" disabled>0 %</option>
+                                                <option v-for="valor in porcentaje" :value="valor" :selected="valor == commitment.estatus">{{valor}} %</option>
+                                            </select>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <button v-if="!actualizar_compromiso" type="button" class="gs-btn-mini eliminar" @click="eliminarCompromiso(commitment.id)">
+                                                <i class="bi bi-trash-fill"></i> Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+
+                                    <tr v-else>
+                                        <td colspan="6" class="gs-celda-vacia">
+                                            Equipo <strong>{{select_session_equipo.split('<->')[1]}}</strong> no cuenta con compromisos
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- IMPACTOS AMBIENTALES -->
+                    <!-- JUNTAS DE ARRANQUE -->
+                    <div class="gs-panel-seccion">
+                        <div class="gs-panel-header">
+                            <h6 class="gs-panel-titulo">
+                                Juntas de Arranque
+                                <span class="gs-panel-subtitulo" v-show="select_session_equipo.split('<->')[1]">
+                                    ({{select_session_equipo.split('<->')[1]}})
+                                </span>
+                            </h6>
+                        </div>
+
+                        <div class="gs-tabla-sub-scroll">
+                            <table class="gs-tabla-sub" style="text-align: center;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px; text-align: center;">#</th>
+                                        <th style="text-align: center;">Asistencia</th>
+                                        <th style="text-align: center;">Hora Inicial</th>
+                                        <th style="text-align: center;">Hora Final</th>
+                                        <th style="text-align: center;">Tiempo</th>
+                                        <th style="text-align: center;">Fotografía</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-if="justasArranque.length>0" v-for="(juntas,index) in justasArranque" :key="index" class="fila-junta">
+                                        <td>{{index+1}}</td>
+                                        <td>{{juntas.asistencia}}</td>
+                                        <td>{{juntas.hora_inicial}}</td>
+                                        <td>{{juntas.hora_final}}</td>
+                                        <td>{{juntas.total_tiempo}}</td>
+                                        <td>{{juntas.fotografia}}</td>
+                                    </tr>
+                                    <tr v-else>
+                                        <td colspan="6" class="gs-celda-vacia">
+                                            Equipo <strong>{{select_session_equipo.split('<->')[1]}}</strong> no cuenta con juntas de arranque
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" v-if="select_session_equipo.length>0">
                     <div class="col-12">
                         <div class="row barra-gris d-flex align-content-center mb-2">
                             <h6 class="text-center pasos mt-2">Impactos Ambientales <label v-show="select_session_equipo.split('<->')[1]">({{select_session_equipo.split('<->')[1]}})</label></h6>
                         </div>
-                        <div class="col-12"><!--Inicio Scroll-->
+                        <div class="col-12">
                             <div class="col-12" style="font-size:0.8em">
                                 <?php include("templateImpactosAmbientales.php") ?>
                             </div>
                         </div>
                     </div>
-                    <!-- FIN TABLA IMPACTOS AMBIENTALES -->
-                    <!---->
                 </div>
+                
                 <!--KPI Inicio-->
                 <div class="col-12 text-center" v-if="select_session_equipo.length>0">
                     <div class="row barra-gris d-flex align-content-center mb-2" style="height:40px;">
