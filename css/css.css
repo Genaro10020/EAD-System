@@ -3868,10 +3868,6 @@ input[type="number"].preg-input,
 
 /* GESTION SESIONES */
 
-/* =========================================================
-   GESTIÓN DE SESIONES (CSS PURO)
-   ========================================================= */
-
 .gs-contenedor {
   padding: 1.25rem 1.5rem 2rem;
   font-family:
@@ -3885,7 +3881,6 @@ input[type="number"].preg-input,
   text-align: left;
 }
 
-/* --- Barra Superior de Controles y Gráficas PDCA/DMAIC --- */
 .gs-cabecera-panel {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -3998,7 +3993,6 @@ input[type="number"].preg-input,
   cursor: not-allowed;
 }
 
-/* --- Indicadores Circulares PDCA / DMAIC --- */
 .gs-ciclo-wrapper {
   display: flex;
   justify-content: center;
@@ -4063,7 +4057,6 @@ input[type="number"].preg-input,
   min-width: 34px;
 }
 
-/* --- Grid Principal de 3 Columnas (Pasos 1-2, Pasos 3-4, Historial) --- */
 .gs-grid-principal {
   display: grid;
   grid-template-columns: 330px 330px 1fr;
@@ -4089,7 +4082,6 @@ input[type="number"].preg-input,
   }
 }
 
-/* --- Tarjetas de Pasos --- */
 .gs-tarjeta {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -4221,7 +4213,6 @@ input[type="number"].preg-input,
   background-color: #ef4444;
 }
 
-/* --- Ficha Técnica del Equipo y Lista de Checkboxes --- */
 .gs-ficha-equipo {
   display: flex;
   flex-wrap: wrap;
@@ -4296,7 +4287,6 @@ input[type="number"].preg-input,
   border-radius: 10px;
 }
 
-/* --- Tarjeta Historial y Barra de Progreso --- */
 .gs-tarjeta-historial {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
